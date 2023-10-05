@@ -1,0 +1,301 @@
+/**
+ * 2023.8.17
+ */
+package matsu.num.matrix.base;
+
+import java.util.Objects;
+
+/**
+ * 行列の次元(サイズ)を扱う不変クラス. <br>
+ * 行サイズ, 列サイズともに1以上の整数値をとる.
+ * 
+ * <p>
+ * このクラスは次の属性を基にした等価性を提供する. 
+ * </p>
+ * 
+ * <ul>
+ * <li> 行サイズ </li>
+ * <li> 列サイズ </li>
+ * </ul>
+ *
+ * @author Matsuura Y.
+ * @version 15.0
+ */
+public final class MatrixDimension {
+
+    private static final int MIN_DIMENSION = 1;
+
+    private static final int CACHE_SIZE = 255;
+    private static final MatrixDimension[] squareCache;
+
+    static {
+        squareCache = new MatrixDimension[CACHE_SIZE];
+        for (int i = 0; i < CACHE_SIZE; i++) {
+            final int dim = MIN_DIMENSION + i;
+            squareCache[i] = new MatrixDimension(dim, dim);
+        }
+    }
+
+    private final VectorDimension rowVectorDimension;
+    private final VectorDimension columnVectorDimension;
+    private final MatrixShape shape;
+
+    private final int immutableHashCode;
+
+    //循環参照が生じるため, 遅延初期化を行う
+    //軽量オブジェクトのためロックを行わず,複数回の初期化を許す
+    private volatile MatrixDimension transposedDimension;
+
+    private MatrixDimension(int rowDimension, int columnDimension) {
+        if (rowDimension < MIN_DIMENSION || columnDimension < MIN_DIMENSION) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "不正なサイズ:dimension:(row, column)=(%d, %d)",
+                            rowDimension, columnDimension));
+        }
+        this.rowVectorDimension = VectorDimension.valueOf(rowDimension);
+        this.columnVectorDimension = VectorDimension.valueOf(columnDimension);
+        this.shape = MatrixShape.shape(rowDimension, columnDimension);
+        this.immutableHashCode = this.immutableHashCode();
+    }
+
+    /**
+     * 行の{@code int}値を返す.
+     *
+     * @return 行
+     */
+    public int rowAsIntValue() {
+        return this.rowVectorDimension.intValue();
+    }
+
+    /**
+     * 列の{@code int}値を返す.
+     *
+     * @return 列
+     */
+    public int columnAsIntValue() {
+        return this.columnVectorDimension.intValue();
+    }
+
+    /**
+     * 左から演算可能なベクトルの次元を返す.
+     *
+     * @return 左から演算可能なベクトルの次元
+     */
+    public VectorDimension leftOperableVectorDimension() {
+        return this.rowVectorDimension;
+    }
+
+    /**
+     * 右から演算可能なベクトルの次元を返す.
+     *
+     * @return 右から演算可能なベクトルの次元
+     */
+    public VectorDimension rightOperableVectorDimension() {
+        return this.columnVectorDimension;
+    }
+
+    /**
+     * 行列サイズが正方形かどうかを判定.
+     *
+     * @return 行列サイズが正方形であれば{@code true}
+     */
+    public boolean isSquare() {
+        return this.shape == MatrixShape.SQUARE;
+    }
+
+    /**
+     * 行列サイズが狭義横長かどうかを判定.
+     *
+     * @return 行列サイズが狭義横長であれば{@code true}
+     */
+    public boolean isHorizonral() {
+        return this.shape == MatrixShape.HORIZONTAL;
+    }
+
+    /**
+     * 行列サイズが狭義縦長かどうかを判定.
+     *
+     * @return 行列サイズが狭義縦長であれば{@code true}
+     */
+    public boolean isVertical() {
+        return this.shape == MatrixShape.VERTICAL;
+    }
+
+    /**
+     * 与えられた次元のベクトルを左から演算できるかを判定.
+     *
+     * @param referenceDimension 演算可否を考えるベクトルの次元
+     * @return 左から演算できるなら{@code true}
+     */
+    public boolean leftOperable(VectorDimension referenceDimension) {
+        return this.rowVectorDimension.equals(referenceDimension);
+    }
+
+    /**
+     * 与えられた次元のベクトルを右から演算できるかを判定.
+     *
+     * @param referenceDimension 演算可否を考えるベクトルの次元
+     * @return 右から演算できるなら{@code true}
+     */
+    public boolean rightOperable(VectorDimension referenceDimension) {
+        return this.columnVectorDimension.equals(referenceDimension);
+    }
+
+    /**
+     * 与えられた行indexが行列の内部かを判定.
+     *
+     * @param rowIndex 行index
+     * @return 行indexが行列の内部なら{@code true}
+     */
+    public boolean isValidRowIndex(int rowIndex) {
+        return this.rowVectorDimension.isValidIndex(rowIndex);
+    }
+
+    /**
+     * 与えられた列indexが行列の内部かを判定.
+     *
+     * @param columnIndex 列index
+     * @return 列indexが行列の内部なら{@code true}
+     */
+    public boolean isValidColumnIndex(int columnIndex) {
+        return this.columnVectorDimension.isValidIndex(columnIndex);
+    }
+
+    /**
+     * 与えられた(行index, 列index)が行列の内部かを判定.
+     *
+     * @param rowIndex 行index
+     * @param columnIndex 列index
+     * @return (行index, 列index)が行列の内部なら{@code true}
+     */
+    public boolean isValidIndexes(int rowIndex, int columnIndex) {
+        return this.isValidRowIndex(rowIndex) && this.isValidColumnIndex(columnIndex);
+    }
+
+    /**
+     * 他オブジェクトとの等価性を判定する. 
+     * 
+     * <p>
+     * 等価性の基準はクラス説明のとおりである.
+     * </p>
+     * 
+     * @param obj 比較対象
+     * @return 自身とobjが等価の場合はtrue
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof MatrixDimension)) {
+            return false;
+        }
+
+        MatrixDimension target = (MatrixDimension) obj;
+
+        return this.rowVectorDimension.equals(target.rowVectorDimension)
+                && this.columnVectorDimension.equals(target.columnVectorDimension);
+    }
+
+    /**
+     * ハッシュコードを返す.
+     * 
+     * @return ハッシュコード
+     */
+    @Override
+    public int hashCode() {
+        return this.immutableHashCode;
+    }
+
+    private int immutableHashCode() {
+        int result = 349631;
+        result = 31 * result + Objects.hashCode(this.rowVectorDimension);
+        result = 31 * result + Objects.hashCode(this.columnVectorDimension);
+        return result;
+    }
+
+    /**
+     * このオブジェクトの文字列説明表現を返す.
+     * 
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code [r:%r, c:%c]}
+     * </p>
+     * 
+     * @return 説明表現
+     */
+    @Override
+    public String toString() {
+        return String.format(
+                "[r:%d, c:%d]",
+                this.rowAsIntValue(), this.columnAsIntValue());
+    }
+
+    /**
+     * このインスタンスの次元の転置の次元を返す.
+     *
+     * @return thisの転置次元
+     */
+    public MatrixDimension transpose() {
+        MatrixDimension out = this.transposedDimension;
+        if (Objects.nonNull(out)) {
+            return out;
+        }
+
+        if (this.isSquare()) {
+            this.transposedDimension = this;
+            return this;
+        }
+
+        //複数回の初期化を許すため,オブジェクトのロックを行わない
+        out = MatrixDimension.rectangle(this.columnAsIntValue(), this.rowAsIntValue());
+        this.transposedDimension = out;
+        out.transposedDimension = this;
+        return out;
+    }
+
+    /**
+     * 長方形の行列サイズオブジェクトの作成.
+     *
+     * @param rowDimension 行サイズ
+     * @param columnDimension 列サイズ
+     * @return 長方形の行列サイズオブジェクト
+     * @throws IllegalArgumentException 引数のどちらかが1未満である場合
+     */
+    public static MatrixDimension rectangle(int rowDimension, int columnDimension) {
+        if (rowDimension == columnDimension) {
+            int cacheIndex = rowDimension - MIN_DIMENSION;
+            if (0 <= cacheIndex && cacheIndex < CACHE_SIZE) {
+                return squareCache[cacheIndex];
+            }
+        }
+        return new MatrixDimension(rowDimension, columnDimension);
+    }
+
+    /**
+     * 正方形の行列サイズオブジェクトの作成.
+     *
+     * @param dimension 行サイズ = 列サイズ
+     * @return 正方形の行列サイズオブジェクト
+     * @throws IllegalArgumentException 引数が1未満である場合
+     */
+    public static MatrixDimension square(int dimension) {
+        return MatrixDimension.rectangle(dimension, dimension);
+    }
+
+    private enum MatrixShape {
+        SQUARE, VERTICAL, HORIZONTAL;
+
+        public static MatrixShape shape(int rowDimension, int columnDimension) {
+            if (rowDimension == columnDimension) {
+                return SQUARE;
+            }
+            if (rowDimension > columnDimension) {
+                return VERTICAL;
+            }
+            return HORIZONTAL;
+        }
+    }
+}
