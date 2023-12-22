@@ -36,33 +36,37 @@ public class LUPivotingExecutorTest {
 
         private LinearEquationSolving<EntryReadableMatrix> lup;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
+            right = builder.build();
+        }
+
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
             /*
-                1 2 3 4
-                2 5 9 3
-                2 6 3 1
-                 -1 0 1 1
+             * 1 2 3 4
+             * 2 5 9 3
+             * 2 6 3 1
+             * -1 0 1 1
              */
-            EntryReadableMatrix gm = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(4))
-                    .setValue(0, 0, 1)
-                    .setValue(0, 1, 2)
-                    .setValue(0, 2, 3)
-                    .setValue(0, 3, 4)
-                    .setValue(1, 0, 2)
-                    .setValue(1, 1, 5)
-                    .setValue(1, 2, 9)
-                    .setValue(1, 3, 3)
-                    .setValue(2, 0, 2)
-                    .setValue(2, 1, 6)
-                    .setValue(2, 2, 3)
-                    .setValue(2, 3, 1)
-                    .setValue(3, 0, -1)
-                    .setValue(3, 1, 0)
-                    .setValue(3, 2, 1)
-                    .setValue(3, 3, 1)
-                    .build();
-            lup = LUPivotingExecutor.instance().apply(gm);
+            double[][] entry = {
+                    { 1, 2, 3, 4 },
+                    { 2, 5, 9, 3 },
+                    { 2, 6, 3, 1 },
+                    { -1, 0, 1, 1 }
+            };
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            for (int j = 0; j < entry.length; j++) {
+                for (int k = 0; k < entry[j].length; k++) {
+                    builder.setValue(j, k, entry[j][k]);
+                }
+            }
+            lup = LUPivotingExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -82,14 +86,12 @@ public class LUPivotingExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
 
             /*
-                -3.666666667
-                1.666666667
-                0
-                0.333333333
+             * -3.666666667
+             * 1.666666667
+             * 0
+             * 0.333333333
              */
             double[] expected = { -2.0 / 3 - 3.0, 1.0 + 2.0 / 3, 0, 1.0 / 3 };
             Vector result = lup.inverse().get().operate(right);
@@ -103,14 +105,12 @@ public class LUPivotingExecutorTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
 
             /*
-                1
-                0
-                0
-                0
+             * 1
+             * 0
+             * 0
+             * 0
              */
             double[] expected = { 1.0, 0.0, 0.0, 0.0 };
             Vector result = lup.inverse().get().operateTranspose(right);
@@ -136,15 +136,24 @@ public class LUPivotingExecutorTest {
 
         private LinearEquationSolving<EntryReadableMatrix> lup;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
+            builder.setEntryValue(new double[] { 3 });
+            right = builder.build();
+        }
+
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
             /*
-                2
+             * 2
              */
-            EntryReadableMatrix gm = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(1))
-                    .setValue(0, 0, 2)
-                    .build();
-            lup = LUPivotingExecutor.instance().apply(gm);
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            builder.setValue(0, 0, 2);
+            lup = LUPivotingExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -164,11 +173,9 @@ public class LUPivotingExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
 
             /*
-                1.5
+             * 1.5
              */
             double[] expected = { 1.5 };
             Vector result = lup.inverse().get().operate(right);
@@ -182,11 +189,9 @@ public class LUPivotingExecutorTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
 
             /*
-                1.5
+             * 1.5
              */
             double[] expected = { 1.5 };
             Vector result = lup.inverse().get().operateTranspose(right);

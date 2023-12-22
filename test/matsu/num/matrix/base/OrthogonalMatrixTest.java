@@ -33,30 +33,33 @@ public class OrthogonalMatrixTest {
 
         @Before
         public void before_行列の準備() {
-            m1 = PermutationMatrix.Builder.unitBuilder(matrixDimension)
-                    .swapRows(0, 3)
-                    .swapRows(3, 1)
-                    .build();
-            m2 = PermutationMatrix.Builder.unitBuilder(matrixDimension)
-                    .swapRows(1, 2)
-                    .build();
-            m3 = PermutationMatrix.Builder.unitBuilder(matrixDimension)
-                    .swapRows(2, 3)
-                    .swapRows(1, 2)
-                    .build();
-            m4 = PermutationMatrix.Builder.unitBuilder(matrixDimension)
-                    .swapRows(2, 3)
-                    .swapRows(0, 1)
-                    .build();
-            m1To4 = OrthogonalMatrix.multiply(
-                    m1, m2, m3, m4);
+            PermutationMatrix.Builder builder_m1 = PermutationMatrix.Builder.unitBuilder(matrixDimension);
+            builder_m1.swapRows(0, 3);
+            builder_m1.swapRows(3, 1);
+            m1 = builder_m1.build();
+
+            PermutationMatrix.Builder builder_m2 = PermutationMatrix.Builder.unitBuilder(matrixDimension);
+            builder_m2.swapRows(1, 2);
+            m2 = builder_m2.build();
+
+            PermutationMatrix.Builder builder_m3 = PermutationMatrix.Builder.unitBuilder(matrixDimension);
+            builder_m3.swapRows(2, 3);
+            builder_m3.swapRows(1, 2);
+            m3 = builder_m3.build();
+
+            PermutationMatrix.Builder builder_m4 = PermutationMatrix.Builder.unitBuilder(matrixDimension);
+            builder_m4.swapRows(2, 3);
+            builder_m4.swapRows(0, 1);
+            m4 = builder_m4.build();
+
+            m1To4 = OrthogonalMatrix.multiply(m1, m2, m3, m4);
         }
 
         @Before
         public void before_ベクトルの準備() {
-            vec_4 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4 })
-                    .build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4 });
+            vec_4 = builder.build();
         }
 
         @Test

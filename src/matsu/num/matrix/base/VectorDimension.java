@@ -1,22 +1,18 @@
 /**
- * 2023.8.18
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
 /**
  * ベクトルの次元を扱う不変クラス. <br>
- * ベクトルの次元は1以上の整数値をとる.
+ * 扱うのは1次元以上である.
  * 
  * <p>
- * このクラスは次の属性を基にした等価性を提供する. 
+ * このクラスのインスタンスは, 次元の値に基づくequalityを有する.
  * </p>
- * 
- * <ul>
- * <li> 次元 </li>
- * </ul>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.2
  */
 public final class VectorDimension {
 
@@ -33,14 +29,16 @@ public final class VectorDimension {
     }
 
     private final int dimension;
-    private final int immutableHashCode;
+
+    //評価結果を使いまわすためのフィールド
+    private final int hashCode;
 
     private VectorDimension(int dimension) {
         if (dimension < MIN_DIMENSION) {
             throw new IllegalArgumentException(String.format("不正な次元:dimension=%d", dimension));
         }
         this.dimension = dimension;
-        this.immutableHashCode = this.immutableHashCode();
+        this.hashCode = this.calcHashCode();
     }
 
     /**
@@ -63,7 +61,7 @@ public final class VectorDimension {
     }
 
     /**
-     * 他オブジェクトとの等価性を判定する. 
+     * 他オブジェクトとの等価性を判定する.
      * 
      * <p>
      * 等価性の基準はクラス説明のとおりである.
@@ -94,20 +92,28 @@ public final class VectorDimension {
      */
     @Override
     public int hashCode() {
-        return this.immutableHashCode;
+        return this.hashCode;
     }
 
-    private int immutableHashCode() {
-        int result = -455912;
-        result = 31 * result + Integer.hashCode(this.dimension);
+    /**
+     * ハッシュコードを計算する.
+     * 
+     * <p>
+     * 一度だけ呼ばれる.
+     * </p>
+     * 
+     * @return このインスタンスのハッシュコード
+     */
+    private int calcHashCode() {
+        int result = Integer.hashCode(this.dimension);
         return result;
     }
 
     /**
-     * 与えられたindexがベクトルの内部かを判定.
+     * 与えられたindexがベクトルの内部かどうかを判定する.
      *
      * @param index index
-     * @return indexがベクトルの内部なら{@code true}
+     * @return indexがベクトルの内部ならtrue
      */
     public boolean isValidIndex(int index) {
         return 0 <= index && index < this.dimension;
@@ -119,21 +125,21 @@ public final class VectorDimension {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code [%value]}
+     * {@code %value}
      * </p>
      * 
      * @return 説明表現
      */
     @Override
     public String toString() {
-        return String.format("[%d]", this.dimension);
+        return String.format("%s", this.dimension);
     }
 
     /**
-     * 与えられた次元のベクトル次元オブジェクトの作成.
+     * 与えられた値のベクトル次元を返す.
      *
      * @param dimension n(次元)
-     * @return 次元 n のベクトル次元オブジェクト
+     * @return 値が n のベクトル次元
      * @throws IllegalArgumentException 引数が1未満である場合
      */
     public static VectorDimension valueOf(int dimension) {
@@ -142,6 +148,7 @@ public final class VectorDimension {
         if (0 <= cacheIndex && cacheIndex < CACHE_SIZE) {
             return cache[cacheIndex];
         }
+        //この内部で例外をスローする
         return new VectorDimension(dimension);
     }
 

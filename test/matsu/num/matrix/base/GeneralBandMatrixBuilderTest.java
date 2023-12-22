@@ -23,23 +23,33 @@ public class GeneralBandMatrixBuilderTest {
 
         private BandMatrix gbm;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            right = builder.build();
+        }
+
         @Before
         public void before() {
             /*
-                1 10 0
-                4 2 11
-                5 6 3
+             * 1 10 0
+             * 4 2 11
+             * 5 6 3
              */
-            gbm = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(3, 2, 1))
-                    .setValue(0, 0, 1)
-                    .setValue(0, 1, 10)
-                    .setValue(1, 0, 4)
-                    .setValue(1, 1, 2)
-                    .setValue(1, 2, 11)
-                    .setValue(2, 0, 5)
-                    .setValue(2, 1, 6)
-                    .setValue(2, 2, 3)
-                    .build();
+            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(3, 2, 1));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 10);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 2);
+            builder.setValue(1, 2, 11);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            builder.setValue(2, 2, 3);
+            gbm = builder.build();
         }
 
         @Test
@@ -63,8 +73,6 @@ public class GeneralBandMatrixBuilderTest {
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
             double[] expected = { 21, 41, 26 };
             Vector result = gbm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -72,8 +80,6 @@ public class GeneralBandMatrixBuilderTest {
 
         @Test
         public void test_転置行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
             double[] expected = { 24, 32, 31 };
             Vector result = gbm.operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -84,21 +90,31 @@ public class GeneralBandMatrixBuilderTest {
 
         private BandMatrix gbm;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            right = builder.build();
+        }
+
         @Before
         public void before() {
             /*
-                1 0 0
-                4 2 0
-                5 6 3
+             * 1 0 0
+             * 4 2 0
+             * 5 6 3
              */
-            gbm = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(3, 2, 0))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 4)
-                    .setValue(1, 1, 2)
-                    .setValue(2, 0, 5)
-                    .setValue(2, 1, 6)
-                    .setValue(2, 2, 3)
-                    .build();
+            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(3, 2, 0));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 2);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            builder.setValue(2, 2, 3);
+            gbm = builder.build();
         }
 
         @Test
@@ -108,15 +124,11 @@ public class GeneralBandMatrixBuilderTest {
 
         @Test
         public void test_行列ベクトル積が可能() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
             gbm.operate(right);
         }
 
         @Test
         public void test_転置行列ベクトル積が可能() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
             gbm.operateTranspose(right);
         }
     }
@@ -160,23 +172,21 @@ public class GeneralBandMatrixBuilderTest {
         @Test
         public void test_成分の検証_下側優位() {
             /*
-                1 10 0
-                4 2 11
-                5 6 3
+             * 1 10 0
+             * 4 2 11
+             * 5 6 3
              */
-            BandMatrix gbm = GeneralBandMatrixBuilder.from(
-                    new WrappedMatrix(
-                            GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(3, 2, 1))
-                                    .setValue(0, 0, 1)
-                                    .setValue(0, 1, 10)
-                                    .setValue(1, 0, 4)
-                                    .setValue(1, 1, 2)
-                                    .setValue(1, 2, 11)
-                                    .setValue(2, 0, 5)
-                                    .setValue(2, 1, 6)
-                                    .setValue(2, 2, 3)
-                                    .build()))
-                    .build();
+
+            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(3, 2, 1));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 10);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 2);
+            builder.setValue(1, 2, 11);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            builder.setValue(2, 2, 3);
+            BandMatrix gbm = GeneralBandMatrixBuilder.from(new WrappedMatrix(builder.build())).build();
 
             double[][] entries = { { 1, 10, 0 }, { 4, 2, 11 }, { 5, 6, 3 } };
 

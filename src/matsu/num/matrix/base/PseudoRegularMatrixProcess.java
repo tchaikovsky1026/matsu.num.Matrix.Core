@@ -1,13 +1,13 @@
 /**
- * 2023.8.17
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
 /**
- * 正則な(もしくはそれに準ずる)行列の処理に関する基本定数に関する. 
+ * 正則な(もしくはそれに準ずる)行列の処理に関する基本定数に関する.
  * 
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.1
  */
 public final class PseudoRegularMatrixProcess {
 

@@ -32,21 +32,32 @@ public class LowerUnitriangularBandBuilderTest {
 
         private LowerUnitriangularEntryReadableMatrix lbm;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 3, 5, 7 });
+            right = builder.build();
+        }
+
         @Before
         public void before_サイズ4_成分2_3_4_5_6の単位下三角行列を生成() {
             /*
-                1 0 0 0
-                2 1 0 0
-                3 4 1 0
-                0 5 6 1
+             * 1 0 0 0
+             * 2 1 0 0
+             * 3 4 1 0
+             * 0 5 6 1
              */
-            lbm = LowerUnitriangularBandBuilder.unitBuilder(BandMatrixDimension.of(4, 2, 0))
-                    .setValue(1, 0, 2)
-                    .setValue(2, 0, 3)
-                    .setValue(2, 1, 4)
-                    .setValue(3, 1, 5)
-                    .setValue(3, 2, 6)
-                    .build();
+            LowerUnitriangularBandBuilder builder =
+                    LowerUnitriangularBandBuilder.unitBuilder(BandMatrixDimension.of(4, 2, 0));
+            builder.setValue(1, 0, 2);
+            builder.setValue(2, 0, 3);
+            builder.setValue(2, 1, 4);
+            builder.setValue(3, 1, 5);
+            builder.setValue(3, 2, 6);
+            lbm = builder.build();
         }
 
         @Test
@@ -69,26 +80,20 @@ public class LowerUnitriangularBandBuilderTest {
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
-            double[] expected = { 1, 4, 14, 32 };
+            double[] expected = { 1, 5, 20, 52 };
             Vector result = lbm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
         }
 
         @Test
         public void test_転置行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
-            double[] expected = { 14, 34, 27, 4 };
+            double[] expected = { 22, 58, 47, 7 };
             Vector result = lbm.operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
         }
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 3, 5, 7 }).build();
             double[] expected = { 1, 1, -2, 14 };
 
             //遅延初期化の可能性があるため2回以上呼ぶ
@@ -98,8 +103,6 @@ public class LowerUnitriangularBandBuilderTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 3, 5, 7 }).build();
             double[] expected = { -120, 116, -37, 7 };
 
             assertThat(Arrays.equals(lbm.inverse().get().operateTranspose(right).entryAsArray(), expected), is(true));
@@ -110,10 +113,20 @@ public class LowerUnitriangularBandBuilderTest {
 
         private LowerUnitriangularEntryReadableMatrix lbm;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
+            builder.setEntryValue(new double[] { 3 });
+            right = builder.build();
+        }
+
         @Before
         public void before_サイズ4_成分2_3_4_5_6の単位下三角行列を生成() {
             /*
-               1
+             * 1
              */
             lbm = LowerUnitriangularBandBuilder.unitBuilder(BandMatrixDimension.of(1, 0, 0))
                     .build();
@@ -126,8 +139,6 @@ public class LowerUnitriangularBandBuilderTest {
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lbm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -135,8 +146,6 @@ public class LowerUnitriangularBandBuilderTest {
 
         @Test
         public void test_転置行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lbm.operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -144,8 +153,6 @@ public class LowerUnitriangularBandBuilderTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lbm.inverse().get().operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -153,8 +160,6 @@ public class LowerUnitriangularBandBuilderTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lbm.inverse().get().operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));

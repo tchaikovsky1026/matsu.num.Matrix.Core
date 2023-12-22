@@ -32,18 +32,28 @@ public class LowerUnitriangularBuilderTest {
 
         private LowerUnitriangularEntryReadableMatrix lm;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 3, 5 });
+            right = builder.build();
+        }
+
         @Before
         public void before_サイズ3_成分2_3_4の単位下三角行列を生成() {
             /*
-                1 0 0
-                2 1 0
-                3 4 1
+             * 1 0 0
+             * 2 1 0
+             * 3 4 1
              */
-            lm = LowerUnitriangularBuilder.unitBuilder(MatrixDimension.square(3))
-                    .setValue(1, 0, 2)
-                    .setValue(2, 0, 3)
-                    .setValue(2, 1, 4)
-                    .build();
+            LowerUnitriangularBuilder builder = LowerUnitriangularBuilder.unitBuilder(MatrixDimension.square(3));
+            builder.setValue(1, 0, 2);
+            builder.setValue(2, 0, 3);
+            builder.setValue(2, 1, 4);
+            lm = builder.build();
         }
 
         @Test
@@ -66,26 +76,20 @@ public class LowerUnitriangularBuilderTest {
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
-            double[] expected = { 1, 4, 14 };
+            double[] expected = { 1, 5, 20 };
             Vector result = lm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
         }
 
         @Test
         public void test_転置行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
-            double[] expected = { 14, 14, 3 };
+            double[] expected = { 22, 23, 5 };
             Vector result = lm.operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
         }
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 3, 5 }).build();
             double[] expected = { 1, 1, -2 };
 
             //遅延初期化の可能性があるため2回以上呼ぶ
@@ -95,8 +99,6 @@ public class LowerUnitriangularBuilderTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 3, 5 }).build();
             double[] expected = { 20, -17, 5 };
 
             assertThat(Arrays.equals(lm.inverse().get().operateTranspose(right).entryAsArray(), expected), is(true));
@@ -107,10 +109,20 @@ public class LowerUnitriangularBuilderTest {
 
         private LowerUnitriangularEntryReadableMatrix lm;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
+            builder.setEntryValue(new double[] { 3 });
+            right = builder.build();
+        }
+
         @Before
         public void before_サイズ1の単位下三角行列を生成() {
             /*
-                1
+             * 1
              */
             lm = LowerUnitriangularBuilder.unitBuilder(MatrixDimension.square(1))
                     .build();
@@ -123,8 +135,6 @@ public class LowerUnitriangularBuilderTest {
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -132,8 +142,6 @@ public class LowerUnitriangularBuilderTest {
 
         @Test
         public void test_転置行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lm.operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -141,8 +149,6 @@ public class LowerUnitriangularBuilderTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lm.inverse().get().operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -150,8 +156,6 @@ public class LowerUnitriangularBuilderTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
             double[] expected = { 3 };
             Vector result = lm.inverse().get().operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));

@@ -20,6 +20,8 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 @RunWith(Enclosed.class)
 public class UnitMatrixTest {
 
+    public static final Class<?> TEST_CLASS = UnitMatrix.class;
+
     public static class 成分の評価に関する {
 
         private UnitMatrix matrix;
@@ -76,15 +78,21 @@ public class UnitMatrixTest {
         @Test
         public void test_成功パターン() {
             double[] expected = { 1, 2, 3 };
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(expected);
+
             Vector result = matrix
-                    .operate(Vector.Builder.zeroBuilder(VectorDimension.valueOf(3)).setEntryValue(expected).build());
+                    .operate(builder.build());
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
         }
 
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_失敗パターン() {
             double[] expected = { 1, 2, 3, 4 };
-            matrix.operate(Vector.Builder.zeroBuilder(VectorDimension.valueOf(4)).setEntryValue(expected).build());
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(expected);
+            matrix.operate(builder.build());
         }
     }
 
@@ -112,6 +120,16 @@ public class UnitMatrixTest {
                 //オプショナル自体が同一インスタンスである
                 assertThat(matrix.inverse() == matrix.inverse(), is(true));
             }
+        }
+    }
+
+    public static class toString表示 {
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(UnitMatrix.matrixOf(MatrixDimension.square(3)));
+            System.out.println();
         }
     }
 

@@ -1,5 +1,5 @@
 /**
- * 2023.8.21
+ * 2023.11.29
  */
 package matsu.num.matrix.base.nlsf.helper.fact;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.lazy.InverseAndDeterminantStructure;
  * 1*1 あるいは 2*2の対称ブロック要素を持つ, ブロック対角行列とそれを係数に持つ連立方程式の解法を扱う.
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.0
  */
 public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determinantable {
 
@@ -103,7 +103,7 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (i+1,i)が行列の帯領域内でない場合
          * @throws IllegalArgumentException valueが不正な値(絶対値が大きすぎる, inf, NaN)の場合,
-         * valueを代入することでブロック対角行列でなくなる場合
+         *             valueを代入することでブロック対角行列でなくなる場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public Builder setSubDiagonal(final int index, final double value) {
@@ -180,18 +180,18 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
                 implements Block2OrderSymmetricDiagonalMatrix {
 
             /*
-                内部では対称三重対角行列として, すなわち, 行列の各要素は対角成分, 副対角成分に分けて, それぞれ1次元配列として扱う. 
-                次元を<i>n</i>とすると, 各配列の長さは<i>n</i>, <i>n</i>である.
-            
-                例えば4*4行列の場合: 
-                対角成分の配列をd, 副対角成分の配列をsとすると, 
-                d.length = 4, {b.length = 4であり, 
-                d[0] s[0] ---- ----
-                s[0] d[1] s[1] ----
-                ---- s[1] d[2] s[2]
-                ---- ---- s[2] d[3] (s[3])
-                (--- ---- ---- s[3])
-                と格納される.
+             * 内部では対称三重対角行列として, すなわち, 行列の各要素は対角成分, 副対角成分に分けて, それぞれ1次元配列として扱う.
+             * 次元を<i>n</i>とすると, 各配列の長さは<i>n</i>, <i>n</i>である.
+             * 
+             * 例えば4*4行列の場合:
+             * 対角成分の配列をd, 副対角成分の配列をsとすると,
+             * d.length = 4, {b.length = 4であり,
+             * d[0] s[0] ---- ----
+             * s[0] d[1] s[1] ----
+             * ---- s[1] d[2] s[2]
+             * ---- ---- s[2] d[3] (s[3])
+             * (--- ---- ---- s[3])
+             * と格納される.
              */
             private final BandMatrixDimension bandMatrixDimension;
 
@@ -316,7 +316,9 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
                     resultEntry[i] += thisSubdiagonalEntry[i] * operandEntry[i + 1];
                 }
 
-                return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                builder.setEntryValue(resultEntry);
+                return builder.build();
             }
 
             /**
@@ -417,11 +419,11 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
 
             /**
              * 与えられたブロック要素(2*2)に対して, 逆行列要素と行列式に関する要素を返す. <br>
-             * その形式は, {@code double}配列であり, <br> 
+             * その形式は, {@code double}配列であり, <br>
              * {@code [im_00, im_11, im_01, logAbsDet, signOfDet]} <br>
              * である. <br>
              * {@code signOfDet}は{@code 1.0}または{@code -1.0}である. <br>
-             * ただし, 特異の場合のみ, {@code null}を返す. 
+             * ただし, 特異の場合のみ, {@code null}を返す.
              * 
              * @param m_00 00成分
              * @param m_11 11成分

@@ -1,5 +1,5 @@
-/*
- * 2023.8.20
+/**
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -11,7 +11,7 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 
 /**
- * 対称帯行列を生成するビルダ. 
+ * 対称帯行列を生成するビルダ.
  * 
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -26,7 +26,7 @@ import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public final class SymmetricBandMatrixBuilder {
 
@@ -82,13 +82,12 @@ public final class SymmetricBandMatrixBuilder {
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @return this
      * @throws IllegalStateException すでにビルドされている場合
      * @throws IndexOutOfBoundsException (i,j)が行列の帯領域内でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
-    public SymmetricBandMatrixBuilder setValue(final int row, final int column, final double value) {
+    public void setValue(final int row, final int column, final double value) {
         if (Objects.isNull(this.diagonalEntry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -101,13 +100,13 @@ public final class SymmetricBandMatrixBuilder {
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
         case DIAGONAL:
             diagonalEntry[row] = value;
-            return this;
+            return;
         case LOWER_BAND:
             bandEntry[column * thisBandWidth + (row - column - 1)] = value;
-            return this;
+            return;
         case UPPER_BAND:
             bandEntry[row * thisBandWidth + (column - row - 1)] = value;
-            return this;
+            return;
         case OUT_OF_BAND:
             throw new IndexOutOfBoundsException(
                     String.format(
@@ -228,19 +227,19 @@ public final class SymmetricBandMatrixBuilder {
             implements BandMatrix, Symmetric {
 
         /*
-        行列の各要素は対角成分, 副対角成分に分けて, それぞれ1次元配列として扱う. 
-        次元を<i>n</i>, 片側帯幅を<i>b</i>とすると, 各配列の長さは<i>n</i>, <i>n</i><i>b</i>である.
-        
-        例えば4*4行列で片側帯幅2の場合:
-        対角成分の配列をd, 副対角成分の配列をbとすると, 
-        d.length = 4, b.length = 8であり, 
-        d[0] b[0] b[1] ----
-        b[0] d[1] b[2] b[3]
-        b[1] b[2] d[2] b[4] (b[5])
-        ---- b[3] b[4] d[3] (b[6] b[7])
-        (--- ---- b[5] b[6])
-        (--- ---- ---- b[7])
-        と格納される.
+         * 行列の各要素は対角成分, 副対角成分に分けて, それぞれ1次元配列として扱う.
+         * 次元を<i>n</i>, 片側帯幅を<i>b</i>とすると, 各配列の長さは<i>n</i>, <i>n</i><i>b</i>である.
+         * 
+         * 例えば4*4行列で片側帯幅2の場合:
+         * 対角成分の配列をd, 副対角成分の配列をbとすると,
+         * d.length = 4, b.length = 8であり,
+         * d[0] b[0] b[1] ----
+         * b[0] d[1] b[2] b[3]
+         * b[1] b[2] d[2] b[4] (b[5])
+         * ---- b[3] b[4] d[3] (b[6] b[7])
+         * (--- ---- b[5] b[6])
+         * (--- ---- ---- b[7])
+         * と格納される.
          */
         private final BandMatrixDimension bandMatrixDimension;
 
@@ -342,7 +341,9 @@ public final class SymmetricBandMatrixBuilder {
                 resultEntry[i] += sumProduct;
             }
 
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override

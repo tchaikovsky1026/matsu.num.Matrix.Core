@@ -1,5 +1,5 @@
 /**
- * 2023.8.20
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -11,11 +11,18 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 
 /**
- * 単位下三角の帯行列を作成するビルダ. 
+ * 単位下三角の帯行列を作成するビルダ.
+ * 
  * 
  * <p>
- * 帯行列としてのビルダを扱っているが, ビルドされる型は{@link LowerUnitriangularEntryReadableMatrix}である. <br>
- * したがって, <br> 
+ * このビルダはミュータブルである. <br>
+ * また, スレッドセーフでない.
+ * </p>
+ * 
+ * <p>
+ * 帯行列としてのビルダを扱っているが, ビルドされる型は{@link LowerUnitriangularEntryReadableMatrix}である.
+ * <br>
+ * したがって, <br>
  * {@code matrix instanceof BandMatrix} <br>
  * が{@code true}であることは保証しない.
  * </p>
@@ -28,12 +35,8 @@ import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
  * である状態である.
  * </p>
  * 
- * <p>
- * このビルダ自体はスレッドセーフでない.
- * </p>
- * 
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  * @see LowerUnitriangularEntryReadableMatrix
  */
 public final class LowerUnitriangularBandBuilder {
@@ -47,7 +50,7 @@ public final class LowerUnitriangularBandBuilder {
      *
      * @param bandMatrixDimension 下三角である帯行列構造
      * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
-     * {@link BandMatrixDimension#upperBandWidth} &gt; 0である場合
+     *             {@link BandMatrixDimension#upperBandWidth} &gt; 0である場合
      * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
@@ -71,13 +74,12 @@ public final class LowerUnitriangularBandBuilder {
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @return this
      * @throws IllegalStateException すでにビルドされている場合
      * @throws IndexOutOfBoundsException (i,j)が行列の狭義下側帯領域内でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
-    public LowerUnitriangularBandBuilder setValue(final int row, final int column, final double value) {
+    public void setValue(final int row, final int column, final double value) {
 
         if (Objects.isNull(this.lowerEntry)) {
             throw new IllegalStateException("すでにビルドされています");
@@ -96,7 +98,7 @@ public final class LowerUnitriangularBandBuilder {
                             bandMatrixDimension, row, column));
         case LOWER_BAND:
             lowerEntry[column * thisLowerBandWidth + (row - column - 1)] = value;
-            return this;
+            return;
         case UPPER_BAND:
             throw new AssertionError("Bug: 到達不能");
         case OUT_OF_BAND:
@@ -136,7 +138,7 @@ public final class LowerUnitriangularBandBuilder {
      * @param bandMatrixDimension 下三角である帯行列構造
      * @return 単位行列で初期化されたビルダ
      * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
-     * {@link BandMatrixDimension#upperBandWidth} &gt; 0である場合
+     *             {@link BandMatrixDimension#upperBandWidth} &gt; 0である場合
      * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
@@ -148,18 +150,18 @@ public final class LowerUnitriangularBandBuilder {
             implements LowerUnitriangularEntryReadableMatrix, BandMatrix {
 
         /*
-            行列の各要素は, 内部では狭義下三角成分を1次元配列として扱う. 
-            次元を<i>n</i>, 下側帯幅を<i>b</i><sub>l</sub>とすると,
-            配列の長さは<i>n</i><i>b</i><sub>l</sub>である.
-            
-            例えば4*4行列で下側帯幅2の場合: 
-            副対角成分の配列を{@code b}とすると{@code b.length = 8}であり, 以下のように格納する。
-            1.0 --- --- ---
-            [0] 1.0 --- ---
-            [1] [2] 1.0 ---
-            --- [3] [4] 1.0
-            (-- --- [5] [6])
-            (-- --- --- [7])
+         * 行列の各要素は, 内部では狭義下三角成分を1次元配列として扱う.
+         * 次元を<i>n</i>, 下側帯幅を<i>b</i><sub>l</sub>とすると,
+         * 配列の長さは<i>n</i><i>b</i><sub>l</sub>である.
+         * 
+         * 例えば4*4行列で下側帯幅2の場合:
+         * 副対角成分の配列を{@code b}とすると{@code b.length = 8}であり, 以下のように格納する。
+         * 1.0 --- --- ---
+         * [0] 1.0 --- ---
+         * [1] [2] 1.0 ---
+         * --- [3] [4] 1.0
+         * (-- --- [5] [6])
+         * (-- --- --- [7])
          */
         private final BandMatrixDimension bandMatrixDimension;
 
@@ -248,7 +250,9 @@ public final class LowerUnitriangularBandBuilder {
                 }
             }
 
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         /**
@@ -295,7 +299,9 @@ public final class LowerUnitriangularBandBuilder {
                 resultEntry[i] += sumProduct;
             }
 
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override
@@ -367,7 +373,9 @@ public final class LowerUnitriangularBandBuilder {
                         }
                     }
 
-                    return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+                    Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                    builder.setEntryValue(resultEntry);
+                    return builder.build();
                 }
 
                 @Override
@@ -406,7 +414,9 @@ public final class LowerUnitriangularBandBuilder {
                         resultEntry[i] -= sumProduct;
                     }
 
-                    return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+                    Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                    builder.setEntryValue(resultEntry);
+                    return builder.build();
                 }
             };
 

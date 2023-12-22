@@ -1,5 +1,5 @@
 /**
- * 2023.8.21
+ * 2023.11.30
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -23,7 +23,7 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
  * 行列積を扱う.
  * 
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public final class MatrixMultiplication {
 
@@ -75,7 +75,7 @@ public final class MatrixMultiplication {
      * @param mid 行列D, 中央の行列
      * @param leftSide 行列L, 左サイドの行列
      * @return 対称な行列積
-     * @throws MatrixNotSymmetricException 中央の行列が対称でない場合
+     * @throws MatrixNotSymmetricException 中央の行列 (D) が対称でない場合
      * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
@@ -95,14 +95,19 @@ public final class MatrixMultiplication {
     /**
      * 行列積を表現する行列.
      */
-    private static final class MultiplyingSeries extends SkeletalMatrix implements MultipliedMatrix {
+    private static final class MultiplyingSeries
+            extends SkeletalMatrix implements MultipliedMatrix {
 
         private final Deque<Matrix> series;
         private final MatrixDimension matrixDimension;
 
         private final Matrix transpose;
 
-        public MultiplyingSeries(Matrix first, Matrix... following) {
+        /**
+         * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         */
+        MultiplyingSeries(Matrix first, Matrix... following) {
             this.transpose = null;
 
             Deque<Matrix> rawSeries = new LinkedList<>();
@@ -122,7 +127,7 @@ public final class MatrixMultiplication {
 
         /**
          * このクラス内部から呼ばれる. <br>
-         * transposeを表現するためのコンストラクタ. 
+         * transposeを表現するためのコンストラクタ.
          * 
          * @param matrixDimension
          * @param series
@@ -154,7 +159,7 @@ public final class MatrixMultiplication {
         }
 
         /**
-         * サイズの整合性を検証する. 
+         * サイズの整合性を検証する.
          * 
          * @param series 行列積を表す一連の行列
          * @return seriesと等価なオプショナル, 整合しない場合は空
@@ -220,7 +225,7 @@ public final class MatrixMultiplication {
 
         @Override
         public String toString() {
-            return MultipliedMatrix.toString(this);
+            return Matrix.toString(this);
         }
 
     }
@@ -229,7 +234,8 @@ public final class MatrixMultiplication {
      * 対称な行列積. <br>
      * LDL^T
      */
-    private static final class SymmetricMultipliedMatrix extends SkeletalMatrix implements MultipliedMatrix, Symmetric {
+    private static final class SymmetricMultipliedMatrix
+            extends SkeletalMatrix implements MultipliedMatrix, Symmetric {
 
         private final MatrixDimension matrixDimension;
         private final Matrix mxD;
@@ -238,14 +244,11 @@ public final class MatrixMultiplication {
         private final Deque<Matrix> series;
 
         /**
-         * 
-         * @param mid mxD
-         * @param leftSide mxL 
          * @throws MatrixNotSymmetricException 中央の行列が対称でない場合
          * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
-         * @throws NullPointerException
+         * @throws NullPointerException 引数にnullが含まれる場合
          */
-        public SymmetricMultipliedMatrix(Matrix mid, Matrix leftSide) {
+        SymmetricMultipliedMatrix(Matrix mid, Matrix leftSide) {
             this.mxD = Objects.requireNonNull(mid);
             this.mxL = Objects.requireNonNull(leftSide);
             if (!(this.mxD instanceof Symmetric)) {
@@ -314,7 +317,7 @@ public final class MatrixMultiplication {
 
         @Override
         public String toString() {
-            return MultipliedMatrix.toString(this, "symmetric");
+            return Matrix.toString(this, "symmetric");
         }
     }
 }

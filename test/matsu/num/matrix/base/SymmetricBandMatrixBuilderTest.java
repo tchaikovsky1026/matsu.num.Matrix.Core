@@ -26,17 +26,18 @@ public class SymmetricBandMatrixBuilderTest {
         @Before
         public void before() {
             /*
-                1 4 0
-                4 2 5
-                0 5 3
+             * 1 4 0
+             * 4 2 5
+             * 0 5 3
              */
-            sbm = SymmetricBandMatrixBuilder.zeroBuilder(BandMatrixDimension.symmetric(3, 1))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 4)
-                    .setValue(1, 1, 2)
-                    .setValue(1, 2, 5)
-                    .setValue(2, 2, 3)
-                    .build();
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.zeroBuilder(BandMatrixDimension.symmetric(3, 1));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 2);
+            builder.setValue(1, 2, 5);
+            builder.setValue(2, 2, 3);
+            sbm = builder.build();
         }
 
         @Test
@@ -46,8 +47,10 @@ public class SymmetricBandMatrixBuilderTest {
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            Vector right = builder.build();
+
             double[] expected = { 9, 23, 19 };
             Vector result = sbm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -75,15 +78,16 @@ public class SymmetricBandMatrixBuilderTest {
         @Before
         public void before() {
             /*
-                1 4 0
-                4 2 5
-                0 5 3
+             * 1 4 0
+             * 4 2 5
+             * 0 5 3
              */
-            sbm = SymmetricBandMatrixBuilder.zeroBuilder(BandMatrixDimension.symmetric(3, 0))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 1, 2)
-                    .setValue(2, 2, 3)
-                    .build();
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.zeroBuilder(BandMatrixDimension.symmetric(3, 0));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 1, 2);
+            builder.setValue(2, 2, 3);
+            sbm = builder.build();
         }
 
         @Test
@@ -93,8 +97,9 @@ public class SymmetricBandMatrixBuilderTest {
 
         @Test
         public void test_行列ベクトル積が可能() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            Vector right = builder.build();
             sbm.operate(right);
         }
     }
@@ -141,20 +146,18 @@ public class SymmetricBandMatrixBuilderTest {
         @Test
         public void test_成分の検証() {
             /*
-                1 4 0
-                4 2 5
-                0 5 3
+             * 1 4 0
+             * 4 2 5
+             * 0 5 3
              */
-            BandMatrix sbm = SymmetricBandMatrixBuilder.from(
-                    new WrappedMatrix(
-                            SymmetricBandMatrixBuilder.zeroBuilder(BandMatrixDimension.symmetric(3, 1))
-                                    .setValue(0, 0, 1)
-                                    .setValue(1, 0, 4)
-                                    .setValue(1, 1, 2)
-                                    .setValue(1, 2, 5)
-                                    .setValue(2, 2, 3)
-                                    .build()))
-                    .build();
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.zeroBuilder(BandMatrixDimension.symmetric(3, 1));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 2);
+            builder.setValue(1, 2, 5);
+            builder.setValue(2, 2, 3);
+            BandMatrix sbm = SymmetricBandMatrixBuilder.from(new WrappedMatrix(builder.build())).build();
 
             double[][] entries = { { 1, 4, 0 }, { 4, 2, 5 }, { 0, 5, 3 } };
 

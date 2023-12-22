@@ -42,24 +42,23 @@ public class CholeskyExecutorTest {
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
             /*
-                3 2 2 -1
-                2 5 -1 0
-                2 -1 5 1
-                -1 0 1 3
+             * 3 2 2 -1
+             * 2 5 -1 0
+             * 2 -1 5 1
+             * -1 0 1 3
              */
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4))
-                    .setValue(0, 0, 3)
-                    .setValue(1, 0, 2)
-                    .setValue(1, 1, 5)
-                    .setValue(2, 0, 2)
-                    .setValue(2, 1, -1)
-                    .setValue(2, 2, 5)
-                    .setValue(3, 0, -1)
-                    .setValue(3, 1, 0)
-                    .setValue(3, 2, 1)
-                    .setValue(3, 3, 3)
-                    .build();
-            cho = CholeskyExecutor.instance().apply(sm);
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            builder.setValue(0, 0, 3);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 5);
+            builder.setValue(2, 0, 2);
+            builder.setValue(2, 1, -1);
+            builder.setValue(2, 2, 5);
+            builder.setValue(3, 0, -1);
+            builder.setValue(3, 1, 0);
+            builder.setValue(3, 2, 1);
+            builder.setValue(3, 3, 3);
+            cho = CholeskyExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -74,14 +73,15 @@ public class CholeskyExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
+            Vector right = builder.build();
 
             /*
-                1.38461538461539
-                -0.230769230769231
-                -0.384615384615383
-                1.92307692307692
+             * 1.38461538461539
+             * -0.230769230769231
+             * -0.384615384615383
+             * 1.92307692307692
              */
             double[] expected = {
                     1.38461538461539,
@@ -120,12 +120,11 @@ public class CholeskyExecutorTest {
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
             /*
-                2
+             * 2
              */
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1))
-                    .setValue(0, 0, 2)
-                    .build();
-            cho = CholeskyExecutor.instance().apply(sm);
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            builder.setValue(0, 0, 2);
+            cho = CholeskyExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -140,11 +139,12 @@ public class CholeskyExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
+            builder.setEntryValue(new double[] { 3 });
+            Vector right = builder.build();
 
             /*
-                1.5
+             * 1.5
              */
             double[] expected = { 1.5 };
             Vector result = cho.inverse().get().operateTranspose(right);
@@ -162,35 +162,42 @@ public class CholeskyExecutorTest {
         private Matrix matrix;
         private AsymmetricSqrtFactorization<EntryReadableMatrix> cho;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 });
+            right = builder.build();
+        }
+
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
             /*
-                3 2 2 -1
-                2 5 -1 0
-                2 -1 5 1
-                -1 0 1 3
+             * 3 2 2 -1
+             * 2 5 -1 0
+             * 2 -1 5 1
+             * -1 0 1 3
              */
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4))
-                    .setValue(0, 0, 3)
-                    .setValue(1, 0, 2)
-                    .setValue(1, 1, 5)
-                    .setValue(2, 0, 2)
-                    .setValue(2, 1, -1)
-                    .setValue(2, 2, 5)
-                    .setValue(3, 0, -1)
-                    .setValue(3, 1, 0)
-                    .setValue(3, 2, 1)
-                    .setValue(3, 3, 3)
-                    .build();
-            matrix = sm;
-            cho = CholeskyExecutor.instance().apply(sm);
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            builder.setValue(0, 0, 3);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 5);
+            builder.setValue(2, 0, 2);
+            builder.setValue(2, 1, -1);
+            builder.setValue(2, 2, 5);
+            builder.setValue(3, 0, -1);
+            builder.setValue(3, 1, 0);
+            builder.setValue(3, 2, 1);
+            builder.setValue(3, 3, 3);
+            EntryReadableMatrix em = builder.build();
+            matrix = em;
+            cho = CholeskyExecutor.instance().apply(em);
         }
 
         @Test
         public void test_非対称平方根の検証() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 }).build();
-
             Matrix asymmSqrt = cho.asymmetricSqrtSystem().target();
             double[] expected = matrix.operate(right).entryAsArray();
             double[] result = asymmSqrt.operate(asymmSqrt.operateTranspose(right)).entryAsArray();
@@ -212,9 +219,6 @@ public class CholeskyExecutorTest {
 
         @Test
         public void test_非対称平方根の逆行列の検証() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 }).build();
-
             Matrix asymmInvSqrt = cho.asymmetricSqrtSystem().inverse().get();
             double[] expected = cho.inverse().get().operate(right).entryAsArray();
             double[] result = asymmInvSqrt.operateTranspose(asymmInvSqrt.operate(right)).entryAsArray();
@@ -242,12 +246,12 @@ public class CholeskyExecutorTest {
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
             /*
-                2
+             * 2
              */
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1))
-                    .setValue(0, 0, 2)
-                    .build();
-            cho = CholeskyExecutor.instance().apply(sm);
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            builder.setValue(0, 0, 2);
+            EntryReadableMatrix em = builder.build();
+            cho = CholeskyExecutor.instance().apply(em);
         }
 
         @Test

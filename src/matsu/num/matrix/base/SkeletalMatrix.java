@@ -1,5 +1,5 @@
 /**
- * 2023.8.20
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -14,12 +14,13 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * 
  * <p>
  * {@link Matrix}は不変であるので, {@linkplain Matrix#transpose()}は関数的に振る舞う. <br>
- * この骨格実装は, 初めて{@linkplain #transpose()}が呼ばれたときに転置行列を{@linkplain #createTranspose()}によって生成し, 
- * 以後はそれを使いまわすキャッシュ仕組みを提供している. 
+ * この骨格実装は,
+ * 初めて{@linkplain #transpose()}が呼ばれたときに転置行列を{@linkplain #createTranspose()}によって生成し,
+ * 以後はそれを使いまわすキャッシュ仕組みを提供している.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public abstract class SkeletalMatrix implements Matrix {
 
@@ -45,17 +46,18 @@ public abstract class SkeletalMatrix implements Matrix {
     }
 
     /**
-     * 自身の転置行列を生成する. 
+     * 自身の転置行列を生成する.
      * 
      * <p>
-     * 骨格実装の{@linkplain #transpose()}を遅延初期化するために実装されるメソッドである. <br> 
-     * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけ呼ばれる. 
+     * 骨格実装の{@linkplain #transpose()}を遅延初期化するために実装されるメソッドである. <br>
+     * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけ呼ばれる.
      * </p>
      * 
      * <p>
      * 実装としては, <br>
-     * {@code this.}{@linkplain #createTranspose()}{@code .}{@linkplain #transpose()}{@code  == this} <br>
-     * を満たすことが望ましい. 
+     * {@code this.}{@linkplain #createTranspose()}{@code .}{@linkplain #transpose()}{@code  == this}
+     * <br>
+     * を満たすことが望ましい.
      * </p>
      * 
      * @return 自身の転置行列
@@ -70,7 +72,7 @@ public abstract class SkeletalMatrix implements Matrix {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code @hashCode[dimension: %dimension]}
+     * {@code Matrix[dim(%dimension)]}
      * </p>
      * 
      * @return 説明表現

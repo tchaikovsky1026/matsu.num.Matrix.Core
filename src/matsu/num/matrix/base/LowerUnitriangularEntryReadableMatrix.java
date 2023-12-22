@@ -1,5 +1,5 @@
 /**
- * 2023.8.18
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -7,24 +7,24 @@ import java.util.Optional;
 
 /**
  * 成分にアクセス可能な単位下三角行列を表す. <br>
- * 単位下三角行列とは, 対角成分が1の下三角行列である. 
+ * 単位下三角行列とは, 対角成分が1の下三角行列である.
  *
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.  
+ * {@link Matrix}のクラス説明の規約に従う.
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.1
  * @see Matrix
  */
 public interface LowerUnitriangularEntryReadableMatrix
         extends EntryReadableMatrix, Inversion, Determinantable {
 
     /**
-     * {@inheritDoc } 
+     * {@inheritDoc }
      * 
      * <p>
-     * 単位下三角行列の行列式は1である. 
+     * 単位下三角行列の行列式は1である.
      * </p>
      * 
      * @return {@inheritDoc} = 1
@@ -38,7 +38,7 @@ public interface LowerUnitriangularEntryReadableMatrix
      * {@inheritDoc }
      * 
      * <p>
-     * 単位下三角行列の行列式の絶対値の自然対数は0である. 
+     * 単位下三角行列の行列式の絶対値の自然対数は0である.
      * </p>
      * 
      * @return {@inheritDoc} = 0
@@ -52,7 +52,7 @@ public interface LowerUnitriangularEntryReadableMatrix
      * {@inheritDoc }
      * 
      * <p>
-     * 単位下三角行列の行列式の符号は1である. 
+     * 単位下三角行列の行列式の符号は1である.
      * </p>
      * 
      * @return 行列式の符号 = 1

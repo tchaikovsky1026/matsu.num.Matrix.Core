@@ -30,15 +30,34 @@ public class TranspositionBandTest {
         private BandMatrix transposedMatrix;
         private BandMatrix transposedTransposedMatrix;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 4, 7, 11 });
+            right = builder.build();
+        }
+
         @Before
         public void before_サイズ4_下2_上1の行列の作成_と_転置() {
             BandMatrixDimension dimension = BandMatrixDimension.of(4, 2, 1);
-            originalMatrix = GeneralBandMatrixBuilder.zeroBuilder(dimension)
-                    .setValue(0, 0, 1).setValue(0, 1, 2)
-                    .setValue(1, 0, 5).setValue(1, 1, 6).setValue(1, 2, 7)
-                    .setValue(2, 0, 9).setValue(2, 1, 10).setValue(2, 2, 11).setValue(2, 3, 12)
-                    .setValue(3, 1, 13).setValue(3, 2, 14).setValue(3, 3, 15)
-                    .build();
+            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(dimension);
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(1, 0, 5);
+            builder.setValue(1, 1, 6);
+            builder.setValue(1, 2, 7);
+            builder.setValue(2, 0, 9);
+            builder.setValue(2, 1, 10);
+            builder.setValue(2, 2, 11);
+            builder.setValue(2, 3, 12);
+            builder.setValue(3, 1, 13);
+            builder.setValue(3, 2, 14);
+            builder.setValue(3, 3, 15);
+            originalMatrix = builder.build();
+
             transposedMatrix = TranspositionBand.instance().apply(originalMatrix);
             transposedTransposedMatrix = TranspositionBand.instance().apply(transposedMatrix);
         }
@@ -61,9 +80,6 @@ public class TranspositionBandTest {
 
         @Test
         public void test_transposed_operateTranspose_は_original_operate_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 4, 7, 11 })
-                    .build();
             assertThat(
                     transposedMatrix.operateTranspose(right).entryAsArray(),
                     is(originalMatrix.operate(right).entryAsArray()));
@@ -71,9 +87,6 @@ public class TranspositionBandTest {
 
         @Test
         public void test_transposed_operate_は_original_operateTranspose_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 4, 7, 11 })
-                    .build();
             assertThat(
                     transposedMatrix.operate(right).entryAsArray(),
                     is(originalMatrix.operateTranspose(right).entryAsArray()));
@@ -81,9 +94,6 @@ public class TranspositionBandTest {
 
         @Test
         public void test_transposedTransposed_operate_は_original_operate_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 4, 7, 11 })
-                    .build();
             assertThat(
                     transposedTransposedMatrix.operate(right).entryAsArray(),
                     is(originalMatrix.operate(right).entryAsArray()));
@@ -91,9 +101,6 @@ public class TranspositionBandTest {
 
         @Test
         public void test_transposedTransposed_operateTranspose_は_original_operateTranspose_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 4, 7, 11 })
-                    .build();
             assertThat(
                     transposedTransposedMatrix.operateTranspose(right).entryAsArray(),
                     is(originalMatrix.operateTranspose(right).entryAsArray()));
@@ -105,15 +112,30 @@ public class TranspositionBandTest {
         private BandMatrix originalMatrix;
         private BandMatrix transposedMatrix;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 4, 7, 11 });
+            right = builder.build();
+        }
+
         @Before
         public void before_サイズ4_帯2の行列の作成_と_転置() {
             BandMatrixDimension dimension = BandMatrixDimension.symmetric(4, 2);
-            originalMatrix = SymmetricBandMatrixBuilder.zeroBuilder(dimension)
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 5).setValue(1, 1, 6)
-                    .setValue(2, 0, 9).setValue(2, 1, 10).setValue(2, 2, 11)
-                    .setValue(3, 1, 13).setValue(3, 2, 14).setValue(3, 3, 15)
-                    .build();
+            SymmetricBandMatrixBuilder builder = SymmetricBandMatrixBuilder.zeroBuilder(dimension);
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 5);
+            builder.setValue(1, 1, 6);
+            builder.setValue(2, 0, 9);
+            builder.setValue(2, 1, 10);
+            builder.setValue(2, 2, 11);
+            builder.setValue(3, 1, 13);
+            builder.setValue(3, 2, 14);
+            builder.setValue(3, 3, 15);
+            originalMatrix = builder.build();
             transposedMatrix = TranspositionBand.instance().apply(originalMatrix);
         }
 
@@ -135,9 +157,6 @@ public class TranspositionBandTest {
 
         @Test
         public void test_transposed_operateTranspose_は_original_operate_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 4, 7, 11 })
-                    .build();
             assertThat(
                     transposedMatrix.operateTranspose(right).entryAsArray(),
                     is(originalMatrix.operate(right).entryAsArray()));
@@ -145,9 +164,6 @@ public class TranspositionBandTest {
 
         @Test
         public void test_transposed_operate_は_original_operateTranspose_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 4, 7, 11 })
-                    .build();
             assertThat(
                     transposedMatrix.operate(right).entryAsArray(),
                     is(originalMatrix.operateTranspose(right).entryAsArray()));

@@ -7,12 +7,12 @@
  * </p>
  * 
  * @author Matsuura Y.
- * @version 16.0
+ * @version 17.2
  */
 module matsu.num.matrix.Base {
     exports matsu.num.matrix.base;
     exports matsu.num.matrix.base.nlsf;
     exports matsu.num.matrix.base.exception;
 
-    requires transitive matsu.num.Commons;
+    requires matsu.num.Commons;
 }

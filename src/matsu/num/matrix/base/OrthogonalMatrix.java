@@ -1,8 +1,9 @@
-/*
- * 2023.8.20
+/**
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
@@ -12,11 +13,11 @@ import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplicati
  * 直交行列であることを表す.
  * 
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.  
+ * {@link Matrix}のクラス説明の規約に従う.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.2
  * @see Matrix
  */
 public interface OrthogonalMatrix extends Matrix, Inversion {
@@ -34,7 +35,7 @@ public interface OrthogonalMatrix extends Matrix, Inversion {
     public Optional<? extends OrthogonalMatrix> inverse();
 
     /**
-     * この行列の転置行列を返す. 
+     * この行列の転置行列を返す.
      * 
      * @return 転置行列
      */
@@ -52,6 +53,46 @@ public interface OrthogonalMatrix extends Matrix, Inversion {
      */
     public static OrthogonalMatrix multiply(OrthogonalMatrix first, OrthogonalMatrix... following) {
         return OrthogonalMatrixMultiplication.instance().apply(first, following);
+    }
+
+    /**
+     * {@linkplain OrthogonalMatrix}インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
+     * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
+     * 
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code OrthogonalMatrix[dim(%dimension)]} <br>
+     * {@code OrthogonalMatrix[dim(%dimension), %character1, %character2,...]}
+     * </p>
+     * 
+     * <p>
+     * {@code matrix}が{@code null}の場合は, おそらくは次であろう. <br>
+     * {@code null}
+     * </p>
+     * 
+     * @param matrix インスタンス
+     * @param characters 付加する属性表現
+     * @return 説明表現
+     */
+    public static String toString(OrthogonalMatrix matrix, String... characters) {
+        if (Objects.isNull(matrix)) {
+            return "null";
+        }
+
+        StringBuilder fieldString = new StringBuilder();
+        fieldString.append(String.format("dim%s", matrix.matrixDimension()));
+
+        if (Objects.nonNull(characters)) {
+            for (String character : characters) {
+                fieldString.append(", ")
+                        .append(character);
+            }
+        }
+
+        return String.format(
+                "OrthogonalMatrix[%s]",
+                fieldString.toString());
     }
 
 }

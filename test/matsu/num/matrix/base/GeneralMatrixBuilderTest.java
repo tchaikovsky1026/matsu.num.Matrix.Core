@@ -26,17 +26,17 @@ public class GeneralMatrixBuilderTest {
         @Before
         public void before_サイズ2_3_成分1_2_3_4_5_6の長方形行列を生成() {
             /*
-                1 2 3
-                4 5 6
+             * 1 2 3
+             * 4 5 6
              */
-            gm = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3))
-                    .setValue(0, 0, 1)
-                    .setValue(0, 1, 2)
-                    .setValue(0, 2, 3)
-                    .setValue(1, 0, 4)
-                    .setValue(1, 1, 5)
-                    .setValue(1, 2, 6)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(0, 2, 3);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 5);
+            builder.setValue(1, 2, 6);
+            gm = builder.build();
         }
 
         @Test
@@ -60,23 +60,24 @@ public class GeneralMatrixBuilderTest {
         @Before
         public void before_サイズ2_3_成分1_2_3_4_5_6の長方形行列を生成() {
             /*
-                1 2 3
-                4 5 6
+             * 1 2 3
+             * 4 5 6
              */
-            gm = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3))
-                    .setValue(0, 0, 1)
-                    .setValue(0, 1, 2)
-                    .setValue(0, 2, 3)
-                    .setValue(1, 0, 4)
-                    .setValue(1, 1, 5)
-                    .setValue(1, 2, 6)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(0, 2, 3);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 5);
+            builder.setValue(1, 2, 6);
+            gm = builder.build();
         }
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            Vector right = builder.build();
             double[] expected = { 14, 32 };
             Vector result = gm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -84,8 +85,9 @@ public class GeneralMatrixBuilderTest {
 
         @Test
         public void test_転置行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(2)).setEntryValue(new double[] { 1, 2 })
-                    .build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(2));
+            builder.setEntryValue(new double[] { 1, 2 });
+            Vector right = builder.build();
             double[] expected = { 9, 12, 15 };
             Vector result = gm.operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -99,19 +101,19 @@ public class GeneralMatrixBuilderTest {
         @Before
         public void before_サイズ3_2_成分1_2_3_4_5_6の長方形行列_swapRow_0_2を生成() {
             /*
-                5 6
-                3 4
-                1 2
+             * 5 6
+             * 3 4
+             * 1 2
              */
-            gm = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2))
-                    .setValue(0, 0, 1)
-                    .setValue(0, 1, 2)
-                    .setValue(1, 0, 3)
-                    .setValue(1, 1, 4)
-                    .setValue(2, 0, 5)
-                    .setValue(2, 1, 6)
-                    .swapRows(0, 2)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(1, 0, 3);
+            builder.setValue(1, 1, 4);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            builder.swapRows(0, 2);
+            gm = builder.build();
         }
 
         @Test
@@ -135,18 +137,18 @@ public class GeneralMatrixBuilderTest {
         @Before
         public void before_サイズ2_3_成分1_2_3_4_5_6の長方形行列_swapColumn_0_2を生成() {
             /*
-                3 2 1
-                6 5 4
+             * 3 2 1
+             * 6 5 4
              */
-            gm = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3))
-                    .setValue(0, 0, 1)
-                    .setValue(0, 1, 2)
-                    .setValue(0, 2, 3)
-                    .setValue(1, 0, 4)
-                    .setValue(1, 1, 5)
-                    .setValue(1, 2, 6)
-                    .swapColumns(0, 2)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(0, 2, 3);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 5);
+            builder.setValue(1, 2, 6);
+            builder.swapColumns(0, 2);
+            gm = builder.build();
         }
 
         @Test
@@ -216,19 +218,18 @@ public class GeneralMatrixBuilderTest {
         @Test
         public void test_横長行列で成分の検証() {
             /*
-                1 2 3
-                4 5 6
+             * 1 2 3
+             * 4 5 6
              */
-            EntryReadableMatrix gm = GeneralMatrixBuilder.from(
-                    new WrappedMatrix(
-                            GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3))
-                                    .setValue(0, 0, 1)
-                                    .setValue(0, 1, 2)
-                                    .setValue(0, 2, 3)
-                                    .setValue(1, 0, 4)
-                                    .setValue(1, 1, 5)
-                                    .setValue(1, 2, 6)
-                                    .build()))
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(0, 2, 3);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 5);
+            builder.setValue(1, 2, 6);
+            EntryReadableMatrix innerGm = builder.build();
+            EntryReadableMatrix gm = GeneralMatrixBuilder.from(new WrappedMatrix(innerGm))
                     .build();
 
             double[][] entries = { { 1, 2, 3 }, { 4, 5, 6 } };
@@ -245,20 +246,19 @@ public class GeneralMatrixBuilderTest {
         @Test
         public void test_縦長行列で成分の検証() {
             /*
-                1 2
-                3 4
-                5 6
+             * 1 2
+             * 3 4
+             * 5 6
              */
-            EntryReadableMatrix gm = GeneralMatrixBuilder.from(
-                    new WrappedMatrix(
-                            GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2))
-                                    .setValue(0, 0, 1)
-                                    .setValue(0, 1, 2)
-                                    .setValue(1, 0, 3)
-                                    .setValue(1, 1, 4)
-                                    .setValue(2, 0, 5)
-                                    .setValue(2, 1, 6)
-                                    .build()))
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(1, 0, 3);
+            builder.setValue(1, 1, 4);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            EntryReadableMatrix innerGm = builder.build();
+            EntryReadableMatrix gm = GeneralMatrixBuilder.from(new WrappedMatrix(innerGm))
                     .build();
 
             double[][] entries = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
@@ -312,19 +312,18 @@ public class GeneralMatrixBuilderTest {
         @Test
         public void test_横長行列で成分の検証() {
             /*
-                1 2 3
-                4 5 6
+             * 1 2 3
+             * 4 5 6
              */
-            EntryReadableMatrix gm = GeneralMatrixBuilder.from(
-                    new WrappedMatrix(
-                            GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3))
-                                    .setValue(0, 0, 1)
-                                    .setValue(0, 1, 2)
-                                    .setValue(0, 2, 3)
-                                    .setValue(1, 0, 4)
-                                    .setValue(1, 1, 5)
-                                    .setValue(1, 2, 6)
-                                    .build()))
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(0, 2, 3);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 5);
+            builder.setValue(1, 2, 6);
+            EntryReadableMatrix innerGm = builder.build();
+            EntryReadableMatrix gm = GeneralMatrixBuilder.from(new WrappedMatrix(innerGm))
                     .build();
 
             double[][] entries = { { 1, 2, 3 }, { 4, 5, 6 } };
@@ -341,20 +340,19 @@ public class GeneralMatrixBuilderTest {
         @Test
         public void test_縦長行列で成分の検証() {
             /*
-                1 2
-                3 4
-                5 6
+             * 1 2
+             * 3 4
+             * 5 6
              */
-            EntryReadableMatrix gm = GeneralMatrixBuilder.from(
-                    new WrappedMatrix(
-                            GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2))
-                                    .setValue(0, 0, 1)
-                                    .setValue(0, 1, 2)
-                                    .setValue(1, 0, 3)
-                                    .setValue(1, 1, 4)
-                                    .setValue(2, 0, 5)
-                                    .setValue(2, 1, 6)
-                                    .build()))
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(1, 0, 3);
+            builder.setValue(1, 1, 4);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            EntryReadableMatrix innerGm = builder.build();
+            EntryReadableMatrix gm = GeneralMatrixBuilder.from(new WrappedMatrix(innerGm))
                     .build();
 
             double[][] entries = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
@@ -375,15 +373,15 @@ public class GeneralMatrixBuilderTest {
 
         @Before
         public void before_行列生成() {
-            original = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2))
-                    .setValue(0, 0, 1)
-                    .setValue(0, 1, 2)
-                    .setValue(1, 0, 3)
-                    .setValue(1, 1, 4)
-                    .setValue(2, 0, 5)
-                    .setValue(2, 1, 6)
-                    .swapRows(0, 2)
-                    .build();
+
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(1, 0, 3);
+            builder.setValue(1, 1, 4);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            original = builder.build();
         }
 
         @Test

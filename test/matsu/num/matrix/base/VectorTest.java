@@ -27,12 +27,16 @@ public final class VectorTest {
 
         @Before
         public void before_vector1を生成_次元3__1_2_m3() {
-            vector1 = Vector.Builder.zeroBuilder(dimension).setEntryValue(1.0, 2.0, -3.0).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(dimension);
+            builder.setEntryValue(1.0, 2.0, -3.0);
+            vector1 = builder.build();
         }
 
         @Before
         public void before_vector2を生成_次元3__3_2_1() {
-            vector2 = Vector.Builder.zeroBuilder(dimension).setEntryValue(3.0, 2.0, 1.0).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(dimension);
+            builder.setEntryValue(3.0, 2.0, 1.0);
+            vector2 = builder.build();
         }
 
         @Test
@@ -73,7 +77,9 @@ public final class VectorTest {
 
         @Before
         public void before_vectorを生成_次元3__1_2_m3() {
-            vector = Vector.Builder.zeroBuilder(dimension).setEntryValue(1.0, 2.0, -3.0).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(dimension);
+            builder.setEntryValue(1.0, 2.0, -3.0);
+            vector = builder.build();
         }
 
         @Test
@@ -106,9 +112,9 @@ public final class VectorTest {
 
         @Test
         public void test_2ノルム_極小() {
-            vector = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(Double.MIN_VALUE, Double.MIN_VALUE, -Double.MIN_VALUE, Double.MIN_VALUE)
-                    .build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(Double.MIN_VALUE, Double.MIN_VALUE, -Double.MIN_VALUE, Double.MIN_VALUE);
+            vector = builder.build();
             assertThat(vector.norm2(), is(2 * Double.MIN_VALUE));
         }
 
@@ -121,14 +127,16 @@ public final class VectorTest {
         @Before
         public void before_vectorを生成() {
             vectors = new ArrayList<>();
-            vectors.add(
-                    Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                            .setEntryValue(1.0, 2.0, -3.0)
-                            .build());
-            vectors.add(
-                    Vector.Builder.zeroBuilder(VectorDimension.valueOf(8))
-                            .setEntryValue(1, 2, -3, 4, 5, 6, 7, 8)
-                            .build());
+
+            Vector.Builder builder;
+
+            builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(1.0, 2.0, -3.0);
+            vectors.add(builder.build());
+
+            builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(8));
+            builder.setEntryValue(1, 2, -3, 4, 5, 6, 7, 8);
+            vectors.add(builder.build());
         }
 
         @Test

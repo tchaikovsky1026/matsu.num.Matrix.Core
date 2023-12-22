@@ -1,5 +1,5 @@
 /**
- * 2023.8.21
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
@@ -7,10 +7,10 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.matrix.UnitMatrixImpl;
 
 /**
- * 単位行列を扱う. 
+ * 単位行列を扱う.
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.2
  */
 public interface UnitMatrix extends PermutationMatrix, BandMatrix, Symmetric {
 

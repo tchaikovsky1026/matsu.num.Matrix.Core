@@ -1,5 +1,5 @@
 /**
- * 2023.8.16
+ * 2023.11.30
  */
 package matsu.num.matrix.base.exception;
 
@@ -7,7 +7,7 @@ package matsu.num.matrix.base.exception;
  * 行列に対する処理が正常に行われなかったことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.1
  */
 public final class ProcessFailedException extends IllegalArgumentException {
 
@@ -22,6 +22,7 @@ public final class ProcessFailedException extends IllegalArgumentException {
 
     /**
      * メッセージ有りの例外を生成する.
+     * 
      * @param string メッセージ
      */
     public ProcessFailedException(String string) {

@@ -1,36 +1,36 @@
 /**
- * 2023.8.18
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
 import java.util.Optional;
 
 /**
- * 紐づけられた行列を逆行列に変換するインターフェース. 
+ * 紐づけられた行列を逆行列に変換するインターフェース.
  * 
  * <p>
  * 紐づけられる{@linkplain Matrix}はインスタンスの生成と同時に決定される. <br>
- * {@linkplain Matrix}が不変であるので, このインターフェースにかかわる属性は実質的に不変であり, 
- * 全てのメソッドは関数的かつスレッドセーフである. 
+ * {@linkplain Matrix}が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
+ * 全てのメソッドは関数的かつスレッドセーフである.
  * </p>
  * 
  * <p>
- * 実装仕様: <br> 
- * 逆行列が対称行列であることが確証できる場合, 
- * {@linkplain #inverse()}の戻り値に{@linkplain Symmetric}マーカインターフェースを付与し, 
+ * 実装仕様: <br>
+ * 逆行列が対称行列であることが確証できる場合,
+ * {@linkplain #inverse()}の戻り値に{@linkplain Symmetric}マーカインターフェースを付与し,
  * その旨を文書化すべきである.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.1
  */
 public interface Inversion {
 
     /**
-     * このインターフェースが紐づく行列を返す. 
+     * このインターフェースが紐づく行列を返す.
      * 
      * <p>
-     * このインターフェースを実装したクラスが{@linkplain Matrix}も実装する場合, {@code this}が返る. 
+     * このインターフェースを実装したクラスが{@linkplain Matrix}も実装する場合, {@code this}が返る.
      * </p>
      * 
      * @return このインターフェースが紐づく行列

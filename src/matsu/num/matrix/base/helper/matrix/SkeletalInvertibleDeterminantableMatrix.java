@@ -1,5 +1,5 @@
 /**
- * 2023.8.21
+ * 2023.11.30
  */
 package matsu.num.matrix.base.helper.matrix;
 
@@ -15,10 +15,10 @@ import matsu.num.matrix.base.lazy.InverseAndDeterminantStructure;
 
 /**
  * 逆行列と行列式が計算可能な行列に対する, 骨格実装を提供する. <br>
- * {@linkplain InverseAndDeterminantStructure}のキャッシュの仕組みを提供している. 
+ * {@linkplain InverseAndDeterminantStructure}のキャッシュの仕組みを提供している.
  * 
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  * @param <IT> 逆行列の型
  */
 public abstract class SkeletalInvertibleDeterminantableMatrix<IT extends Matrix> extends SkeletalMatrix
@@ -57,8 +57,12 @@ public abstract class SkeletalInvertibleDeterminantableMatrix<IT extends Matrix>
     }
 
     /**
-     * 一度だけ呼ばれる, <br> 
-     * 逆行列, 行列式の生成. 
+     * 逆行列と行列式の生成を行う抽象メソッド.
+     * 
+     * <p>
+     * このメソッドは内部から呼ばれることが想定された内部から一度だけ呼ばれる. <br>
+     * 公開してはいけない.
+     * </p>
      * 
      * @return 行列式, 逆行列
      */

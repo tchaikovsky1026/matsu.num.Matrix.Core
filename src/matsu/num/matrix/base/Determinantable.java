@@ -1,5 +1,5 @@
-/*
- * 2023.8.18
+/**
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -8,28 +8,28 @@ package matsu.num.matrix.base;
  * 
  * <p>
  * 紐づけられる{@linkplain Matrix}はインスタンスの生成と同時に決定される. <br>
- * {@linkplain Matrix}が不変であるので, このインターフェースにかかわる属性は実質的に不変であり, 
- * 全てのメソッドは関数的かつスレッドセーフである. 
+ * {@linkplain Matrix}が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
+ * 全てのメソッドは関数的かつスレッドセーフである.
  * </p>
- *  
+ * 
  * <p>
  * 実装仕様: <br>
- * このインターフェースを実装するクラスが{@link Inversion}も実装する場合, 
+ * このインターフェースを実装するクラスが{@link Inversion}も実装する場合,
  * 符号({@linkplain #signOfDeterminant()})が{@code 0}であることと
  * {@linkplain Inversion#inverse()}が例外をスローすることは等価である.
- * </p> 
+ * </p>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.1
  * @see Inversion
  */
 public interface Determinantable {
 
     /**
-     * このインターフェースが紐づく行列を返す. 
+     * このインターフェースが紐づく行列を返す.
      * 
      * <p>
-     * このインターフェースを実装したクラスが{@linkplain Matrix}も実装する場合, {@code this}が返る. 
+     * このインターフェースを実装したクラスが{@linkplain Matrix}も実装する場合, {@code this}が返る.
      * </p>
      * 
      * @return このインターフェースが紐づく行列
@@ -51,7 +51,7 @@ public interface Determinantable {
     public abstract double logAbsDeterminant();
 
     /**
-     * 行列式の符号を返す. 
+     * 行列式の符号を返す.
      *
      * @return 行列式の符号, 行列式の値が正, 0, 負のときそれぞれ1, 0, -1
      */

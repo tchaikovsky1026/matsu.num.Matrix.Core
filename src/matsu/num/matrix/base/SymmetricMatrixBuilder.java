@@ -1,5 +1,5 @@
-/*
- * 2023.8.20
+/**
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -10,7 +10,12 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 
 /**
- * 対称(密)行列を生成するビルダ. 
+ * 対称(密)行列を生成するビルダ.
+ * 
+ * <p>
+ * このビルダはミュータブルである. <br>
+ * また, スレッドセーフでない.
+ * </p>
  * 
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -20,12 +25,8 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
  * である状態である.
  * </p>
  * 
- * <p>
- * このビルダ自体はスレッドセーフでない.
- * </p>
- *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public final class SymmetricMatrixBuilder {
 
@@ -38,7 +39,8 @@ public final class SymmetricMatrixBuilder {
      *
      * @param matrixDimension 行列サイズ
      * @throws MatrixFormatMismatchException 行列サイズが正方サイズでない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) > IntMax)
+     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) >
+     *             IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     private SymmetricMatrixBuilder(final MatrixDimension matrixDimension) {
@@ -74,13 +76,12 @@ public final class SymmetricMatrixBuilder {
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @return this
      * @throws IndexOutOfBoundsException (i,j)が行列の内部でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      * @throws IllegalStateException すでにビルドされている場合
      */
-    public SymmetricMatrixBuilder setValue(final int row, final int column, final double value) {
+    public void setValue(final int row, final int column, final double value) {
         if (Objects.isNull(this.entry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -95,7 +96,6 @@ public final class SymmetricMatrixBuilder {
         }
 
         entry[row >= column ? column + (row * (row + 1)) / 2 : row + (column * (column + 1)) / 2] = value;
-        return this;
     }
 
     /**
@@ -103,11 +103,10 @@ public final class SymmetricMatrixBuilder {
      *
      * @param index1 i, 行,列index1
      * @param index2 j, 行,列index2
-     * @return this
      * @throws IllegalStateException すでにビルドされている場合
      * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
      */
-    public SymmetricMatrixBuilder swapRowsAndColumns(final int index1, final int index2) {
+    public void swapRowsAndColumns(final int index1, final int index2) {
         if (Objects.isNull(this.entry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -121,7 +120,7 @@ public final class SymmetricMatrixBuilder {
         }
 
         if (index1 == index2) {
-            return this;
+            return;
         }
 
         final int dimension = matrixDimension.rowAsIntValue();
@@ -155,8 +154,6 @@ public final class SymmetricMatrixBuilder {
         final double temp = entry[indMinN + indMin];
         entry[indMinN + indMin] = entry[indMaxN + indMax];
         entry[indMaxN + indMax] = temp;
-
-        return this;
     }
 
     /**
@@ -210,8 +207,8 @@ public final class SymmetricMatrixBuilder {
      * @param src 元行列
      * @return 元行列と等価なビルダ
      * @throws MatrixNotSymmetricException 行列が対称行列でない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文), 
-     * 成分に不正な値が入り込む場合
+     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文),
+     *             成分に不正な値が入り込む場合
      * @throws NullPointerException 引数にnullが含まれる場合
      * @see Symmetric
      * @see EntryReadableMatrix#acceptValue(double)
@@ -238,10 +235,9 @@ public final class SymmetricMatrixBuilder {
 
             //resultには不正な値が入り込む可能性がある
             //Matrixインターフェースは成分に関する情報を持たないため
-            final double[] resultArray = src.operateTranspose(
-                    Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension())
-                            .setEntryValue(rightArray).build())
-                    .entry();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension());
+            builder.setEntryValue(rightArray);
+            final double[] resultArray = src.operateTranspose(builder.build()).entry();
 
             for (int k = 0; k <= j; k++) {
                 outBuilder.setValue(j, k, resultArray[k]);
@@ -291,12 +287,12 @@ public final class SymmetricMatrixBuilder {
     private static final class SymmetricMatrixImpl extends SkeletalMatrix implements EntryReadableMatrix, Symmetric {
 
         /*
-        行列の各要素は, 内部では1次元配列として, 
-        [0]
-        [1][2]
-        [3][4][5]
-        [6][7][8][9]
-        の形で対角 + 下三角成分を保持し, 狭義上三角成分は省略する.
+         * 行列の各要素は, 内部では1次元配列として,
+         * [0]
+         * [1][2]
+         * [3][4][5]
+         * [6][7][8][9]
+         * の形で対角 + 下三角成分を保持し, 狭義上三角成分は省略する.
          */
         private final MatrixDimension matrixDimension;
         private final double[] entry;
@@ -371,7 +367,9 @@ public final class SymmetricMatrixBuilder {
                 }
             }
 
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override

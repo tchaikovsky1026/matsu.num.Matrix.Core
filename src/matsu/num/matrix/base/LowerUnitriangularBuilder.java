@@ -1,5 +1,5 @@
 /**
- * 2023.8.20
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -10,7 +10,12 @@ import matsu.num.commons.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 
 /**
- * 単位下三角の密行列を作成するビルダ. 
+ * 単位下三角の密行列を作成するビルダ.
+ * 
+ * <p>
+ * このビルダはミュータブルである. <br>
+ * また, スレッドセーフでない.
+ * </p>
  * 
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -20,12 +25,8 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * である状態である.
  * </p>
  * 
- * <p>
- * このビルダ自体はスレッドセーフでない.
- * </p>
- * 
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  * @see LowerUnitriangularEntryReadableMatrix
  */
 public final class LowerUnitriangularBuilder {
@@ -40,7 +41,8 @@ public final class LowerUnitriangularBuilder {
      *
      * @param matrixDimension 行列サイズ
      * @throws MatrixFormatMismatchException 行列サイズが正方サイズでない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim - 1) > IntMax)
+     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim - 1) >
+     *             IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     private LowerUnitriangularBuilder(final MatrixDimension matrixDimension) {
@@ -64,13 +66,12 @@ public final class LowerUnitriangularBuilder {
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @return this
      * @throws IndexOutOfBoundsException (i,j)が行列の狭義下三角成分でない場合
      * @throws IllegalStateException すでにビルドされている場合
      * @throws IllegalArgumentException valueが不正な値の場合
-     * @see EntryReadableMatrix#acceptValue(double) 
+     * @see EntryReadableMatrix#acceptValue(double)
      */
-    public LowerUnitriangularBuilder setValue(final int row, final int column, final double value) {
+    public void setValue(final int row, final int column, final double value) {
         if (Objects.isNull(this.lowerEntry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -92,7 +93,6 @@ public final class LowerUnitriangularBuilder {
                             "狭義下側三角成分でない:matrix:%s, (row, column)=(%d, %d)",
                             matrixDimension, row, column));
         }
-        return this;
     }
 
     /**
@@ -128,13 +128,13 @@ public final class LowerUnitriangularBuilder {
             implements LowerUnitriangularEntryReadableMatrix {
 
         /*
-            行列の各要素は, 内部では1次元配列として, 
-            1.0
-            [0] 1.0
-            [1] [2] 1.0
-            [3] [4] [5] 1.0
-            [6] [7] [8] [9] 1.0
-            の形で狭義下三角成分を保持し, 対角成分, 狭義上三角成分は省略する.
+         * 行列の各要素は, 内部では1次元配列として,
+         * 1.0
+         * [0] 1.0
+         * [1] [2] 1.0
+         * [3] [4] [5] 1.0
+         * [6] [7] [8] [9] 1.0
+         * の形で狭義下三角成分を保持し, 対角成分, 狭義上三角成分は省略する.
          */
         private final MatrixDimension matrixDimension;
 
@@ -145,7 +145,7 @@ public final class LowerUnitriangularBuilder {
         /**
          * ビルダから呼ばれる.
          * 
-         * @param matrixDimension 行列次元 
+         * @param matrixDimension 行列次元
          * @param lowerEntry 成分
          */
         public LowerUnitriangularMatrixImpl(final MatrixDimension matrixDimension, final double[] lowerEntry) {
@@ -228,7 +228,9 @@ public final class LowerUnitriangularBuilder {
                 }
                 resultEntry[i] += sumProduct;
             }
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         /**
@@ -264,7 +266,9 @@ public final class LowerUnitriangularBuilder {
                 }
             }
 
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override
@@ -330,7 +334,9 @@ public final class LowerUnitriangularBuilder {
                         resultEntry[i] -= sumProduct;
                     }
 
-                    return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+                    Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                    builder.setEntryValue(resultEntry);
+                    return builder.build();
                 }
 
                 @Override
@@ -357,7 +363,9 @@ public final class LowerUnitriangularBuilder {
                         }
                     }
 
-                    return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+                    Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                    builder.setEntryValue(resultEntry);
+                    return builder.build();
                 }
             };
         }

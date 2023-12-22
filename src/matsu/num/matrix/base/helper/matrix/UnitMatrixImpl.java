@@ -1,11 +1,11 @@
 /**
- * 2023.8.21
+ * 2023.11.30
  */
 package matsu.num.matrix.base.helper.matrix;
 
 import matsu.num.matrix.base.BandMatrixDimension;
-import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
+import matsu.num.matrix.base.OrthogonalMatrix;
 import matsu.num.matrix.base.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.base.UnitMatrix;
 import matsu.num.matrix.base.Vector;
@@ -13,10 +13,10 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 
 /**
- * 単位行列の実装を扱う. 
+ * 単位行列の実装を扱う.
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public final class UnitMatrixImpl extends SkeletalOrthogonalMatrix implements UnitMatrix {
 
@@ -67,11 +67,6 @@ public final class UnitMatrixImpl extends SkeletalOrthogonalMatrix implements Un
         return this.bandMatrixDimension;
     }
 
-    /**
-     * @throws MatrixFormatMismatchException {@inheritDoc }
-     * @throws IllegalArgumentException {@inheritDoc }
-     * @throws NullPointerException {@inheritDoc }
-     */
     @Override
     public Vector operate(Vector operand) {
         if (!bandMatrixDimension.dimension().rightOperable(operand.vectorDimension())) {
@@ -83,11 +78,6 @@ public final class UnitMatrixImpl extends SkeletalOrthogonalMatrix implements Un
         return operand;
     }
 
-    /**
-     * @throws MatrixFormatMismatchException {@inheritDoc }
-     * @throws IllegalArgumentException {@inheritDoc }
-     * @throws NullPointerException {@inheritDoc }
-     */
     @Override
     public Vector operateTranspose(Vector operand) {
         return this.operate(operand);
@@ -119,13 +109,13 @@ public final class UnitMatrixImpl extends SkeletalOrthogonalMatrix implements Un
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code @hashCode[dimension: %dimension, unit]}
+     * {@code OrthogonalMatrix[dim(%dimension), unit]}
      * </p>
      * 
      * @return 説明表現
      */
     @Override
     public String toString() {
-        return Matrix.toString(this, "unit");
+        return OrthogonalMatrix.toString(this, "unit");
     }
 }

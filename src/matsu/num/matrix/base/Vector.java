@@ -1,27 +1,28 @@
 /**
- * 2023.8.17
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
-import java.util.function.DoubleBinaryOperator;
 
-import matsu.num.commons.Exponentiation;
+import matsu.num.commons.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 
 /**
- * 縦ベクトルを扱う. 
+ * 縦ベクトルを扱う. <br>
+ * 成分に不正値(inf,NaN)を含んではいけない.
  * 
  * <p>
- * ベクトルは不変であり, メソッドに対して関数的かつスレッドセーフである. 
+ * ベクトルは不変であり, メソッドに対して関数的かつスレッドセーフである.
  * </p>
  * 
  * <p>
- * 所望のベクトルの生成にはビルダ({@linkplain Builder})を用いる.
+ * 所望のベクトルの生成にはビルダ({@linkplain Builder})を用いる. <br>
+ * 値の検証には{@link #acceptValue(double) }メソッドを使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.2
  */
 public final class Vector {
 
@@ -55,6 +56,11 @@ public final class Vector {
 
     /**
      * ベクトルの要素を扱う配列への参照を返す.
+     * 
+     * <p>
+     * このメソッドは内部の配列への参照を公開するので危険であり, 決してpublicにしてはいけない. <br>
+     * また, 使い方には十分注意する.
+     * </p>
      *
      * @return ベクトルの要素配列への参照
      */
@@ -104,7 +110,11 @@ public final class Vector {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector plus(final Vector reference) {
-        return this.operateBinary(reference, (d1, d2) -> (d1 + d2));
+        this.validateDimensionMatch(reference);
+
+        double[] result = this.entry.clone();
+        ArraysUtil.add(result, reference.entry);
+        return new Builder(this.vectorDimension, result).build();
     }
 
     /**
@@ -121,7 +131,11 @@ public final class Vector {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector minus(final Vector reference) {
-        return this.operateBinary(reference, (d1, d2) -> (d1 - d2));
+        this.validateDimensionMatch(reference);
+
+        double[] result = this.entry.clone();
+        ArraysUtil.subtract(result, reference.entry);
+        return new Builder(this.vectorDimension, result).build();
     }
 
     /**
@@ -141,28 +155,11 @@ public final class Vector {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector plusCTimes(final Vector reference, final double scalar) {
-        return this.operateBinary(reference, (d1, d2) -> (d1 + d2 * scalar));
-    }
+        this.validateDimensionMatch(reference);
 
-    /**
-     * @throws IllegalArgumentException 計算結果が不正な場合
-     * @throws NullPointerException 引数にnullが含まれる場合
-     */
-    private Vector operateBinary(final Vector reference, DoubleBinaryOperator operator) {
-        if (!(this.equalDimensionTo(reference))) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "次元不一致:vector:%s, reference:%s",
-                            this.vectorDimension, reference.vectorDimension));
-        }
-
-        final double[] thisEntry = this.entry;
-        final double[] refEntry = reference.entry;
-        final double[] resultEntry = new double[this.vectorDimension.intValue()];
-        for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
-            resultEntry[j] = operator.applyAsDouble(thisEntry[j], refEntry[j]);
-        }
-        return new Builder(vectorDimension).setEntryValue(resultEntry).build();
+        double[] result = this.entry.clone();
+        ArraysUtil.addCTimes(result, reference.entry, scalar);
+        return new Builder(this.vectorDimension, result).build();
     }
 
     /**
@@ -177,13 +174,9 @@ public final class Vector {
      * @throws IllegalArgumentException 計算結果が不正な場合
      */
     public Vector times(final double scalar) {
-
-        final double[] thisEntry = this.entry;
-        final double[] resultEntry = new double[this.vectorDimension.intValue()];
-        for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
-            resultEntry[j] = thisEntry[j] * scalar;
-        }
-        return new Builder(vectorDimension).setEntryValue(resultEntry).build();
+        double[] result = this.entry.clone();
+        ArraysUtil.multiply(result, scalar);
+        return new Builder(this.vectorDimension, result).build();
     }
 
     /**
@@ -198,89 +191,25 @@ public final class Vector {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public double dot(final Vector reference) {
-        if (!(this.equalDimensionTo(reference))) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "次元不一致:vector:%s, reference:%s",
-                            this.vectorDimension, reference.vectorDimension));
-        }
+        this.validateDimensionMatch(reference);
 
-        //オーバー,アンダーフロー対策でスケールする
-        double thisNormMax = this.normMax();
-        double refNormMax = reference.normMax();
-        if (thisNormMax == 0d || refNormMax == 0d) {
-            //0の場合
-            return 0d;
-        }
-        double invThisNormMax = 1d / thisNormMax;
-        double invRefNormMax = 1d / refNormMax;
-        if (!(Double.isFinite(invThisNormMax) && invThisNormMax > 0d
-                && Double.isFinite(invRefNormMax) && invRefNormMax > 0d)) {
-            //逆数が特殊値の場合は別処理
-            return this.dotAbnormal(reference);
-        }
-
-        final double[] thisEntry = this.entry;
-        final double[] refEntry = reference.entry;
-
-        final int thisDimension = vectorDimension.intValue();
-        double outputValue = 0.0;
-        int j;
-        for (j = 0; j < thisDimension - 3; j += 4) {
-            final double v0, v1, v2, v3;
-            v0 = (thisEntry[j] * invThisNormMax) * (refEntry[j] * invRefNormMax);
-            v1 = (thisEntry[j + 1] * invThisNormMax) * (refEntry[j + 1] * invRefNormMax);
-            v2 = (thisEntry[j + 2] * invThisNormMax) * (refEntry[j + 2] * invRefNormMax);
-            v3 = (thisEntry[j + 3] * invThisNormMax) * (refEntry[j + 3] * invRefNormMax);
-            outputValue += (v0 + v1) + (v2 + v3);
-        }
-        for (; j < thisDimension; j++) {
-            final double v0;
-            v0 = (thisEntry[j] * invThisNormMax) * (refEntry[j] * invRefNormMax);
-            outputValue += v0;
-        }
-
-        if (outputValue == 0d) {
-            return 0d;
-        }
-        return outputValue * (thisNormMax * refNormMax);
+        return ArraysUtil.dot(this.entry, reference.entry);
     }
 
-    private double dotAbnormal(final Vector reference) {
+    /**
+     * 次元の整合性を検証する. <br>
+     * 例外をスローすることが責務である.
+     * 
+     * @param reference 判定対象
+     * @throws MatrixFormatMismatchException {@code this}と作用ベクトルの次元が一致しない場合
+     */
+    private void validateDimensionMatch(Vector reference) {
         if (!(this.equalDimensionTo(reference))) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "次元不一致:vector:%s, reference:%s",
+                            "次元不一致:this:%s, reference:%s",
                             this.vectorDimension, reference.vectorDimension));
         }
-
-        double thisNormMax = this.normMax();
-        double refNormMax = reference.normMax();
-
-        final double[] thisEntry = this.entry;
-        final double[] refEntry = reference.entry;
-
-        final int thisDimension = vectorDimension.intValue();
-        double outputValue = 0.0;
-        int j;
-        for (j = 0; j < thisDimension - 3; j += 4) {
-            final double v0, v1, v2, v3;
-            v0 = (thisEntry[j] / thisNormMax) * (refEntry[j] / refNormMax);
-            v1 = (thisEntry[j + 1] / thisNormMax) * (refEntry[j + 1] / refNormMax);
-            v2 = (thisEntry[j + 2] / thisNormMax) * (refEntry[j + 2] / refNormMax);
-            v3 = (thisEntry[j + 3] / thisNormMax) * (refEntry[j + 3] / refNormMax);
-            outputValue += (v0 + v1) + (v2 + v3);
-        }
-        for (; j < thisDimension; j++) {
-            final double v0;
-            v0 = (thisEntry[j] / thisNormMax) * (refEntry[j] / refNormMax);
-            outputValue += v0;
-        }
-
-        if (outputValue == 0d) {
-            return 0d;
-        }
-        return outputValue * (thisNormMax * refNormMax);
     }
 
     /**
@@ -289,24 +218,7 @@ public final class Vector {
      * @return 1-ノルム
      */
     public double norm1() {
-        final int thisDimension = vectorDimension.intValue();
-        final double[] thisEntry = this.entry;
-        double outputValue = 0.0;
-        int j;
-        for (j = 0; j < thisDimension - 3; j += 4) {
-            final double v0, v1, v2, v3;
-            v0 = Math.abs(thisEntry[j]);
-            v1 = Math.abs(thisEntry[j + 1]);
-            v2 = Math.abs(thisEntry[j + 2]);
-            v3 = Math.abs(thisEntry[j + 3]);
-            outputValue += (v0 + v1) + (v2 + v3);
-        }
-        for (; j < thisDimension; j++) {
-            final double v0;
-            v0 = Math.abs(thisEntry[j]);
-            outputValue += v0;
-        }
-        return outputValue;
+        return ArraysUtil.norm1(this.entry);
     }
 
     /**
@@ -315,29 +227,7 @@ public final class Vector {
      * @return 2-ノルムの二乗
      */
     public double norm2Square() {
-        final int thisDimension = vectorDimension.intValue();
-        final double[] thisEntry = this.entry;
-        double outputValue = 0.0;
-        int j;
-        for (j = 0; j < thisDimension - 3; j += 4) {
-            final double v0, v1, v2, v3;
-            v0 = thisEntry[j];
-            v1 = thisEntry[j + 1];
-            v2 = thisEntry[j + 2];
-            v3 = thisEntry[j + 3];
-            final double v0Square = v0 * v0;
-            final double v1Square = v1 * v1;
-            final double v2Square = v2 * v2;
-            final double v3Square = v3 * v3;
-            outputValue += (v0Square + v1Square) + (v2Square + v3Square);
-        }
-        for (; j < thisDimension; j++) {
-            final double v0;
-            v0 = thisEntry[j];
-            final double v0Square = v0 * v0;
-            outputValue += v0Square;
-        }
-        return outputValue;
+        return ArraysUtil.norm2Square(this.entry);
     }
 
     /**
@@ -346,69 +236,7 @@ public final class Vector {
      * @return 2-ノルム
      */
     public double norm2() {
-        //オーバー,アンダーフロー対策でスケールする
-        double normMax = this.normMax();
-        if (normMax == 0d) {
-            //0の場合は0
-            return 0d;
-        }
-        double invNormMax = 1d / normMax;
-        if (!(Double.isFinite(invNormMax) && invNormMax > 0d)) {
-            //逆数が特殊値の場合は別処理
-            return this.norm2Abnormal();
-        }
-
-        final int thisDimension = vectorDimension.intValue();
-        final double[] thisEntry = this.entry;
-        double outputValue = 0.0;
-        int j;
-        for (j = 0; j < thisDimension - 3; j += 4) {
-            final double v0, v1, v2, v3;
-            v0 = thisEntry[j] * invNormMax;
-            v1 = thisEntry[j + 1] * invNormMax;
-            v2 = thisEntry[j + 2] * invNormMax;
-            v3 = thisEntry[j + 3] * invNormMax;
-            final double v0Square = v0 * v0;
-            final double v1Square = v1 * v1;
-            final double v2Square = v2 * v2;
-            final double v3Square = v3 * v3;
-            outputValue += (v0Square + v1Square) + (v2Square + v3Square);
-        }
-        for (; j < thisDimension; j++) {
-            final double v0;
-            v0 = thisEntry[j] * invNormMax;
-            final double v0Square = v0 * v0;
-            outputValue += v0Square;
-        }
-        return normMax * Exponentiation.sqrt(outputValue);
-    }
-
-    private double norm2Abnormal() {
-        double normMax = this.normMax();
-
-        final int thisDimension = vectorDimension.intValue();
-        final double[] thisEntry = this.entry;
-        double outputValue = 0.0;
-        int j;
-        for (j = 0; j < thisDimension - 3; j += 4) {
-            final double v0, v1, v2, v3;
-            v0 = thisEntry[j] / normMax;
-            v1 = thisEntry[j + 1] / normMax;
-            v2 = thisEntry[j + 2] / normMax;
-            v3 = thisEntry[j + 3] / normMax;
-            final double v0Square = v0 * v0;
-            final double v1Square = v1 * v1;
-            final double v2Square = v2 * v2;
-            final double v3Square = v3 * v3;
-            outputValue += (v0Square + v1Square) + (v2Square + v3Square);
-        }
-        for (; j < thisDimension; j++) {
-            final double v0;
-            v0 = thisEntry[j] / normMax;
-            final double v0Square = v0 * v0;
-            outputValue += v0Square;
-        }
-        return normMax * Exponentiation.sqrt(outputValue);
+        return ArraysUtil.norm2(this.entry);
     }
 
     /**
@@ -422,26 +250,7 @@ public final class Vector {
     }
 
     private double calcNormMax() {
-        final int thisDimension = vectorDimension.intValue();
-        final double[] thisEntry = this.entry;
-        double outputValue = 0.0;
-        int j;
-        for (j = 0; j < thisDimension - 3; j += 4) {
-            final double v0, v1, v2, v3;
-            v0 = Math.abs(thisEntry[j]);
-            v1 = Math.abs(thisEntry[j + 1]);
-            v2 = Math.abs(thisEntry[j + 2]);
-            v3 = Math.abs(thisEntry[j + 3]);
-            final double v01 = Math.max(v0, v1);
-            final double v23 = Math.max(v2, v3);
-            outputValue = Math.max(outputValue, Math.max(v01, v23));
-        }
-        for (; j < thisDimension; j++) {
-            final double v0;
-            v0 = Math.abs(thisEntry[j]);
-            outputValue = Math.max(outputValue, v0);
-        }
-        return outputValue;
+        return ArraysUtil.normMax(this.entry);
     }
 
     /**
@@ -450,7 +259,7 @@ public final class Vector {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code @hashCode[dimension: %dimension, entry: [*,*,*, ...]]}
+     * {@code Vector[dim(%dimension), {*,*,*, ...}]}
      * </p>
      * 
      * @return 説明表現
@@ -473,17 +282,28 @@ public final class Vector {
         }
 
         return String.format(
-                "@%s[dimension:%s, entry:[%s]]",
-                Integer.toHexString(this.hashCode()),
+                "Vector[dim(%s), {%s}]",
                 this.vectorDimension, entryString.toString());
     }
 
     /**
-     * {@link Vector}のビルダ. 
+     * {@link Vector}の成分として有効な値であるかを判定する.
+     *
+     * @param value 検証する値
+     * @return 有効である場合はtrue
+     */
+    public static boolean acceptValue(double value) {
+        return Double.isFinite(value);
+    }
+
+    /**
+     * {@link Vector}のビルダ.
      * 
      * <p>
-     * このビルダ自体はスレッドセーフでない.
+     * このビルダはミュータブルである. <br>
+     * また, スレッドセーフでない.
      * </p>
+     * 
      */
     public static final class Builder {
 
@@ -503,6 +323,35 @@ public final class Vector {
         }
 
         /**
+         * 与えられた次元と成分を持つのビルダを生成する.
+         * 
+         * <p>
+         * 配列は防御的コピーがされていない. <br>
+         * このコンストラクタは公開してはいけない.
+         * </p>
+         *
+         * @param vectorDimension 生成するベクトルの次元
+         * @param entry 成分
+         * @throws IllegalArgumentException 次元が整合しない場合, 不正な値を含む場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         */
+        private Builder(final VectorDimension vectorDimension, double[] entry) {
+            this.vectorDimension = vectorDimension;
+            this.entry = entry;
+
+            if (!this.vectorDimension.equalsValueOf(this.entry.length)) {
+                throw new IllegalArgumentException(
+                        String.format(
+                                "サイズ不一致:vector:%s, entry:length=%d", this.vectorDimension, entry.length));
+            }
+            for (int j = 0, len = this.vectorDimension.intValue(); j < len; j++) {
+                if (!Vector.acceptValue(this.entry[j])) {
+                    throw new IllegalArgumentException("不正な値を含んでいます");
+                }
+            }
+        }
+
+        /**
          * 与えられたソースからビルダを生成する.
          *
          * @param src ソース
@@ -518,13 +367,11 @@ public final class Vector {
          *
          * @param index i, index
          * @param value 置き換えた後の値
-         * @return this
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException indexが範囲外の場合
          * @throws IllegalArgumentException valueが不正な値(Infinity, NaN)である場合
-         * @throws NullPointerException 引数にnullが含まれる場合
          */
-        public Builder setValue(final int index, final double value) {
+        public void setValue(final int index, final double value) {
             if (Objects.isNull(this.entry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -533,11 +380,10 @@ public final class Vector {
                         String.format(
                                 "indexが有効でない:vactor:%s, index=%d", this.vectorDimension, index));
             }
-            if (!Double.isFinite(value)) {
+            if (!Vector.acceptValue(value)) {
                 throw new IllegalArgumentException(String.format("valueが不正な値=%.16G", value));
             }
             this.entry[index] = value;
-            return this;
         }
 
         /**
@@ -545,13 +391,12 @@ public final class Vector {
          * 与える配列の長さはベクトルの次元と一致する必要がある.
          *
          * @param entry 置き換えた後の値を持つ配列
-         * @return this
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IllegalArgumentException 配列の長さがベクトルの次元と一致しない場合,
-         * 不正な値(Infinity, NaN)を含む場合
+         *             不正な値(Infinity, NaN)を含む場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
-        public Builder setEntryValue(final double... entry) {
+        public void setEntryValue(final double... entry) {
             if (Objects.isNull(this.entry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -560,14 +405,13 @@ public final class Vector {
                         String.format(
                                 "サイズ不一致:vector:%s, entry:length=%d", this.vectorDimension, entry.length));
             }
+            double[] newEntry = entry.clone();
             for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
-                if (!Double.isFinite(entry[j])) {
+                if (!Vector.acceptValue(newEntry[j])) {
                     throw new IllegalArgumentException("不正な値を含んでいます");
                 }
             }
-
-            System.arraycopy(entry, 0, this.entry, 0, entry.length);
-            return this;
+            this.entry = newEntry;
         }
 
         /**

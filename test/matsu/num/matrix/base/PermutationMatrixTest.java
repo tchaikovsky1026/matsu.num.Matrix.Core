@@ -20,6 +20,8 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 @RunWith(Enclosed.class)
 public final class PermutationMatrixTest {
 
+    public static final Class<?> TEST_CLASS = PermutationMatrix.class;
+
     public static class 生成に関する {
 
         @Test(expected = MatrixFormatMismatchException.class)
@@ -32,17 +34,27 @@ public final class PermutationMatrixTest {
 
         private PermutationMatrix pm;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            right = builder.build();
+        }
+
         @Before
         public void before_次元3__swapRow_0_1__swapRow_1_2() {
             /*
-                0 1 0
-                0 0 1
-                1 0 0
+             * 0 1 0
+             * 0 0 1
+             * 1 0 0
              */
-            pm = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3))
-                    .swapRows(0, 1)
-                    .swapRows(1, 2)
-                    .build();
+            PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
+            builder.swapRows(0, 1);
+            builder.swapRows(1, 2);
+            pm = builder.build();
         }
 
         @Test
@@ -60,8 +72,7 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_右から1_2_3を乗算() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
+
             Vector result = pm.operate(right);
             double[] expected = { 2, 3, 1 };
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -69,8 +80,6 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_左から1_2_3を乗算() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
             Vector result = pm.operateTranspose(right);
             double[] expected = { 3, 1, 2 };
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -80,18 +89,27 @@ public final class PermutationMatrixTest {
     public static class 列の交換と行列ベクトル積のテスト {
 
         private PermutationMatrix pm;
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            right = builder.build();
+        }
 
         @Before
         public void before_次元3__swapRow_1_2__swapRow_0_1() {
             /*
-                0 1 0
-                0 0 1
-                1 0 0
+             * 0 1 0
+             * 0 0 1
+             * 1 0 0
              */
-            pm = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3))
-                    .swapColumns(2, 1)
-                    .swapColumns(1, 0)
-                    .build();
+            PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
+            builder.swapColumns(2, 1);
+            builder.swapColumns(1, 0);
+            pm = builder.build();
         }
 
         @Test
@@ -109,8 +127,6 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_右から1_2_3を乗算() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
             Vector result = pm.operate(right);
             double[] expected = { 2, 3, 1 };
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -118,8 +134,6 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_左から1_2_3を乗算() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
             Vector result = pm.operateTranspose(right);
             double[] expected = { 3, 1, 2 };
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -129,24 +143,31 @@ public final class PermutationMatrixTest {
     public static class 逆行列のテスト {
 
         private PermutationMatrix original;
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            right = builder.build();
+        }
 
         @Before
         public void before_次元3__swapRow_0_1__swapRow_1_2() {
             /*
-                0 1 0
-                0 0 1
-                1 0 0
+             * 0 1 0
+             * 0 0 1
+             * 1 0 0
              */
-            original = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3))
-                    .swapRows(0, 1)
-                    .swapRows(1, 2)
-                    .build();
+            PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
+            builder.swapRows(0, 1);
+            builder.swapRows(1, 2);
+            original = builder.build();
         }
 
         @Test
         public void test_inverse_operateはoriginal_operateTransposeに等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
 
             //遅延初期化の可能性を考え2回実行パターン,逆行列の逆行列のテスト 
             assertThat(
@@ -159,9 +180,6 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_inverse_operateTransposeはoriginal_operateに等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
-
             assertThat(
                     original.inverse().get().operateTranspose(right).entryAsArray(),
                     is(original.operate(right).entryAsArray()));
@@ -169,9 +187,6 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_inverse_inverse_operateはoriginal_operateに等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
-
             assertThat(
                     original.inverse().get().inverse().get().operate(right).entryAsArray(),
                     is(original.operate(right).entryAsArray()));
@@ -179,9 +194,6 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_inverse_inverse_operateTransposeはoriginal_operateTransposeに等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
-
             assertThat(
                     original.inverse().get().inverse().get().operateTranspose(right).entryAsArray(),
                     is(original.operateTranspose(right).entryAsArray()));
@@ -195,10 +207,10 @@ public final class PermutationMatrixTest {
 
         @Before
         public void before_直交行列生成() {
-            original = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3))
-                    .swapRows(0, 1)
-                    .swapRows(1, 2)
-                    .build();
+            PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
+            builder.swapRows(0, 1);
+            builder.swapRows(1, 2);
+            original = builder.build();
         }
 
         @Test
@@ -227,6 +239,16 @@ public final class PermutationMatrixTest {
                 assertThat(original.inverse().get().inverse().get(), is(original));
             }
 
+        }
+    }
+
+    public static class toString表示 {
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3)).build());
+            System.out.println();
         }
     }
 }

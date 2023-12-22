@@ -26,30 +26,38 @@ public class LUBandExecutorTest {
 
         private LinearEquationSolving<BandMatrix> lub;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
+            right = builder.build();
+        }
+
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
             /*
-                1 1 0 0
-                1 2 2 0
-                2 3 3 3
-                0 4 5 4
+             * 1 1 0 0
+             * 1 2 2 0
+             * 2 3 3 3
+             * 0 4 5 4
              */
-            BandMatrix gbm = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(4, 2, 1))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 1, 2)
-                    .setValue(2, 2, 3)
-                    .setValue(3, 3, 4)
-                    .setValue(1, 0, 1)
-                    .setValue(2, 0, 2)
-                    .setValue(2, 1, 3)
-                    .setValue(3, 1, 4)
-                    .setValue(3, 2, 5)
-                    .setValue(0, 1, 1)
-                    .setValue(1, 2, 2)
-                    .setValue(2, 3, 3)
-                    .build();
-
-            lub = LUBandExecutor.instance().apply(gbm);
+            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(4, 2, 1));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 1, 2);
+            builder.setValue(2, 2, 3);
+            builder.setValue(3, 3, 4);
+            builder.setValue(1, 0, 1);
+            builder.setValue(2, 0, 2);
+            builder.setValue(2, 1, 3);
+            builder.setValue(3, 1, 4);
+            builder.setValue(3, 2, 5);
+            builder.setValue(0, 1, 1);
+            builder.setValue(1, 2, 2);
+            builder.setValue(2, 3, 3);
+            lub = LUBandExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -69,14 +77,12 @@ public class LUBandExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
 
             /*
-                0
-                1
-                0
-                0
+             * 0
+             * 1
+             * 0
+             * 0
              */
             double[] expected = { 0, 1, 0, 0 };
             Vector result = lub.inverse().get().operate(right);
@@ -90,14 +96,12 @@ public class LUBandExecutorTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
 
             /*
-                -0.923076923076923
-                -0.538461538461538
-                1.23076923076923
-                0.076923076923077
+             * -0.923076923076923
+             * -0.538461538461538
+             * 1.23076923076923
+             * 0.076923076923077
              */
             double[] expected = {
                     -0.923076923076923,
@@ -119,30 +123,38 @@ public class LUBandExecutorTest {
 
         private LinearEquationSolving<BandMatrix> lub;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
+            right = builder.build();
+        }
+
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
             /*
-                1 2 3 0
-                3 2 4 5
-                0 2 3 6
-                0 0 1 4
+             * 1 2 3 0
+             * 3 2 4 5
+             * 0 2 3 6
+             * 0 0 1 4
              */
-            BandMatrix gbm = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(4, 1, 2))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 1, 2)
-                    .setValue(2, 2, 3)
-                    .setValue(3, 3, 4)
-                    .setValue(0, 1, 2)
-                    .setValue(0, 2, 3)
-                    .setValue(1, 2, 4)
-                    .setValue(1, 3, 5)
-                    .setValue(2, 3, 6)
-                    .setValue(1, 0, 3)
-                    .setValue(2, 1, 2)
-                    .setValue(3, 2, 1)
-                    .build();
-
-            lub = LUBandExecutor.instance().apply(gbm);
+            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(4, 1, 2));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 1, 2);
+            builder.setValue(2, 2, 3);
+            builder.setValue(3, 3, 4);
+            builder.setValue(0, 1, 2);
+            builder.setValue(0, 2, 3);
+            builder.setValue(1, 2, 4);
+            builder.setValue(1, 3, 5);
+            builder.setValue(2, 3, 6);
+            builder.setValue(1, 0, 3);
+            builder.setValue(2, 1, 2);
+            builder.setValue(3, 2, 1);
+            lub = LUBandExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -162,14 +174,12 @@ public class LUBandExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
 
             /*
-                -1.53846153846154
-                -4.26923076923077
-                3.69230769230769
-                0.0769230769230771
+             * -1.53846153846154
+             * -4.26923076923077
+             * 3.69230769230769
+             * 0.0769230769230771
              */
             double[] expected = {
                     -1.53846153846154,
@@ -188,14 +198,12 @@ public class LUBandExecutorTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
 
             /*
-                0.0769230769230772
-                0.307692307692308
-                0.615384615384615
-                -0.307692307692308
+             * 0.0769230769230772
+             * 0.307692307692308
+             * 0.615384615384615
+             * -0.307692307692308
              */
             double[] expected = {
                     0.0769230769230772,
@@ -226,16 +234,25 @@ public class LUBandExecutorTest {
 
         private LinearEquationSolving<BandMatrix> lub;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
+            builder.setEntryValue(new double[] { 3 });
+            right = builder.build();
+        }
+
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
             /*
-                -2
+             * -2
              */
-            BandMatrix gbm = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(1, 1, 1))
-                    .setValue(0, 0, -2)
-                    .build();
+            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(1, 1, 1));
+            builder.setValue(0, 0, -2);
 
-            lub = LUBandExecutor.instance().apply(gbm);
+            lub = LUBandExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -245,11 +262,9 @@ public class LUBandExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
 
             /*
-                -1.5
+             * -1.5
              */
             double[] expected = { -1.5 };
             Vector result = lub.inverse().get().operate(right);
@@ -263,11 +278,9 @@ public class LUBandExecutorTest {
 
         @Test
         public void test_転置逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
 
             /*
-                -1.5
+             * -1.5
              */
             double[] expected = { -1.5 };
             Vector result = lub.inverse().get().operateTranspose(right);

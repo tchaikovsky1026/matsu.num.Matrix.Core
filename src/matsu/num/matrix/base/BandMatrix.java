@@ -1,5 +1,5 @@
 /**
- * 2023.8.20
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
@@ -8,21 +8,21 @@ import java.util.Objects;
 import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBand;
 
 /**
- * 正方形の帯行列を扱う. 
+ * 正方形の帯行列を扱う.
  * 
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.  
+ * {@link Matrix}のクラス説明の規約に従う.
  * </p>
  * 
  * <p>
- * <i>実装仕様: <br> 
+ * <i>実装仕様: <br>
  * {@link Symmetric}インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
  * すなわち, {@code this.bandMatrixDimension().isSymmetric() == true} でなければならない.
  * </i>
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.2
  * @see Matrix
  */
 public interface BandMatrix extends EntryReadableMatrix {
@@ -57,8 +57,8 @@ public interface BandMatrix extends EntryReadableMatrix {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code @hashCode[bandStructure: %bandStructure, entry: %entry]} <br>
-     * {@code @hashCode[bandStructure: %bandStructure, entry: %entry, %character1, %character2,...]}
+     * {@code BandMatrix[struct[%bandStructure], %entry]} <br>
+     * {@code BandMatrix[struct[%bandStructure], %character1, %character2,..., %entry]}
      * </p>
      * 
      * <p>
@@ -76,10 +76,8 @@ public interface BandMatrix extends EntryReadableMatrix {
         }
 
         StringBuilder fieldString = new StringBuilder();
-        fieldString.append("structure:");
+        fieldString.append("struct");
         fieldString.append(matrix.bandMatrixDimension());
-        fieldString.append(", entry:");
-        fieldString.append(EntryReadableMatrix.toSimplifiedEntryString(matrix));
 
         if (Objects.nonNull(characters)) {
             for (String character : characters) {
@@ -87,10 +85,11 @@ public interface BandMatrix extends EntryReadableMatrix {
                 fieldString.append(character);
             }
         }
+        fieldString.append(", ");
+        fieldString.append(EntryReadableMatrix.toSimplifiedEntryString(matrix));
 
         return String.format(
-                "@%s[%s]",
-                Integer.toHexString(matrix.hashCode()),
+                "BandMatrix[%s]",
                 fieldString.toString());
     }
 }

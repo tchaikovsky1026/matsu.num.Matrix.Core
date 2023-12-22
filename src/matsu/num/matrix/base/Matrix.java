@@ -1,5 +1,5 @@
 /**
- * 2023.8.20
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
@@ -10,12 +10,12 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplication;
 
 /**
- * 矩形(長方形)の行列を扱う. 
+ * 矩形(長方形)の行列を扱う.
  * 
  * <p>
- * このインターフェースを実装した全てのクラスの属性は実質的に不変であり, 
- * (このインターフェース外を含む)全てのメソッドは関数的かつスレッドセーフである. <br>
- * <i>実装者にはそのようにクラス設計することを強制し, 違反した場合は振る舞いが保証されない. </i>  
+ * このインターフェースを実装した全てのクラスの属性は実質的に不変であり,
+ * (このインターフェース以外を含む)全てのメソッドは関数的かつスレッドセーフである. <br>
+ * <i>実装者にはそのようにクラス設計することを強制し, 違反した場合は振る舞いが保証されない. </i>
  * </p>
  * 
  * <p>
@@ -25,7 +25,7 @@ import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplication;
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.2
  */
 public interface Matrix {
 
@@ -67,7 +67,7 @@ public interface Matrix {
     public Vector operateTranspose(Vector operand);
 
     /**
-     * この行列の転置行列を返す. 
+     * この行列の転置行列を返す.
      * 
      * @return 転置行列
      */
@@ -123,8 +123,8 @@ public interface Matrix {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code @hashCode[dimension: %dimension]} <br>
-     * {@code @hashCode[dimension: %dimension, %character1, %character2,...]}
+     * {@code Matrix[dim(%dimension)]} <br>
+     * {@code Matrix[dim(%dimension), %character1, %character2,...]}
      * </p>
      * 
      * <p>
@@ -142,7 +142,7 @@ public interface Matrix {
         }
 
         StringBuilder fieldString = new StringBuilder();
-        fieldString.append(String.format("dimension:%s", matrix.matrixDimension()));
+        fieldString.append(String.format("dim%s", matrix.matrixDimension()));
 
         if (Objects.nonNull(characters)) {
             for (String character : characters) {
@@ -152,8 +152,7 @@ public interface Matrix {
         }
 
         return String.format(
-                "@%s[%s]",
-                Integer.toHexString(matrix.hashCode()),
+                "Matrix[%s]",
                 fieldString.toString());
     }
 

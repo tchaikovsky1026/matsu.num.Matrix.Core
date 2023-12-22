@@ -36,18 +36,18 @@ public class SymmetricMatrixBuilderTest {
         @Before
         public void before_サイズ3_成分1_2_3_4_5_6の対称行列を生成() {
             /*
-                1 2 4
-                2 3 5
-                4 5 6
+             * 1 2 4
+             * 2 3 5
+             * 4 5 6
              */
-            sm = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 2)
-                    .setValue(1, 1, 3)
-                    .setValue(0, 2, 4)
-                    .setValue(1, 2, 5)
-                    .setValue(2, 2, 6)
-                    .build();
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 3);
+            builder.setValue(0, 2, 4);
+            builder.setValue(1, 2, 5);
+            builder.setValue(2, 2, 6);
+            sm = builder.build();
         }
 
         @Test
@@ -71,24 +71,26 @@ public class SymmetricMatrixBuilderTest {
         @Before
         public void before_サイズ3_成分1_2_3_4_5_6の対称行列を生成() {
             /*
-                1 2 4
-                2 3 5
-                4 5 6
+             * 1 2 4
+             * 2 3 5
+             * 4 5 6
              */
-            sm = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 2)
-                    .setValue(1, 1, 3)
-                    .setValue(0, 2, 4)
-                    .setValue(1, 2, 5)
-                    .setValue(2, 2, 6)
-                    .build();
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 3);
+            builder.setValue(0, 2, 4);
+            builder.setValue(1, 2, 5);
+            builder.setValue(2, 2, 6);
+            sm = builder.build();
         }
 
         @Test
         public void test_行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            Vector right = builder.build();
+
             double[] expected = { 17, 23, 32 };
             Vector result = sm.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -102,30 +104,30 @@ public class SymmetricMatrixBuilderTest {
         @Before
         public void before_サイズ5_成分1__15の対称行列を生成し_1と3を入れ替え() {
             /*
-                1 7 4 2 11
-                7 10 9 8 14    
-                4 9 6 5 12
-                2 8 5 3 12
-                11 14 13 12 15
+             * 1 7 4 2 11
+             * 7 10 9 8 14
+             * 4 9 6 5 12
+             * 2 8 5 3 12
+             * 11 14 13 12 15
              */
-            sm = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(5))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 2)
-                    .setValue(1, 1, 3)
-                    .setValue(2, 0, 4)
-                    .setValue(2, 1, 5)
-                    .setValue(2, 2, 6)
-                    .setValue(3, 0, 7)
-                    .setValue(3, 1, 8)
-                    .setValue(3, 2, 9)
-                    .setValue(3, 3, 10)
-                    .setValue(4, 0, 11)
-                    .setValue(4, 1, 12)
-                    .setValue(4, 2, 13)
-                    .setValue(4, 3, 14)
-                    .setValue(4, 4, 15)
-                    .swapRowsAndColumns(1, 3)
-                    .build();
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(5));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 3);
+            builder.setValue(2, 0, 4);
+            builder.setValue(2, 1, 5);
+            builder.setValue(2, 2, 6);
+            builder.setValue(3, 0, 7);
+            builder.setValue(3, 1, 8);
+            builder.setValue(3, 2, 9);
+            builder.setValue(3, 3, 10);
+            builder.setValue(4, 0, 11);
+            builder.setValue(4, 1, 12);
+            builder.setValue(4, 2, 13);
+            builder.setValue(4, 3, 14);
+            builder.setValue(4, 4, 15);
+            builder.swapRowsAndColumns(1, 3);
+            sm = builder.build();
         }
 
         @Test
@@ -205,21 +207,18 @@ public class SymmetricMatrixBuilderTest {
         @Test
         public void test_成分の検証() {
             /*
-                1 2 4
-                2 3 5
-                4 5 6
+             * 1 2 4
+             * 2 3 5
+             * 4 5 6
              */
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.from(
-                    new WrappedMatrix(
-                            SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3))
-                                    .setValue(0, 0, 1)
-                                    .setValue(1, 0, 2)
-                                    .setValue(1, 1, 3)
-                                    .setValue(0, 2, 4)
-                                    .setValue(1, 2, 5)
-                                    .setValue(2, 2, 6)
-                                    .build()))
-                    .build();
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 3);
+            builder.setValue(0, 2, 4);
+            builder.setValue(1, 2, 5);
+            builder.setValue(2, 2, 6);
+            EntryReadableMatrix sm = SymmetricMatrixBuilder.from(new WrappedMatrix(builder.build())).build();
 
             double[][] entries = { { 1, 2, 4 }, { 2, 3, 5 }, { 4, 5, 6 } };
 
@@ -275,21 +274,18 @@ public class SymmetricMatrixBuilderTest {
         @Test
         public void test_成分の検証() {
             /*
-                1 2 4
-                2 3 5
-                4 5 6
+             * 1 2 4
+             * 2 3 5
+             * 4 5 6
              */
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.from(
-                    new WrappedMatrix(
-                            SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3))
-                                    .setValue(0, 0, 1)
-                                    .setValue(1, 0, 2)
-                                    .setValue(1, 1, 3)
-                                    .setValue(0, 2, 4)
-                                    .setValue(1, 2, 5)
-                                    .setValue(2, 2, 6)
-                                    .build()))
-                    .build();
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 3);
+            builder.setValue(0, 2, 4);
+            builder.setValue(1, 2, 5);
+            builder.setValue(2, 2, 6);
+            EntryReadableMatrix sm = SymmetricMatrixBuilder.from(new WrappedMatrix(builder.build())).build();
 
             double[][] entries = { { 1, 2, 4 }, { 2, 3, 5 }, { 4, 5, 6 } };
 
@@ -309,14 +305,14 @@ public class SymmetricMatrixBuilderTest {
 
         @Before
         public void before_行列生成() {
-            original = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3))
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 2)
-                    .setValue(1, 1, 3)
-                    .setValue(0, 2, 4)
-                    .setValue(1, 2, 5)
-                    .setValue(2, 2, 6)
-                    .build();
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 3);
+            builder.setValue(0, 2, 4);
+            builder.setValue(1, 2, 5);
+            builder.setValue(2, 2, 6);
+            original = builder.build();
         }
 
         @Test

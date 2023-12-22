@@ -1,5 +1,5 @@
 /**
- * 2023.8.21
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -18,7 +18,7 @@ import matsu.num.matrix.base.lazy.InverseAndDeterminantStructure;
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determinantable {
 
@@ -29,7 +29,12 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
     public Optional<? extends DiagonalMatrix> inverse();
 
     /**
-     * {@link DiagonalMatrix}のビルダ. スレッドセーフでない.
+     * {@link DiagonalMatrix}のビルダ.
+     * 
+     * <p>
+     * このビルダはミュータブルである. <br>
+     * また, スレッドセーフでない.
+     * </p>
      */
     public static final class Builder {
 
@@ -54,13 +59,12 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
          *
          * @param index i, 行, 列index
          * @param value 置き換えた後の値
-         * @return this
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (i,i)が対角成分でない場合
          * @throws IllegalArgumentException valueが不正な値の場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
-        public Builder setValue(final int index, final double value) {
+        public void setValue(final int index, final double value) {
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -75,7 +79,6 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
                 throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
             }
             this.diagonalEntry[index] = value;
-            return this;
         }
 
         /**
@@ -210,7 +213,10 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
                 for (int i = 0; i < dimension; i++) {
                     resultEntry[i] = thisDiagonalEntry[i] * operandEntry[i];
                 }
-                return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+
+                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                builder.setEntryValue(resultEntry);
+                return builder.build();
             }
 
             @Override

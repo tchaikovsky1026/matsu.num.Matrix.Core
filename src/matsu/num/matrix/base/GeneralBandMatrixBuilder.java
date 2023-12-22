@@ -1,5 +1,5 @@
-/*
- * 2023.8.20
+/**
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -10,7 +10,12 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 
 /**
- * 正方形の帯行列を生成するビルダ. スレッドセーフでない.
+ * 正方形の帯行列を生成するビルダ.
+ * 
+ * <p>
+ * このビルダはミュータブルである. <br>
+ * また, スレッドセーフでない.
+ * </p>
  *
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -21,7 +26,7 @@ import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public final class GeneralBandMatrixBuilder {
 
@@ -36,7 +41,8 @@ public final class GeneralBandMatrixBuilder {
      * 初期値は零行列.
      *
      * @param bandMatrixDimension 帯行列構造
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * max(lb.ub) > IntMax)
+     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * max(lb.ub) >
+     *             IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     private GeneralBandMatrixBuilder(final BandMatrixDimension bandMatrixDimension) {
@@ -73,13 +79,12 @@ public final class GeneralBandMatrixBuilder {
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @return this
      * @throws IllegalStateException すでにビルドされている場合
      * @throws IndexOutOfBoundsException (i,j)が行列の帯領域内でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
-     * @see EntryReadableMatrix#acceptValue(double) 
+     * @see EntryReadableMatrix#acceptValue(double)
      */
-    public GeneralBandMatrixBuilder setValue(final int row, final int column, final double value) {
+    public void setValue(final int row, final int column, final double value) {
         if (Objects.isNull(this.diagonalEntry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -93,13 +98,13 @@ public final class GeneralBandMatrixBuilder {
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
         case DIAGONAL:
             diagonalEntry[row] = value;
-            return this;
+            return;
         case LOWER_BAND:
             lowerEntry[column * thisLowerBandWidth + (row - column - 1)] = value;
-            return this;
+            return;
         case UPPER_BAND:
             upperEntry[row * thisUpperBandWidth + (column - row - 1)] = value;
-            return this;
+            return;
         case OUT_OF_BAND:
             throw new IndexOutOfBoundsException(
                     String.format(
@@ -230,20 +235,22 @@ public final class GeneralBandMatrixBuilder {
     private static final class GeneralBandMatrixImpl extends SkeletalMatrix implements BandMatrix {
 
         /*
-        行列の各要素は対角成分, 狭義下三角成分, 狭義上三角成分に分けて, それぞれ1次元配列として扱う. 
-        次元を<i>n</i>, 下側帯幅を<i>b</i><sub>l</sub>, 上側帯幅を<i>b</i><sub>u</sub>とすると,
-        各配列の長さは<i>n</i>, <i>n</i><i>b</i><sub>l</sub>, <i>n</i><i>b</i><sub>u</sub>である.
-        
-        例えば4*4行列で下側帯幅2, 上側帯幅4の場合: 
-        対角成分の配列を{@code d}, 狭義下三角成分の配列を{@code l}, 狭義上三角成分の配列を{@code u}とすると, 
-        d.length = 4, l.length = 8, u.length = 16であり, 
-        d[0] u[0] u[1] u[2] (u[3])}
-        l[0] d[1] u[4] u[5] (u[6] u[7])
-        l[1] l[2] d[2] u[8] (u[9] u[10] u[11])
-        ---- l[3] l[4] d[3] (u[12] u[13] u[14] u[15])
-        (--- ---- l[5] l[6])
-        (--- ---- ---- l[7])
-        と格納される.
+         * 行列の各要素は対角成分, 狭義下三角成分, 狭義上三角成分に分けて, それぞれ1次元配列として扱う.
+         * 次元を<i>n</i>, 下側帯幅を<i>b</i><sub>l</sub>,
+         * 上側帯幅を<i>b</i><sub>u</sub>とすると,
+         * 各配列の長さは<i>n</i>, <i>n</i><i>b</i><sub>l</sub>,
+         * <i>n</i><i>b</i><sub>u</sub>である.
+         * 
+         * 例えば4*4行列で下側帯幅2, 上側帯幅4の場合:
+         * 対角成分の配列を{@code d}, 狭義下三角成分の配列を{@code l}, 狭義上三角成分の配列を{@code u}とすると,
+         * d.length = 4, l.length = 8, u.length = 16であり,
+         * d[0] u[0] u[1] u[2] (u[3])}
+         * l[0] d[1] u[4] u[5] (u[6] u[7])
+         * l[1] l[2] d[2] u[8] (u[9] u[10] u[11])
+         * ---- l[3] l[4] d[3] (u[12] u[13] u[14] u[15])
+         * (--- ---- l[5] l[6])
+         * (--- ---- ---- l[7])
+         * と格納される.
          */
         private final BandMatrixDimension bandMatrixDimension;
 
@@ -348,7 +355,10 @@ public final class GeneralBandMatrixBuilder {
                 }
                 resultEntry[i] += sumProduct;
             }
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override
@@ -407,7 +417,9 @@ public final class GeneralBandMatrixBuilder {
                 resultEntry[i] += sumProduct;
             }
 
-            return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override

@@ -35,11 +35,11 @@ public class DiagonalMatrixTest {
 
         @Before
         public void before_次元3_成分1_2_3の対角行列の作成() {
-            matrix = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3))
-                    .setValue(0, 1)
-                    .setValue(1, 2)
-                    .setValue(2, 3)
-                    .build();
+            DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 1);
+            builder.setValue(1, 2);
+            builder.setValue(2, 3);
+            matrix = builder.build();
         }
 
         @Test
@@ -90,17 +90,19 @@ public class DiagonalMatrixTest {
 
         @Before
         public void before_次元3_成分1_2_3の対角行列の作成() {
-            matrix = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3))
-                    .setValue(0, 1)
-                    .setValue(1, 2)
-                    .setValue(2, 3)
-                    .build();
+            DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 1);
+            builder.setValue(1, 2);
+            builder.setValue(2, 3);
+            matrix = builder.build();
         }
 
         @Test
         public void test_成功パターン() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 2, 3 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 2, 3 });
+            Vector right = builder.build();
+
             double[] expected = { 1, 4, 9 };
             Vector result = matrix.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
@@ -108,8 +110,10 @@ public class DiagonalMatrixTest {
 
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_失敗パターン() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
+            Vector right = builder.build();
+
             matrix.operate(right);
         }
 
@@ -121,17 +125,18 @@ public class DiagonalMatrixTest {
 
         @Before
         public void before_次元3_成分1_2_3の対角行列() {
-            matrix = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3))
-                    .setValue(0, 1)
-                    .setValue(1, 2)
-                    .setValue(2, 3)
-                    .build();
+            DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 1);
+            builder.setValue(1, 2);
+            builder.setValue(2, 3);
+            matrix = builder.build();
         }
 
         @Test
         public void test_逆行列のベクトル行列積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 9, 6, 3 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 9, 6, 3 });
+            Vector right = builder.build();
 
             double[] expected = { 9, 3, 1 };
 
@@ -165,12 +170,13 @@ public class DiagonalMatrixTest {
 
         @Test(expected = NoSuchElementException.class)
         public void test_次元3_成分1_0_3の対角行列は生成できない() {
-            DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3))
-                    .setValue(0, 1)
-                    .setValue(1, 0)
-                    .setValue(2, 3)
-                    .build()
-                    .inverse().orElseThrow();
+            DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 1);
+            builder.setValue(1, 0);
+            builder.setValue(2, 3);
+            DiagonalMatrix matrix = builder.build();
+
+            matrix.inverse().orElseThrow();
         }
     }
 
@@ -183,11 +189,11 @@ public class DiagonalMatrixTest {
 
             @Before
             public void before_次元3_成分1_2_m3の対角行列の作成() {
-                matrix = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3))
-                        .setValue(0, 1)
-                        .setValue(1, 2)
-                        .setValue(2, -3)
-                        .build();
+                DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3));
+                builder.setValue(0, 1);
+                builder.setValue(1, 2);
+                builder.setValue(2, -3);
+                matrix = builder.build();
             }
 
             @Test
@@ -212,18 +218,18 @@ public class DiagonalMatrixTest {
 
             @Before
             public void before_次元10の超大要素の対角行列の作成() {
-                matrix = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(10))
-                        .setValue(0, 1E90)
-                        .setValue(1, 2E90)
-                        .setValue(2, -3E90)
-                        .setValue(3, -4E90)
-                        .setValue(4, 5E90)
-                        .setValue(5, 6E-90)
-                        .setValue(6, -7)
-                        .setValue(7, 8)
-                        .setValue(8, 9E-90)
-                        .setValue(9, 10)
-                        .build();
+                DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(10));
+                builder.setValue(0, 1E90);
+                builder.setValue(1, 2E90);
+                builder.setValue(2, -3E90);
+                builder.setValue(3, -4E90);
+                builder.setValue(4, 5E90);
+                builder.setValue(5, 6E-90);
+                builder.setValue(6, -7);
+                builder.setValue(7, 8);
+                builder.setValue(8, 9E-90);
+                builder.setValue(9, 10);
+                matrix = builder.build();
             }
 
             @Test
@@ -250,18 +256,18 @@ public class DiagonalMatrixTest {
 
             @Before
             public void before_次元10の超大要素の対角行列の作成() {
-                matrix = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(10))
-                        .setValue(0, 1)
-                        .setValue(1, 2)
-                        .setValue(2, -3)
-                        .setValue(3, -4E90)
-                        .setValue(4, 5E90)
-                        .setValue(5, 6E-90)
-                        .setValue(6, -7E-90)
-                        .setValue(7, 8E-90)
-                        .setValue(8, 9E-90)
-                        .setValue(9, 10E-90)
-                        .build();
+                DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(10));
+                builder.setValue(0, 1);
+                builder.setValue(1, 2);
+                builder.setValue(2, -3);
+                builder.setValue(3, -4E90);
+                builder.setValue(4, 5E90);
+                builder.setValue(5, 6E-90);
+                builder.setValue(6, -7E-90);
+                builder.setValue(7, 8E-90);
+                builder.setValue(8, 9E-90);
+                builder.setValue(9, 10E-90);
+                matrix = builder.build();
             }
 
             @Test
@@ -288,11 +294,11 @@ public class DiagonalMatrixTest {
 
             @Before
             public void before_次元3_成分1_0_m3の対角行列の作成() {
-                matrix = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3))
-                        .setValue(0, 1)
-                        .setValue(1, 0)
-                        .setValue(2, -3)
-                        .build();
+                DiagonalMatrix.Builder builder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(3));
+                builder.setValue(0, 1);
+                builder.setValue(1, 0);
+                builder.setValue(2, -3);
+                matrix = builder.build();
             }
 
             @Test

@@ -1,5 +1,5 @@
 /**
- * 2023.8.16
+ * 2023.11.30
  */
 package matsu.num.matrix.base.exception;
 
@@ -7,7 +7,7 @@ package matsu.num.matrix.base.exception;
  * 行列の構造(サイズ等)が規約を満たしていないことを報告する例外. 
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.1
  */
 public final class MatrixFormatMismatchException extends IllegalArgumentException {
 

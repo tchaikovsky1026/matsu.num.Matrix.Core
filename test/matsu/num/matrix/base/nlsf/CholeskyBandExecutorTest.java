@@ -42,24 +42,23 @@ public class CholeskyBandExecutorTest {
         @Before
         public void before_生成() {
             /*
-                5 1 2 0
-                1 5 3 4
-                2 3 5 3
-                0 4 3 5
+             * 5 1 2 0
+             * 1 5 3 4
+             * 2 3 5 3
+             * 0 4 3 5
              */
-
-            BandMatrix sbm = SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(4, 2))
-                    .setValue(0, 0, 5)
-                    .setValue(1, 1, 5)
-                    .setValue(2, 2, 5)
-                    .setValue(3, 3, 5)
-                    .setValue(1, 0, 1)
-                    .setValue(2, 0, 2)
-                    .setValue(2, 1, 3)
-                    .setValue(3, 1, 4)
-                    .setValue(3, 2, 3)
-                    .build();
-            cb = CholeskyBandExecutor.instance().apply(sbm);
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(4, 2));
+            builder.setValue(0, 0, 5);
+            builder.setValue(1, 1, 5);
+            builder.setValue(2, 2, 5);
+            builder.setValue(3, 3, 5);
+            builder.setValue(1, 0, 1);
+            builder.setValue(2, 0, 2);
+            builder.setValue(2, 1, 3);
+            builder.setValue(3, 1, 4);
+            builder.setValue(3, 2, 3);
+            cb = CholeskyBandExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -74,14 +73,15 @@ public class CholeskyBandExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 2, 3, 4 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
+            Vector right = builder.build();
 
             /*
-                0.31578947368421
-                -0.894736842105263
-                0.157894736842105
-                1.42105263157895
+             * 0.31578947368421
+             * -0.894736842105263
+             * 0.157894736842105
+             * 1.42105263157895
              */
             double[] expected = {
                     0.31578947368421,
@@ -120,13 +120,12 @@ public class CholeskyBandExecutorTest {
         @Before
         public void before_生成() {
             /*
-                5
+             * 5
              */
-
-            BandMatrix sbm = SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(1, 2))
-                    .setValue(0, 0, 5)
-                    .build();
-            cb = CholeskyBandExecutor.instance().apply(sbm);
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(1, 2));
+            builder.setValue(0, 0, 5);
+            cb = CholeskyBandExecutor.instance().apply(builder.build());
         }
 
         @Test
@@ -141,11 +140,12 @@ public class CholeskyBandExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).setEntryValue(new double[] { 3 })
-                    .build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
+            builder.setEntryValue(new double[] { 3 });
+            Vector right = builder.build();
 
             /*
-                0.6
+             * 0.6
              */
             double[] expected = {
                     0.6
@@ -169,31 +169,32 @@ public class CholeskyBandExecutorTest {
         @Before
         public void before_生成() {
             /*
-                5 1 2 0
-                1 5 3 4
-                2 3 5 3
-                0 4 3 5
+             * 5 1 2 0
+             * 1 5 3 4
+             * 2 3 5 3
+             * 0 4 3 5
              */
-
-            BandMatrix sbm = SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(4, 2))
-                    .setValue(0, 0, 5)
-                    .setValue(1, 1, 5)
-                    .setValue(2, 2, 5)
-                    .setValue(3, 3, 5)
-                    .setValue(1, 0, 1)
-                    .setValue(2, 0, 2)
-                    .setValue(2, 1, 3)
-                    .setValue(3, 1, 4)
-                    .setValue(3, 2, 3)
-                    .build();
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(4, 2));
+            builder.setValue(0, 0, 5);
+            builder.setValue(1, 1, 5);
+            builder.setValue(2, 2, 5);
+            builder.setValue(3, 3, 5);
+            builder.setValue(1, 0, 1);
+            builder.setValue(2, 0, 2);
+            builder.setValue(2, 1, 3);
+            builder.setValue(3, 1, 4);
+            builder.setValue(3, 2, 3);
+            BandMatrix sbm = builder.build();
             matrix = sbm;
             cho = CholeskyBandExecutor.instance().apply(sbm);
         }
 
         @Test
         public void test_非対称平方根の検証() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 });
+            Vector right = builder.build();
 
             Matrix asymmSqrt = cho.asymmetricSqrtSystem().target();
             double[] expected = matrix.operate(right).entryAsArray();
@@ -213,30 +214,30 @@ public class CholeskyBandExecutorTest {
         @Before
         public void before_生成() {
             /*
-                5 1 2 0
-                1 5 3 4
-                2 3 5 3
-                0 4 3 5
+             * 5 1 2 0
+             * 1 5 3 4
+             * 2 3 5 3
+             * 0 4 3 5
              */
-
-            BandMatrix sbm = SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(4, 2))
-                    .setValue(0, 0, 5)
-                    .setValue(1, 1, 5)
-                    .setValue(2, 2, 5)
-                    .setValue(3, 3, 5)
-                    .setValue(1, 0, 1)
-                    .setValue(2, 0, 2)
-                    .setValue(2, 1, 3)
-                    .setValue(3, 1, 4)
-                    .setValue(3, 2, 3)
-                    .build();
-            cho = CholeskyBandExecutor.instance().apply(sbm);
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(4, 2));
+            builder.setValue(0, 0, 5);
+            builder.setValue(1, 1, 5);
+            builder.setValue(2, 2, 5);
+            builder.setValue(3, 3, 5);
+            builder.setValue(1, 0, 1);
+            builder.setValue(2, 0, 2);
+            builder.setValue(2, 1, 3);
+            builder.setValue(3, 1, 4);
+            builder.setValue(3, 2, 3);
+            cho = CholeskyBandExecutor.instance().apply(builder.build());
         }
 
         @Test
         public void test_非対称平方根の逆行列の検証() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 }).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 });
+            Vector right = builder.build();
 
             Matrix asymmInvSqrt = cho.asymmetricSqrtSystem().inverse().get();
             double[] expected = cho.inverse().get().operate(right).entryAsArray();

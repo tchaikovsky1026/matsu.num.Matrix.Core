@@ -1,5 +1,5 @@
 /**
- * 2023.8.15
+ * 2023.11.30
  */
 package matsu.num.matrix.base.lazy;
 
@@ -7,29 +7,29 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * 返す値が変化しないサプライヤの, 遅延生成とキャッシュの仕組みを提供する. 
+ * 返す値が変化しないサプライヤの, 遅延生成とキャッシュの仕組みを提供する.
  * 
  * <p>
  * オブジェクトのコンピュータ(生成器)を与えてサプライヤを生成する. <br>
- * 初めてgetをしたときに初めて, コンピュータによりオブジェクトの生成する. <br>
- * 同時にそのオブジェクトをキャッシュしておき, 
+ * 初めてgetをしたときにコンピュータによりオブジェクトの生成する. <br>
+ * 同時にそのオブジェクトをキャッシュしておき,
  * 2回目以降の呼び出しではキャッシュしたオブジェクトを返す.
  * </p>
  * 
  * <p>
  * この仕組みでは, キャッシュが{@code null}であることにより「キャッシュされていない」と判断している. <br>
- * したがって, コンピュータが{@code null}を返す仕組みの場合は毎回コンピュータのgetが呼ばれることに注意せよ. 
- * </p> 
+ * したがって, コンピュータが{@code null}を返す仕組みの場合は毎回コンピュータのgetが呼ばれることに注意せよ.
+ * </p>
  * 
  * @author Matsuura Y.
- * @version 15.0 
+ * @version 17.1
  */
 public final class ImmutableLazyCacheSupplier {
 
     private ImmutableLazyCacheSupplier() {
         throw new AssertionError();
     }
-    
+
     /**
      * 与えられたコンピュータから, このクラスの仕組みを実現するサプライヤを生成する.
      * 

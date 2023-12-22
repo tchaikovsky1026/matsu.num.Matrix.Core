@@ -1,5 +1,5 @@
 /**
- * 2023.8.21
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
@@ -11,7 +11,7 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * 置換行列を扱う.
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.2
  */
 public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix, Determinantable {
 
@@ -19,7 +19,12 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
     public abstract PermutationMatrix target();
 
     /**
-     * {@link PermutationMatrix}のビルダ. スレッドセーフでない.
+     * {@link PermutationMatrix}のビルダ.
+     * 
+     * <p>
+     * このビルダはミュータブルである. <br>
+     * また, スレッドセーフでない.
+     * </p>
      */
     public static final class Builder {
 
@@ -64,11 +69,10 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
          *
          * @param row1 i, 行index1
          * @param row2 j, 行index2
-         * @return 行交換後の置換行列
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
          */
-        public Builder swapRows(final int row1, final int row2) {
+        public void swapRows(final int row1, final int row2) {
             if (Objects.isNull(this.permutationHorizontal)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -81,7 +85,7 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             }
 
             if (row1 == row2) {
-                return this;
+                return;
             }
             final int column1 = permutationHorizontal[row1];
             final int column2 = permutationHorizontal[row2];
@@ -90,7 +94,6 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             permutationVertical[column1] = row2;
             permutationVertical[column2] = row1;
             this.even = !this.even;
-            return this;
         }
 
         /**
@@ -98,11 +101,10 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
          *
          * @param column1 i, 列index1
          * @param column2 j, 列index2
-         * @return 行交換後の置換行列
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
          */
-        public Builder swapColumns(final int column1, final int column2) {
+        public void swapColumns(final int column1, final int column2) {
             if (Objects.isNull(this.permutationHorizontal)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -115,7 +117,7 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             }
 
             if (column1 == column2) {
-                return this;
+                return;
             }
             final int row1 = permutationVertical[column1];
             final int row2 = permutationVertical[column2];
@@ -124,7 +126,6 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             permutationHorizontal[row1] = column2;
             permutationHorizontal[row2] = column1;
             this.even = !this.even;
-            return this;
         }
 
         /**
@@ -235,7 +236,10 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
                 for (int i = 0; i < dimension; i++) {
                     resultEntry[i] = operandEntry[this.permutationHorizontal[i]];
                 }
-                return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+
+                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                builder.setEntryValue(resultEntry);
+                return builder.build();
             }
 
             /**
@@ -260,7 +264,10 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
                 for (int i = 0; i < dimension; i++) {
                     resultEntry[i] = operandEntry[this.permutationVertical[i]];
                 }
-                return Vector.Builder.zeroBuilder(vectorDimension).setEntryValue(resultEntry).build();
+
+                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                builder.setEntryValue(resultEntry);
+                return builder.build();
             }
 
             @Override
@@ -302,7 +309,7 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
                         .append(even ? "even" : "odd")
                         .append(')');
 
-                return Matrix.toString(this, characterString.toString());
+                return OrthogonalMatrix.toString(this, characterString.toString());
             }
         }
 

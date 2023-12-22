@@ -1,13 +1,13 @@
-/*
- * 2023.3.3
+/**
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
 /**
- * {@code Matrix}インターフェースのサブタイプに付与される, 対称行列仕様であることを示すマーカインターフェース.
+ * {@linkplain Matrix}インターフェースのサブタイプに付与される, 対称行列仕様であることを示すマーカインターフェース.
  *
  * @author Matsuura Y.
- * @version 10.0
+ * @version 17.2
  */
 public interface Symmetric {
 

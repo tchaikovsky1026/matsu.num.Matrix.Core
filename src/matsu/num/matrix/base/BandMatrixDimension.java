@@ -1,5 +1,5 @@
 /**
- * 2023.8.17
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
@@ -12,17 +12,11 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * サイズ1以上の正方形であり, 下側, 上側帯幅とも0以上をとる.
  * 
  * <p>
- * このクラスは次の属性を基にした等価性を提供する. 
+ * このクラスのインスタンスは, 行列次元, 上側下側帯幅の値に基づくequalityを有する.
  * </p>
- * 
- * <ul>
- * <li> 行列次元 </li>
- * <li> 上側帯幅 </li>
- * <li> 下側帯幅 </li>
- * </ul>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.2
  */
 public final class BandMatrixDimension {
 
@@ -31,7 +25,8 @@ public final class BandMatrixDimension {
     private final int upperBandWidth;
     private final Triangular triangular;
 
-    private final int immutableHashCode;
+    //評価結果を使いまわすためのフィールド
+    private final int hashCode;
 
     //循環参照が生じるため, 遅延初期化される
     //軽量オブジェクトのためロックを行わず,複数回の初期化を許す
@@ -73,7 +68,7 @@ public final class BandMatrixDimension {
         this.upperBandWidth = upperBandWidth;
         this.triangular = Triangular.triangular(lowerBandWidth, upperBandWidth);
 
-        this.immutableHashCode = this.immutableHashCode();
+        this.hashCode = this.calcHashCode();
     }
 
     /**
@@ -140,7 +135,7 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * 他オブジェクトとの等価性を判定する. 
+     * 他オブジェクトとの等価性を判定する.
      * 
      * <p>
      * 等価性の基準はクラス説明のとおりである.
@@ -166,18 +161,22 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * {ハッシュコードを返す.
+     * ハッシュコードを返す.
      * 
      * @return ハッシュコード
      */
     @Override
     public int hashCode() {
-        return this.immutableHashCode;
+        return this.hashCode;
     }
 
-    private int immutableHashCode() {
-        int result = 713298;
-        result = 31 * result + Objects.hashCode(this.matrixDimension);
+    /**
+     * ハッシュコードを計算する.
+     * 
+     * @return ハッシュコード
+     */
+    private int calcHashCode() {
+        int result = Objects.hashCode(this.matrixDimension);
         result = 31 * result + Integer.hashCode(this.lowerBandWidth);
         result = 31 * result + Integer.hashCode(this.upperBandWidth);
         return result;
@@ -189,7 +188,7 @@ public final class BandMatrixDimension {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code [dimension: %dimension, bandWidth: [l: %l, u: %u]]}
+     * {@code (dim(%dimension), band(%l, %u))}
      * </p>
      * 
      * @return 説明表現
@@ -197,7 +196,7 @@ public final class BandMatrixDimension {
     @Override
     public String toString() {
         return String.format(
-                "[dimension:%s, bandWidth:[l:%d, u:%d]]",
+                "[dim%s, band(%s, %s)]",
                 this.matrixDimension, this.lowerBandWidth, this.upperBandWidth);
     }
 

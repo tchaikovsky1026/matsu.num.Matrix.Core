@@ -28,11 +28,15 @@ public class EntryReadableMatrixTest {
         @Before
         public void before_縦3横4の行列の作成_と_転置() {
             MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            originalMatrix = GeneralMatrixBuilder.zeroBuilder(dimension)
-                    .setValue(0, 0, 1).setValue(0, 1, 2).setValue(0, 2, 3).setValue(0, 3, 4)
-                    .setValue(1, 0, 5).setValue(1, 1, 6).setValue(1, 2, 7).setValue(1, 3, 8)
-                    .setValue(2, 0, 9).setValue(2, 1, 10).setValue(2, 2, 11).setValue(2, 3, 12)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            int count = 0;
+            for (int j = 0; j < dimension.rowAsIntValue(); j++) {
+                for (int k = 0; k < dimension.columnAsIntValue(); k++) {
+                    count++;
+                    builder.setValue(j, k, count);
+                }
+            }
+            originalMatrix = builder.build();
             transposedMatrix = EntryReadableMatrix.createTransposedOf(originalMatrix);
         }
 
@@ -49,9 +53,9 @@ public class EntryReadableMatrixTest {
 
         @Test
         public void test_transposed_operateTranspose_は_original_operate_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1, 4, 7, 11 })
-                    .build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder.setEntryValue(new double[] { 1, 4, 7, 11 });
+            Vector right = builder.build();
             assertThat(
                     transposedMatrix.operateTranspose(right).entryAsArray(),
                     is(originalMatrix.operate(right).entryAsArray()));
@@ -59,9 +63,9 @@ public class EntryReadableMatrixTest {
 
         @Test
         public void test_transposed_operate_は_original_operateTranspose_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 4, 7 })
-                    .build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 4, 7 });
+            Vector right = builder.build();
             assertThat(
                     transposedMatrix.operate(right).entryAsArray(),
                     is(originalMatrix.operateTranspose(right).entryAsArray()));
@@ -74,14 +78,27 @@ public class EntryReadableMatrixTest {
         private EntryReadableMatrix originalMatrix;
         private EntryReadableMatrix transposedMatrix;
 
+        private Vector right;
+
+        @Before
+        public void before_評価用右辺ベクトル() {
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+            builder.setEntryValue(new double[] { 1, 4, 7 });
+            right = builder.build();
+        }
+
         @Before
         public void before_サイズ3の行列の作成_と_転置() {
             MatrixDimension dimension = MatrixDimension.square(3);
-            originalMatrix = SymmetricMatrixBuilder.zeroBuilder(dimension)
-                    .setValue(0, 0, 1)
-                    .setValue(1, 0, 5).setValue(1, 1, 6)
-                    .setValue(2, 0, 9).setValue(2, 1, 10).setValue(2, 2, 11)
-                    .build();
+            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(dimension);
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 5);
+            builder.setValue(1, 1, 6);
+            builder.setValue(2, 0, 9);
+            builder.setValue(2, 1, 10);
+            builder.setValue(2, 2, 11);
+            originalMatrix = builder.build();
             transposedMatrix = EntryReadableMatrix.createTransposedOf(originalMatrix);
         }
 
@@ -98,9 +115,6 @@ public class EntryReadableMatrixTest {
 
         @Test
         public void test_transposed_operateTranspose_は_original_operate_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 4, 7 })
-                    .build();
             assertThat(
                     transposedMatrix.operateTranspose(right).entryAsArray(),
                     is(originalMatrix.operate(right).entryAsArray()));
@@ -108,9 +122,6 @@ public class EntryReadableMatrixTest {
 
         @Test
         public void test_transposed_operate_は_original_operateTranspose_に等しい() {
-            Vector right = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3))
-                    .setEntryValue(new double[] { 1, 4, 7 })
-                    .build();
             assertThat(
                     transposedMatrix.operate(right).entryAsArray(),
                     is(originalMatrix.operateTranspose(right).entryAsArray()));
@@ -132,10 +143,15 @@ public class EntryReadableMatrixTest {
                 matrixs = new ArrayList<>();
             }
             MatrixDimension dimension = MatrixDimension.rectangle(2, 2);
-            EntryReadableMatrix matrix = GeneralMatrixBuilder.zeroBuilder(dimension)
-                    .setValue(0, 0, 1).setValue(0, 1, 2)
-                    .setValue(1, 0, 3).setValue(1, 1, 4)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            int count = 0;
+            for (int j = 0; j < dimension.rowAsIntValue(); j++) {
+                for (int k = 0; k < dimension.columnAsIntValue(); k++) {
+                    count++;
+                    builder.setValue(j, k, count);
+                }
+            }
+            EntryReadableMatrix matrix = builder.build();
             matrixs.add(matrix);
         }
 
@@ -145,11 +161,15 @@ public class EntryReadableMatrixTest {
                 matrixs = new ArrayList<>();
             }
             MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            EntryReadableMatrix matrix = GeneralMatrixBuilder.zeroBuilder(dimension)
-                    .setValue(0, 0, 1).setValue(0, 1, 2).setValue(0, 2, 3).setValue(0, 3, 4)
-                    .setValue(1, 0, 5).setValue(1, 1, 6).setValue(1, 2, 7).setValue(1, 3, 8)
-                    .setValue(2, 0, 9).setValue(2, 1, 10).setValue(2, 2, 11).setValue(2, 3, 12)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            int count = 0;
+            for (int j = 0; j < dimension.rowAsIntValue(); j++) {
+                for (int k = 0; k < dimension.columnAsIntValue(); k++) {
+                    count++;
+                    builder.setValue(j, k, count);
+                }
+            }
+            EntryReadableMatrix matrix = builder.build();
             matrixs.add(matrix);
         }
 

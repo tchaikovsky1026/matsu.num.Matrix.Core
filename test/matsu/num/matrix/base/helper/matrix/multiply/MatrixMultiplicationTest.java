@@ -37,34 +37,39 @@ public class MatrixMultiplicationTest {
 
         @Before
         public void before_行列の準備() {
-            m1 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(4, 2))
-                    .setValue(0, 0, 2.2)
-                    .setValue(2, 1, 3.1)
-                    .build();
-            m2 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3))
-                    .setValue(0, 1, 0.1)
-                    .setValue(1, 0, 2.1)
-                    .build();
-            m3 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 5))
-                    .setValue(2, 4, 1.2)
-                    .setValue(0, 3, 0.8)
-                    .build();
-            m4 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(5, 6))
-                    .setValue(4, 1, 2.5)
-                    .setValue(3, 5, 0.7)
-                    .build();
+            GeneralMatrixBuilder builder_m1 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(4, 2));
+            builder_m1.setValue(0, 0, 2.2);
+            builder_m1.setValue(2, 1, 3.1);
+            m1 = builder_m1.build();
+
+            GeneralMatrixBuilder builder_m2 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3));
+            builder_m2.setValue(0, 1, 0.1);
+            builder_m2.setValue(1, 0, 2.1);
+            m2 = builder_m2.build();
+
+            GeneralMatrixBuilder builder_m3 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 5));
+            builder_m3.setValue(2, 4, 1.2);
+            builder_m3.setValue(0, 3, 0.8);
+            m3 = builder_m3.build();
+
+            GeneralMatrixBuilder builder_m4 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(5, 6));
+            builder_m4.setValue(4, 1, 2.5);
+            builder_m4.setValue(3, 5, 0.7);
+            m4 = builder_m4.build();
+
             m1To4 = MatrixMultiplication.instance().apply(
                     m1, m2, m3, m4);
         }
 
         @Before
         public void before_ベクトルの準備() {
-            vec_6 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(6))
-                    .setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4, 3.3, 0.2 })
-                    .build();
-            vec_4 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4 })
-                    .build();
+            Vector.Builder builder_6 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(6));
+            builder_6.setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4, 3.3, 0.2 });
+            vec_6 = builder_6.build();
+
+            Vector.Builder builder_4 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder_4.setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4 });
+            vec_4 = builder_4.build();
         }
 
         @Test
@@ -143,22 +148,24 @@ public class MatrixMultiplicationTest {
 
         @Before
         public void before_行列の準備() {
-            mxL = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(4, 2))
-                    .setValue(0, 0, 2.2)
-                    .setValue(2, 1, 3.1)
-                    .build();
-            mxD = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(2))
-                    .setValue(0, 2.3)
-                    .setValue(1, 0.7)
-                    .build();
+            GeneralMatrixBuilder lBuilder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(4, 2));
+            lBuilder.setValue(0, 0, 2.2);
+            lBuilder.setValue(2, 1, 3.1);
+            mxL = lBuilder.build();
+
+            DiagonalMatrix.Builder dBuilder = DiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(2));
+            dBuilder.setValue(0, 2.3);
+            dBuilder.setValue(1, 0.7);
+            mxD = dBuilder.build();
             symmMulti = MatrixMultiplication.instance().symmetricMultiply(mxD, mxL);
         }
 
         @Before
         public void before_ベクトルの準備() {
-            vec_4 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4))
-                    .setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4 })
-                    .build();
+
+            Vector.Builder builder_4 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder_4.setEntryValue(new double[] { 1.3, 4.1, 5.3, 2.4 });
+            vec_4 = builder_4.build();
         }
 
         @Test

@@ -1,5 +1,5 @@
 /**
- * 2023.8.20
+ * 2023.11.30
  */
 package matsu.num.matrix.base.helper.matrix.transpose;
 
@@ -14,7 +14,7 @@ import matsu.num.matrix.base.Vector;
  * {@linkplain Matrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public final class Transposition {
 
@@ -65,7 +65,7 @@ public final class Transposition {
          * 
          * @param original オリジナル
          */
-        public Transposed(Matrix original) {
+        Transposed(Matrix original) {
             this.original = Objects.requireNonNull(original);
             this.transposedDimension = original.matrixDimension().transpose();
         }

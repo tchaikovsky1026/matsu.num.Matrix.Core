@@ -1,5 +1,5 @@
 /**
- * 2023.8.17
+ * 2023.12.4
  */
 package matsu.num.matrix.base;
 
@@ -10,16 +10,11 @@ import java.util.Objects;
  * 行サイズ, 列サイズともに1以上の整数値をとる.
  * 
  * <p>
- * このクラスは次の属性を基にした等価性を提供する. 
+ * このクラスのインスタンスは, 行サイズ, 列サイズの値に基づくequalityを有する.
  * </p>
- * 
- * <ul>
- * <li> 行サイズ </li>
- * <li> 列サイズ </li>
- * </ul>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.2
  */
 public final class MatrixDimension {
 
@@ -40,7 +35,8 @@ public final class MatrixDimension {
     private final VectorDimension columnVectorDimension;
     private final MatrixShape shape;
 
-    private final int immutableHashCode;
+    //評価結果を使いまわすためのフィールド
+    private final int hashCode;
 
     //循環参照が生じるため, 遅延初期化を行う
     //軽量オブジェクトのためロックを行わず,複数回の初期化を許す
@@ -56,7 +52,7 @@ public final class MatrixDimension {
         this.rowVectorDimension = VectorDimension.valueOf(rowDimension);
         this.columnVectorDimension = VectorDimension.valueOf(columnDimension);
         this.shape = MatrixShape.shape(rowDimension, columnDimension);
-        this.immutableHashCode = this.immutableHashCode();
+        this.hashCode = this.calcHashCode();
     }
 
     /**
@@ -174,7 +170,7 @@ public final class MatrixDimension {
     }
 
     /**
-     * 他オブジェクトとの等価性を判定する. 
+     * 他オブジェクトとの等価性を判定する.
      * 
      * <p>
      * 等価性の基準はクラス説明のとおりである.
@@ -205,12 +201,16 @@ public final class MatrixDimension {
      */
     @Override
     public int hashCode() {
-        return this.immutableHashCode;
+        return this.hashCode;
     }
 
-    private int immutableHashCode() {
-        int result = 349631;
-        result = 31 * result + Objects.hashCode(this.rowVectorDimension);
+    /**
+     * ハッシュコードを計算する.
+     * 
+     * @return ハッシュコード
+     */
+    private int calcHashCode() {
+        int result = Objects.hashCode(this.rowVectorDimension);
         result = 31 * result + Objects.hashCode(this.columnVectorDimension);
         return result;
     }
@@ -221,7 +221,7 @@ public final class MatrixDimension {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code [r:%r, c:%c]}
+     * {@code (%r, %c)}
      * </p>
      * 
      * @return 説明表現
@@ -229,7 +229,7 @@ public final class MatrixDimension {
     @Override
     public String toString() {
         return String.format(
-                "[r:%d, c:%d]",
+                "(%s, %s)",
                 this.rowAsIntValue(), this.columnAsIntValue());
     }
 

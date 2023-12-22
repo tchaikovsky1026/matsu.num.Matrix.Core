@@ -1,5 +1,5 @@
 /**
- * 2023.8.1
+ * 2023.11.30
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -21,9 +21,10 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * 直交行列の行列積を扱う.
  * 
  * @author Matsuura Y.
- * @version 13.1
+ * @version 17.1
  */
 public final class OrthogonalMatrixMultiplication {
+
     private static final OrthogonalMatrixMultiplication INSTANCE = new OrthogonalMatrixMultiplication();
 
     private OrthogonalMatrixMultiplication() {
@@ -60,15 +61,15 @@ public final class OrthogonalMatrixMultiplication {
     /**
      * 直交行列の行列積を表現する行列.
      */
-    private static final class MultiplyingSeries extends SkeletalOrthogonalMatrix
-            implements MultipliedOrthogonalMatrix {
+    private static final class MultiplyingSeries
+            extends SkeletalOrthogonalMatrix implements MultipliedOrthogonalMatrix {
 
         private final Deque<OrthogonalMatrix> series;
         private final MatrixDimension matrixDimension;
 
         private final OrthogonalMatrix transpose;
 
-        public MultiplyingSeries(OrthogonalMatrix first, OrthogonalMatrix... following) {
+        MultiplyingSeries(OrthogonalMatrix first, OrthogonalMatrix... following) {
             this.transpose = null;
 
             Deque<OrthogonalMatrix> rawSeries = new LinkedList<>();
@@ -86,7 +87,7 @@ public final class OrthogonalMatrixMultiplication {
 
         /**
          * このクラス内部から呼ばれる. <br>
-         * transposeを表現するためのコンストラクタ. 
+         * transposeを表現するためのコンストラクタ.
          * 
          */
         private MultiplyingSeries(MatrixDimension matrixDimension,
@@ -121,7 +122,7 @@ public final class OrthogonalMatrixMultiplication {
         }
 
         /**
-         * サイズの整合性を検証する. 
+         * サイズの整合性を検証する.
          * 
          * @param series 行列積を表す一連の行列
          * @return seriesと等価なオプショナル, 整合しない場合は空
@@ -193,7 +194,7 @@ public final class OrthogonalMatrixMultiplication {
 
         @Override
         public String toString() {
-            return MultipliedOrthogonalMatrix.toString(this);
+            return OrthogonalMatrix.toString(this);
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * 2023.8.17
+ * 2023.11.30
  */
 package matsu.num.matrix.base.helper.value;
 
@@ -9,7 +9,7 @@ import matsu.num.matrix.base.BandMatrixDimension;
  * 帯行列上での位置属性(対角位置, 下側帯内, 上側帯内, 帯外, 行列外)を表す列挙型. 
  * 
  * @author Matsuura Y.
- * @version 15.0
+ * @version 17.1
  */
 public enum BandDimensionPositionState {
     /**

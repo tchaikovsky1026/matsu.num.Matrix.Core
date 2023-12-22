@@ -1,5 +1,5 @@
-/*
- * 2023.8.20
+/**
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -9,7 +9,12 @@ import matsu.num.commons.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 
 /**
- * 矩形(長方形)の(密)行列を生成するビルダ. スレッドセーフでない.
+ * 矩形(長方形)の(密)行列を生成するビルダ.
+ * 
+ * <p>
+ * このビルダはミュータブルである. <br>
+ * また, スレッドセーフでない.
+ * </p>
  * 
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -20,7 +25,7 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  */
 public final class GeneralMatrixBuilder {
 
@@ -65,13 +70,12 @@ public final class GeneralMatrixBuilder {
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @return this
      * @throws IndexOutOfBoundsException (i,j)が行列の内部でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @throws IllegalStateException すでにビルドされている場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
-    public GeneralMatrixBuilder setValue(final int row, final int column, double value) {
+    public void setValue(final int row, final int column, double value) {
         if (Objects.isNull(this.entry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -85,7 +89,6 @@ public final class GeneralMatrixBuilder {
                             matrixDimension, row, column));
         }
         entry[row * matrixDimension.columnAsIntValue() + column] = value;
-        return this;
     }
 
     /**
@@ -93,11 +96,10 @@ public final class GeneralMatrixBuilder {
      *
      * @param row1 i, 行index1
      * @param row2 j, 行index2
-     * @return 行交換後の行列
      * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
      * @throws IllegalStateException すでにビルドされている場合
      */
-    public GeneralMatrixBuilder swapRows(final int row1, final int row2) {
+    public void swapRows(final int row1, final int row2) {
         if (Objects.isNull(this.entry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -110,7 +112,7 @@ public final class GeneralMatrixBuilder {
         }
 
         if (row1 == row2) {
-            return this;
+            return;
         }
 
         final int columnDimension = matrixDimension.columnAsIntValue();
@@ -123,7 +125,6 @@ public final class GeneralMatrixBuilder {
             entry[i1] = entry[i2];
             entry[i2] = temp;
         }
-        return this;
     }
 
     /**
@@ -131,11 +132,10 @@ public final class GeneralMatrixBuilder {
      *
      * @param column1 i, 列index1
      * @param column2 j, 列index2
-     * @return 列交換後の行列
      * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
      * @throws IllegalStateException すでにビルドされている場合
      */
-    public GeneralMatrixBuilder swapColumns(final int column1, final int column2) {
+    public void swapColumns(final int column1, final int column2) {
         if (Objects.isNull(this.entry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
@@ -148,7 +148,7 @@ public final class GeneralMatrixBuilder {
         }
 
         if (column1 == column2) {
-            return this;
+            return;
         }
 
         final int rowDimension = matrixDimension.rowAsIntValue();
@@ -163,7 +163,6 @@ public final class GeneralMatrixBuilder {
             entry[i1] = entry[i2];
             entry[i2] = temp;
         }
-        return this;
     }
 
     /**
@@ -182,7 +181,7 @@ public final class GeneralMatrixBuilder {
     }
 
     /**
-     * 与えられた次元(サイズ)を持つ, 零行列で初期化された矩形(長方形)行列ビルダを生成する. 
+     * 与えられた次元(サイズ)を持つ, 零行列で初期化された矩形(長方形)行列ビルダを生成する.
      * 
      *
      * @param matrixDimension 行列サイズ
@@ -241,10 +240,10 @@ public final class GeneralMatrixBuilder {
         for (int j = 0; j < srcRowDimension; j++) {
             double[] rightArray = new double[srcRowDimension];
             rightArray[j] = 1;
-            final double[] resultArray = src.operateTranspose(
-                    Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension())
-                            .setEntryValue(rightArray).build())
-                    .entry();
+
+            Vector.Builder builder = Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension());
+            builder.setEntryValue(rightArray);
+            final double[] resultArray = src.operateTranspose(builder.build()).entry();
             for (int k = 0; k < srcColumnDimension; k++) {
                 outBuilder.setValue(j, k, resultArray[k]);
             }
@@ -290,8 +289,8 @@ public final class GeneralMatrixBuilder {
     private static final class GeneralMatrixImpl extends SkeletalMatrix implements EntryReadableMatrix {
 
         /*
-        行列の各要素を, 内部では1次元配列として,
-        {@code double[rowIndex * columnDimension + columnIndex]}の順番で保持する. 
+         * 行列の各要素を, 内部では1次元配列として,
+         * {@code double[rowIndex * columnDimension + columnIndex]}の順番で保持する.
          */
         private final MatrixDimension matrixDimension;
         private final double[] entry;
@@ -358,8 +357,9 @@ public final class GeneralMatrixBuilder {
                 resultEntry[j] = sumProduct;
             }
 
-            return Vector.Builder.zeroBuilder(this.matrixDimension.leftOperableVectorDimension())
-                    .setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(this.matrixDimension.leftOperableVectorDimension());
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override
@@ -391,8 +391,9 @@ public final class GeneralMatrixBuilder {
                 }
             }
 
-            return Vector.Builder.zeroBuilder(this.matrixDimension.rightOperableVectorDimension())
-                    .setEntryValue(resultEntry).build();
+            Vector.Builder builder = Vector.Builder.zeroBuilder(this.matrixDimension.rightOperableVectorDimension());
+            builder.setEntryValue(resultEntry);
+            return builder.build();
         }
 
         @Override

@@ -1,5 +1,5 @@
 /**
- * 2023.8.20
+ * 2023.11.30
  */
 package matsu.num.matrix.base;
 
@@ -9,18 +9,18 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadable;
 
 /**
  * 成分に<i>O</i>(1)でアクセス可能な行列. <br>
- * 成分に不正値(inf,NaN)を含んではいけない. 
+ * 成分に不正値(inf,NaN)を含んではいけない.
  * 
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.  
+ * {@link Matrix}のクラス説明の規約に従う.
  * </p>
  * 
- * <p> 
+ * <p>
  * 値の検証には{@link #acceptValue(double) }メソッドを使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 15.1
+ * @version 17.1
  * @see Matrix
  */
 public interface EntryReadableMatrix extends Matrix {
@@ -49,7 +49,6 @@ public interface EntryReadableMatrix extends Matrix {
      * @return 有効である場合はtrue
      */
     public static boolean acceptValue(double value) {
-
         return Double.isFinite(value);
     }
 
@@ -72,8 +71,8 @@ public interface EntryReadableMatrix extends Matrix {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code @hashCode[dimension: %dimension, entry: %entry]} <br>
-     * {@code @hashCode[dimension: %dimension, entry: %entry, %character1, %character2,...]}
+     * {@code EntryReadableMatrix[dim(%dimension), %entry]} <br>
+     * {@code EntryReadableMatrix[dim(%dimension), %character1, %character2,..., %entry]}
      * </p>
      * 
      * <p>
@@ -91,10 +90,8 @@ public interface EntryReadableMatrix extends Matrix {
         }
 
         StringBuilder fieldString = new StringBuilder();
-        fieldString.append("dimension:")
-                .append(matrix.matrixDimension())
-                .append(", entry:")
-                .append(EntryReadableMatrix.toSimplifiedEntryString(matrix));
+        fieldString.append("dim")
+                .append(matrix.matrixDimension());
 
         if (Objects.nonNull(characters)) {
             for (String character : characters) {
@@ -103,19 +100,21 @@ public interface EntryReadableMatrix extends Matrix {
             }
         }
 
+        fieldString.append(", ")
+                .append(EntryReadableMatrix.toSimplifiedEntryString(matrix));
+
         return String.format(
-                "@%s[%s]",
-                Integer.toHexString(matrix.hashCode()),
+                "EntryReadableMatrix[%s]",
                 fieldString.toString());
     }
 
     /**
-     * {@linkplain EntryReadableMatrix}の成分の値についての簡略化された文字列表現を返す. 
+     * {@linkplain EntryReadableMatrix}の成分の値についての簡略化された文字列表現を返す.
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code [[*, *, ...], [...], ...]}
+     * {@code {{*, *, ...}, {...}, ...}}
      * </p>
      * 
      * @param matrix インスタンス
@@ -128,14 +127,14 @@ public interface EntryReadableMatrix extends Matrix {
 
         StringBuilder entryString = new StringBuilder();
 
-        entryString.append('[');
+        entryString.append('{');
 
         //1段目
         {
             //rowIndexは0
             final int j = 0;
 
-            entryString.append('[');
+            entryString.append('{');
             final int columnDimension = matrix.matrixDimension().columnAsIntValue();
             final int columnDisplaySize = Math.min(maxDisplaySize, columnDimension);
             for (int k = 0; k < columnDisplaySize; k++) {
@@ -147,7 +146,7 @@ public interface EntryReadableMatrix extends Matrix {
             if (columnDimension > columnDisplaySize) {
                 entryString.append(", ...");
             }
-            entryString.append(']');
+            entryString.append('}');
         }
 
         //2段目以降
@@ -155,13 +154,13 @@ public interface EntryReadableMatrix extends Matrix {
         final int rowDisplaySize = Math.min(maxDisplaySize, rowDimension);
         for (int j = 1; j < rowDisplaySize; j++) {
             entryString.append(", ")
-                    .append("[...]");
+                    .append("{...}");
         }
         if (rowDimension > rowDisplaySize) {
             entryString.append(", ...");
         }
 
-        entryString.append(']');
+        entryString.append('}');
 
         return entryString.toString();
     }
@@ -169,7 +168,12 @@ public interface EntryReadableMatrix extends Matrix {
     /**
      * 行列の全成分をカンマ区切り形式に変換する.
      * 
-     * @param matrix 行列 
+     * <p>
+     * すべての成分が文字列として出力されるため,
+     * そのサイズに注意せよ.
+     * </p>
+     * 
+     * @param matrix 行列
      * @return {@link String}形式に変換された行列
      * @throws NullPointerException 引数にnullが含まれる場合
      */

@@ -88,7 +88,7 @@ public interface LinearEquationSolving<T extends Matrix> extends Inversion, Dete
 
         return String.format(
                 "%s[target:%s]",
-                Objects.nonNull(methodName) ? methodName : "anonymous",
+                Objects.nonNull(methodName) ? methodName : "AnonymousSolver",
                 instance.target());
     }
 
@@ -99,7 +99,7 @@ public interface LinearEquationSolving<T extends Matrix> extends Inversion, Dete
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code anonymous[target: %matrix]}
+     * {@code AnonymousSolver[target: %matrix]}
      * </p>
      * 
      * <p>

@@ -27,11 +27,15 @@ public class MatrixTest {
                 matrixs = new ArrayList<>();
             }
             MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            Matrix originalMatrix = GeneralMatrixBuilder.zeroBuilder(dimension)
-                    .setValue(0, 0, 1).setValue(0, 1, 2).setValue(0, 2, 3).setValue(0, 3, 4)
-                    .setValue(1, 0, 5).setValue(1, 1, 6).setValue(1, 2, 7).setValue(1, 3, 8)
-                    .setValue(2, 0, 9).setValue(2, 1, 10).setValue(2, 2, 11).setValue(2, 3, 12)
-                    .build();
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            int count = 0;
+            for (int j = 0; j < dimension.rowAsIntValue(); j++) {
+                for (int k = 0; k < dimension.columnAsIntValue(); k++) {
+                    count++;
+                    builder.setValue(j, k, count);
+                }
+            }
+            Matrix originalMatrix = builder.build();
             matrixs.add(originalMatrix);
         }
 
