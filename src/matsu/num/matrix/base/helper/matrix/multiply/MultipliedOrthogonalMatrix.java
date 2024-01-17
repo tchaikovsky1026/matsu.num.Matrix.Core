@@ -1,5 +1,5 @@
 /**
- * 2023.11.30
+ * 2023.12.25
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -11,7 +11,7 @@ import matsu.num.matrix.base.OrthogonalMatrix;
  * 直交行列が行列積として表現されていることを通知可能にするインターフェース.
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.0
  */
 public interface MultipliedOrthogonalMatrix extends MultipliedMatrix, OrthogonalMatrix {
 

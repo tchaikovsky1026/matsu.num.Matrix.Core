@@ -1,5 +1,5 @@
 /**
- * 2023.12.4
+ * 2023.12.28
  */
 package matsu.num.matrix.base;
 
@@ -9,47 +9,63 @@ import java.util.function.Supplier;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * {@link OrthogonalMatrix}の骨格実装. <br>
- * {@link OrthogonalMatrix#inverse()}の実装の提供が主な効果である.
- * 
  * <p>
- * この骨格実装は, {@linkplain #inverse()}メソッドの実装を提供し,
- * 同時にオーバーライドを禁止する. <br>
- * このメソッドにより返される逆行列の{@linkplain OrthogonalMatrix#inverse()}による戻り値は,
- * {@code this}と同一である.
+ * {@linkplain OrthogonalMatrix} の骨格実装. <br>
+ * {@linkplain OrthogonalMatrix#inverse()} の実装の提供が主な効果である.
  * </p>
  * 
  * <p>
- * {@linkplain OrthogonalMatrix#inverse()}は関数的に振る舞う. <br>
+ * この骨格実装は, {@linkplain #inverse()} メソッドの実装を提供し,
+ * 同時にオーバーライドを禁止する. <br>
+ * このメソッドにより返される逆行列の {@linkplain OrthogonalMatrix#inverse()} による戻り値
+ * (すなわち, 逆行列の逆行列) は,
+ * {@code this} と同一である.
+ * </p>
+ * 
+ * <p>
+ * {@linkplain OrthogonalMatrix#inverse()} は関数的に振る舞う. <br>
  * この骨格実装は,
- * 初めて{@linkplain #inverse()}または{@linkplain #transpose()}が呼ばれたときに逆行列(転置行列)を{@linkplain #createInverse()}によって生成し,
- * 以後はそれを使いまわすキャッシュ仕組みを提供している.
+ * 初めて {@linkplain #inverse()} または {@linkplain #transpose()}
+ * が呼ばれたときに逆行列 (転置行列) を {@linkplain #createInverse()} によって生成し,
+ * 以後はそれを使いまわすキャッシュの仕組みを提供している.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.2
+ * @param <T> {@code this} のタイプ, {@linkplain #target()} の戻り値型
  */
-public abstract class SkeletalOrthogonalMatrix implements OrthogonalMatrix {
+public abstract class SkeletalOrthogonalMatrix<T extends OrthogonalMatrix>
+        implements OrthogonalMatrix {
+
+    private final T castedThis;
 
     //逆行列(転置行列)を生成するサプライヤ
-    private final Supplier<Optional<OrthogonalMatrix>> inverseSupplier;
+    private final Supplier<Optional<? extends OrthogonalMatrix>> inverseSupplier;
 
     /**
-     * 骨格実装を生成する.
+     * 骨格実装を生成する唯一のコンストラクタ.
      */
     protected SkeletalOrthogonalMatrix() {
-
-        if (this instanceof Symmetric) {
-            Optional<OrthogonalMatrix> optThis = Optional.of(this);
-            this.inverseSupplier = () -> optThis;
-            return;
-        }
-
+        super();
         this.inverseSupplier = ImmutableLazyCacheSupplier.of(() -> Optional.of(this.createInverse()));
+
+        /*
+         * 警告抑制をしているが, ジェネリックキャストなので実行時は全て
+         * OrthogonalMatrix に置き換えられ,
+         * ClassCastException は発生しない.
+         */
+        @SuppressWarnings("unchecked")
+        T t = (T) this;
+        this.castedThis = t;
     }
 
     @Override
-    public final Optional<OrthogonalMatrix> inverse() {
+    public final T target() {
+        return this.castedThis;
+    }
+
+    @Override
+    public final Optional<? extends OrthogonalMatrix> inverse() {
         return this.inverseSupplier.get();
     }
 
@@ -62,22 +78,26 @@ public abstract class SkeletalOrthogonalMatrix implements OrthogonalMatrix {
      * 自身の転置行列を計算する.
      * 
      * <p>
-     * 骨格実装の{@linkplain #inverse()}と{@linkplain #transpose()}を遅延初期化するために実装されるメソッドである.
+     * 骨格実装の{@linkplain #inverse()} と
+     * {@linkplain #transpose()} を遅延初期化するために実装されるメソッドである.
      * <br>
      * それらのどちらかが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけ呼ばれる. <br>
-     * このメソッドのアクセス修飾子をOverride先で{@code public}にしてはならない.
+     * このメソッドのアクセス修飾子をOverride先で {@code public} にしてはならない.
      * </p>
      * 
      * <p>
      * 実装としては, <br>
      * {@code this.createInverse().inverse().get() == this} <br>
-     * を満たすことが望ましい.
+     * を満たすことが望ましい
+     * (逆行列の逆行列は自身と同一のインスタンスを指す).
      * </p>
      * 
      * @return 自身の逆行列
      */
     protected OrthogonalMatrix createInverse() {
-        return new TransposedOrthogonal(this);
+        return (this instanceof Symmetric)
+                ? this
+                : new TransposedOrthogonal(this);
     }
 
     /**
@@ -126,7 +146,7 @@ public abstract class SkeletalOrthogonalMatrix implements OrthogonalMatrix {
         }
 
         @Override
-        public Optional<OrthogonalMatrix> inverse() {
+        public Optional<? extends OrthogonalMatrix> inverse() {
             return this.original;
         }
 

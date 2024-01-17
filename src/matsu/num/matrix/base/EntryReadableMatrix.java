@@ -1,5 +1,5 @@
 /**
- * 2023.11.30
+ * 2023.12.22
  */
 package matsu.num.matrix.base;
 
@@ -8,30 +8,32 @@ import java.util.Objects;
 import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadable;
 
 /**
- * 成分に<i>O</i>(1)でアクセス可能な行列. <br>
- * 成分に不正値(inf,NaN)を含んではいけない.
- * 
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.
+ * 成分に <i>O</i>(1) でアクセス可能な行列を表す. <br>
+ * 成分に不正値 (inf, NaN) を含んではいけない.
  * </p>
  * 
  * <p>
- * 値の検証には{@link #acceptValue(double) }メソッドを使用する.
+ * {@link Matrix} のクラス説明の規約に従う.
+ * </p>
+ * 
+ * <p>
+ * 値の検証には {@link #acceptValue(double) } メソッドを使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.0
  * @see Matrix
  */
 public interface EntryReadableMatrix extends Matrix {
 
     /**
-     * (<i>i</i>,<i>j</i>) 要素の値を取得する.
+     * (<i>i</i>, <i>j</i>) 要素の値を取得する.
      *
      * @param row i, 行index
      * @param column j, 列index
      * @return (i,j) 要素の値
-     * @throws IndexOutOfBoundsException (i,j)が行列の内部でない場合
+     * @throws IndexOutOfBoundsException (i, j) が行列の内部でない場合
      */
     public double valueAt(int row, int column);
 
@@ -43,7 +45,7 @@ public interface EntryReadableMatrix extends Matrix {
     public double entryNormMax();
 
     /**
-     * {@link EntryReadableMatrix}の成分として有効な値であるかを判定する.
+     * {@link EntryReadableMatrix} の成分として有効な値であるかを判定する.
      *
      * @param value 検証する値
      * @return 有効である場合はtrue
@@ -54,7 +56,7 @@ public interface EntryReadableMatrix extends Matrix {
 
     /**
      * 行列の転置行列を生成する. <br>
-     * {@linkplain Symmetric}が付与されている場合, 戻り値も{@linkplain Symmetric}である.
+     * {@linkplain Symmetric} が付与されている場合, 戻り値も {@linkplain Symmetric} である.
      *
      * @param original 元の行列
      * @return 転置行列
@@ -65,7 +67,7 @@ public interface EntryReadableMatrix extends Matrix {
     }
 
     /**
-     * {@linkplain EntryReadableMatrix}インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
+     * {@linkplain EntryReadableMatrix} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
      * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
      * 
      * <p>
@@ -76,7 +78,7 @@ public interface EntryReadableMatrix extends Matrix {
      * </p>
      * 
      * <p>
-     * {@code matrix}が{@code null}の場合は, おそらくは次であろう. <br>
+     * {@code matrix} が {@code null} の場合は, おそらくは次であろう. <br>
      * {@code null}
      * </p>
      * 
@@ -109,7 +111,7 @@ public interface EntryReadableMatrix extends Matrix {
     }
 
     /**
-     * {@linkplain EntryReadableMatrix}の成分の値についての簡略化された文字列表現を返す.
+     * {@linkplain EntryReadableMatrix} の成分の値についての簡略化された文字列表現を返す.
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
@@ -174,7 +176,7 @@ public interface EntryReadableMatrix extends Matrix {
      * </p>
      * 
      * @param matrix 行列
-     * @return {@link String}形式に変換された行列
+     * @return {@link String} 形式に変換された行列
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static String allEntryToCSVFormat(EntryReadableMatrix matrix) {

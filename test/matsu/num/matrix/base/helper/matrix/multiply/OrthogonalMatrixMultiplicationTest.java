@@ -22,6 +22,8 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  */
 @RunWith(Enclosed.class)
 public class OrthogonalMatrixMultiplicationTest {
+    
+    public static final Class<?> TEST_CLASS = OrthogonalMatrixMultiplication.class;
 
     public static class 行列積のテスト {
 
@@ -151,7 +153,7 @@ public class OrthogonalMatrixMultiplicationTest {
         }
     }
 
-    public static class toStrinh表示 {
+    public static class toString表示 {
 
         private final MatrixDimension matrixDimension = MatrixDimension.square(4);
 
@@ -170,7 +172,7 @@ public class OrthogonalMatrixMultiplicationTest {
 
         @Test
         public void test_toString表示() {
-            System.out.println(OrthogonalMatrixMultiplication.class.getSimpleName() + ":");
+            System.out.println(TEST_CLASS.getName());
 
             //4積
             OrthogonalMatrix multi_1 = OrthogonalMatrixMultiplication.instance().apply(m1, m2, m3, m4);

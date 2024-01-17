@@ -1,5 +1,5 @@
 /**
- * 2023.12.4
+ * 2023.12.28
  */
 package matsu.num.matrix.base;
 
@@ -11,19 +11,18 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * 置換行列を扱う.
  *
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.2
  */
-public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix, Determinantable {
+public interface PermutationMatrix extends EntryReadableMatrix,
+        OrthogonalMatrix, Determinantable {
 
     @Override
-    public abstract PermutationMatrix target();
+    public PermutationMatrix target();
 
     /**
-     * {@link PermutationMatrix}のビルダ.
-     * 
      * <p>
-     * このビルダはミュータブルである. <br>
-     * また, スレッドセーフでない.
+     * {@link PermutationMatrix}のビルダ. <br>
+     * このビルダはミュータブルであり, スレッドセーフでない.
      * </p>
      */
     public static final class Builder {
@@ -34,7 +33,9 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
         private int[] permutationVertical;
         //P^{T}=(e_{q_1},...,e_{q_n})で表示したときの, q_1,...,q_n
         private int[] permutationHorizontal;
-        private boolean even;
+
+        private boolean even = true;
+        private boolean unit = true;
 
         /**
          * 与えられた次元(サイズ)の置換行列ビルダを生成する. <br>
@@ -61,11 +62,10 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
                 thisPermutationVertical[i] = i;
                 thisPermutationHorizontal[i] = i;
             }
-            even = true;
         }
 
         /**
-         * 第<i>i</i>行と第<i>j</i>行を交換した行列を返す.
+         * 第 <i>i</i> 行と第 <i>j</i> 行を交換した行列を返す.
          *
          * @param row1 i, 行index1
          * @param row2 j, 行index2
@@ -94,10 +94,11 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             permutationVertical[column1] = row2;
             permutationVertical[column2] = row1;
             this.even = !this.even;
+            this.unit = false;
         }
 
         /**
-         * 第<i>i</i>列と第<i>j</i>列を交換した行列を返す.
+         * 第 <i>i</i> 列と第 <i>j</i> 列を交換した行列を返す.
          *
          * @param column1 i, 列index1
          * @param column2 j, 列index2
@@ -126,6 +127,7 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             permutationHorizontal[row1] = column2;
             permutationHorizontal[row2] = column1;
             this.even = !this.even;
+            this.unit = false;
         }
 
         /**
@@ -138,8 +140,10 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             if (Objects.isNull(this.permutationHorizontal)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            PermutationMatrix out = new PermutationMatrixImpl(
-                    this.matrixDimension, this.permutationVertical, this.permutationHorizontal, this.even);
+            PermutationMatrix out = this.unit
+                    ? UnitMatrix.matrixOf(this.matrixDimension)
+                    : new PermutationMatrixImpl(
+                            this.matrixDimension, this.permutationVertical, this.permutationHorizontal, this.even);
             this.permutationHorizontal = null;
             this.permutationVertical = null;
             return out;
@@ -157,8 +161,8 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
             return new Builder(matrixDimension);
         }
 
-        private static final class PermutationMatrixImpl extends SkeletalOrthogonalMatrix
-                implements PermutationMatrix {
+        private static final class PermutationMatrixImpl
+                extends SkeletalOrthogonalMatrix<PermutationMatrix> implements PermutationMatrix {
 
             private final MatrixDimension matrixDimension;
 
@@ -178,11 +182,6 @@ public interface PermutationMatrix extends EntryReadableMatrix, OrthogonalMatrix
                 this.even = even;
                 this.permutationVertical = permutationVertical;
                 this.permutationHorizontal = permutationHorizontal;
-            }
-
-            @Override
-            public PermutationMatrix target() {
-                return this;
             }
 
             @Override

@@ -1,9 +1,8 @@
 /**
- * 2023.8.15
+ * 2024.1.16
  */
 package matsu.num.matrix.base.nlsf.helper.fact;
 
-import matsu.num.commons.Exponentiation;
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.DiagonalMatrix;
@@ -20,7 +19,7 @@ import matsu.num.matrix.base.exception.ProcessFailedException;
  * その定数倍は対角行列Dに押し付ける.
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 18.3
  */
 public final class CholeskyBandFactorizationHelper {
 
@@ -123,7 +122,7 @@ public final class CholeskyBandFactorizationHelper {
             }
             //Dの計算
             final double invD = 1 / d;
-            thisMxDEntry[i] = Exponentiation.sqrt(d);
+            thisMxDEntry[i] = Math.sqrt(d);
             //Lの計算
             for (int j = 0, l = Math.min(thisBandWidth, thisDimension - i - 1); j < l; j++) {
                 thisMxUEntry_bk[j] = thisMxLEntry[in + j];

@@ -1,7 +1,7 @@
 /**
- * 2023.11.30
+ * 2024.1.16
  */
-package matsu.num.matrix.base.lazy;
+package matsu.num.matrix.base.helper.value;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -9,7 +9,6 @@ import java.util.Optional;
 import matsu.num.matrix.base.Determinantable;
 import matsu.num.matrix.base.Inversion;
 import matsu.num.matrix.base.Matrix;
-import matsu.num.matrix.base.helper.value.DeterminantValues;
 
 /**
  * 逆行列と行列式がセットになった概念を扱う.
@@ -21,15 +20,15 @@ import matsu.num.matrix.base.helper.value.DeterminantValues;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.3
  * @param <T> 逆行列の型パラメータ
  * @see Inversion
  * @see Determinantable
  */
-public final class InverseAndDeterminantStructure<T extends Matrix> {
+public final class InverseAndDeterminantStruct<T extends Matrix> {
 
-    final DeterminantValues determinantValues;
-    final Optional<T> inverseMatrix;
+    private final DeterminantValues determinantValues;
+    private final Optional<T> inverseMatrix;
 
     /**
      * 構造体を生成する. <br>
@@ -41,15 +40,16 @@ public final class InverseAndDeterminantStructure<T extends Matrix> {
      * 
      * @param determinantValues 行列式に関連する値
      * @param inverseMatrix 逆行列
+     * @throws IllegalArgumentException 符号が0である場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public InverseAndDeterminantStructure(DeterminantValues determinantValues, T inverseMatrix) {
+    public InverseAndDeterminantStruct(DeterminantValues determinantValues, T inverseMatrix) {
         super();
         this.determinantValues = Objects.requireNonNull(determinantValues);
         this.inverseMatrix = Optional.of(inverseMatrix);
 
         if (this.determinantValues.sign() == 0) {
-            throw new IllegalArgumentException("行列式が特異に相当するので,このコンストラクタは呼んではいけない");
+            throw new IllegalArgumentException("行列式が特異相当なので, 行列式と逆行列が整合していない");
         }
     }
 
@@ -57,7 +57,7 @@ public final class InverseAndDeterminantStructure<T extends Matrix> {
      * 特異行列(逆行列が存在しないこと)を表す概念を生成する. <br>
      * 特異行列であるので行列式は0である.
      */
-    public InverseAndDeterminantStructure() {
+    public InverseAndDeterminantStruct() {
         super();
         this.determinantValues = new DeterminantValues();
         this.inverseMatrix = Optional.empty();

@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.GeneralMatrixBuilder;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.SymmetricMatrixBuilder;
@@ -35,7 +34,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元6_パターン1 {
 
-        private LinearEquationSolving<EntryReadableMatrix> mcp;
+        private LUTypeSolver mcp;
 
         @Before
         public void before_次元6の正方行列のソルバを用意する() {
@@ -130,7 +129,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元6_パターン2 {
 
-        private LinearEquationSolving<EntryReadableMatrix> mcp;
+        private LUTypeSolver mcp;
 
         @Before
         public void before_次元6の正方行列のソルバを用意する() {
@@ -209,7 +208,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元6_パターン3 {
 
-        private LinearEquationSolving<EntryReadableMatrix> mcp;
+        private LUTypeSolver mcp;
 
         @Before
         public void before_次元6の正方行列のソルバを用意する() {
@@ -286,7 +285,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
-        private LinearEquationSolving<EntryReadableMatrix> mcp;
+        private LUTypeSolver mcp;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {

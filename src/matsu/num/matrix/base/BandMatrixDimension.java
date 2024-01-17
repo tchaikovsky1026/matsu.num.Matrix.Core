@@ -1,5 +1,5 @@
 /**
- * 2023.12.4
+ * 2023.12.22
  */
 package matsu.num.matrix.base;
 
@@ -8,15 +8,14 @@ import java.util.Objects;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 
 /**
- * 帯行列の構造(次元(サイズ) + 帯幅)を扱う不変クラス. <br>
- * サイズ1以上の正方形であり, 下側, 上側帯幅とも0以上をとる.
- * 
  * <p>
+ * 帯行列の構造 (次元(サイズ) + 帯幅) を扱う不変クラス. <br>
+ * サイズ1以上の正方形であり, 下側, 上側帯幅とも0以上をとる. <br>
  * このクラスのインスタンスは, 行列次元, 上側下側帯幅の値に基づくequalityを有する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.0
  */
 public final class BandMatrixDimension {
 
@@ -81,7 +80,7 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * 下側帯幅を{@code int}値で返す.
+     * 下側帯幅を {@code int} 値で返す.
      *
      * @return 下側帯幅
      */
@@ -90,7 +89,7 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * 上側帯幅を{@code int}値で返す.
+     * 上側帯幅を {@code int} 値で返す.
      *
      * @return 上側帯幅
      */
@@ -108,7 +107,7 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * 帯構造が下三角行列であるか(上側帯幅が0か)を判定する.
+     * 帯構造が下三角行列であるか (上側帯幅が0かどうか) を判定する.
      *
      * @return 帯構造が下三角行列ならばtrue
      */
@@ -117,7 +116,7 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * 帯構造が上三角行列であるか(下側帯幅が0か)を判定する.
+     * 帯構造が上三角行列であるか (下側帯幅が0かどうか) を判定する.
      *
      * @return 帯構造が上三角行列ならばtrue
      */
@@ -126,7 +125,7 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * 帯構造が対角行列であるか(帯幅が両側とも0か)を判定する.
+     * 帯構造が対角行列であるか (帯幅が両側とも0かどうか) を判定する.
      *
      * @return 帯構造が対角行列ならばtrue
      */
@@ -135,9 +134,8 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * 他オブジェクトとの等価性を判定する.
-     * 
      * <p>
+     * 他オブジェクトとの等価性を判定する. <br>
      * 等価性の基準はクラス説明のとおりである.
      * </p>
      * 
@@ -183,7 +181,9 @@ public final class BandMatrixDimension {
     }
 
     /**
+     * <p>
      * このオブジェクトの文字列説明表現を返す.
+     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>

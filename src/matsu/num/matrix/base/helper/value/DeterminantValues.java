@@ -1,16 +1,15 @@
 /**
- * 2023.11.30
+ * 2024.1.16
  */
 package matsu.num.matrix.base.helper.value;
 
-import matsu.num.commons.Exponentiation;
 import matsu.num.matrix.base.Determinantable;
 
 /**
  * 行列式({@linkplain Determinantable})に関する値のデータクラス.
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.3
  */
 public final class DeterminantValues {
 
@@ -27,8 +26,17 @@ public final class DeterminantValues {
      */
     public DeterminantValues(double logAbsDeterminant, int sign) {
         super();
-        double absDet = Exponentiation.exp(logAbsDeterminant);
-        this.determinant = sign >= 0 ? absDet : -absDet;
+
+        //符号が0ならdetは強制的に0
+        if (sign == 0) {
+            this.determinant = 0d;
+            this.logAbsDeterminant = Double.NEGATIVE_INFINITY;
+            this.sign = 0;
+            return;
+        }
+
+        double absDet = Math.exp(logAbsDeterminant);
+        this.determinant = sign > 0 ? absDet : -absDet;
         this.logAbsDeterminant = logAbsDeterminant;
         this.sign = sign;
     }

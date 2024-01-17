@@ -1,9 +1,8 @@
 /**
- * 2023.8.15
+ * 2024.1.16
  */
 package matsu.num.matrix.base.nlsf.helper.fact;
 
-import matsu.num.commons.Exponentiation;
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularBuilder;
@@ -19,7 +18,7 @@ import matsu.num.matrix.base.exception.ProcessFailedException;
  * その定数倍は対角行列Dに押し付ける.
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 18.3
  */
 public final class CholeskyFactorizationHelper {
 
@@ -99,7 +98,7 @@ public final class CholeskyFactorizationHelper {
             }
             //Dの計算
             final double invD = 1 / d;
-            thisMxEntry[in + i] = Exponentiation.sqrt(d);
+            thisMxEntry[in + i] = Math.sqrt(d);
             //Lの計算と引っ張り
             int jn = (i * (i + 1)) / 2;
             for (int j = i + 1; j < thisDimension; j++) {

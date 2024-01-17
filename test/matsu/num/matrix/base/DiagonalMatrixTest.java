@@ -21,6 +21,8 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 @RunWith(Enclosed.class)
 public class DiagonalMatrixTest {
 
+    public static final Class<?> TEST_CLASS = DiagonalMatrix.class;
+
     public static class 生成に関する {
 
         @Test(expected = MatrixFormatMismatchException.class)
@@ -185,7 +187,7 @@ public class DiagonalMatrixTest {
 
         public static class 次元3_パターン1 {
 
-            private Determinantable matrix;
+            private DiagonalMatrix matrix;
 
             @Before
             public void before_次元3_成分1_2_m3の対角行列の作成() {
@@ -214,7 +216,7 @@ public class DiagonalMatrixTest {
 
         public static class 次元10_超大パターン {
 
-            private Determinantable matrix;
+            private DiagonalMatrix matrix;
 
             @Before
             public void before_次元10の超大要素の対角行列の作成() {
@@ -252,7 +254,7 @@ public class DiagonalMatrixTest {
 
         public static class 次元10_超小パターン {
 
-            private Determinantable matrix;
+            private DiagonalMatrix matrix;
 
             @Before
             public void before_次元10の超大要素の対角行列の作成() {
@@ -290,7 +292,7 @@ public class DiagonalMatrixTest {
 
         public static class 次元3_特異 {
 
-            private Determinantable matrix;
+            private DiagonalMatrix matrix;
 
             @Before
             public void before_次元3_成分1_0_m3の対角行列の作成() {
@@ -316,6 +318,15 @@ public class DiagonalMatrixTest {
                 assertThat(matrix.signOfDeterminant(), is(0));
             }
         }
+    }
 
+    public static class toString表示 {
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(DiagonalMatrix.Builder.unitBuilder(MatrixDimension.square(3)).build());
+            System.out.println();
+        }
     }
 }

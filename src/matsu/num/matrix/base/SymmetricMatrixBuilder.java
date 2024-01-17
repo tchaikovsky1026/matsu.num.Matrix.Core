@@ -1,32 +1,30 @@
 /**
- * 2023.11.30
+ * 2024.1.16
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
-import matsu.num.commons.ArraysUtil;
+import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 
 /**
- * 対称(密)行列を生成するビルダ.
- * 
  * <p>
- * このビルダはミュータブルである. <br>
- * また, スレッドセーフでない.
+ * 対称(密)行列を生成するビルダ. <br>
+ * このビルダはミュータブルであり, スレッドセーフでない.
  * </p>
  * 
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
  * 有効要素数が大きすぎるとは, <br>
  * 行列の行数(= 列数)を<i>n</i>として, <br>
- * <i>n</i> * (<i>n</i> + 1) {@literal >} {@linkplain Integer#MAX_VALUE} <br>
+ * <i>n</i> * (<i>n</i> + 1) &gt; {@linkplain Integer#MAX_VALUE} <br>
  * である状態である.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.3
  */
 public final class SymmetricMatrixBuilder {
 
@@ -70,13 +68,13 @@ public final class SymmetricMatrixBuilder {
     }
 
     /**
-     * (<i>i</i>,<i>j</i>)要素を指定した値に置き換える. <br>
-     * 同時に(<i>j</i>,<i>i</i>)の値も置き換わる.
+     * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
+     * 同時に(<i>j</i>, <i>i</i>) の値も置き換わる.
      *
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @throws IndexOutOfBoundsException (i,j)が行列の内部でない場合
+     * @throws IndexOutOfBoundsException (i, j) が行列の内部でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      * @throws IllegalStateException すでにビルドされている場合
@@ -99,7 +97,7 @@ public final class SymmetricMatrixBuilder {
     }
 
     /**
-     * 第<i>i</i>行と第<i>j</i>行, 第<i>i</i>列と第<i>j</i>列を交換する.
+     * 第 <i>i</i> 行と第 <i>j</i> 行, 第 <i>i</i> 列と第 <i>j</i> 列を交換する.
      *
      * @param index1 i, 行,列index1
      * @param index2 j, 行,列index2

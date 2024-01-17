@@ -1,17 +1,26 @@
 /**
- * 2023.11.30
+ * 2023.12.25
  */
 package matsu.num.matrix.base;
 
 import java.util.Optional;
 
 /**
+ * <p>
  * 紐づけられた行列を逆行列に変換するインターフェース.
+ * </p>
  * 
  * <p>
- * 紐づけられる{@linkplain Matrix}はインスタンスの生成と同時に決定される. <br>
- * {@linkplain Matrix}が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
+ * 紐づけられる {@linkplain Matrix} はこのインスタンスの生成と同時に決定される. <br>
+ * {@linkplain Matrix} が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
  * 全てのメソッドは関数的かつスレッドセーフである.
+ * </p>
+ * 
+ * <p>
+ * このインターフェースは, 逆行列が計算可能な行列に対して付与される場合もある. <br>
+ * この場合, inversion のターゲットは自身であり, <br>
+ * {@code this.target() == this} <br>
+ * となる.
  * </p>
  * 
  * <p>
@@ -22,14 +31,13 @@ import java.util.Optional;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.0
  */
 public interface Inversion {
 
     /**
-     * このインターフェースが紐づく行列を返す.
-     * 
      * <p>
+     * このインターフェースが紐づく行列を返す. <br>
      * このインターフェースを実装したクラスが{@linkplain Matrix}も実装する場合, {@code this}が返る.
      * </p>
      * 

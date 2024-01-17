@@ -1,5 +1,5 @@
 /**
- * 2023.12.4
+ * 2023.12.22
  */
 package matsu.num.matrix.base;
 
@@ -11,18 +11,20 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBand;
  * 正方形の帯行列を扱う.
  * 
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.
+ * {@link Matrix} のクラス説明の規約に従う.
  * </p>
  * 
  * <p>
  * <i>実装仕様: <br>
- * {@link Symmetric}インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
- * すなわち, {@code this.bandMatrixDimension().isSymmetric() == true} でなければならない.
+ * {@link Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
+ * すなわち, <br>
+ * {@code this.bandMatrixDimension().isSymmetric() == true} <br>
+ * でなければならない.
  * </i>
  * </p>
  *
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.0
  * @see Matrix
  */
 public interface BandMatrix extends EntryReadableMatrix {
@@ -51,7 +53,7 @@ public interface BandMatrix extends EntryReadableMatrix {
     }
 
     /**
-     * {@linkplain BandMatrix}インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
+     * {@linkplain BandMatrix} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
      * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
      * 
      * <p>
@@ -62,7 +64,7 @@ public interface BandMatrix extends EntryReadableMatrix {
      * </p>
      * 
      * <p>
-     * {@code matrix}が{@code null}の場合は, おそらくは次であろう. <br>
+     * {@code matrix} が {@code null} の場合は, おそらくは次であろう. <br>
      * {@code null}
      * </p>
      * 

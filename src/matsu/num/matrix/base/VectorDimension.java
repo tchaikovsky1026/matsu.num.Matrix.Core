@@ -1,18 +1,17 @@
 /**
- * 2023.12.4
+ * 2023.12.22
  */
 package matsu.num.matrix.base;
 
 /**
- * ベクトルの次元を扱う不変クラス. <br>
- * 扱うのは1次元以上である.
- * 
  * <p>
+ * ベクトルの次元を扱う不変クラス. <br>
+ * 扱うのは1次元以上である. <br>
  * このクラスのインスタンスは, 次元の値に基づくequalityを有する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.0
  */
 public final class VectorDimension {
 
@@ -42,7 +41,7 @@ public final class VectorDimension {
     }
 
     /**
-     * このベクトル次元の{@code int}値を返す.
+     * このベクトル次元の {@code int} 値を返す.
      *
      * @return ベクトルの次元
      */
@@ -61,11 +60,8 @@ public final class VectorDimension {
     }
 
     /**
-     * 他オブジェクトとの等価性を判定する.
-     * 
-     * <p>
+     * 他オブジェクトとの等価性を判定する. <br>
      * 等価性の基準はクラス説明のとおりである.
-     * </p>
      * 
      * @param obj 比較対象
      * @return 自身とobjが等価の場合はtrue
@@ -120,7 +116,9 @@ public final class VectorDimension {
     }
 
     /**
+     * <p>
      * このオブジェクトの文字列説明表現を返す.
+     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>

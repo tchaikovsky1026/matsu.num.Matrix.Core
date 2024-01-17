@@ -96,33 +96,6 @@ public class UnitMatrixTest {
         }
     }
 
-    public static class 直交行列の骨格実装のテストを兼ねる {
-
-        private UnitMatrix matrix;
-
-        @Before
-        public void before_次元3の単位行列の作成() {
-            matrix = UnitMatrix.matrixOf(MatrixDimension.square(3));
-        }
-
-        @Test
-        public void test_対称な直交行列の逆行列は自身と同一() {
-            if (matrix instanceof SkeletalOrthogonalMatrix) {
-                //単位行列が骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(matrix.inverse().get(), is(matrix));
-            }
-        }
-
-        @Test
-        public void test_逆行列のオプショナルは同一インスタンスを参照する() {
-            if (matrix instanceof SkeletalOrthogonalMatrix) {
-                //単位行列が骨格実装を継承している場合のみ, このテストを走らせる
-                //オプショナル自体が同一インスタンスである
-                assertThat(matrix.inverse() == matrix.inverse(), is(true));
-            }
-        }
-    }
-
     public static class toString表示 {
 
         @Test

@@ -7,7 +7,6 @@ import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularBuilder;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.MatrixDimension;
-import matsu.num.matrix.base.OrthogonalMatrix;
 import matsu.num.matrix.base.PermutationMatrix;
 import matsu.num.matrix.base.exception.ProcessFailedException;
 
@@ -33,7 +32,7 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
 
     private Block2OrderSymmetricDiagonalMatrix mxM;
     private LowerUnitriangularEntryReadableMatrix mxL;
-    private OrthogonalMatrix mxP;
+    private PermutationMatrix mxP;
 
     /**
      * @param matrix 
@@ -61,7 +60,7 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
         return this.mxL;
     }
 
-    public OrthogonalMatrix getMxP() {
+    public PermutationMatrix getMxP() {
         return this.mxP;
     }
 

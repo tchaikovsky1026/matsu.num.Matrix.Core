@@ -23,7 +23,7 @@
         	additionalparam="--module-path '../dist-num'" 
         	packagenames="matsu.num.matrix.base,
         	matsu.num.matrix.base.exception,
-        	matsu.num.matrix.base.nlsf"
+        	matsu.num.matrix.base.nlsf,"
         />
         
         <!-- 

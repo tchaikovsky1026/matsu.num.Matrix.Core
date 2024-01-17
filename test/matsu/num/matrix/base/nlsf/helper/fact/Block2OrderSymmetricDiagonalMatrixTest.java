@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.Determinantable;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
@@ -64,7 +63,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         public static class 次元6_パターン1 {
 
-            private Determinantable matrix;
+            private Block2OrderSymmetricDiagonalMatrix matrix;
 
             @Before
             public void before() {
@@ -106,7 +105,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         public static class 次元6_パターン2 {
 
-            private Determinantable matrix;
+            private Block2OrderSymmetricDiagonalMatrix matrix;
 
             @Before
             public void before() {
@@ -148,7 +147,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         public static class 次元1 {
 
-            private Determinantable matrix;
+            private Block2OrderSymmetricDiagonalMatrix matrix;
 
             @Before
             public void before() {
@@ -178,7 +177,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         public static class 次元6_超大パターン {
 
-            private Determinantable matrix;
+            private Block2OrderSymmetricDiagonalMatrix matrix;
 
             @Before
             public void before() {
@@ -222,7 +221,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         public static class 次元6_超小パターン {
 
-            private Determinantable matrix;
+            private Block2OrderSymmetricDiagonalMatrix matrix;
 
             @Before
             public void before() {
@@ -266,7 +265,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         public static class 次元6_特異_パターン1 {
 
-            private Determinantable matrix;
+            private Block2OrderSymmetricDiagonalMatrix matrix;
 
             @Before
             public void before() {
@@ -308,7 +307,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         public static class 次元6_特異_パターン2 {
 
-            private Determinantable matrix;
+            private Block2OrderSymmetricDiagonalMatrix matrix;
 
             @Before
             public void before() {

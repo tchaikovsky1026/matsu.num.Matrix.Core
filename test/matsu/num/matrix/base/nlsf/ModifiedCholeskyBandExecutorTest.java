@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.GeneralBandMatrixBuilder;
 import matsu.num.matrix.base.SymmetricBandMatrixBuilder;
@@ -35,7 +34,7 @@ public class ModifiedCholeskyBandExecutorTest {
 
     public static class 行列式と逆行列ベクトル積に関する_サイズ4 {
 
-        private LinearEquationSolving<BandMatrix> mcb;
+        private LUTypeSolver mcb;
 
         @Before
         public void before_生成() {
@@ -114,7 +113,7 @@ public class ModifiedCholeskyBandExecutorTest {
 
     public static class 行列式と逆行列ベクトル積に関する_サイズ1 {
 
-        private LinearEquationSolving<BandMatrix> mcb;
+        private LUTypeSolver mcb;
 
         @Before
         public void before_生成() {

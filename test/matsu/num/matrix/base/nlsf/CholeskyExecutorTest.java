@@ -25,6 +25,8 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
  */
 @RunWith(Enclosed.class)
 public class CholeskyExecutorTest {
+    
+    public static final Class<?> TEST_CLASS = CholeskyExecutor.class;
 
     public static class 生成に関する {
 
@@ -37,7 +39,7 @@ public class CholeskyExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元4 {
 
-        private AsymmetricSqrtFactorization<EntryReadableMatrix> cho;
+        private SymmetrizedSquareTypeSolver cho;
 
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
@@ -115,7 +117,7 @@ public class CholeskyExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
-        private AsymmetricSqrtFactorization<EntryReadableMatrix> cho;
+        private SymmetrizedSquareTypeSolver cho;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -160,7 +162,7 @@ public class CholeskyExecutorTest {
     public static class 行列の非対称平方根に関するテスト {
 
         private Matrix matrix;
-        private AsymmetricSqrtFactorization<EntryReadableMatrix> cho;
+        private SymmetrizedSquareTypeSolver cho;
 
         private Vector right;
 
@@ -198,7 +200,7 @@ public class CholeskyExecutorTest {
 
         @Test
         public void test_非対称平方根の検証() {
-            Matrix asymmSqrt = cho.asymmetricSqrtSystem().target();
+            Matrix asymmSqrt = cho.asymmSqrt();
             double[] expected = matrix.operate(right).entryAsArray();
             double[] result = asymmSqrt.operate(asymmSqrt.operateTranspose(right)).entryAsArray();
 
@@ -214,12 +216,12 @@ public class CholeskyExecutorTest {
             //注意:このテストは実装の詳細に依存している
 
             //平方根の複数回の呼び出しは同一インスタンスを返す
-            assertThat(cho.asymmetricSqrtSystem(), is(cho.asymmetricSqrtSystem()));
+            assertThat(cho.inverseAsymmSqrt(), is(cho.inverseAsymmSqrt()));
         }
 
         @Test
         public void test_非対称平方根の逆行列の検証() {
-            Matrix asymmInvSqrt = cho.asymmetricSqrtSystem().inverse().get();
+            Matrix asymmInvSqrt = cho.inverseAsymmSqrt();
             double[] expected = cho.inverse().get().operate(right).entryAsArray();
             double[] result = asymmInvSqrt.operateTranspose(asymmInvSqrt.operate(right)).entryAsArray();
 
@@ -235,13 +237,13 @@ public class CholeskyExecutorTest {
             //注意:このテストは実装の詳細に依存している
 
             //平方根の逆行列の複数回の呼び出しは同一インスタンスを返す
-            assertThat(cho.asymmetricSqrtSystem().inverse() == cho.asymmetricSqrtSystem().inverse(), is(true));
+            assertThat(cho.inverseAsymmSqrt() == cho.inverseAsymmSqrt(), is(true));
         }
     }
 
     public static class toString表示 {
 
-        private AsymmetricSqrtFactorization<EntryReadableMatrix> cho;
+        private SymmetrizedSquareTypeSolver cho;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -256,9 +258,10 @@ public class CholeskyExecutorTest {
 
         @Test
         public void test_toString表示() {
-            System.out.println(CholeskyExecutor.class.getName() + ":");
+            System.out.println(TEST_CLASS.getName());
             System.out.println(cho);
-            System.out.println(cho.asymmetricSqrtSystem());
+            System.out.println(cho.asymmSqrt());
+            System.out.println(cho.inverseAsymmSqrt());
             System.out.println();
         }
     }

@@ -1,5 +1,5 @@
 /**
- * 2023.11.30
+ * 2023.12.22
  */
 package matsu.num.matrix.base;
 
@@ -9,18 +9,21 @@ import matsu.num.matrix.base.helper.matrix.transpose.Transposition;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * {@link Matrix}の骨格実装. <br>
- * {@link Matrix#transpose()}の実装の提供が主な効果である.
+ * <p>
+ * {@link Matrix} の骨格実装. <br>
+ * {@link Matrix#transpose()} の実装の提供が主な効果である.
+ * </p>
  * 
  * <p>
- * {@link Matrix}は不変であるので, {@linkplain Matrix#transpose()}は関数的に振る舞う. <br>
+ * {@link Matrix} は不変であるので, {@linkplain Matrix#transpose()} は関数的に振る舞う. <br>
  * この骨格実装は,
- * 初めて{@linkplain #transpose()}が呼ばれたときに転置行列を{@linkplain #createTranspose()}によって生成し,
+ * 初めて {@linkplain #transpose()} が呼ばれたときに転置行列を
+ * {@linkplain #createTranspose()} によって生成し,
  * 以後はそれを使いまわすキャッシュ仕組みを提供している.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.0
  */
 public abstract class SkeletalMatrix implements Matrix {
 
@@ -31,7 +34,7 @@ public abstract class SkeletalMatrix implements Matrix {
      * 骨格実装を生成する.
      */
     protected SkeletalMatrix() {
-
+        super();
         if (this instanceof Symmetric) {
             this.transposeSupplier = () -> this;
             return;
@@ -46,18 +49,21 @@ public abstract class SkeletalMatrix implements Matrix {
     }
 
     /**
+     * <p>
      * 自身の転置行列を生成する.
+     * </p>
      * 
      * <p>
-     * 骨格実装の{@linkplain #transpose()}を遅延初期化するために実装されるメソッドである. <br>
+     * 骨格実装の {@linkplain #transpose()} を遅延初期化するために実装されるメソッドである. <br>
      * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけ呼ばれる.
      * </p>
      * 
      * <p>
-     * 実装としては, <br>
+     * 実装は, <br>
      * {@code this.}{@linkplain #createTranspose()}{@code .}{@linkplain #transpose()}{@code  == this}
      * <br>
-     * を満たすことが望ましい.
+     * を満たすことが望ましい
+     * (転置の転置は自身と同一のインスタンスを指す).
      * </p>
      * 
      * @return 自身の転置行列
@@ -67,7 +73,9 @@ public abstract class SkeletalMatrix implements Matrix {
     }
 
     /**
+     * <p>
      * このオブジェクトの文字列説明表現を返す.
+     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>

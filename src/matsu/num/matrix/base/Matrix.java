@@ -1,5 +1,5 @@
 /**
- * 2023.12.4
+ * 2023.12.22
  */
 package matsu.num.matrix.base;
 
@@ -10,64 +10,76 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplication;
 
 /**
+ * <p>
  * 矩形(長方形)の行列を扱う.
+ * </p>
  * 
  * <p>
  * このインターフェースを実装した全てのクラスの属性は実質的に不変であり,
- * (このインターフェース以外を含む)全てのメソッドは関数的かつスレッドセーフである. <br>
- * <i>実装者にはそのようにクラス設計することを強制し, 違反した場合は振る舞いが保証されない. </i>
+ * (このインターフェース以外を含む) 全てのメソッドは関数的かつスレッドセーフである. <br>
+ * (実装者にはそのようにクラス設計することを強制し, 違反した場合は振る舞いが保証されない.)
  * </p>
  * 
  * <p>
  * 実装仕様: <br>
- * {@link Symmetric}インターフェースが付与される場合, 必ず正方形次元(サイズ)でなければならない. <br>
- * すなわち, {@code this.matrixDimension().isSquare() == true} でなければならない.
+ * {@link Symmetric} インターフェースが付与される場合, 必ず正方形次元 (サイズ) でなければならない. <br>
+ * すなわち, <br>
+ * {@code this.matrixDimension().isSquare() == true} <br>
+ * でなければならない.
  * </p>
  *
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.0
  */
 public interface Matrix {
 
     /**
-     * 行列の次元(サイズ)を取得する. <br>
+     * <p>
+     * 行列の次元 (サイズ) を取得する.
+     * </p>
      *
      * @return 行列の次元
      */
     public MatrixDimension matrixDimension();
 
     /**
+     * <p>
      * 行列に右からベクトルを作用させる: <b>w</b> = M<b>v</b>.
      * <br>
      * M: 行列({@code this}). <br>
      * <b>v</b>: 右から作用させるベクトル. <br>
      * <b>w</b>: 計算結果の出力変数ベクトル.
+     * </p>
      *
-     * @param operand v, 作用ベクトル
-     * @return 計算結果
-     * @throws MatrixFormatMismatchException 作用ベクトル v の次元が行列サイズと適合しない場合
+     * @param operand <b>v</b>, 作用ベクトル
+     * @return 計算結果 <b>w</b>
+     * @throws MatrixFormatMismatchException 作用ベクトル <b>v</b> の次元が行列サイズと適合しない場合
      * @throws IllegalArgumentException 計算の結果に不正値が混入し, ベクトルが生成できない場合場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector operate(Vector operand);
 
     /**
+     * <p>
      * 行列の転置に右からベクトルを作用させる:
      * <b>w</b> = M<sup>T</sup><b>v</b>. <br>
      * M: {@code this} を転置した行列. <br>
      * <b>v</b>: 右から作用させるベクトル. <br>
      * <b>w</b>: 計算結果の出力変数ベクトル.
+     * </p>
      *
-     * @param operand v, 作用ベクトル
-     * @return 計算結果
-     * @throws MatrixFormatMismatchException 作用ベクトル v の次元が行列サイズと適合しない場合
+     * @param operand <b>v</b>, 作用ベクトル
+     * @return 計算結果 <b>w</b>
+     * @throws MatrixFormatMismatchException 作用ベクトル <b>v</b> の次元が行列サイズと適合しない場合
      * @throws IllegalArgumentException 計算の結果に不正値が混入し, ベクトルが生成できない場合場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector operateTranspose(Vector operand);
 
     /**
+     * <p>
      * この行列の転置行列を返す.
+     * </p>
      * 
      * @return 転置行列
      */
@@ -88,8 +100,8 @@ public interface Matrix {
 
     /**
      * 行列の対称化二乗を返す. <br>
-     * すなわち, 与えた行列Aに対して, AA<sup>T</sup>を返す. <br>
-     * 戻り値には{@link Symmetric}が付与されている.
+     * すなわち, 与えた行列 A に対して, AA<sup>T</sup> を返す. <br>
+     * 戻り値には {@linkplain Symmetric} が付与されている.
      * 
      * @param original 元の行列
      * @return 対称行列積
@@ -101,12 +113,12 @@ public interface Matrix {
 
     /**
      * 対称な行列積を返す. <br>
-     * すなわち, 与えた行列L,Dに対して, LDL<sup>T</sup>を返す. <br>
-     * 戻り値には{@link Symmetric}が付与されている. <br>
-     * 与える行列Dには{@link Symmetric}が付与されていなければならない.
+     * すなわち, 与えた行列 L, D に対して, LDL<sup>T</sup> を返す. <br>
+     * 戻り値には {@linkplain Symmetric} が付与されている. <br>
+     * 与える行列Dには {@linkplain Symmetric} が付与されていなければならない.
      * 
-     * @param mid 行列D, 中央の行列
-     * @param leftSide 行列L, 左サイドの行列
+     * @param mid 行列 D, 中央の行列
+     * @param leftSide 行列 L, 左サイドの行列
      * @return 対称な行列積
      * @throws MatrixNotSymmetricException 中央の行列が対称でない場合
      * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
@@ -117,7 +129,7 @@ public interface Matrix {
     }
 
     /**
-     * {@linkplain Matrix}インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
+     * {@linkplain Matrix} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
      * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
      * 
      * <p>
@@ -128,7 +140,7 @@ public interface Matrix {
      * </p>
      * 
      * <p>
-     * {@code matrix}が{@code null}の場合は, おそらくは次であろう. <br>
+     * {@code matrix} が {@code null} の場合は, おそらくは次であろう. <br>
      * {@code null}
      * </p>
      * 

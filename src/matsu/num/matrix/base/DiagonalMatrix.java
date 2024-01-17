@@ -1,40 +1,39 @@
 /**
- * 2023.11.30
+ * 2024.1.16
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import matsu.num.commons.ArraysUtil;
-import matsu.num.commons.Exponentiation;
+import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
-import matsu.num.matrix.base.helper.matrix.SkeletalInvertibleDeterminantableMatrix;
+import matsu.num.matrix.base.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.lazy.InverseAndDeterminantStructure;
+import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
 
 /**
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.3
  */
-public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determinantable {
+public interface DiagonalMatrix extends BandMatrix, Symmetric,
+        Inversion, Determinantable {
 
     @Override
-    public DiagonalMatrix target();
+    public abstract Optional<? extends DiagonalMatrix> inverse();
 
     @Override
-    public Optional<? extends DiagonalMatrix> inverse();
+    public abstract DiagonalMatrix target();
+
+    @Override
+    public abstract DiagonalMatrix transpose();
 
     /**
-     * {@link DiagonalMatrix}のビルダ.
-     * 
-     * <p>
-     * このビルダはミュータブルである. <br>
-     * また, スレッドセーフでない.
-     * </p>
+     * {@link DiagonalMatrix}のビルダ. <br>
+     * このビルダはミュータブルであり, スレッドセーフでない.
      */
     public static final class Builder {
 
@@ -55,12 +54,12 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
         }
 
         /**
-         * (<i>i</i>,<i>i</i>)要素を指定した値に置き換える.
+         * (<i>i</i>, <i>i</i>) 要素を指定した値に置き換える.
          *
          * @param index i, 行, 列index
          * @param value 置き換えた後の値
          * @throws IllegalStateException すでにビルドされている場合
-         * @throws IndexOutOfBoundsException (i,i)が対角成分でない場合
+         * @throws IndexOutOfBoundsException (i, i) が対角成分でない場合
          * @throws IllegalArgumentException valueが不正な値の場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
@@ -125,7 +124,8 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
             return out;
         }
 
-        private static final class DiagonalMatrixImpl extends SkeletalInvertibleDeterminantableMatrix<DiagonalMatrix>
+        private static final class DiagonalMatrixImpl
+                extends SkeletalSymmetricInvertibleDeterminantableMatrix<DiagonalMatrix, DiagonalMatrix>
                 implements DiagonalMatrix {
 
             private final BandMatrixDimension bandMatrixDimension;
@@ -133,10 +133,12 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
 
             private final double entryNormMax;
 
-            //thisの逆行列と行列式を表す. 
-            //すでに計算されている場合について埋め込まれる
-            //もし計算されていない状態(ビルダから生成された場合)はnull
-            private final InverseAndDeterminantStructure<DiagonalMatrix> invAndDetOfInverse;
+            /**
+             * thisの逆行列と行列式を表す. <br>
+             * すでに計算されている場合について埋め込まれる. <br>
+             * もし計算されていない状態(ビルダから生成された場合)はnull.
+             */
+            private final InverseAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse;
 
             /**
              * ビルダから呼ばれる.
@@ -155,7 +157,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
              * 生成される行列に対し, 逆行列を直接紐づける.
              */
             private DiagonalMatrixImpl(final BandMatrixDimension bandMatrixDimension, double[] diagonalEntry,
-                    InverseAndDeterminantStructure<DiagonalMatrix> invAndDetOfInverse) {
+                    InverseAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse) {
                 this.bandMatrixDimension = bandMatrixDimension;
                 this.diagonalEntry = diagonalEntry;
 
@@ -167,11 +169,6 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
             @Override
             public BandMatrixDimension bandMatrixDimension() {
                 return this.bandMatrixDimension;
-            }
-
-            @Override
-            public DiagonalMatrix target() {
-                return this;
             }
 
             @Override
@@ -225,71 +222,11 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
             }
 
             @Override
-            protected InverseAndDeterminantStructure<DiagonalMatrix> createInvAndDetWrapper() {
+            protected InverseAndDeterminantStruct<DiagonalMatrix> createInvAndDetWrapper() {
                 if (Objects.nonNull(this.invAndDetOfInverse)) {
                     return this.invAndDetOfInverse;
                 }
-
-                //対角成分の逆数を持つ対角行列成分
-                double[] inverseDiagEntry = new double[this.diagonalEntry.length];
-
-                //行列式のsign
-                boolean sign = true;
-
-                //logAbsDetの計算で使う定数
-                final double shiftConstant = 1E100;
-                final double reverseShiftConstant = 1 / shiftConstant;
-
-                //logAbsDet
-                double logDetResidual = 0d;
-                int shiftCount = 0;
-                double absDetResidual = 1.0;
-
-                for (int i = 0, len_i = inverseDiagEntry.length; i < len_i; i++) {
-                    double m_00 = this.diagonalEntry[i];
-                    double abs_m_00 = Math.abs(m_00);
-                    double im_00 = 1.0 / m_00;
-                    if (!Double.isFinite(im_00)) {
-                        return new InverseAndDeterminantStructure<>();
-                    }
-                    //逆行列の成分を反映
-                    inverseDiagEntry[i] = im_00;
-                    //行列式の符号を反映
-                    sign ^= m_00 < 0;
-
-                    //行列式の対数の反映
-                    //極端な値は直接に
-                    if (abs_m_00 > shiftConstant || abs_m_00 < reverseShiftConstant) {
-                        logDetResidual += Exponentiation.log(abs_m_00);
-                        continue;
-                    }
-                    //穏やかな値は対数を取らず蓄積する
-                    absDetResidual *= abs_m_00;
-                    if (absDetResidual > shiftConstant) {
-                        absDetResidual *= reverseShiftConstant;
-                        shiftCount++;
-                    }
-                    if (absDetResidual < reverseShiftConstant) {
-                        absDetResidual *= shiftConstant;
-                        shiftCount--;
-                    }
-                }
-
-                double logAbsDet = logDetResidual + Exponentiation.log(absDetResidual)
-                        + shiftCount * Exponentiation.log(shiftConstant);
-
-                DeterminantValues thisDet = new DeterminantValues(
-                        logAbsDet,
-                        sign ? 1 : -1);
-
-                //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
-                InverseAndDeterminantStructure<DiagonalMatrix> invWrapper =
-                        new InverseAndDeterminantStructure<>(thisDet.createInverse(), this);
-
-                DiagonalMatrixImpl invMatrix =
-                        new DiagonalMatrixImpl(this.bandMatrixDimension, inverseDiagEntry, invWrapper);
-
-                return new InverseAndDeterminantStructure<>(thisDet, invMatrix);
+                return new CreateInvAndDetWrapper(this).execute();
             }
 
             @Override
@@ -314,7 +251,142 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determ
              */
             @Override
             public String toString() {
-                return EntryReadableMatrix.toString(this, "diagonal");
+                return BandMatrix.toString(this, "diagonal");
+            }
+
+            /**
+             * {@linkplain Block2OrderSymmetricDiagonalMatrixImpl} の内部で使う,
+             * 行列式と逆行列の計算を支援する仕組み.
+             */
+            private static final class CreateInvAndDetWrapper {
+
+                //logAbsDetの計算で使う定数
+                private static final double SHIFT_CONSTANT = 1E150;
+                private static final double SHIFT_CONSTANT_SQUARE = SHIFT_CONSTANT * SHIFT_CONSTANT;
+                private static final double REVERSE_SHIFT_CONSTANT = 1 / SHIFT_CONSTANT;
+                private static final double REVERSE_SHIFT_CONSTANT_SQUARE = 1 / SHIFT_CONSTANT_SQUARE;
+                private static final double LOG_SHIFT_CONSTANT = Math.log(SHIFT_CONSTANT);
+
+                private final DiagonalMatrixImpl src;
+
+                /*
+                 * 配列は結果行列内に埋め込まれるので, このクラス内での値の書き換えに注意する.
+                 */
+                private boolean sign;
+                private double[] inverseDiagEntry;
+
+                //logAbsDetの計算結果保存
+                private int shifting;
+                private double absDetResidual;
+
+                CreateInvAndDetWrapper(DiagonalMatrixImpl src) {
+                    super();
+                    this.src = src;
+                }
+
+                /**
+                 * 逆行列と行列式を生成する.
+                 * 
+                 * @return 逆行列と行列式
+                 */
+                public InverseAndDeterminantStruct<DiagonalMatrix>
+                        execute() {
+                    double[] thisDiagonalEntry = this.src.diagonalEntry;
+                    final int dimension = thisDiagonalEntry.length;
+
+                    this.sign = true;
+                    this.inverseDiagEntry = new double[thisDiagonalEntry.length];
+                    this.shifting = 0;
+                    this.absDetResidual = 1d;
+
+                    for (int i = 0; i < dimension; i++) {
+                        State s = this.applyUnderState1(i, thisDiagonalEntry[i]);
+                        if (s.equals(State.SINGULAR)) {
+                            return new InverseAndDeterminantStruct<>();
+                        }
+                    }
+
+                    double logAbsDeterminant = Math.log(absDetResidual)
+                            + shifting * LOG_SHIFT_CONSTANT;
+
+                    DeterminantValues thisDet = new DeterminantValues(
+                            logAbsDeterminant,
+                            sign ? 1 : -1);
+                    //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
+                    InverseAndDeterminantStruct<DiagonalMatrix> invWrapper =
+                            new InverseAndDeterminantStruct<>(
+                                    thisDet.createInverse(), this.src);
+
+                    DiagonalMatrix invMatrix = new DiagonalMatrixImpl(
+                            this.src.bandMatrixDimension, inverseDiagEntry, invWrapper);
+
+                    return new InverseAndDeterminantStruct<>(thisDet, invMatrix);
+                }
+
+                private State applyUnderState1(int i, double m_00) {
+
+                    double im_00 = 1 / m_00;
+                    if (!EntryReadableMatrix.acceptValue(im_00)) {
+                        return State.SINGULAR;
+                    }
+                    this.inverseDiagEntry[i] = im_00;
+
+                    this.sign ^= m_00 < 0;
+
+                    double abs_m_00 = Math.abs(m_00);
+                    this.determinantToField(abs_m_00);
+
+                    return State.REGULAR;
+                }
+
+                private void determinantToField(double value) {
+
+                    if (value > SHIFT_CONSTANT) {
+                        if (value > SHIFT_CONSTANT_SQUARE) {
+                            shifting += 2;
+                            value *= REVERSE_SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting++;
+                            value *= REVERSE_SHIFT_CONSTANT;
+                        }
+                    } else if (value < REVERSE_SHIFT_CONSTANT) {
+                        if (value < REVERSE_SHIFT_CONSTANT_SQUARE) {
+                            shifting -= 2;
+                            value *= SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting--;
+                            value *= SHIFT_CONSTANT;
+                        }
+                    }
+
+                    this.absDetResidual *= value;
+                    this.normalizeAbsDetResidual();
+                }
+
+                private void normalizeAbsDetResidual() {
+                    if (absDetResidual > SHIFT_CONSTANT) {
+                        if (absDetResidual > SHIFT_CONSTANT_SQUARE) {
+                            shifting += 2;
+                            absDetResidual *= REVERSE_SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting++;
+                            absDetResidual *= REVERSE_SHIFT_CONSTANT;
+                        }
+                    } else if (absDetResidual < REVERSE_SHIFT_CONSTANT) {
+                        if (absDetResidual < REVERSE_SHIFT_CONSTANT_SQUARE) {
+                            shifting -= 2;
+                            absDetResidual *= SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting--;
+                            absDetResidual *= SHIFT_CONSTANT;
+                        }
+                    }
+                }
+
+                private static enum State {
+                    REGULAR, SINGULAR;
+                }
+
             }
         }
     }

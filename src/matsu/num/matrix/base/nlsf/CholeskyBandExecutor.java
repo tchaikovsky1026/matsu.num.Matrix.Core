@@ -1,5 +1,5 @@
 /**
- * 2023.8.24
+ * 2023.12.25
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -11,46 +11,50 @@ import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 import matsu.num.matrix.base.exception.ProcessFailedException;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.lazy.InverseAndDeterminantStructure;
+import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.InvertibleDeterminantableSystem;
 import matsu.num.matrix.base.nlsf.helper.fact.CholeskyBandFactorizationHelper;
 
 /**
- * 対称帯行列のCholesky分解を提供する. 
- * 
  * <p>
- * 与えられた対称行列 A を次の形に分解する: A = LD<sup>1/2</sup>D<sup>1/2</sup>L<sup>T</sup>. ただし,
- * D<sup>1/2</sup>: 正定値対角行列, L: 単位(対角成分が1の)下三角帯行列. <br>
- * 正定値行列をサポートする.  
- * </p>
- * 
- * <p> 
- * この行列分解が提供する逆行列には{@linkplain Symmetric}が付与されている. 
+ * 対称帯行列のCholesky分解を提供する.
  * </p>
  * 
  * <p>
- * このクラスが提供する{@linkplain SolvingFactorizationExecutor}について,
- * メソッド{@code apply(matrix, epsilon)}で追加でスローされる例外は次のとおりである, 
+ * 与えられた正定値対称行列 A を次の形に分解する:
+ * A = LD<sup>1/2</sup>D<sup>1/2</sup>L<sup>T</sup>. <br>
+ * ただし,
+ * D<sup>1/2</sup>: 正定値対角行列, L: 単位(対角成分が1の)下三角帯行列.
+ * </p>
+ * 
+ * <p>
+ * この行列分解が提供する逆行列には {@linkplain Symmetric} が付与されている.
+ * </p>
+ * 
+ * <p>
+ * このクラスが提供する {@linkplain SolvingFactorizationExecutor} について,
+ * メソッド {@code apply(matrix, epsilon)} で追加でスローされる例外は次のとおりである,
  * </p>
  * <ul>
- * <li> {@code IllegalArgumentException 行列の有効要素数が大きすぎる場合(後述)} </li>
- * <li> {@code MatrixNotSymmetricException 対称行列でない場合} </li>
- * <li> {@code ProcessFailedException 行列が正定値でない場合} </li>
+ * <li>{@code IllegalArgumentException 行列の有効要素数が大きすぎる場合(後述)}</li>
+ * <li>{@code MatrixNotSymmetricException 対称行列でない場合}</li>
+ * <li>{@code ProcessFailedException 行列が正定値でない場合}</li>
  * </ul>
  * 
  * <p>
  * 有効要素数が大きすぎるとは, <br>
- * 行列の行数(= 列数)を<i>n</i>, 片側帯幅を<i>b</i>として, <br>
- * <i>n</i> * <i>b</i> {@literal >} {@linkplain Integer#MAX_VALUE} <br>
+ * 行列の行数(= 列数)を <i>n</i>, 片側帯幅を <i>b</i> として, <br>
+ * <i>n</i> * <i>b</i> &gt; {@linkplain Integer#MAX_VALUE} <br>
  * である状態である.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 15.2
+ * @version 18.0
  */
 public final class CholeskyBandExecutor {
 
     private static final SolvingFactorizationExecutor<
-            BandMatrix, AsymmetricSqrtFactorization<BandMatrix>> INSTANCE = new ExecutorImpl();
+            BandMatrix, SymmetrizedSquareTypeSolver> INSTANCE = new ExecutorImpl();
 
     private CholeskyBandExecutor() {
         throw new AssertionError();
@@ -62,18 +66,18 @@ public final class CholeskyBandExecutor {
      * @return インスタンス
      */
     public static SolvingFactorizationExecutor<
-            BandMatrix, AsymmetricSqrtFactorization<BandMatrix>> instance() {
+            BandMatrix, SymmetrizedSquareTypeSolver> instance() {
         return INSTANCE;
     }
 
     private static final class ExecutorImpl
-            extends SkeletalSolvingFactorizationExecutor<BandMatrix, AsymmetricSqrtFactorization<BandMatrix>>
-            implements SolvingFactorizationExecutor<BandMatrix, AsymmetricSqrtFactorization<BandMatrix>> {
+            extends SkeletalSolvingFactorizationExecutor<BandMatrix, SymmetrizedSquareTypeSolver>
+            implements SolvingFactorizationExecutor<BandMatrix, SymmetrizedSquareTypeSolver> {
 
         private static final String CLASS_EXPLANATION = "CholeskyBandExecutor";
 
         @Override
-        final AsymmetricSqrtFactorization<BandMatrix> applyConcretely(BandMatrix matrix, double epsilon) {
+        final SymmetrizedSquareTypeSolver applyConcretely(BandMatrix matrix, double epsilon) {
             if (!(matrix instanceof Symmetric)) {
                 throw new MatrixNotSymmetricException("対称行列でない");
             }
@@ -87,8 +91,10 @@ public final class CholeskyBandExecutor {
     }
 
     private static final class CholeskyBandFactorization
-            extends SkeletalAsymmetricSqrtFactorization<BandMatrix>
-            implements AsymmetricSqrtFactorization<BandMatrix> {
+            extends SkeletalSymmetrizedSquareTypeSolver
+            implements SymmetrizedSquareTypeSolver {
+
+        private static final String CLASS_STRING = "Cholesky";
 
         private static final double EPSILON_A = 1E-100;
 
@@ -119,16 +125,17 @@ public final class CholeskyBandExecutor {
         }
 
         @Override
-        final LinearEquationSolving<Matrix> calcAsymmetricSqrtSystem() {
+        final InvertibleDeterminantableSystem<Matrix> createAsymmetricSqrtSystem() {
             return new AsymmetricSqrtSystem(mxSqrtD, mxL);
         }
 
         @Override
         public String toString() {
-            return LinearEquationSolving.toString(this, this.getClass().getSimpleName());
+            return LUTypeSolver.toString(this, CLASS_STRING);
         }
 
-        private static final class AsymmetricSqrtSystem extends SkeletalLinearEquationSolving<Matrix> {
+        private static final class AsymmetricSqrtSystem
+                extends InvertibleDeterminantableSystem<Matrix> {
 
             private final DiagonalMatrix mxSqrtD;
             private final LowerUnitriangularEntryReadableMatrix mxL;
@@ -151,7 +158,7 @@ public final class CholeskyBandExecutor {
             }
 
             @Override
-            InverseAndDeterminantStructure<? extends Matrix> calcInverseAndDeterminantStructure() {
+            protected InverseAndDeterminantStruct<? extends Matrix> calcInverseDeterminantStruct() {
                 // A = BB^Tとすれば,
                 // B^{-1} = D^{-1/2}L^{-1}
                 final Matrix asymmInvSqrt = Matrix.multiply(
@@ -160,7 +167,7 @@ public final class CholeskyBandExecutor {
 
                 final double logDetSqrtL = this.mxSqrtD.logAbsDeterminant();
 
-                return new InverseAndDeterminantStructure<Matrix>(
+                return new InverseAndDeterminantStruct<Matrix>(
                         new DeterminantValues(logDetSqrtL, 1),
                         asymmInvSqrt);
             }

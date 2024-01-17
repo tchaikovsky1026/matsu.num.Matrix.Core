@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.GeneralMatrixBuilder;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Vector;
@@ -34,7 +33,7 @@ public class LUPivotingExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元4 {
 
-        private LinearEquationSolving<EntryReadableMatrix> lup;
+        private LUTypeSolver lup;
 
         private Vector right;
 
@@ -134,7 +133,7 @@ public class LUPivotingExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
-        private LinearEquationSolving<EntryReadableMatrix> lup;
+        private LUTypeSolver lup;
 
         private Vector right;
 

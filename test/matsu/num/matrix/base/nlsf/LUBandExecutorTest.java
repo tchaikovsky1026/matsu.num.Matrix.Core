@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.GeneralBandMatrixBuilder;
 import matsu.num.matrix.base.Vector;
@@ -24,7 +23,7 @@ public class LUBandExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元4_パターン1 {
 
-        private LinearEquationSolving<BandMatrix> lub;
+        private LUTypeSolver lub;
 
         private Vector right;
 
@@ -121,7 +120,7 @@ public class LUBandExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元4_パターン2 {
 
-        private LinearEquationSolving<BandMatrix> lub;
+        private LUTypeSolver lub;
 
         private Vector right;
 
@@ -232,7 +231,7 @@ public class LUBandExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
-        private LinearEquationSolving<BandMatrix> lub;
+        private LUTypeSolver lub;
 
         private Vector right;
 

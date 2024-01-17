@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import matsu.num.matrix.base.Determinantable;
 import matsu.num.matrix.base.Inversion;
 import matsu.num.matrix.base.Matrix;
-import matsu.num.matrix.base.SkeletalMatrix;
+import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
@@ -19,12 +19,11 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * 
  * @author Matsuura Y.
  * @version 18.2
- * @param <MT> thisのタイプ, targetメソッドも戻り値に影響
+ * @param <MT> thisのタイプ, target, transposeメソッドの戻り値に影響
  * @param <IT> inverseのタイプ
  */
-public abstract class SkeletalInvertibleDeterminantableMatrix<MT extends Matrix, IT extends Matrix>
-        extends SkeletalMatrix
-        implements Matrix, Inversion, Determinantable {
+public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extends Matrix, IT extends Matrix>
+        implements Matrix, Inversion, Determinantable, Symmetric {
 
     private final MT castedThis;
 
@@ -35,7 +34,7 @@ public abstract class SkeletalInvertibleDeterminantableMatrix<MT extends Matrix,
     /**
      * 骨格実装のコンストラクタ.
      */
-    protected SkeletalInvertibleDeterminantableMatrix() {
+    protected SkeletalSymmetricInvertibleDeterminantableMatrix() {
         super();
         this.invAndDetStructSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createInvAndDetWrapper());
@@ -52,6 +51,11 @@ public abstract class SkeletalInvertibleDeterminantableMatrix<MT extends Matrix,
 
     @Override
     public final MT target() {
+        return this.castedThis;
+    }
+
+    @Override
+    public MT transpose() {
         return this.castedThis;
     }
 

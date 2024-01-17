@@ -1,28 +1,27 @@
 /**
- * 2023.12.4
+ * 2024.1.16
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
-import matsu.num.commons.ArraysUtil;
+import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 
 /**
- * 縦ベクトルを扱う. <br>
- * 成分に不正値(inf,NaN)を含んではいけない.
- * 
  * <p>
+ * 縦ベクトルを扱う. <br>
+ * 成分に不正値 (inf, NaN) を含んではいけない. <br>
  * ベクトルは不変であり, メソッドに対して関数的かつスレッドセーフである.
  * </p>
  * 
  * <p>
- * 所望のベクトルの生成にはビルダ({@linkplain Builder})を用いる. <br>
- * 値の検証には{@link #acceptValue(double) }メソッドを使用する.
+ * 所望のベクトルの生成にはビルダ ({@linkplain Builder}) を用いる. <br>
+ * 値の検証にはstaticメソッド {@link #acceptValue(double) } を使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.3
  */
 public final class Vector {
 
@@ -39,7 +38,7 @@ public final class Vector {
     }
 
     /**
-     * ベクトルの要素<i>i</i>の値を返す.
+     * ベクトルの要素 <i>i</i> の値を返す.
      *
      * @param index i, index
      * @return 要素iの値
@@ -49,7 +48,7 @@ public final class Vector {
         if (!this.vectorDimension.isValidIndex(index)) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "indexが有効でない:vactor:%s, index=%d", this.vectorDimension, index));
+                            "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
         }
         return this.entry[index];
     }
@@ -139,9 +138,9 @@ public final class Vector {
     }
 
     /**
-     * 他のベクトルのスカラー倍との和を計算する: <b>w</b> = <b>v</b> +
-     * <i>c</i><b>u</b>.
-     * <br>
+     * 他のベクトルのスカラー倍との和を計算する:
+     * <b>w</b> = <b>v</b> + <i>c</i> <b>u</b>. <br>
+     * 
      * <b>v</b>: {@code this}, <br>
      * <b>u</b>: 作用ベクトル, <br>
      * <i>c</i>: スカラー.
@@ -163,8 +162,9 @@ public final class Vector {
     }
 
     /**
-     * 自身のスカラー倍を計算する: <b>w</b> = <i>c</i><b>v</b>.
-     * <br>
+     * 自身のスカラー倍を計算する:
+     * <b>w</b> = <i>c</i> <b>v</b>. <br>
+     * 
      * <b>v</b>: {@code this}, <br>
      * <i>c</i>: スカラー.
      * <b>w</b>: 計算結果.
@@ -180,14 +180,15 @@ public final class Vector {
     }
 
     /**
-     * 内積を計算する: <b>u</b>&middot;<b>v</b>.
-     * <br>
+     * 内積を計算する:
+     * <b>u</b> &middot; <b>v</b>. <br>
+     * 
      * <b>v</b>: {@code this}, <br>
      * <b>u</b>: 作用ベクトル.
      *
      * @param reference u, 作用ベクトル
      * @return 内積
-     * @throws MatrixFormatMismatchException {@code this}と作用ベクトルの次元が一致しない場合
+     * @throws MatrixFormatMismatchException {@code this} と作用ベクトルの次元が一致しない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public double dot(final Vector reference) {
@@ -201,7 +202,7 @@ public final class Vector {
      * 例外をスローすることが責務である.
      * 
      * @param reference 判定対象
-     * @throws MatrixFormatMismatchException {@code this}と作用ベクトルの次元が一致しない場合
+     * @throws MatrixFormatMismatchException {@code this} と作用ベクトルの次元が一致しない場合
      */
     private void validateDimensionMatch(Vector reference) {
         if (!(this.equalDimensionTo(reference))) {
@@ -213,7 +214,8 @@ public final class Vector {
     }
 
     /**
-     * 1-ノルムを計算する: ||<b>v</b>||<sub>1</sub>. <br>
+     * 1-ノルムを計算する:
+     * ||<b>v</b>||<sub>1</sub>.
      *
      * @return 1-ノルム
      */
@@ -222,7 +224,8 @@ public final class Vector {
     }
 
     /**
-     * 2-ノルム(Euclidノルム)の二乗を計算する: ||<b>v</b>||<sub>2</sub><sup>2</sup>. <br>
+     * 2-ノルム(Euclidノルム)の二乗を計算する:
+     * ||<b>v</b>||<sub>2</sub><sup>2</sup>.
      *
      * @return 2-ノルムの二乗
      */
@@ -231,7 +234,8 @@ public final class Vector {
     }
 
     /**
-     * 2-ノルム(Euclidノルム)を計算する: ||<b>v</b>||<sub>2</sub>. <br>
+     * 2-ノルム(Euclidノルム)を計算する:
+     * ||<b>v</b>||<sub>2</sub>.
      *
      * @return 2-ノルム
      */
@@ -240,7 +244,8 @@ public final class Vector {
     }
 
     /**
-     * 最大値ノルムを計算する: ||<b>v</b>||<sub>&infin;</sub>. <br>
+     * 最大値ノルムを計算する:
+     * ||<b>v</b>||<sub>&infin;</sub>.
      *
      * @return 最大値ノルム
      */
@@ -287,7 +292,7 @@ public final class Vector {
     }
 
     /**
-     * {@link Vector}の成分として有効な値であるかを判定する.
+     * {@link Vector} の成分として有効な値であるかを判定する.
      *
      * @param value 検証する値
      * @return 有効である場合はtrue
@@ -297,13 +302,8 @@ public final class Vector {
     }
 
     /**
-     * {@link Vector}のビルダ.
-     * 
-     * <p>
-     * このビルダはミュータブルである. <br>
-     * また, スレッドセーフでない.
-     * </p>
-     * 
+     * {@link Vector} のビルダ. <br>
+     * このビルダはミュータブルであり, スレッドセーフでない.
      */
     public static final class Builder {
 
@@ -342,7 +342,7 @@ public final class Vector {
             if (!this.vectorDimension.equalsValueOf(this.entry.length)) {
                 throw new IllegalArgumentException(
                         String.format(
-                                "サイズ不一致:vector:%s, entry:length=%d", this.vectorDimension, entry.length));
+                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, entry.length));
             }
             for (int j = 0, len = this.vectorDimension.intValue(); j < len; j++) {
                 if (!Vector.acceptValue(this.entry[j])) {
@@ -363,7 +363,7 @@ public final class Vector {
         }
 
         /**
-         * ベクトルの要素<i>i</i>を与えられた値で置き換える.
+         * ベクトルの要素 <i>i</i> を与えられた値で置き換える.
          *
          * @param index i, index
          * @param value 置き換えた後の値
@@ -378,10 +378,10 @@ public final class Vector {
             if (!this.vectorDimension.isValidIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "indexが有効でない:vactor:%s, index=%d", this.vectorDimension, index));
+                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
             }
             if (!Vector.acceptValue(value)) {
-                throw new IllegalArgumentException(String.format("valueが不正な値=%.16G", value));
+                throw new IllegalArgumentException(String.format("valueが不正な値=%s", value));
             }
             this.entry[index] = value;
         }
@@ -403,7 +403,7 @@ public final class Vector {
             if (!this.vectorDimension.equalsValueOf(entry.length)) {
                 throw new IllegalArgumentException(
                         String.format(
-                                "サイズ不一致:vector:%s, entry:length=%d", this.vectorDimension, entry.length));
+                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, entry.length));
             }
             double[] newEntry = entry.clone();
             for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {

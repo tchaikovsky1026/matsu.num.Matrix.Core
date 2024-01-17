@@ -1,32 +1,31 @@
 /**
- * 2023.11.30
+ * 2024.1.16
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
-import matsu.num.commons.ArraysUtil;
+import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 
 /**
- * 対称帯行列を生成するビルダ.
+ * <p>
+ * 対称帯行列を生成するビルダ. <br>
+ * このビルダはミュータブルであり, スレッドセーフでない.
+ * </p>
  * 
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
  * 有効要素数が大きすぎるとは, <br>
- * 行列の行数(= 列数)を<i>n</i>, 片側帯幅を<i>b</i>として, <br>
- * <i>n</i> * <i>b</i> {@literal >} {@linkplain Integer#MAX_VALUE} <br>
+ * 行列の行数(= 列数)を <i>n</i>, 片側帯幅を <i>b</i> として, <br>
+ * <i>n</i> * <i>b</i> &gt; {@linkplain Integer#MAX_VALUE} <br>
  * である状態である.
  * </p>
  * 
- * <p>
- * このビルダ自体はスレッドセーフでない.
- * </p>
- *
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.3
  */
 public final class SymmetricBandMatrixBuilder {
 
@@ -76,14 +75,14 @@ public final class SymmetricBandMatrixBuilder {
     }
 
     /**
-     * (<i>i</i>,<i>j</i>)要素を指定した値に置き換える. <br>
-     * 同時に(<i>j</i>,<i>i</i>)の値も置き換わる.
+     * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
+     * 同時に (<i>j</i>, <i>i</i>) の値も置き換わる.
      *
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
      * @throws IllegalStateException すでにビルドされている場合
-     * @throws IndexOutOfBoundsException (i,j)が行列の帯領域内でない場合
+     * @throws IndexOutOfBoundsException (i, j) が行列の帯領域内でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      */

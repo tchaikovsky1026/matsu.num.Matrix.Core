@@ -1,5 +1,5 @@
 /**
- * 2023.12.4
+ * 2023.12.25
  */
 package matsu.num.matrix.base;
 
@@ -10,29 +10,28 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplication;
 
 /**
+ * <p>
  * 直交行列であることを表す.
+ * </p>
+ * 
+ * <p>
+ * 直交行列は転置行列が逆行列に一致する. <br>
+ * したがって, 逆行列は必ず取得できる.
+ * </p>
  * 
  * <p>
  * {@link Matrix}のクラス説明の規約に従う.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.0
  * @see Matrix
  */
-public interface OrthogonalMatrix extends Matrix, Inversion {
+public interface OrthogonalMatrix
+        extends Matrix, Inversion {
 
     @Override
-    public OrthogonalMatrix target();
-
-    /**
-     * この直交行列の逆行列を取得する. <br>
-     * 正則行列であり, 空でない.
-     * 
-     * @return この行列の逆行列
-     */
-    @Override
-    public Optional<? extends OrthogonalMatrix> inverse();
+    public abstract OrthogonalMatrix target();
 
     /**
      * この行列の転置行列を返す.
@@ -41,6 +40,15 @@ public interface OrthogonalMatrix extends Matrix, Inversion {
      */
     @Override
     public abstract OrthogonalMatrix transpose();
+
+    /**
+     * <p>
+     * この行列の逆行列を返す. <br>
+     * {@linkplain Optional#get()} は必ず成功する.
+     * </p>
+     */
+    @Override
+    public abstract Optional<? extends OrthogonalMatrix> inverse();
 
     /**
      * 1個以上の直交行列に対し, それらの行列積を返す.

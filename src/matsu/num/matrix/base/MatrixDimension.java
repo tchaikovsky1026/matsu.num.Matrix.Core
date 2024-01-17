@@ -6,15 +6,14 @@ package matsu.num.matrix.base;
 import java.util.Objects;
 
 /**
- * 行列の次元(サイズ)を扱う不変クラス. <br>
- * 行サイズ, 列サイズともに1以上の整数値をとる.
- * 
  * <p>
+ * 行列の次元(サイズ)を扱う不変クラス. <br>
+ * 行サイズ, 列サイズともに1以上の整数値をとる. <br>
  * このクラスのインスタンスは, 行サイズ, 列サイズの値に基づくequalityを有する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 17.2
+ * @version 18.0
  */
 public final class MatrixDimension {
 
@@ -56,7 +55,7 @@ public final class MatrixDimension {
     }
 
     /**
-     * 行の{@code int}値を返す.
+     * 行の {@code int} 値を返す.
      *
      * @return 行
      */
@@ -65,7 +64,7 @@ public final class MatrixDimension {
     }
 
     /**
-     * 列の{@code int}値を返す.
+     * 列の {@code int} 値を返す.
      *
      * @return 列
      */
@@ -94,7 +93,7 @@ public final class MatrixDimension {
     /**
      * 行列サイズが正方形かどうかを判定.
      *
-     * @return 行列サイズが正方形であれば{@code true}
+     * @return 行列サイズが正方形であれば {@code true}
      */
     public boolean isSquare() {
         return this.shape == MatrixShape.SQUARE;
@@ -110,9 +109,9 @@ public final class MatrixDimension {
     }
 
     /**
-     * 行列サイズが狭義縦長かどうかを判定.
+     * 行列サイズが狭義縦長かどうかを判定する.
      *
-     * @return 行列サイズが狭義縦長であれば{@code true}
+     * @return 行列サイズが狭義縦長であれば {@code true}
      */
     public boolean isVertical() {
         return this.shape == MatrixShape.VERTICAL;
@@ -170,11 +169,8 @@ public final class MatrixDimension {
     }
 
     /**
-     * 他オブジェクトとの等価性を判定する.
-     * 
-     * <p>
+     * 他オブジェクトとの等価性を判定する. <br>
      * 等価性の基準はクラス説明のとおりである.
-     * </p>
      * 
      * @param obj 比較対象
      * @return 自身とobjが等価の場合はtrue
@@ -216,7 +212,9 @@ public final class MatrixDimension {
     }
 
     /**
+     * <p>
      * このオブジェクトの文字列説明表現を返す.
+     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>

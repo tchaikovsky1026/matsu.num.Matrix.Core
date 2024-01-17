@@ -1,13 +1,11 @@
 /**
- * 2023.11.29
+ * 2024.1.16
  */
 package matsu.num.matrix.base.nlsf.helper.fact;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import matsu.num.commons.ArraysUtil;
-import matsu.num.commons.Exponentiation;
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.Determinantable;
@@ -17,22 +15,28 @@ import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
+import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
-import matsu.num.matrix.base.helper.matrix.SkeletalInvertibleDeterminantableMatrix;
+import matsu.num.matrix.base.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.lazy.InverseAndDeterminantStructure;
+import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
 
 /**
  * 1*1 あるいは 2*2の対称ブロック要素を持つ, ブロック対角行列とそれを係数に持つ連立方程式の解法を扱う.
  *
  * @author Matsuura Y.
- * @version 17.0
+ * @version 18.3
  */
-public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetric, Inversion, Determinantable {
+public interface Block2OrderSymmetricDiagonalMatrix
+        extends BandMatrix, Symmetric,
+        Inversion, Determinantable {
 
     @Override
     public abstract Block2OrderSymmetricDiagonalMatrix target();
+
+    @Override
+    public abstract Block2OrderSymmetricDiagonalMatrix transpose();
 
     @Override
     public Optional<? extends Block2OrderSymmetricDiagonalMatrix> inverse();
@@ -176,7 +180,8 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
         }
 
         private static final class Block2OrderSymmetricDiagonalMatrixImpl
-                extends SkeletalInvertibleDeterminantableMatrix<Block2OrderSymmetricDiagonalMatrix>
+                extends SkeletalSymmetricInvertibleDeterminantableMatrix<
+                        Block2OrderSymmetricDiagonalMatrix, Block2OrderSymmetricDiagonalMatrix>
                 implements Block2OrderSymmetricDiagonalMatrix {
 
             /*
@@ -204,7 +209,7 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
             //thisの逆行列と行列式を表す. 
             //すでに計算されている場合について埋め込まれる
             //もし計算されていない状態(ビルダから生成された場合)はnull
-            private final InverseAndDeterminantStructure<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse;
+            private final InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse;
 
             /**
              * ビルダから呼ばれる
@@ -226,7 +231,7 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
              */
             private Block2OrderSymmetricDiagonalMatrixImpl(
                     BandMatrixDimension bandMatrixDimension, double[] diagonalEntry, double[] subDiagonalEntry,
-                    InverseAndDeterminantStructure<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse) {
+                    InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse) {
                 this.bandMatrixDimension = bandMatrixDimension;
                 this.diagonalEntry = diagonalEntry;
                 this.subdiagonalEntry = subDiagonalEntry;
@@ -239,11 +244,6 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
             @Override
             public BandMatrixDimension bandMatrixDimension() {
                 return this.bandMatrixDimension;
-            }
-
-            @Override
-            public Block2OrderSymmetricDiagonalMatrix target() {
-                return this;
             }
 
             /**
@@ -348,122 +348,226 @@ public interface Block2OrderSymmetricDiagonalMatrix extends BandMatrix, Symmetri
             }
 
             @Override
-            protected InverseAndDeterminantStructure<Block2OrderSymmetricDiagonalMatrix> createInvAndDetWrapper() {
+            protected InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> createInvAndDetWrapper() {
                 if (Objects.nonNull(this.invAndDetOfInverse)) {
                     return this.invAndDetOfInverse;
                 }
 
-                //ブロック対角行列の逆行列を生成
-                double[] thisDiagonalEntry = this.diagonalEntry;
-                double[] thisSubdiagonalEntry = this.subdiagonalEntry;
-                final int dimension = thisDiagonalEntry.length;
-
-                //1*1か2*2かの状態を管理する
-                boolean state22 = false;
-
-                /* 逆行列, 行列式のlogAbs, 行列式の符号を同時に計算する */
-                double logAbsDeterminant = 0d;
-                boolean sign = true;
-                double[] inverseDiagEntry = new double[thisDiagonalEntry.length];
-                double[] inverseSubDiagEntry = new double[thisSubdiagonalEntry.length];
-
-                for (int i = 0; i < dimension; i++) {
-                    if (i < dimension - 1 && thisSubdiagonalEntry[i] != 0.0) {
-                        state22 = true;
-                        continue;
-                    }
-                    if (!state22) {
-                        double m_00 = thisDiagonalEntry[i];
-                        double im_00 = 1 / m_00;
-                        if (!EntryReadableMatrix.acceptValue(im_00)) {
-                            return new InverseAndDeterminantStructure<>();
-                        }
-                        inverseDiagEntry[i] = im_00;
-
-                        sign ^= m_00 < 0;
-                        logAbsDeterminant += Exponentiation.log(Math.abs(m_00));
-
-                        continue;
-                    }
-                    final double m_01 = thisSubdiagonalEntry[i - 1];
-                    final double m_00 = thisDiagonalEntry[i - 1];
-                    final double m_11 = thisDiagonalEntry[i];
-
-                    double[] inv = this.blockInverseAndDeterminantValue(m_00, m_11, m_01);
-                    if (Objects.isNull(inv)) {
-                        return new InverseAndDeterminantStructure<>();
-                    }
-
-                    inverseDiagEntry[i - 1] = inv[0];
-                    inverseDiagEntry[i] = inv[1];
-                    inverseSubDiagEntry[i - 1] = inv[2];
-                    logAbsDeterminant += inv[3];
-                    sign ^= inv[4] < 0;
-
-                    state22 = false;
-                }
-
-                DeterminantValues thisDet = new DeterminantValues(
-                        logAbsDeterminant,
-                        sign ? 1 : -1);
-                //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
-                InverseAndDeterminantStructure<Block2OrderSymmetricDiagonalMatrix> invWrapper =
-                        new InverseAndDeterminantStructure<>(
-                                thisDet.createInverse(), this);
-
-                Block2OrderSymmetricDiagonalMatrix invMatrix = new Block2OrderSymmetricDiagonalMatrixImpl(
-                        this.bandMatrixDimension, inverseDiagEntry, inverseSubDiagEntry, invWrapper);
-
-                return new InverseAndDeterminantStructure<>(thisDet, invMatrix);
+                return new CreateInvAndDetWrapper(this).execute();
             }
 
             /**
-             * 与えられたブロック要素(2*2)に対して, 逆行列要素と行列式に関する要素を返す. <br>
-             * その形式は, {@code double}配列であり, <br>
-             * {@code [im_00, im_11, im_01, logAbsDet, signOfDet]} <br>
-             * である. <br>
-             * {@code signOfDet}は{@code 1.0}または{@code -1.0}である. <br>
-             * ただし, 特異の場合のみ, {@code null}を返す.
-             * 
-             * @param m_00 00成分
-             * @param m_11 11成分
-             * @param m_01 01成分=10成分
-             * @return 値を有する配列
+             * {@linkplain Block2OrderSymmetricDiagonalMatrixImpl} の内部で使う,
+             * 行列式と逆行列の計算を支援する仕組み.
              */
-            private double[] blockInverseAndDeterminantValue(double m_00, double m_11, double m_01) {
+            private static final class CreateInvAndDetWrapper {
 
-                double scale = Math.max(Math.abs(m_00), Math.abs(m_11));
-                scale = Math.max(scale, Math.abs(m_01));
-                if (scale == 0.0) {
-                    return null;
+                //logAbsDetの計算で使う定数
+                private static final double SHIFT_CONSTANT = 1E150;
+                private static final double SHIFT_CONSTANT_SQUARE = SHIFT_CONSTANT * SHIFT_CONSTANT;
+                private static final double REVERSE_SHIFT_CONSTANT = 1 / SHIFT_CONSTANT;
+                private static final double REVERSE_SHIFT_CONSTANT_SQUARE = 1 / SHIFT_CONSTANT_SQUARE;
+                private static final double LOG_SHIFT_CONSTANT = Math.log(SHIFT_CONSTANT);
+
+                private final Block2OrderSymmetricDiagonalMatrixImpl src;
+
+                /*
+                 * 配列は結果行列内に埋め込まれるので, このクラス内での値の書き換えに注意する.
+                 */
+                private boolean sign;
+                private double[] inverseDiagEntry;
+                private double[] inverseSubDiagEntry;
+
+                //logAbsDetの計算結果保存
+                private int shifting;
+                private double absDetResidual;
+
+                CreateInvAndDetWrapper(Block2OrderSymmetricDiagonalMatrixImpl src) {
+                    super();
+                    this.src = src;
                 }
-                m_00 /= scale;
-                m_11 /= scale;
-                m_01 /= scale;
 
-                double det = m_00 * m_11 - m_01 * m_01;
-                if (Math.abs(det) < 1E-100) {
-                    return null;
+                /**
+                 * 逆行列と行列式を生成する.
+                 * 
+                 * @return 逆行列と行列式
+                 */
+                public InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix>
+                        execute() {
+                    double[] thisDiagonalEntry = this.src.diagonalEntry;
+                    double[] thisSubdiagonalEntry = this.src.subdiagonalEntry;
+                    final int dimension = thisDiagonalEntry.length;
+
+                    this.sign = true;
+                    this.inverseDiagEntry = new double[thisDiagonalEntry.length];
+                    this.inverseSubDiagEntry = new double[thisSubdiagonalEntry.length];
+                    this.shifting = 0;
+                    this.absDetResidual = 1d;
+
+                    //1*1か2*2かの状態を管理する
+                    boolean state22 = false;
+
+                    for (int i = 0; i < dimension; i++) {
+                        if (i < dimension - 1 && thisSubdiagonalEntry[i] != 0.0) {
+                            state22 = true;
+                            continue;
+                        }
+                        if (!state22) {
+                            State s = this.applyUnderState1(i, thisDiagonalEntry[i]);
+                            if (s.equals(State.SINGULAR)) {
+                                return new InverseAndDeterminantStruct<>();
+                            }
+
+                            continue;
+                        }
+
+                        State s = this.applyUnderState2(
+                                i, thisDiagonalEntry[i - 1], thisDiagonalEntry[i], thisSubdiagonalEntry[i - 1]);
+
+                        if (s.equals(State.SINGULAR)) {
+                            return new InverseAndDeterminantStruct<>();
+                        }
+
+                        state22 = false;
+                    }
+
+                    double logAbsDeterminant = Math.log(absDetResidual)
+                            + shifting * LOG_SHIFT_CONSTANT;
+
+                    DeterminantValues thisDet = new DeterminantValues(
+                            logAbsDeterminant,
+                            sign ? 1 : -1);
+                    //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
+                    InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invWrapper =
+                            new InverseAndDeterminantStruct<>(
+                                    thisDet.createInverse(), this.src);
+
+                    Block2OrderSymmetricDiagonalMatrix invMatrix = new Block2OrderSymmetricDiagonalMatrixImpl(
+                            this.src.bandMatrixDimension, inverseDiagEntry, inverseSubDiagEntry, invWrapper);
+
+                    return new InverseAndDeterminantStruct<>(thisDet, invMatrix);
                 }
-                final double invDet = 1 / det;
 
-                final double im_01 = -(m_01 * invDet) / scale;
-                final double im_00 = (m_11 * invDet) / scale;
-                final double im_11 = (m_00 * invDet) / scale;
-                if (!(EntryReadableMatrix.acceptValue(im_00)
-                        && EntryReadableMatrix.acceptValue(im_01)
-                        && EntryReadableMatrix.acceptValue(im_11))) {
-                    return null;
+                private State applyUnderState1(int i, double m_00) {
+
+                    double im_00 = 1 / m_00;
+                    if (!EntryReadableMatrix.acceptValue(im_00)) {
+                        return State.SINGULAR;
+                    }
+                    this.inverseDiagEntry[i] = im_00;
+
+                    this.sign ^= m_00 < 0;
+
+                    double abs_m_00 = Math.abs(m_00);
+                    this.determinantToField(abs_m_00, 1);
+
+                    return State.REGULAR;
                 }
-                double[] out = {
-                        im_00,
-                        im_11,
-                        im_01,
-                        Exponentiation.log(Math.abs(det)) + 2 * Exponentiation.log(scale),
-                        det > 0d ? 1.0 : -1.0
-                };
 
-                return out;
+                /**
+                 * 2*2ブロックに対する処理.
+                 * (i-1)と(i)を扱う.
+                 * 
+                 * @param i
+                 * @param m_00
+                 * @param m_01
+                 * @param m_11
+                 */
+                private State applyUnderState2(int i, double m_00, double m_11, double m_01) {
+
+                    double scale = this.calcScale(m_00, m_11, m_01);
+                    double scaled_m_00 = m_00 / scale;
+                    double scaled_m_11 = m_11 / scale;
+                    double scaled_m_01 = m_01 / scale;
+
+                    double scaledDet = scaled_m_00 * scaled_m_11 - scaled_m_01 * scaled_m_01;
+                    if (Math.abs(scaledDet) < 1E-305) {
+                        return State.SINGULAR;
+                    }
+                    final double invScaledDet = 1 / scaledDet;
+                    final double im_01 = -(scaled_m_01 * invScaledDet) / scale;
+                    final double im_00 = (scaled_m_11 * invScaledDet) / scale;
+                    final double im_11 = (scaled_m_00 * invScaledDet) / scale;
+
+                    if (!(EntryReadableMatrix.acceptValue(im_00)
+                            && EntryReadableMatrix.acceptValue(im_01)
+                            && EntryReadableMatrix.acceptValue(im_11))) {
+                        return State.SINGULAR;
+                    }
+                    this.inverseDiagEntry[i - 1] = im_00;
+                    this.inverseDiagEntry[i] = im_11;
+                    this.inverseSubDiagEntry[i - 1] = im_01;
+                    this.sign ^= scaledDet < 0;
+                    double absScaleDet = Math.abs(scaledDet);
+
+                    this.determinantToField(absScaleDet, 1);
+                    this.determinantToField(scale, 2);
+
+                    return State.REGULAR;
+                }
+
+                private double calcScale(double m_00, double m_11, double m_01) {
+                    double absAC = Math.abs(m_00 * m_11);
+                    double absBB = Math.abs(m_01 * m_01);
+                    if (absAC > 1E+300 || absBB > 1E+300) {
+                        return 1E+150;
+                    }
+                    if (absAC < 1E-300 && absBB < 1E-300) {
+                        return 1E-150;
+                    }
+                    return 1d;
+                }
+
+                private void determinantToField(double value, int multiplicity) {
+
+                    if (value > SHIFT_CONSTANT) {
+                        if (value > SHIFT_CONSTANT_SQUARE) {
+                            shifting += 2 * multiplicity;
+                            value *= REVERSE_SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting += multiplicity;
+                            value *= REVERSE_SHIFT_CONSTANT;
+                        }
+                    } else if (value < REVERSE_SHIFT_CONSTANT) {
+                        if (value < REVERSE_SHIFT_CONSTANT_SQUARE) {
+                            shifting -= 2 * multiplicity;
+                            value *= SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting -= multiplicity;
+                            value *= SHIFT_CONSTANT;
+                        }
+                    }
+
+                    for (int c = 0; c < multiplicity; c++) {
+                        this.absDetResidual *= value;
+                        this.normalizeAbsDetResidual();
+                    }
+                }
+
+                private void normalizeAbsDetResidual() {
+                    if (absDetResidual > SHIFT_CONSTANT) {
+                        if (absDetResidual > SHIFT_CONSTANT_SQUARE) {
+                            shifting += 2;
+                            absDetResidual *= REVERSE_SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting++;
+                            absDetResidual *= REVERSE_SHIFT_CONSTANT;
+                        }
+                    } else if (absDetResidual < REVERSE_SHIFT_CONSTANT) {
+                        if (absDetResidual < REVERSE_SHIFT_CONSTANT_SQUARE) {
+                            shifting -= 2;
+                            absDetResidual *= SHIFT_CONSTANT_SQUARE;
+                        } else {
+                            shifting--;
+                            absDetResidual *= SHIFT_CONSTANT;
+                        }
+                    }
+                }
+
+                private static enum State {
+                    REGULAR, SINGULAR;
+                }
+
             }
         }
 

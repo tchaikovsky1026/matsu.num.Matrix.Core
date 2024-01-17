@@ -1,32 +1,30 @@
 /**
- * 2023.11.30
+ * 2024.1.16
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import matsu.num.commons.ArraysUtil;
+import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 
 /**
- * 単位下三角の密行列を作成するビルダ.
- * 
  * <p>
- * このビルダはミュータブルである. <br>
- * また, スレッドセーフでない.
+ * 単位下三角の密行列を作成するビルダ. <br>
+ * このビルダはミュータブルであり, スレッドセーフでない.
  * </p>
  * 
  * <p>
  * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
  * 有効要素数が大きすぎるとは, <br>
- * 行列の行数(= 列数)を<i>n</i>として, <br>
- * <i>n</i> * (<i>n</i> - 1) {@literal >} {@linkplain Integer#MAX_VALUE} <br>
+ * 行列の行数(= 列数)を <i>n</i> として, <br>
+ * <i>n</i> * (<i>n</i> - 1) &gt; {@linkplain Integer#MAX_VALUE} <br>
  * である状態である.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.3
  * @see LowerUnitriangularEntryReadableMatrix
  */
 public final class LowerUnitriangularBuilder {
@@ -61,12 +59,12 @@ public final class LowerUnitriangularBuilder {
     }
 
     /**
-     * (<i>i</i>,<i>j</i>)要素を指定した値に置き換える.
+     * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
      *
      * @param row i, 行index
      * @param column j, 列index
      * @param value 置き換えた後の値
-     * @throws IndexOutOfBoundsException (i,j)が行列の狭義下三角成分でない場合
+     * @throws IndexOutOfBoundsException (i, j) が行列の狭義下三角成分でない場合
      * @throws IllegalStateException すでにビルドされている場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
@@ -163,6 +161,21 @@ public final class LowerUnitriangularBuilder {
         @Override
         public MatrixDimension matrixDimension() {
             return this.matrixDimension;
+        }
+
+        @Override
+        public double determinant() {
+            return 1.0;
+        }
+
+        @Override
+        public double logAbsDeterminant() {
+            return 0.0;
+        }
+
+        @Override
+        public int signOfDeterminant() {
+            return 1;
         }
 
         /**

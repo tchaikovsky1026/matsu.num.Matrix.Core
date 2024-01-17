@@ -26,6 +26,8 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 @RunWith(Enclosed.class)
 public class CholeskyBandExecutorTest {
 
+    public static final Class<?> TEST_CLASS = CholeskyBandExecutor.class;
+
     public static class 生成に関する {
 
         @Test(expected = MatrixNotSymmetricException.class)
@@ -37,7 +39,7 @@ public class CholeskyBandExecutorTest {
 
     public static class 行列式と逆行列ベクトル積に関する_サイズ4 {
 
-        private AsymmetricSqrtFactorization<BandMatrix> cb;
+        private SymmetrizedSquareTypeSolver cb;
 
         @Before
         public void before_生成() {
@@ -115,7 +117,7 @@ public class CholeskyBandExecutorTest {
 
     public static class 行列式と逆行列ベクトル積に関する_サイズ1 {
 
-        private AsymmetricSqrtFactorization<BandMatrix> cb;
+        private SymmetrizedSquareTypeSolver cb;
 
         @Before
         public void before_生成() {
@@ -164,7 +166,7 @@ public class CholeskyBandExecutorTest {
     public static class 行列の非対称平方根に関するテスト {
 
         private Matrix matrix;
-        private AsymmetricSqrtFactorization<BandMatrix> cho;
+        private SymmetrizedSquareTypeSolver cho;
 
         @Before
         public void before_生成() {
@@ -196,7 +198,7 @@ public class CholeskyBandExecutorTest {
             builder.setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 });
             Vector right = builder.build();
 
-            Matrix asymmSqrt = cho.asymmetricSqrtSystem().target();
+            Matrix asymmSqrt = cho.asymmSqrt();
             double[] expected = matrix.operate(right).entryAsArray();
             double[] result = asymmSqrt.operate(asymmSqrt.operateTranspose(right)).entryAsArray();
 
@@ -209,7 +211,7 @@ public class CholeskyBandExecutorTest {
 
     public static class 行列の非対称平方根の逆行列に関するテスト {
 
-        private AsymmetricSqrtFactorization<BandMatrix> cho;
+        private SymmetrizedSquareTypeSolver cho;
 
         @Before
         public void before_生成() {
@@ -239,7 +241,7 @@ public class CholeskyBandExecutorTest {
             builder.setEntryValue(new double[] { 1.3, 2.1, 3.6, 4.2 });
             Vector right = builder.build();
 
-            Matrix asymmInvSqrt = cho.asymmetricSqrtSystem().inverse().get();
+            Matrix asymmInvSqrt = cho.inverseAsymmSqrt();
             double[] expected = cho.inverse().get().operate(right).entryAsArray();
             double[] result = asymmInvSqrt.operateTranspose(asymmInvSqrt.operate(right)).entryAsArray();
 
@@ -247,6 +249,31 @@ public class CholeskyBandExecutorTest {
             for (int i = 0; i < result.length; i++) {
                 assertThat(result[i], is(closeTo(expected[i], 1E-10)));
             }
+        }
+    }
+
+    public static class toString表示 {
+
+        private SymmetrizedSquareTypeSolver cb;
+
+        @Before
+        public void before_次元1の正方行列のソルバを用意する() {
+            /*
+             * 5
+             */
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(1, 0));
+            builder.setValue(0, 0, 5);
+            cb = CholeskyBandExecutor.instance().apply(builder.build());
+        }
+
+        @Test
+        public void test_toString表示() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(cb);
+            System.out.println(cb.asymmSqrt());
+            System.out.println(cb.inverseAsymmSqrt());
+            System.out.println();
         }
     }
 }

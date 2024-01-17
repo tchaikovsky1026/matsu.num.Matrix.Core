@@ -1,5 +1,5 @@
 /**
- * 2023.11.30
+ * 2023.12.25
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -21,7 +21,7 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * 直交行列の行列積を扱う.
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 18.0
  */
 public final class OrthogonalMatrixMultiplication {
 
@@ -62,7 +62,8 @@ public final class OrthogonalMatrixMultiplication {
      * 直交行列の行列積を表現する行列.
      */
     private static final class MultiplyingSeries
-            extends SkeletalOrthogonalMatrix implements MultipliedOrthogonalMatrix {
+            extends SkeletalOrthogonalMatrix<MultipliedOrthogonalMatrix>
+            implements MultipliedOrthogonalMatrix {
 
         private final Deque<OrthogonalMatrix> series;
         private final MatrixDimension matrixDimension;
@@ -142,11 +143,6 @@ public final class OrthogonalMatrixMultiplication {
                 former = latter;
             }
             return Optional.of(series);
-        }
-
-        @Override
-        public OrthogonalMatrix target() {
-            return this;
         }
 
         @Override
