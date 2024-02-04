@@ -13,7 +13,7 @@ import matsu.num.matrix.base.OrthogonalMatrix;
 import matsu.num.matrix.base.PermutationMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * {@link OrthogonalMatrixMultiplication}クラスのテスト.

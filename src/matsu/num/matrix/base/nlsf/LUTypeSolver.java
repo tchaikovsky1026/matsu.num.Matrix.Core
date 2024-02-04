@@ -1,5 +1,5 @@
 /**
- * 2023.12.25
+ * 2024.1.19
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -24,7 +24,7 @@ import matsu.num.matrix.base.Matrix;
  * ただし, L は下三角行列, U は上三角行列, D は対角行列, P は置換行列を表す. <br>
  * A についての逆行列
  * (つまり, 係数行列 A に対する線形連立方程式の解法)
- * と, A の行列式が得られるのがこの分解の特徴である.
+ * と, A の行列式を得られるのがこの分解の特徴である.
  * </p>
  * 
  * <p>
@@ -39,7 +39,7 @@ import matsu.num.matrix.base.Matrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.0
  */
 public interface LUTypeSolver
         extends Inversion, Determinantable {

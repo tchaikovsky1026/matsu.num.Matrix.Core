@@ -1,32 +1,30 @@
 /**
- * 2024.1.16
+ * 2024.2.4
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.6
  */
 public interface DiagonalMatrix extends BandMatrix, Symmetric,
-        Inversion, Determinantable {
+        Invertible, Determinantable {
 
     @Override
     public abstract Optional<? extends DiagonalMatrix> inverse();
-
-    @Override
-    public abstract DiagonalMatrix target();
 
     @Override
     public abstract DiagonalMatrix transpose();
@@ -56,14 +54,37 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
         /**
          * (<i>i</i>, <i>i</i>) 要素を指定した値に置き換える.
          *
-         * @param index i, 行, 列index
+         * @param index <i>i</i>, 行, 列index
          * @param value 置き換えた後の値
          * @throws IllegalStateException すでにビルドされている場合
-         * @throws IndexOutOfBoundsException (i, i) が対角成分でない場合
+         * @throws IndexOutOfBoundsException (<i>i</i>, <i>i</i>) が対角成分でない場合
          * @throws IllegalArgumentException valueが不正な値の場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public void setValue(final int index, final double value) {
+            this.setValueOrElseThrow(
+                    index, value,
+                    v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
+        }
+
+        /**
+         * (<i>i</i>, <i>i</i>) 要素を指定した値に置き換える. <br>
+         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+         *
+         * @param index <i>i</i>, 行, 列index
+         * @param value 置き換えた後の値
+         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+         * @param <X> スローされる例外の型
+         * @throws IllegalStateException すでにビルドされている場合
+         * @throws IndexOutOfBoundsException (<i>i</i>, <i>i</i>) が対角成分でない場合
+         * @throws X valueが不正な値である場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         * @see EntryReadableMatrix#acceptValue(double)
+         */
+        public <X extends Exception> void setValueOrElseThrow(final int index, final double value,
+                DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+            Objects.requireNonNull(invalidValueExceptionGetter);
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -71,11 +92,11 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
             if (!matrixDimension.isValidRowIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (i,i)=(%d,%d)",
+                                "行列外:matrix:%s, (i, i)=(%s, %s)",
                                 matrixDimension, index, index));
             }
             if (!EntryReadableMatrix.acceptValue(value)) {
-                throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
+                throw invalidValueExceptionGetter.apply(value);
             }
             this.diagonalEntry[index] = value;
         }
@@ -138,7 +159,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
              * すでに計算されている場合について埋め込まれる. <br>
              * もし計算されていない状態(ビルダから生成された場合)はnull.
              */
-            private final InverseAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse;
+            private final InverstibleAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse;
 
             /**
              * ビルダから呼ばれる.
@@ -157,7 +178,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
              * 生成される行列に対し, 逆行列を直接紐づける.
              */
             private DiagonalMatrixImpl(final BandMatrixDimension bandMatrixDimension, double[] diagonalEntry,
-                    InverseAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse) {
+                    InverstibleAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse) {
                 this.bandMatrixDimension = bandMatrixDimension;
                 this.diagonalEntry = diagonalEntry;
 
@@ -185,7 +206,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                 case OUT_OF_MATRIX:
                     throw new IndexOutOfBoundsException(
                             String.format(
-                                    "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                                    "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
                                     bandMatrixDimension.dimension(), row, column));
                 default:
                     throw new AssertionError("Bug: 列挙型に想定外の値");
@@ -217,12 +238,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
             }
 
             @Override
-            public Vector operateTranspose(Vector operand) {
-                return this.operate(operand);
-            }
-
-            @Override
-            protected InverseAndDeterminantStruct<DiagonalMatrix> createInvAndDetWrapper() {
+            protected InverstibleAndDeterminantStruct<DiagonalMatrix> createInvAndDetWrapper() {
                 if (Objects.nonNull(this.invAndDetOfInverse)) {
                     return this.invAndDetOfInverse;
                 }
@@ -289,7 +305,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                  * 
                  * @return 逆行列と行列式
                  */
-                public InverseAndDeterminantStruct<DiagonalMatrix>
+                public InverstibleAndDeterminantStruct<DiagonalMatrix>
                         execute() {
                     double[] thisDiagonalEntry = this.src.diagonalEntry;
                     final int dimension = thisDiagonalEntry.length;
@@ -302,7 +318,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                     for (int i = 0; i < dimension; i++) {
                         State s = this.applyUnderState1(i, thisDiagonalEntry[i]);
                         if (s.equals(State.SINGULAR)) {
-                            return new InverseAndDeterminantStruct<>();
+                            return new InverstibleAndDeterminantStruct<>();
                         }
                     }
 
@@ -313,14 +329,14 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                             logAbsDeterminant,
                             sign ? 1 : -1);
                     //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
-                    InverseAndDeterminantStruct<DiagonalMatrix> invWrapper =
-                            new InverseAndDeterminantStruct<>(
+                    InverstibleAndDeterminantStruct<DiagonalMatrix> invWrapper =
+                            new InverstibleAndDeterminantStruct<>(
                                     thisDet.createInverse(), this.src);
 
                     DiagonalMatrix invMatrix = new DiagonalMatrixImpl(
                             this.src.bandMatrixDimension, inverseDiagEntry, invWrapper);
 
-                    return new InverseAndDeterminantStruct<>(thisDet, invMatrix);
+                    return new InverstibleAndDeterminantStruct<>(thisDet, invMatrix);
                 }
 
                 private State applyUnderState1(int i, double m_00) {

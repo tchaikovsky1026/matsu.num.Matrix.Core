@@ -1,18 +1,18 @@
 /**
- * 2024.1.16
+ * 2024.2.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
 import matsu.num.matrix.base.common.ArraysUtil;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
  * 縦ベクトルを扱う. <br>
- * 成分に不正値 (inf, NaN) を含んではいけない. <br>
- * ベクトルは不変であり, メソッドに対して関数的かつスレッドセーフである.
+ * 成分に不正値を含まないことを保証する. <br>
+ * インスタンスはイミュータブルであり, メソッドは関数的かつスレッドセーフである.
  * </p>
  * 
  * <p>
@@ -21,27 +21,62 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.5
  */
 public final class Vector {
+
+    /**
+     * 扱うことができる成分の最小値.
+     */
+    public static final double MAX_VALUE = Double.MAX_VALUE;
+
+    /**
+     * 扱うことができる成分の最大値.
+     */
+    public static final double MIN_VALUE = -Double.MAX_VALUE;
 
     private final VectorDimension vectorDimension;
     private final double[] entry;
 
     private final double normMax;
+    private final boolean normalized;
 
+    //遅延初期化
+    private volatile Double norm1;
+    private volatile Double norm2;
+    private volatile Double norm2Square;
+
+    /**
+     * ビルダから呼ばれる.
+     * 
+     * @param vectorDimension
+     * @param entry
+     */
     private Vector(final VectorDimension vectorDimension, final double[] entry) {
+        this(vectorDimension, entry, false);
+    }
+
+    /**
+     * 内部から呼ばれる.
+     * 必要なパラメータが渡される.
+     * 
+     * @param vectorDimension
+     * @param entry
+     * @param normalized
+     */
+    private Vector(final VectorDimension vectorDimension, final double[] entry, boolean normalized) {
         this.vectorDimension = vectorDimension;
         this.entry = entry;
 
         this.normMax = this.calcNormMax();
+        this.normalized = normalized;
     }
 
     /**
      * ベクトルの要素 <i>i</i> の値を返す.
      *
-     * @param index i, index
-     * @return 要素iの値
+     * @param index <i>i</i>, index
+     * @return 要素 <i>i</i> の値
      * @throws IndexOutOfBoundsException indexが範囲外の場合
      */
     public double valueAt(final int index) {
@@ -57,7 +92,7 @@ public final class Vector {
      * ベクトルの要素を扱う配列への参照を返す.
      * 
      * <p>
-     * このメソッドは内部の配列への参照を公開するので危険であり, 決してpublicにしてはいけない. <br>
+     * このメソッドは内部の配列への参照を公開するため, 決してpublicにしてはいけない. <br>
      * また, 使い方には十分注意する.
      * </p>
      *
@@ -102,10 +137,9 @@ public final class Vector {
      * <b>u</b>: 作用ベクトル, <br>
      * <b>w</b>: 計算結果.
      *
-     * @param reference u, 作用ベクトル
+     * @param reference <b>u</b>, 作用ベクトル
      * @return 計算結果
      * @throws MatrixFormatMismatchException thisと作用ベクトルの次元が一致しない場合
-     * @throws IllegalArgumentException 計算結果が不正な場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector plus(final Vector reference) {
@@ -123,10 +157,9 @@ public final class Vector {
      * <b>u</b>: 作用ベクトル, <br>
      * <b>w</b>: 計算結果.
      *
-     * @param reference u, 作用ベクトル
+     * @param reference <b>u</b>, 作用ベクトル
      * @return 計算結果
      * @throws MatrixFormatMismatchException thisと作用ベクトルの次元が一致しない場合
-     * @throws IllegalArgumentException 計算結果が不正な場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector minus(final Vector reference) {
@@ -146,11 +179,10 @@ public final class Vector {
      * <i>c</i>: スカラー.
      * <b>w</b>: 計算結果.
      *
-     * @param reference u, 作用ベクトル
-     * @param scalar c, スカラー
+     * @param reference <b>u</b>, 作用ベクトル
+     * @param scalar <i>c</i>, スカラー
      * @return 計算結果
      * @throws MatrixFormatMismatchException thisと作用ベクトルの次元が一致しない場合
-     * @throws IllegalArgumentException 計算結果が不正な場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector plusCTimes(final Vector reference, final double scalar) {
@@ -169,9 +201,8 @@ public final class Vector {
      * <i>c</i>: スカラー.
      * <b>w</b>: 計算結果.
      *
-     * @param scalar c, スカラー
+     * @param scalar <i>c</i>, スカラー
      * @return 計算結果
-     * @throws IllegalArgumentException 計算結果が不正な場合
      */
     public Vector times(final double scalar) {
         double[] result = this.entry.clone();
@@ -186,7 +217,7 @@ public final class Vector {
      * <b>v</b>: {@code this}, <br>
      * <b>u</b>: 作用ベクトル.
      *
-     * @param reference u, 作用ベクトル
+     * @param reference <i>u</i>, 作用ベクトル
      * @return 内積
      * @throws MatrixFormatMismatchException {@code this} と作用ベクトルの次元が一致しない場合
      * @throws NullPointerException 引数にnullが含まれる場合
@@ -220,7 +251,15 @@ public final class Vector {
      * @return 1-ノルム
      */
     public double norm1() {
-        return ArraysUtil.norm1(this.entry);
+        Double out = this.norm1;
+        if (Objects.nonNull(out)) {
+            return out.doubleValue();
+        }
+
+        //シングルチェックイディオム
+        out = ArraysUtil.norm1(this.entry);
+        this.norm1 = out;
+        return out.doubleValue();
     }
 
     /**
@@ -230,7 +269,15 @@ public final class Vector {
      * @return 2-ノルムの二乗
      */
     public double norm2Square() {
-        return ArraysUtil.norm2Square(this.entry);
+        Double out = this.norm2Square;
+        if (Objects.nonNull(out)) {
+            return out.doubleValue();
+        }
+
+        //シングルチェックイディオム
+        out = ArraysUtil.norm2Square(this.entry);
+        this.norm2Square = out;
+        return out.doubleValue();
     }
 
     /**
@@ -240,7 +287,15 @@ public final class Vector {
      * @return 2-ノルム
      */
     public double norm2() {
-        return ArraysUtil.norm2(this.entry);
+        Double out = this.norm2;
+        if (Objects.nonNull(out)) {
+            return out.doubleValue();
+        }
+
+        //シングルチェックイディオム
+        out = ArraysUtil.norm2(this.entry);
+        this.norm2 = out;
+        return out.doubleValue();
     }
 
     /**
@@ -256,6 +311,54 @@ public final class Vector {
 
     private double calcNormMax() {
         return ArraysUtil.normMax(this.entry);
+    }
+
+    /**
+     * 自身を規格化したベクトルを返す. <br>
+     * 自身の大きさが厳密に0である場合のみ, 規格化されずに0を返す.
+     * 
+     * @return 自身を規格化したベクトル
+     */
+    public Vector normalizedEuclidean() {
+        if (this.normalized || this.normMax == 0d) {
+            return this;
+        }
+
+        double[] canoEntry = this.canonicalize();
+        double canoNorm2 = ArraysUtil.norm2(canoEntry);
+        ArraysUtil.multiply(canoEntry, 1 / canoNorm2);
+
+        Vector out = new Vector(this.vectorDimension, canoEntry, true);
+        Double value1 = Double.valueOf(1d);
+        out.norm2 = value1;
+        out.norm2Square = value1;
+        return out;
+    }
+
+    /**
+     * ユークリッドノルムでの規格化のための準備.
+     * 
+     * <p>
+     * ベクトルの成分が大きすぎる場合,
+     * 2-ノルムがinfになる場合がある. <br>
+     * ベクトルの成分が小さすぎる場合 (非正規数に突入する場合),
+     * 2ノルムが正確でなくなる場合がある. <br>
+     * このメソッドは, そのような極端な状況を回避するための, 正規化を提供する.
+     * </p>
+     * 
+     * @return 正常化した成分
+     */
+    private double[] canonicalize() {
+        double[] out = this.entry.clone();
+        if (this.normMax < 1E-280) {
+            ArraysUtil.multiply(out, 1E200);
+            return out;
+        }
+        if (this.normMax > 1E280) {
+            ArraysUtil.multiply(out, 1E-200);
+            return out;
+        }
+        return out;
     }
 
     /**
@@ -298,7 +401,7 @@ public final class Vector {
      * @return 有効である場合はtrue
      */
     public static boolean acceptValue(double value) {
-        return Double.isFinite(value);
+        return MIN_VALUE <= value && value <= MAX_VALUE;
     }
 
     /**
@@ -363,13 +466,16 @@ public final class Vector {
         }
 
         /**
-         * ベクトルの要素 <i>i</i> を与えられた値で置き換える.
+         * <p>
+         * ベクトルの要素 <i>i</i> を与えられた値で置き換える. <br>
+         * ただし, 不正な値を与えた場合, 正常な値に置き換えられる.
+         * </p>
          *
-         * @param index i, index
+         * @param index <i>i</i>, index
          * @param value 置き換えた後の値
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException indexが範囲外の場合
-         * @throws IllegalArgumentException valueが不正な値(Infinity, NaN)である場合
+         * @see Vector#acceptValue(double)
          */
         public void setValue(final int index, final double value) {
             if (Objects.isNull(this.entry)) {
@@ -380,36 +486,54 @@ public final class Vector {
                         String.format(
                                 "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
             }
-            if (!Vector.acceptValue(value)) {
-                throw new IllegalArgumentException(String.format("valueが不正な値=%s", value));
+
+            this.entry[index] = modified(value);
+        }
+
+        private static double modified(double value) {
+            if (Vector.acceptValue(value)) {
+                return value;
             }
-            this.entry[index] = value;
+
+            //+infの場合
+            if (value >= 0) {
+                return MAX_VALUE;
+            }
+
+            //-infの場合
+            if (value <= 0) {
+                return MIN_VALUE;
+            }
+
+            //NaNの場合
+            return 0d;
         }
 
         /**
          * ベクトルの要素を与えられた配列の値で置き換える. <br>
+         * ただし, 不正な値を与えた場合, 正常な値に置き換えられる. <br>
          * 与える配列の長さはベクトルの次元と一致する必要がある.
          *
          * @param entry 置き換えた後の値を持つ配列
          * @throws IllegalStateException すでにビルドされている場合
-         * @throws IllegalArgumentException 配列の長さがベクトルの次元と一致しない場合,
-         *             不正な値(Infinity, NaN)を含む場合
+         * @throws IllegalArgumentException 配列の長さがベクトルの次元と一致しない場合
          * @throws NullPointerException 引数にnullが含まれる場合
+         * @see Vector#acceptValue(double)
          */
         public void setEntryValue(final double... entry) {
             if (Objects.isNull(this.entry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            if (!this.vectorDimension.equalsValueOf(entry.length)) {
+
+            double[] newEntry = entry.clone();
+            if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
                 throw new IllegalArgumentException(
                         String.format(
-                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, entry.length));
+                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, newEntry.length));
             }
-            double[] newEntry = entry.clone();
+
             for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
-                if (!Vector.acceptValue(newEntry[j])) {
-                    throw new IllegalArgumentException("不正な値を含んでいます");
-                }
+                newEntry[j] = modified(newEntry[j]);
             }
             this.entry = newEntry;
         }

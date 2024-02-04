@@ -1,5 +1,5 @@
 /**
- * 2023.12.28
+ * 2024.2.1
  */
 package matsu.num.matrix.base;
 
@@ -31,13 +31,9 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.2
- * @param <T> {@code this} のタイプ, {@linkplain #target()} の戻り値型
+ * @version 19.5
  */
-public abstract class SkeletalOrthogonalMatrix<T extends OrthogonalMatrix>
-        implements OrthogonalMatrix {
-
-    private final T castedThis;
+public abstract class SkeletalOrthogonalMatrix implements OrthogonalMatrix {
 
     //逆行列(転置行列)を生成するサプライヤ
     private final Supplier<Optional<? extends OrthogonalMatrix>> inverseSupplier;
@@ -48,20 +44,6 @@ public abstract class SkeletalOrthogonalMatrix<T extends OrthogonalMatrix>
     protected SkeletalOrthogonalMatrix() {
         super();
         this.inverseSupplier = ImmutableLazyCacheSupplier.of(() -> Optional.of(this.createInverse()));
-
-        /*
-         * 警告抑制をしているが, ジェネリックキャストなので実行時は全て
-         * OrthogonalMatrix に置き換えられ,
-         * ClassCastException は発生しない.
-         */
-        @SuppressWarnings("unchecked")
-        T t = (T) this;
-        this.castedThis = t;
-    }
-
-    @Override
-    public final T target() {
-        return this.castedThis;
     }
 
     @Override
@@ -82,7 +64,7 @@ public abstract class SkeletalOrthogonalMatrix<T extends OrthogonalMatrix>
      * {@linkplain #transpose()} を遅延初期化するために実装されるメソッドである.
      * <br>
      * それらのどちらかが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけ呼ばれる. <br>
-     * このメソッドのアクセス修飾子をOverride先で {@code public} にしてはならない.
+     * 公開してはいけない.
      * </p>
      * 
      * <p>
@@ -122,11 +104,6 @@ public abstract class SkeletalOrthogonalMatrix<T extends OrthogonalMatrix>
 
         TransposedOrthogonal(OrthogonalMatrix matrix) {
             this.original = Optional.of(matrix);
-        }
-
-        @Override
-        public OrthogonalMatrix target() {
-            return this.original.get().inverse().get();
         }
 
         @Override

@@ -1,5 +1,5 @@
 /**
- * 2023.12.22
+ * 2024.2.1
  */
 package matsu.num.matrix.base;
 
@@ -22,7 +22,7 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadable;
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  * @see Matrix
  */
 public interface EntryReadableMatrix extends Matrix {
@@ -30,10 +30,10 @@ public interface EntryReadableMatrix extends Matrix {
     /**
      * (<i>i</i>, <i>j</i>) 要素の値を取得する.
      *
-     * @param row i, 行index
-     * @param column j, 列index
-     * @return (i,j) 要素の値
-     * @throws IndexOutOfBoundsException (i, j) が行列の内部でない場合
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
+     * @return (<i>i</i>, <i>j</i>) 要素の値
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の内部でない場合
      */
     public double valueAt(int row, int column);
 

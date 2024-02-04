@@ -19,7 +19,7 @@ public interface MultipliedOrthogonalMatrix extends MultipliedMatrix, Orthogonal
      * 行列積の表現を{@linkplain Deque}として返す.
      * 
      * <p>
-     * 変更できない形, もしくは防御的コピーをして返差なければならない.
+     * 変更できない形, もしくは防御的コピーをして返さなければならない.
      * </p>
      * 
      * @return 行列積の表現

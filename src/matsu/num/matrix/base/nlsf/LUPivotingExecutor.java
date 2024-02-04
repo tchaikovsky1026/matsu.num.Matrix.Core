@@ -1,18 +1,19 @@
 /**
- * 2023.12.25
+ * 2024.2.2
  */
 package matsu.num.matrix.base.nlsf;
+
+
+import java.util.Optional;
 
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.PermutationMatrix;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
-import matsu.num.matrix.base.helper.value.InvertibleDeterminantableSystem;
-import matsu.num.matrix.base.nlsf.helper.fact.LUPivotingFactorizationHelper;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
  * <p>
@@ -25,13 +26,20 @@ import matsu.num.matrix.base.nlsf.helper.fact.LUPivotingFactorizationHelper;
  * </p>
  * 
  * <p>
- * このクラスが提供する {@linkplain SolvingFactorizationExecutor} について,
- * メソッド {@code apply(matrix, epsilon)} で追加でスローされる例外は次のとおりである,
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#accepts(Matrix)}
+ * でrejectされる追加条件は次のとおりである.
  * </p>
  * 
  * <ul>
- * <li>{@code IllegalArgumentException 行列の有効要素数が大きすぎる場合(後述)}</li>
+ * <li>行列の有効要素数が大きすぎる場合(後述)</li>
  * </ul>
+ * 
+ * <p>
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#apply(Matrix, double)}
+ * で空が返る追加条件は無い.
+ * </p>
  * 
  * <p>
  * 有効要素数が大きすぎるとは, <br>
@@ -41,48 +49,50 @@ import matsu.num.matrix.base.nlsf.helper.fact.LUPivotingFactorizationHelper;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
-public final class LUPivotingExecutor {
+public final class LUPivotingExecutor
+        extends SkeletalSolvingFactorizationExecutor<
+                EntryReadableMatrix, LUTypeSolver>
+        implements SolvingFactorizationExecutor<EntryReadableMatrix, LUTypeSolver> {
 
-    private static final SolvingFactorizationExecutor<
-            EntryReadableMatrix, LUTypeSolver> INSTANCE = new ExecutorImpl();
+    private static final LUPivotingExecutor INSTANCE = new LUPivotingExecutor();
 
+    /**
+     * 内部から呼ばれる.
+     */
     private LUPivotingExecutor() {
-        throw new AssertionError();
+        super();
+    }
+
+    @Override
+    final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
+        return LUPivotingFactorizationHelper.acceptedSize(matrix)
+                ? MatrixStructureAcceptance.ACCEPTED
+                : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+    }
+
+    @Override
+    final Optional<? extends LUTypeSolver> applyConcretely(EntryReadableMatrix matrix,
+            double epsilon) {
+        return LUPivotingSystem.instanceOf(matrix, epsilon);
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
     /**
-     * このクラスの機能を実行するインスタンスを返す.
+     * このクラスのインスタンスを返す.
      * 
      * @return インスタンス
      */
-    public static SolvingFactorizationExecutor<
-            EntryReadableMatrix, LUTypeSolver> instance() {
+    public static LUPivotingExecutor instance() {
         return INSTANCE;
     }
 
-    private static final class ExecutorImpl
-            extends SkeletalSolvingFactorizationExecutor<
-                    EntryReadableMatrix, LUTypeSolver>
-            implements SolvingFactorizationExecutor<
-                    EntryReadableMatrix, LUTypeSolver> {
-
-        private static final String CLASS_EXPLANATION = "LUPivotingExecutor";
-
-        @Override
-        final LUTypeSolver applyConcretely(EntryReadableMatrix matrix,
-                double epsilon) {
-            return new LUPivotingFactorization(matrix, epsilon);
-        }
-
-        @Override
-        public String toString() {
-            return CLASS_EXPLANATION;
-        }
-    }
-
-    private static final class LUPivotingFactorization
+    private static final class LUPivotingSystem
             extends InvertibleDeterminantableSystem<Matrix> implements LUTypeSolver {
 
         private static final String CLASS_STRING = "LU-Pivoting";
@@ -96,14 +106,24 @@ public final class LUPivotingExecutor {
         private final LowerUnitriangularEntryReadableMatrix mxUt;
         private final PermutationMatrix mxP;
 
+        static Optional<LUPivotingSystem> instanceOf(final EntryReadableMatrix matrix, final double epsilon) {
+
+            try {
+                return Optional.of(new LUPivotingSystem(matrix, epsilon));
+            } catch (ProcessFailedException e) {
+                return Optional.empty();
+            }
+        }
+
         /**
-         * ビルダから呼ばれる.
+         * staticファクトリから呼ばれる.
          *
-         * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * dim>IntMax)
          * @throws ProcessFailedException 行列が特異に近い場合, 成分に極端な値を含み分解が完了できない場合
          */
-        private LUPivotingFactorization(final EntryReadableMatrix matrix, final double epsilon) {
+        private LUPivotingSystem(final EntryReadableMatrix matrix, final double epsilon)
+                throws ProcessFailedException {
 
+            //ここで例外が発生する可能性がある
             LUPivotingFactorizationHelper fact = new LUPivotingFactorizationHelper(matrix, epsilon + EPSILON_A);
 
             this.matrix = matrix;
@@ -120,7 +140,7 @@ public final class LUPivotingExecutor {
         }
 
         @Override
-        protected InverseAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
+        protected InverstibleAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
             DeterminantValues det = new DeterminantValues(
                     this.mxD.logAbsDeterminant(), this.mxP.signOfDeterminant() * this.mxD.signOfDeterminant());
 
@@ -131,13 +151,12 @@ public final class LUPivotingExecutor {
                     this.mxL.inverse().get(),
                     this.mxP.inverse().get());
 
-            return new InverseAndDeterminantStruct<Matrix>(det, invMatrix);
+            return new InverstibleAndDeterminantStruct<Matrix>(det, invMatrix);
         }
 
         @Override
         public String toString() {
             return LUTypeSolver.toString(this, CLASS_STRING);
         }
-
     }
 }

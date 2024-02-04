@@ -3,16 +3,18 @@ package matsu.num.matrix.base.nlsf;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.GeneralMatrixBuilder;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Vector;
-import matsu.num.matrix.base.VectorDimension;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * {@link LUPivotingExecutor}クラスのテスト.
@@ -21,6 +23,7 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  */
 @RunWith(Enclosed.class)
 public class LUPivotingExecutorTest {
+    public static final Class<?> TEST_CLASS = LUPivotingExecutor.class;
 
     public static class 生成に関する {
 
@@ -31,19 +34,39 @@ public class LUPivotingExecutorTest {
         }
     }
 
-    public static class 行列分解と逆行列ベクトル積_次元4 {
+    public static class 特異行列での振る舞い検証 {
 
-        private LUTypeSolver lup;
-
-        private Vector right;
+        private EntryReadableMatrix matrix;
 
         @Before
-        public void before_評価用右辺ベクトル() {
-
-            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
-            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
-            right = builder.build();
+        public void before_行列の準備() {
+            //特異行列である
+            double[][] entry = {
+                    { 0, 1, 0, 0 },
+                    { 1, 0, 0, 0 },
+                    { 2, 6, 1, 2 },
+                    { -1, 0, 2, 4 }
+            };
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            for (int j = 0; j < entry.length; j++) {
+                for (int k = 0; k < entry[j].length; k++) {
+                    builder.setValue(j, k, entry[j][k]);
+                }
+            }
+            matrix = builder.build();
         }
+
+        @Test
+        public void test_行列分解の失敗() {
+            Optional<? extends LUTypeSolver> lup = LUPivotingExecutor.instance().apply(matrix);
+            assertThat(lup.isEmpty(), is(true));
+        }
+    }
+
+    public static class 行列分解と逆行列ベクトル積_次元4 {
+
+        private EntryReadableMatrix matrix;
+        private LUTypeSolver lup;
 
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
@@ -65,7 +88,8 @@ public class LUPivotingExecutorTest {
                     builder.setValue(j, k, entry[j][k]);
                 }
             }
-            lup = LUPivotingExecutor.instance().apply(builder.build());
+            matrix = builder.build();
+            lup = LUPivotingExecutor.instance().apply(matrix).get();
         }
 
         @Test
@@ -85,39 +109,27 @@ public class LUPivotingExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
+            for (int i = 0; i < matrix.matrixDimension().columnAsIntValue(); i++) {
+                Vector.Builder builder =
+                        Vector.Builder.zeroBuilder(matrix.matrixDimension().rightOperableVectorDimension());
+                builder.setValue(i, 1d);
+                Vector v = builder.build();
 
-            /*
-             * -3.666666667
-             * 1.666666667
-             * 0
-             * 0.333333333
-             */
-            double[] expected = { -2.0 / 3 - 3.0, 1.0 + 2.0 / 3, 0, 1.0 / 3 };
-            Vector result = lup.inverse().get().operate(right);
-            double[] resultArray = result.entryAsArray();
-            for (int i = 0; i < resultArray.length; i++) {
-                assertThat(
-                        String.format("i=%d,result=%f,expected=%f", i, resultArray[i], expected[i]),
-                        resultArray[i], is(closeTo(expected[i], 1E-12)));
+                Vector res = matrix.operate(lup.inverse().operate(v)).minus(v);
+                assertThat(res.normMax(), is(lessThan(1E-12)));
             }
         }
 
         @Test
         public void test_転置逆行列ベクトル積() {
+            for (int i = 0; i < matrix.matrixDimension().columnAsIntValue(); i++) {
+                Vector.Builder builder =
+                        Vector.Builder.zeroBuilder(matrix.matrixDimension().rightOperableVectorDimension());
+                builder.setValue(i, 1d);
+                Vector v = builder.build();
 
-            /*
-             * 1
-             * 0
-             * 0
-             * 0
-             */
-            double[] expected = { 1.0, 0.0, 0.0, 0.0 };
-            Vector result = lup.inverse().get().operateTranspose(right);
-            double[] resultArray = result.entryAsArray();
-            for (int i = 0; i < resultArray.length; i++) {
-                assertThat(
-                        String.format("i=%d,result=%f,expected=%f", i, resultArray[i], expected[i]),
-                        resultArray[i], is(closeTo(expected[i], 1E-12)));
+                Vector res = matrix.operateTranspose(lup.inverse().operateTranspose(v)).minus(v);
+                assertThat(res.normMax(), is(lessThan(1E-12)));
             }
         }
 
@@ -133,17 +145,8 @@ public class LUPivotingExecutorTest {
 
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
+        private EntryReadableMatrix matrix;
         private LUTypeSolver lup;
-
-        private Vector right;
-
-        @Before
-        public void before_評価用右辺ベクトル() {
-
-            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
-            builder.setEntryValue(new double[] { 3 });
-            right = builder.build();
-        }
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -152,7 +155,8 @@ public class LUPivotingExecutorTest {
              */
             GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
-            lup = LUPivotingExecutor.instance().apply(builder.build());
+            matrix = builder.build();
+            lup = LUPivotingExecutor.instance().apply(matrix).get();
         }
 
         @Test
@@ -172,34 +176,49 @@ public class LUPivotingExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
+            for (int i = 0; i < matrix.matrixDimension().columnAsIntValue(); i++) {
+                Vector.Builder builder =
+                        Vector.Builder.zeroBuilder(matrix.matrixDimension().rightOperableVectorDimension());
+                builder.setValue(i, 1d);
+                Vector v = builder.build();
 
-            /*
-             * 1.5
-             */
-            double[] expected = { 1.5 };
-            Vector result = lup.inverse().get().operate(right);
-            double[] resultArray = result.entryAsArray();
-            for (int i = 0; i < resultArray.length; i++) {
-                assertThat(
-                        String.format("i=%d,result=%f,expected=%f", i, resultArray[i], expected[i]),
-                        resultArray[i], is(closeTo(expected[i], 1E-12)));
+                Vector res = matrix.operate(lup.inverse().operate(v)).minus(v);
+                assertThat(res.normMax(), is(lessThan(1E-12)));
             }
         }
 
         @Test
         public void test_転置逆行列ベクトル積() {
+            for (int i = 0; i < matrix.matrixDimension().columnAsIntValue(); i++) {
+                Vector.Builder builder =
+                        Vector.Builder.zeroBuilder(matrix.matrixDimension().rightOperableVectorDimension());
+                builder.setValue(i, 1d);
+                Vector v = builder.build();
 
-            /*
-             * 1.5
-             */
-            double[] expected = { 1.5 };
-            Vector result = lup.inverse().get().operateTranspose(right);
-            double[] resultArray = result.entryAsArray();
-            for (int i = 0; i < resultArray.length; i++) {
-                assertThat(
-                        String.format("i=%d,result=%f,expected=%f", i, resultArray[i], expected[i]),
-                        resultArray[i], is(closeTo(expected[i], 1E-12)));
+                Vector res = matrix.operateTranspose(lup.inverse().operateTranspose(v)).minus(v);
+                assertThat(res.normMax(), is(lessThan(1E-12)));
             }
+        }
+    }
+
+    public static class toString表示 {
+
+        private LUPivotingExecutor executor = LUPivotingExecutor.instance();
+        private LUTypeSolver lup;
+
+        @Before
+        public void before_次元1の正方行列のソルバを用意する() {
+            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            builder.setValue(0, 0, 2);
+            lup = executor.apply(builder.build()).get();
+        }
+
+        @Test
+        public void test_toString表示() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(executor);
+            System.out.println(lup);
+            System.out.println();
         }
     }
 

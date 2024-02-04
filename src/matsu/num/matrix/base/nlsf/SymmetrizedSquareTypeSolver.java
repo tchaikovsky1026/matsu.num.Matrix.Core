@@ -1,5 +1,5 @@
 /**
- * 2023.12.25
+ * 2024.1.19
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -28,7 +28,7 @@ import matsu.num.matrix.base.Symmetric;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.0
  */
 public interface SymmetrizedSquareTypeSolver extends LUTypeSolver {
 

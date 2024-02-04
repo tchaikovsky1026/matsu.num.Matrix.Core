@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * {@link PermutationMatrix}クラスのテスト.

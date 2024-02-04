@@ -1,11 +1,11 @@
 /**
- * 2023.12.22
+ * 2024.2.1
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
@@ -15,7 +15,7 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
 public final class BandMatrixDimension {
 
@@ -276,7 +276,7 @@ public final class BandMatrixDimension {
      * @param bandWidth 下側帯幅 = 上側帯幅
      * @return 対称な帯行列構造オブジェクト
      * @throws MatrixFormatMismatchException 正方行列でない場合
-     * @throws IllegalArgumentException 行列サイズが1未満, もしくは帯幅が0未満である場合
+     * @throws IllegalArgumentException もしくは帯幅が0未満である場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static BandMatrixDimension symmetric(MatrixDimension dimension, int bandWidth) {

@@ -1,13 +1,13 @@
 /**
- * 2023.12.25
+ * 2024.1.19
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplication;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
@@ -24,14 +24,11 @@ import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplicati
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.0
  * @see Matrix
  */
 public interface OrthogonalMatrix
-        extends Matrix, Inversion {
-
-    @Override
-    public abstract OrthogonalMatrix target();
+        extends Matrix, Invertible {
 
     /**
      * この行列の転置行列を返す.
@@ -43,9 +40,12 @@ public interface OrthogonalMatrix
 
     /**
      * <p>
-     * この行列の逆行列を返す. <br>
-     * {@linkplain Optional#get()} は必ず成功する.
+     * 逆行列を取得する. <br>
+     * 必ず逆行列が存在するため, 戻り値は空でない.
      * </p>
+     * 
+     * @return {@inheritDoc }, 空でない
+     * 
      */
     @Override
     public abstract Optional<? extends OrthogonalMatrix> inverse();

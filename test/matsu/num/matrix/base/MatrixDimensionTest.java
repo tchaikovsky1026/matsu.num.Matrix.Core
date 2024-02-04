@@ -46,7 +46,7 @@ public class MatrixDimensionTest {
         @Test
         public void test_横長次元() {
             MatrixDimension square = MatrixDimension.rectangle(3, 4);
-            assertThat(square.isHorizonral(), is(true));
+            assertThat(square.isHorizontal(), is(true));
         }
     }
 

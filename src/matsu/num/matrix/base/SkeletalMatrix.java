@@ -1,5 +1,5 @@
 /**
- * 2023.12.22
+ * 2024.2.1
  */
 package matsu.num.matrix.base;
 
@@ -23,7 +23,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
 public abstract class SkeletalMatrix implements Matrix {
 
@@ -55,7 +55,8 @@ public abstract class SkeletalMatrix implements Matrix {
      * 
      * <p>
      * 骨格実装の {@linkplain #transpose()} を遅延初期化するために実装されるメソッドである. <br>
-     * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけ呼ばれる.
+     * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけ呼ばれる. <br>
+     * 公開してはいけない.
      * </p>
      * 
      * <p>

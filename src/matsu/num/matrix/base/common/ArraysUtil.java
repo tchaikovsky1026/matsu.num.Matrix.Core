@@ -20,31 +20,6 @@ public final class ArraysUtil {
 
     /**
      * <p>
-     * 配列が不正値(無限大, NaN)を含まないかどうかを判定する.
-     * </p>
-     * 
-     * <p>
-     * 配列が長さ0の場合,
-     * {@code true} が返る.
-     * </p>
-     *
-     * @param vector 判定する配列
-     * @return 不正値を含まない場合は {@code true}
-     * @throws NullPointerException 引数にnullが含まれる場合
-     * @deprecated 使用していない場合は後で削除
-     */
-    @Deprecated
-    public static final boolean isValid(double[] vector) {
-        for (double value : vector) {
-            if (!Double.isFinite(value)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * <p>
      * あるベクトルを他のベクトルに加算する:
      * <b>v</b> &larr; <b>v</b> + <b>u</b>. <br>
      * <b>v</b>: 作用ベクトル <br>

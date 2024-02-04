@@ -1,7 +1,9 @@
 /**
- * 2023.12.25
+ * 2024.1.19
  */
 package matsu.num.matrix.base;
+
+import java.util.Optional;
 
 /**
  * <p>
@@ -13,7 +15,7 @@ package matsu.num.matrix.base;
  * 行列式は1である. <br>
  * したがって, 逆行列は必ず存在する. <br>
  * 単位下三角行列の逆行列は, 行列ベクトル積が容易に計算できるので,
- * このインターフェースは {@linkplain Inversion} を継承する.
+ * このインターフェースは {@linkplain Invertible} を継承する.
  * </p>
  *
  * <p>
@@ -21,13 +23,21 @@ package matsu.num.matrix.base;
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.0
  * @see Matrix
  */
 public interface LowerUnitriangularEntryReadableMatrix
-        extends EntryReadableMatrix, Inversion, Determinantable {
+        extends EntryReadableMatrix, Invertible, Determinantable {
 
+    /**
+     * <p>
+     * 逆行列を取得する. <br>
+     * 必ず逆行列が存在するため, 戻り値は空でない.
+     * </p>
+     * 
+     * @return {@inheritDoc }, 空でない
+     * 
+     */
     @Override
-    public abstract LowerUnitriangularEntryReadableMatrix target();
-
+    public abstract Optional<? extends Matrix> inverse();
 }

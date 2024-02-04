@@ -1,20 +1,20 @@
 /**
- * 2023.12.29
+ * 2024.2.4
  */
 package matsu.num.matrix.base;
 
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * 単位行列を扱う.
  *
  * @author Matsuura Y.
- * @version 18.2
+ * @version 19.6
  */
 public final class UnitMatrix
         extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>
-        implements PermutationMatrix, BandMatrix, Determinantable, Symmetric {
+        implements PermutationMatrix, DiagonalMatrix, LowerUnitriangularEntryReadableMatrix {
 
     private final BandMatrixDimension bandMatrixDimension;
 
@@ -37,13 +37,13 @@ public final class UnitMatrix
     public double valueAt(final int row, final int column) {
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
         case DIAGONAL:
-            return 1;
+            return 1d;
         case LOWER_BAND:
             throw new AssertionError("Bug: 到達不能");
         case UPPER_BAND:
             throw new AssertionError("Bug: 到達不能");
         case OUT_OF_BAND:
-            return 0;
+            return 0d;
         case OUT_OF_MATRIX:
             throw new IndexOutOfBoundsException(
                     String.format(
@@ -59,6 +59,10 @@ public final class UnitMatrix
         return this.bandMatrixDimension;
     }
 
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
     @Override
     public Vector operate(Vector operand) {
         if (!bandMatrixDimension.dimension().rightOperable(operand.vectorDimension())) {
@@ -68,11 +72,6 @@ public final class UnitMatrix
                             bandMatrixDimension.dimension(), operand.vectorDimension()));
         }
         return operand;
-    }
-
-    @Override
-    public Vector operateTranspose(Vector operand) {
-        return this.operate(operand);
     }
 
     @Override

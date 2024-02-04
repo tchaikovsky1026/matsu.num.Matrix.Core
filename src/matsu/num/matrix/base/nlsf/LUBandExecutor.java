@@ -1,17 +1,17 @@
 /**
- * 2023.12.25
+ * 2024.2.2
  */
 package matsu.num.matrix.base.nlsf;
+
+import java.util.Optional;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.Matrix;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
-import matsu.num.matrix.base.helper.value.InvertibleDeterminantableSystem;
-import matsu.num.matrix.base.nlsf.helper.fact.LUBandFactorizationHelper;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
  * <p>
@@ -26,12 +26,21 @@ import matsu.num.matrix.base.nlsf.helper.fact.LUBandFactorizationHelper;
  * </p>
  * 
  * <p>
- * このクラスが提供する {@linkplain SolvingFactorizationExecutor} について,
- * メソッド {@code apply(matrix, epsilon)} で追加でスローされる例外は次のとおりである,
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#accepts(Matrix)}
+ * でrejectされる追加条件は次のとおりである.
  * </p>
  * <ul>
- * <li>{@code IllegalArgumentException 行列の有効要素数が大きすぎる場合(後述)}</li>
- * <li>{@code ProcessFailedException ピボッティングが必要な場合}</li>
+ * <li>行列の有効要素数が大きすぎる場合(後述)</li>
+ * </ul>
+ * 
+ * <p>
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#apply(Matrix, double)}
+ * で空が返る追加条件は次のとおりである.
+ * </p>
+ * <ul>
+ * <li>ピボッティングが必要な場合</li>
  * </ul>
  * 
  * <p>
@@ -42,47 +51,49 @@ import matsu.num.matrix.base.nlsf.helper.fact.LUBandFactorizationHelper;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
-public final class LUBandExecutor {
+public final class LUBandExecutor
+        extends SkeletalSolvingFactorizationExecutor<
+                BandMatrix, LUTypeSolver>
+        implements SolvingFactorizationExecutor<BandMatrix, LUTypeSolver> {
 
-    private static final SolvingFactorizationExecutor<
-            BandMatrix, LUTypeSolver> INSTANCE = new ExecutorImpl();
+    private static final LUBandExecutor INSTANCE = new LUBandExecutor();
 
+    /**
+     * 内部から呼ばれる.
+     */
     private LUBandExecutor() {
-        throw new AssertionError();
+        super();
+    }
+
+    @Override
+    MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
+        return LUBandFactorizationHelper.acceptedSize(matrix)
+                ? MatrixStructureAcceptance.ACCEPTED
+                : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+    }
+
+    @Override
+    final Optional<? extends LUTypeSolver> applyConcretely(BandMatrix matrix, double epsilon) {
+        return LUBandSystem.instanceOf(matrix, epsilon);
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
     /**
-     * このクラスの機能を実行するインスタンスを返す.
+     * このクラスのインスタンスを返す.
      * 
      * @return インスタンス
      */
-    public static SolvingFactorizationExecutor<
-            BandMatrix, LUTypeSolver> instance() {
+    public static LUBandExecutor instance() {
         return INSTANCE;
     }
 
-    private static final class ExecutorImpl
-            extends SkeletalSolvingFactorizationExecutor<
-                    BandMatrix, LUTypeSolver>
-            implements SolvingFactorizationExecutor<
-                    BandMatrix, LUTypeSolver> {
-
-        private static final String CLASS_EXPLANATION = "LUBandExecutor";
-
-        @Override
-        final LUTypeSolver applyConcretely(BandMatrix matrix, double epsilon) {
-            return new LUBandFactorization(matrix, epsilon);
-        }
-
-        @Override
-        public String toString() {
-            return CLASS_EXPLANATION;
-        }
-    }
-
-    private static final class LUBandFactorization
+    private static final class LUBandSystem
             extends InvertibleDeterminantableSystem<Matrix> implements LUTypeSolver {
 
         private static final String CLASS_STRING = "LU";
@@ -95,15 +106,21 @@ public final class LUBandExecutor {
         private final LowerUnitriangularEntryReadableMatrix mxL;
         private final LowerUnitriangularEntryReadableMatrix mxUt;
 
+        static Optional<LUBandSystem> instanceOf(BandMatrix matrix, double epsilon) {
+            try {
+                return Optional.of(new LUBandSystem(matrix, epsilon));
+            } catch (ProcessFailedException e) {
+                return Optional.empty();
+            }
+        }
+
         /**
-         * ビルダから呼ばれる.
+         * staticファクトリから呼ばれる.
          * 
-         * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax
-         *             or dim * ub > IntMax)
          * @throws ProcessFailedException 行列が特異の場合, あるいはピボッティングが必要な場合,
          *             成分に極端な値を含み分解が完了できない場合
          */
-        private LUBandFactorization(BandMatrix matrix, double epsilon) {
+        private LUBandSystem(BandMatrix matrix, double epsilon) throws ProcessFailedException {
             super();
             LUBandFactorizationHelper fact = new LUBandFactorizationHelper(matrix, epsilon + EPSILON_A);
 
@@ -120,20 +137,20 @@ public final class LUBandExecutor {
         }
 
         @Override
-        protected InverseAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
+        protected InverstibleAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
             DeterminantValues det = new DeterminantValues(this.mxD.logAbsDeterminant(), this.mxD.signOfDeterminant());
             // A^{-1} = (LDU)^{-1} = U^{-1}D^{-1}L^{-1}
             Matrix invMatrix = Matrix.multiply(
                     this.mxUt.inverse().get().transpose(),
                     this.mxD.inverse().get(),
                     this.mxL.inverse().get());
-            return new InverseAndDeterminantStruct<>(det, invMatrix);
+            return new InverstibleAndDeterminantStruct<>(det, invMatrix);
         }
 
         @Override
         public String toString() {
             return LUTypeSolver.toString(this, CLASS_STRING);
         }
-    }
 
+    }
 }

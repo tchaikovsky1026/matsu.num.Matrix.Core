@@ -1,5 +1,5 @@
 /**
- * 2023.12.4
+ * 2024.2.4
  */
 package matsu.num.matrix.base;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.6
  */
 public final class MatrixDimension {
 
@@ -25,7 +25,7 @@ public final class MatrixDimension {
     static {
         squareCache = new MatrixDimension[CACHE_SIZE];
         for (int i = 0; i < CACHE_SIZE; i++) {
-            final int dim = MIN_DIMENSION + i;
+            final VectorDimension dim = VectorDimension.valueOf(MIN_DIMENSION + i);
             squareCache[i] = new MatrixDimension(dim, dim);
         }
     }
@@ -40,16 +40,13 @@ public final class MatrixDimension {
     //循環参照が生じるため, 遅延初期化を行う
     //軽量オブジェクトのためロックを行わず,複数回の初期化を許す
     private volatile MatrixDimension transposedDimension;
+    private volatile MatrixDimension leftSquareDimension;
+    private volatile MatrixDimension rightSquareDimension;
 
-    private MatrixDimension(int rowDimension, int columnDimension) {
-        if (rowDimension < MIN_DIMENSION || columnDimension < MIN_DIMENSION) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "不正なサイズ:dimension:(row, column)=(%d, %d)",
-                            rowDimension, columnDimension));
-        }
-        this.rowVectorDimension = VectorDimension.valueOf(rowDimension);
-        this.columnVectorDimension = VectorDimension.valueOf(columnDimension);
+    private MatrixDimension(VectorDimension rowDimension, VectorDimension columnDimension) {
+        super();
+        this.rowVectorDimension = Objects.requireNonNull(rowDimension);
+        this.columnVectorDimension = Objects.requireNonNull(columnDimension);
         this.shape = MatrixShape.shape(rowDimension, columnDimension);
         this.hashCode = this.calcHashCode();
     }
@@ -104,7 +101,7 @@ public final class MatrixDimension {
      *
      * @return 行列サイズが狭義横長であれば{@code true}
      */
-    public boolean isHorizonral() {
+    public boolean isHorizontal() {
         return this.shape == MatrixShape.HORIZONTAL;
     }
 
@@ -251,11 +248,61 @@ public final class MatrixDimension {
         out = MatrixDimension.rectangle(this.columnAsIntValue(), this.rowAsIntValue());
         this.transposedDimension = out;
         out.transposedDimension = this;
+
+        out.leftSquareDimension = this.rightSquareDimension;
+        out.rightSquareDimension = this.leftSquareDimension;
+
         return out;
     }
 
     /**
-     * 長方形の行列サイズオブジェクトの作成.
+     * このインスタンスの左に適合する正方形ディメンジョンを返す.
+     * 
+     * @return 左に適合する正方形ディメンジョン
+     */
+    public MatrixDimension leftSquareDimension() {
+        MatrixDimension out = this.leftSquareDimension;
+        if (Objects.nonNull(out)) {
+            return out;
+        }
+
+        if (this.isSquare()) {
+            this.leftSquareDimension = this;
+            this.rightSquareDimension = this;
+            return this;
+        }
+
+        //複数回の初期化を許すため,オブジェクトのロックを行わない
+        out = MatrixDimension.square(this.rowAsIntValue());
+        this.leftSquareDimension = out;
+        return out;
+    }
+
+    /**
+     * このインスタンスの→に適合する正方形ディメンジョンを返す.
+     * 
+     * @return 右に適合する正方形ディメンジョン
+     */
+    public MatrixDimension rightSquareDimension() {
+        MatrixDimension out = this.rightSquareDimension;
+        if (Objects.nonNull(out)) {
+            return out;
+        }
+
+        if (this.isSquare()) {
+            this.leftSquareDimension = this;
+            this.rightSquareDimension = this;
+            return this;
+        }
+
+        //複数回の初期化を許すため,オブジェクトのロックを行わない
+        out = MatrixDimension.square(this.columnAsIntValue());
+        this.rightSquareDimension = out;
+        return out;
+    }
+
+    /**
+     * 与えた行数, 列数を持つ長方形の行列サイズオブジェクトを返す.
      *
      * @param rowDimension 行サイズ
      * @param columnDimension 列サイズ
@@ -263,17 +310,38 @@ public final class MatrixDimension {
      * @throws IllegalArgumentException 引数のどちらかが1未満である場合
      */
     public static MatrixDimension rectangle(int rowDimension, int columnDimension) {
-        if (rowDimension == columnDimension) {
-            int cacheIndex = rowDimension - MIN_DIMENSION;
+        if (rowDimension < MIN_DIMENSION || columnDimension < MIN_DIMENSION) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "不正なサイズ:dimension:(row, column)=(%d, %d)",
+                            rowDimension, columnDimension));
+        }
+        return MatrixDimension.rectangle(
+                VectorDimension.valueOf(rowDimension),
+                VectorDimension.valueOf(columnDimension));
+    }
+
+    /**
+     * このメソッドは公開しない.
+     *
+     * @param rowDimension 行サイズに相当するベクトルディメンジョン
+     * @param columnDimension 列サイズに相当するベクトルディメンジョン
+     * @return 長方形の行列サイズオブジェクト
+     * @throws NullPointerException 引数にnullが含まれる場合
+     */
+    private static MatrixDimension rectangle(VectorDimension rowDimension, VectorDimension columnDimension) {
+        if (rowDimension.equals(columnDimension)) {
+            int cacheIndex = rowDimension.intValue() - MIN_DIMENSION;
             if (0 <= cacheIndex && cacheIndex < CACHE_SIZE) {
                 return squareCache[cacheIndex];
             }
         }
+
         return new MatrixDimension(rowDimension, columnDimension);
     }
 
     /**
-     * 正方形の行列サイズオブジェクトの作成.
+     * 与えた値と同等の行数, 列数を持つ正方形の行列サイズオブジェクトを返す.
      *
      * @param dimension 行サイズ = 列サイズ
      * @return 正方形の行列サイズオブジェクト
@@ -283,14 +351,25 @@ public final class MatrixDimension {
         return MatrixDimension.rectangle(dimension, dimension);
     }
 
+    /**
+     * 与えたベクトルディメンジョンと同等の行ディメンジョン, 列ディメンジョンを持つ正方形の行列サイズオブジェクトを返す.
+     *
+     * @param dimension 行サイズ = 列サイズに相当するベクトルディメンジョン
+     * @return 正方形の行列サイズオブジェクト
+     * @throws NullPointerException 引数にullが含まれる場合
+     */
+    public static MatrixDimension square(VectorDimension dimension) {
+        return MatrixDimension.rectangle(dimension, dimension);
+    }
+
     private enum MatrixShape {
         SQUARE, VERTICAL, HORIZONTAL;
 
-        public static MatrixShape shape(int rowDimension, int columnDimension) {
-            if (rowDimension == columnDimension) {
+        public static MatrixShape shape(VectorDimension rowDimension, VectorDimension columnDimension) {
+            if (rowDimension.equals(columnDimension)) {
                 return SQUARE;
             }
-            if (rowDimension > columnDimension) {
+            if (rowDimension.compareTo(columnDimension) > 0) {
                 return VERTICAL;
             }
             return HORIZONTAL;

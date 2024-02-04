@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.base.common.ArraysUtil;
+
 /**
  * {@link Vector}クラスのテスト.
  *
@@ -108,6 +110,22 @@ public final class VectorTest {
         @Test
         public void test_Vectorの最大ノルムは3() {
             assertThat(vector.normMax(), is(3.0));
+        }
+
+        @Test
+        public void test_正規化により大きさ1() {
+            /*
+             * 内部実装を確かめるため, Vector.norm2()でなくArraysUtilを使う.
+             */
+            assertThat(
+                    ArraysUtil.norm2(vector.normalizedEuclidean().entryAsArray()),
+                    is(closeTo(1.0, 1E-12)));
+            assertThat(
+                    ArraysUtil.norm2(vector.times(1E300).normalizedEuclidean().entryAsArray()),
+                    is(closeTo(1.0, 1E-12)));
+            assertThat(
+                    ArraysUtil.norm2(vector.times(1E-300).normalizedEuclidean().entryAsArray()),
+                    is(closeTo(1.0, 1E-12)));
         }
 
         @Test

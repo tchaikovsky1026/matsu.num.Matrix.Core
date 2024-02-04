@@ -1,27 +1,33 @@
 /**
- * 2023.8.15
+ * 2024.2.1
  */
-package matsu.num.matrix.base.nlsf.helper.fact;
+package matsu.num.matrix.base.nlsf;
+
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularBuilder;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 
 /**
+ * <p>
  * ピボッティング付きLU分解のヘルパ. <br>
- * A = PLDU. <br>
- * <br>
+ * A = PLDU.
+ * </p>
+ * 
+ * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
  * その定数倍は対角行列Dに押し付ける.
+ * </p>
  * 
  * @author Matsuura Y.
- * @version 15.0
+ * @version 19.4
  */
-public final class LUPivotingFactorizationHelper {
+final class LUPivotingFactorizationHelper {
 
     private final MatrixDimension matrixDimension;
     private final double[] mxEntry;
@@ -33,12 +39,12 @@ public final class LUPivotingFactorizationHelper {
     private PermutationMatrix mxP;
 
     /**
-     * @param matrix 
-     * @param relativeEpsilon 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * dim>IntMax)
+     * @param matrix 受け入れ可能な行列
+     * @param relativeEpsilon
      * @throws ProcessFailedException 行列が特異の場合, 極端な値を含み分解が完了できない場合
      */
-    public LUPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon) {
+    public LUPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
+            throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
             throw new ProcessFailedException("行列が特異(零行列である)");
@@ -47,6 +53,12 @@ public final class LUPivotingFactorizationHelper {
         this.mxEntry = matrixToArray(matrix);
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
+    }
+
+    public static boolean acceptedSize(Matrix matrix) {
+        final int dimension = matrix.matrixDimension().rowAsIntValue();
+        final long long_entrySize = (long) dimension * dimension;
+        return long_entrySize <= Integer.MAX_VALUE;
     }
 
     public DiagonalMatrix getMxD() {
@@ -67,17 +79,12 @@ public final class LUPivotingFactorizationHelper {
 
     /**
      * 配列にする際にスケールする.
-     * 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * dim>IntMax)
      */
     private double[] matrixToArray(final EntryReadableMatrix matrix) {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
-        final long long_entrySize = (long) thisDimension * thisDimension;
-        if (long_entrySize > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
-        }
+        final int entrySize = thisDimension * thisDimension;
 
-        double[] outArray = new double[(int) long_entrySize];
+        double[] outArray = new double[entrySize];
         int c = 0;
         for (int j = 0; j < thisDimension; j++) {
             for (int k = 0; k < thisDimension; k++) {
@@ -93,7 +100,7 @@ public final class LUPivotingFactorizationHelper {
      *
      * @throws ProcessFailedException 行列が特異の場合
      */
-    private void factorize(double threshold) {
+    private void factorize(double threshold) throws ProcessFailedException{
         PermutationMatrix.Builder mxPBuilder = PermutationMatrix.Builder.unitBuilder(this.matrixDimension);
 
         final int thisDimension = this.matrixDimension.rowAsIntValue();
@@ -151,9 +158,9 @@ public final class LUPivotingFactorizationHelper {
     /**
      * 分解されたmxEntryを行列オブジェクトに変換.
      *
-     * @throws ProcessFailedException mxEntryに不正な値が入っている場合
+     * @throws IllegalArgumentException mxEntryに不正な値が入っている場合
      */
-    private void convertToEachMatrix() {
+    private void convertToEachMatrix() throws ProcessFailedException {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
         final double[] thisMxEntry = this.mxEntry;
 
@@ -163,24 +170,21 @@ public final class LUPivotingFactorizationHelper {
         LowerUnitriangularBuilder mxUtBuilder = LowerUnitriangularBuilder
                 .unitBuilder(this.matrixDimension);
 
-        try {
-            int c = 0;
-            for (int j = 0; j < thisDimension; j++) {
-                for (int k = 0; k < j; k++) {
-                    mxLBuilder.setValue(j, k, thisMxEntry[c]);
-                    c++;
-                }
-                //対角成分はスケールを反映する
-                mxDBuilder.setValue(j, thisMxEntry[c] * this.scale);
+        DoubleFunction<ProcessFailedException> exceptGetter =
+                v -> new ProcessFailedException("行列の成分に極端な値を含む");
+        int c = 0;
+        for (int j = 0; j < thisDimension; j++) {
+            for (int k = 0; k < j; k++) {
+                mxLBuilder.setValueOrElseThrow(j, k, thisMxEntry[c], exceptGetter);
                 c++;
-                for (int k = j + 1; k < thisDimension; k++) {
-                    mxUtBuilder.setValue(k, j, thisMxEntry[c]);
-                    c++;
-                }
             }
-        } catch (IllegalArgumentException e) {
-            //setValueで不正値が入り込む可能性がある
-            throw new ProcessFailedException("行列の成分に極端な値が含まれる");
+            //対角成分はスケールを反映する
+            mxDBuilder.setValueOrElseThrow(j, thisMxEntry[c] * this.scale, exceptGetter);
+            c++;
+            for (int k = j + 1; k < thisDimension; k++) {
+                mxUtBuilder.setValueOrElseThrow(k, j, thisMxEntry[c], exceptGetter);
+                c++;
+            }
         }
 
         this.mxD = mxDBuilder.build();

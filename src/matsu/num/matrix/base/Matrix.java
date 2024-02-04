@@ -1,13 +1,13 @@
 /**
- * 2023.12.22
+ * 2024.2.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
-import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplication;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
  * <p>
@@ -29,7 +29,7 @@ import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplication;
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
 public interface Matrix {
 
@@ -50,11 +50,14 @@ public interface Matrix {
      * <b>v</b>: 右から作用させるベクトル. <br>
      * <b>w</b>: 計算結果の出力変数ベクトル.
      * </p>
+     * 
+     * <p>
+     * ただし, 演算結果は {@linkplain Vector} が扱うことができる値の範囲を超えないように修正される.
+     * </p>
      *
      * @param operand <b>v</b>, 作用ベクトル
      * @return 計算結果 <b>w</b>
      * @throws MatrixFormatMismatchException 作用ベクトル <b>v</b> の次元が行列サイズと適合しない場合
-     * @throws IllegalArgumentException 計算の結果に不正値が混入し, ベクトルが生成できない場合場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector operate(Vector operand);
@@ -67,11 +70,14 @@ public interface Matrix {
      * <b>v</b>: 右から作用させるベクトル. <br>
      * <b>w</b>: 計算結果の出力変数ベクトル.
      * </p>
+     * 
+     * <p>
+     * ただし, 演算結果は {@linkplain Vector} が扱うことができる値の範囲を超えないように修正される.
+     * </p>
      *
      * @param operand <b>v</b>, 作用ベクトル
      * @return 計算結果 <b>w</b>
      * @throws MatrixFormatMismatchException 作用ベクトル <b>v</b> の次元が行列サイズと適合しない場合
-     * @throws IllegalArgumentException 計算の結果に不正値が混入し, ベクトルが生成できない場合場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector operateTranspose(Vector operand);

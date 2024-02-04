@@ -1,16 +1,13 @@
 /**
- * 2024.1.19
+ * 2023.12.25
  */
 package matsu.num.matrix.base;
 
+import java.util.Optional;
+
 /**
  * <p>
- * 紐づけられた行列の逆行列を取得するインターフェース.
- * </p>
- * 
- * <p>
- * このインターフェースの実装がインスタンス化された時点で,
- * {@linkplain #inverse()} により逆行列が取得できることが確定する.
+ * 逆行列が取得可能であることを表すインターフェース.
  * </p>
  * 
  * <p>
@@ -28,21 +25,13 @@ package matsu.num.matrix.base;
  * @author Matsuura Y.
  * @version 19.0
  */
-public interface Inversion {
+public interface Invertible {
 
     /**
-     * <p>
-     * このインターフェースが紐づく行列を返す.
-     * </p>
-     * 
-     * @return このインターフェースが紐づく行列
-     */
-    public abstract Matrix target();
-
-    /**
-     * ターゲット行列の逆行列を取得する.
+     * 逆行列を取得する. <br>
+     * 逆行列が存在しない場合は空を返す.
      *
      * @return ターゲット行列の逆行列
      */
-    public Matrix inverse();
+    public Optional<? extends Matrix> inverse();
 }

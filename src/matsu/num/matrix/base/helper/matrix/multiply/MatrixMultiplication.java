@@ -16,8 +16,8 @@ import matsu.num.matrix.base.SkeletalMatrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.UnitMatrix;
 import matsu.num.matrix.base.Vector;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
-import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
  * 行列積を扱う.

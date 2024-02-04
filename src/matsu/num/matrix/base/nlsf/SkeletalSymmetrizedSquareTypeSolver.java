@@ -1,5 +1,5 @@
 /**
- * 2023.12.22
+ * 2024.1.19
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -7,8 +7,7 @@ import java.util.function.Supplier;
 
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
-import matsu.num.matrix.base.helper.value.InvertibleDeterminantableSystem;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
@@ -29,7 +28,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.0
  */
 abstract class SkeletalSymmetrizedSquareTypeSolver
         extends InvertibleDeterminantableSystem<Matrix> implements SymmetrizedSquareTypeSolver {
@@ -47,11 +46,11 @@ abstract class SkeletalSymmetrizedSquareTypeSolver
     }
 
     @Override
-    protected final InverseAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
+    protected final InverstibleAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
         InvertibleDeterminantableSystem<Matrix> sqrtMatrixStructure = this.asymmetricSqrtSupplier.get();
-        return new InverseAndDeterminantStruct<Matrix>(
+        return new InverstibleAndDeterminantStruct<Matrix>(
                 new DeterminantValues(2 * sqrtMatrixStructure.logAbsDeterminant(), 1),
-                Matrix.symmetrizedSquare(sqrtMatrixStructure.inverse().get().transpose()));
+                Matrix.symmetrizedSquare(sqrtMatrixStructure.inverse().transpose()));
     }
 
     @Override
@@ -61,7 +60,7 @@ abstract class SkeletalSymmetrizedSquareTypeSolver
 
     @Override
     public final Matrix inverseAsymmSqrt() {
-        return this.asymmetricSqrtSupplier.get().inverse().get();
+        return this.asymmetricSqrtSupplier.get().inverse();
     }
 
     /**

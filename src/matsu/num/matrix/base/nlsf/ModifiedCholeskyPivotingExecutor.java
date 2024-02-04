@@ -1,25 +1,22 @@
 /**
- * 2023.12.25
+ * 2024.2.2
  */
 package matsu.num.matrix.base.nlsf;
+
+import java.util.Optional;
 
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.PermutationMatrix;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
-import matsu.num.matrix.base.helper.value.InvertibleDeterminantableSystem;
-import matsu.num.matrix.base.nlsf.helper.fact.Block2OrderSymmetricDiagonalMatrix;
-import matsu.num.matrix.base.nlsf.helper.fact.ModifiedCholeskyPivotingFactorizationHelper;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
  * <p>
- * 対称行列の部分ピボッティング付き修正Cholesky分解を提供する. <br>
- * Bunch-Kaufman ピボッティングにより実装されている.
+ * 対称行列の部分ピボッティング付き修正Cholesky分解を提供する.
  * </p>
  * 
  * <p>
@@ -30,17 +27,24 @@ import matsu.num.matrix.base.nlsf.helper.fact.ModifiedCholeskyPivotingFactorizat
  * </p>
  * 
  * <p>
- * このクラスが提供する {@linkplain SolvingFactorizationExecutor} について,
  * この行列分解が提供する逆行列には {@linkplain Symmetric} が付与されている.
  * </p>
  * 
  * <p>
- * メソッド {@code apply(matrix, epsilon)} で追加でスローされる例外は次のとおりである,
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#accepts(Matrix)}
+ * でrejectされる追加条件は次のとおりである.
  * </p>
  * <ul>
- * <li>{@code IllegalArgumentException 行列の有効要素数が大きすぎる場合(後述)}</li>
- * <li>{@code MatrixNotSymmetricException 対称行列でない場合}</li>
+ * <li>行列の有効要素数が大きすぎる場合(後述)</li>
+ * <li>対称行列でない場合</li>
  * </ul>
+ * 
+ * <p>
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#apply(Matrix, double)}
+ * で空が返る追加条件は無い.
+ * </p>
  * 
  * <p>
  * 有効要素数が大きすぎるとは, <br>
@@ -50,51 +54,54 @@ import matsu.num.matrix.base.nlsf.helper.fact.ModifiedCholeskyPivotingFactorizat
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
-public final class ModifiedCholeskyPivotingExecutor {
+public final class ModifiedCholeskyPivotingExecutor
+        extends SkeletalSolvingFactorizationExecutor<
+                EntryReadableMatrix, LUTypeSolver>
+        implements SolvingFactorizationExecutor<EntryReadableMatrix, LUTypeSolver> {
 
-    private static SolvingFactorizationExecutor<
-            EntryReadableMatrix, LUTypeSolver> INSTANCE = new ExecutorImpl();
+    private static final ModifiedCholeskyPivotingExecutor INSTANCE = new ModifiedCholeskyPivotingExecutor();
 
+    /**
+     * 内部から呼ばれる.
+     */
     private ModifiedCholeskyPivotingExecutor() {
-        throw new AssertionError();
+        super();
+    }
+
+    @Override
+    MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
+        if (!(matrix instanceof Symmetric)) {
+            return MatrixRejectionInLSF.REJECTED_BY_NOT_SYMMETRIC.get();
+        }
+
+        return ModifiedCholeskyPivotingFactorizationHelper.acceptedSize(matrix)
+                ? MatrixStructureAcceptance.ACCEPTED
+                : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+    }
+
+    @Override
+    final Optional<? extends LUTypeSolver> applyConcretely(EntryReadableMatrix matrix,
+            double epsilon) {
+        return ModifiedCholeskyPivotingSystem.instanceOf(matrix, epsilon);
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
     /**
-     * このクラスの機能を実行するインスタンスを返す.
+     * このクラスのインスタンスを返す.
      * 
      * @return インスタンス
      */
-    public static SolvingFactorizationExecutor<
-            EntryReadableMatrix, LUTypeSolver> instance() {
+    public static ModifiedCholeskyPivotingExecutor instance() {
         return INSTANCE;
     }
 
-    private static final class ExecutorImpl
-            extends SkeletalSolvingFactorizationExecutor<
-                    EntryReadableMatrix, LUTypeSolver>
-            implements SolvingFactorizationExecutor<
-                    EntryReadableMatrix, LUTypeSolver> {
-
-        private static final String CLASS_EXPLANATION = "ModifiedCholeskyPivotingExecutor";
-
-        @Override
-        final LUTypeSolver applyConcretely(EntryReadableMatrix matrix,
-                double epsilon) {
-            if (!(matrix instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("対称行列でない");
-            }
-            return new ModifiedCholeskyPivotingFactorization(matrix, epsilon);
-        }
-
-        @Override
-        public String toString() {
-            return CLASS_EXPLANATION;
-        }
-    }
-
-    private static final class ModifiedCholeskyPivotingFactorization
+    private static final class ModifiedCholeskyPivotingSystem
             extends InvertibleDeterminantableSystem<Matrix>
             implements LUTypeSolver {
 
@@ -108,15 +115,24 @@ public final class ModifiedCholeskyPivotingExecutor {
         private final LowerUnitriangularEntryReadableMatrix mxL;
         private final PermutationMatrix mxP;
 
+        static Optional<ModifiedCholeskyPivotingSystem> instanceOf(
+                final EntryReadableMatrix matrix, final double epsilon) {
+            try {
+                return Optional.of(new ModifiedCholeskyPivotingSystem(matrix, epsilon));
+            } catch (ProcessFailedException e) {
+                return Optional.empty();
+            }
+        }
+
         /**
-         * ビルダから呼ばれる.
-         *
-         * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) >
-         *             IntMax)
+         * staticファクトリから呼ばれる.
+         * 
          * @throws ProcessFailedException 行列が特異に近い場合, 成分に極端な値を含み分解が完了できない場合
          */
-        private ModifiedCholeskyPivotingFactorization(final EntryReadableMatrix matrix, final double epsilon) {
+        private ModifiedCholeskyPivotingSystem(final EntryReadableMatrix matrix, final double epsilon)
+                throws ProcessFailedException {
 
+            //ここで例外が発生する場合がある
             ModifiedCholeskyPivotingFactorizationHelper fact = new ModifiedCholeskyPivotingFactorizationHelper(
                     matrix, epsilon + EPSILON_A);
 
@@ -137,7 +153,7 @@ public final class ModifiedCholeskyPivotingExecutor {
          * 戻り値は対称行列であり, {@linkplain Symmetric}が付与されている.
          */
         @Override
-        protected InverseAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
+        protected InverstibleAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
             DeterminantValues determinantValues =
                     new DeterminantValues(this.mxM.logAbsDeterminant(), this.mxM.signOfDeterminant());
 
@@ -148,7 +164,7 @@ public final class ModifiedCholeskyPivotingExecutor {
                             this.mxP.inverse().get().transpose(),
                             this.mxL.inverse().get().transpose()));
 
-            return new InverseAndDeterminantStruct<Matrix>(determinantValues, invMatrix);
+            return new InverstibleAndDeterminantStruct<Matrix>(determinantValues, invMatrix);
         }
 
         @Override
@@ -156,5 +172,4 @@ public final class ModifiedCholeskyPivotingExecutor {
             return LUTypeSolver.toString(this, CLASS_STRING);
         }
     }
-
 }

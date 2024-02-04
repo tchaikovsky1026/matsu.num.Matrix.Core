@@ -1,12 +1,14 @@
 /**
- * 2024.1.16
+ * 2024.2.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
@@ -23,7 +25,7 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.5
  */
 public final class GeneralMatrixBuilder {
 
@@ -35,7 +37,7 @@ public final class GeneralMatrixBuilder {
      * 初期値は零行列.
      *
      * @param matrixDimension 行列サイズ
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(r * c > IntMax)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(r * c > IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     private GeneralMatrixBuilder(MatrixDimension matrixDimension) {
@@ -46,7 +48,7 @@ public final class GeneralMatrixBuilder {
 
         final long long_entrySize = (long) thisRowDimension * (long) thisColumnDimension;
         if (long_entrySize > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
+            throw new ElementsTooManyException("サイズが大きすぎる");
         }
         this.entry = new double[(int) long_entrySize];
     }
@@ -65,36 +67,60 @@ public final class GeneralMatrixBuilder {
     /**
      * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
      *
-     * @param row i, 行index
-     * @param column j, 列index
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
      * @param value 置き換えた後の値
-     * @throws IndexOutOfBoundsException (i, j) が行列の内部でない場合
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の内部でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @throws IllegalStateException すでにビルドされている場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
     public void setValue(final int row, final int column, double value) {
+        this.setValueOrElseThrow(
+                row, column, value,
+                v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
+    }
+
+    /**
+     * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
+     * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+     *
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
+     * @param value 置き換えた後の値
+     * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+     * @param <X> スローされる例外の型
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の内部でない場合
+     * @throws X valueが不正な値である場合
+     * @throws IllegalStateException すでにビルドされている場合
+     * @throws NullPointerException 引数にnullが含まれる場合
+     * @see EntryReadableMatrix#acceptValue(double)
+     */
+    public <X extends Exception> void setValueOrElseThrow(final int row, final int column, double value,
+            DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+        Objects.requireNonNull(invalidValueExceptionGetter);
         if (Objects.isNull(this.entry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
         if (!EntryReadableMatrix.acceptValue(value)) {
-            throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
+            throw invalidValueExceptionGetter.apply(value);
         }
         if (!(matrixDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%d, %d)",
+                            "行列外:matrix:%s, (row, column)=(%s, %s)",
                             matrixDimension, row, column));
         }
         entry[row * matrixDimension.columnAsIntValue() + column] = value;
     }
 
     /**
-     * 第<i>i</i>行と第<i>j</i>行を交換して新しい行列として返す.
+     * 第 <i>i</i> 行と第 <i>j</i> 行を交換して新しい行列として返す.
      *
-     * @param row1 i, 行index1
-     * @param row2 j, 行index2
-     * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
+     * @param row1 <i>i</i>, 行index1
+     * @param row2 <i>j</i>, 行index2
+     * @throws IndexOutOfBoundsException <i>i</i>, <i>j</i> が行列の内部でない場合
      * @throws IllegalStateException すでにビルドされている場合
      */
     public void swapRows(final int row1, final int row2) {
@@ -105,7 +131,7 @@ public final class GeneralMatrixBuilder {
                 && matrixDimension.isValidRowIndex(row2))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row1, row2)=(%d, %d)",
+                            "行列外:matrix:%s, (row1, row2)=(%s, %s)",
                             matrixDimension, row1, row2));
         }
 
@@ -126,11 +152,11 @@ public final class GeneralMatrixBuilder {
     }
 
     /**
-     * 第<i>i</i>列と第<i>j</i>列を交換して新しい行列として返す.
+     * 第 <i>i</i> 列と第 <i>j</i> 列を交換して新しい行列として返す.
      *
-     * @param column1 i, 列index1
-     * @param column2 j, 列index2
-     * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
+     * @param column1 <i>i</i>, 列index1
+     * @param column2 <i>j</i>, 列index2
+     * @throws IndexOutOfBoundsException <i>i</i>, <i>j</i> が行列の内部でない場合
      * @throws IllegalStateException すでにビルドされている場合
      */
     public void swapColumns(final int column1, final int column2) {
@@ -141,7 +167,7 @@ public final class GeneralMatrixBuilder {
                 && matrixDimension.isValidColumnIndex(column2))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (column1, column2)=(%d, %d)",
+                            "行列外:matrix:%s, (column1, column2)=(%s, %s)",
                             matrixDimension, column1, column2));
         }
 
@@ -184,7 +210,7 @@ public final class GeneralMatrixBuilder {
      *
      * @param matrixDimension 行列サイズ
      * @return 零行列で初期化されたビルダ
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static GeneralMatrixBuilder zeroBuilder(MatrixDimension matrixDimension) {
@@ -197,7 +223,7 @@ public final class GeneralMatrixBuilder {
      * @param matrixDimension 行列サイズ
      * @return 単位行列で初期化したビルダ
      * @throws MatrixFormatMismatchException 行列サイズが正方形でない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static GeneralMatrixBuilder unitBuilder(final MatrixDimension matrixDimension) {
@@ -218,7 +244,7 @@ public final class GeneralMatrixBuilder {
      *
      * @param src 元行列
      * @return 元行列と等価なビルダ
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文), 成分に不正な値が入り込む場合
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文), 成分に不正な値が入り込む場合
      * @throws NullPointerException 引数にnullが含まれる場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
@@ -254,7 +280,7 @@ public final class GeneralMatrixBuilder {
      *
      * @param src 元行列
      * @return 元行列と等価なビルダ
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static GeneralMatrixBuilder from(final EntryReadableMatrix src) {
@@ -276,7 +302,7 @@ public final class GeneralMatrixBuilder {
                 if (!EntryReadableMatrix.acceptValue(value)) {
                     throw new AssertionError(
                             String.format(
-                                    "EntryReadableMatrixが適切に実装されていない: entryValue=%.16G", value));
+                                    "EntryReadableMatrixが適切に実装されていない: entryValue=%s", value));
                 }
                 outBuilder.setValue(j, k, value);
             }
@@ -315,7 +341,7 @@ public final class GeneralMatrixBuilder {
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row, column)=(%d, %d)",
+                                "行列外:matrix:%s, (row, column)=(%s, %s)",
                                 matrixDimension, row, column));
             }
             return entry[row * matrixDimension.columnAsIntValue() + column];

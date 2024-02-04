@@ -1,26 +1,32 @@
 /**
- * 2023.8.15
+ * 2024.2.1
  */
-package matsu.num.matrix.base.nlsf.helper.fact;
+package matsu.num.matrix.base.nlsf;
+
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularBuilder;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 
 /**
+ * <p>
  * 対称な部分ピボッティング付き修正Cholesky分解のヘルパ. <br>
- * A = PLML<sup>T</sup>P<sup>T</sup>. <br>
- * <br>
+ * A = PLML<sup>T</sup>P<sup>T</sup>.
+ * </p>
+ * 
+ * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
  * その定数倍はブロック対角行列Mに押し付ける.
+ * </p>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 19.4
  */
-public final class ModifiedCholeskyPivotingFactorizationHelper {
+final class ModifiedCholeskyPivotingFactorizationHelper {
 
     //ピボット選択の閾値となるマジックナンバー
     private static final double ALPHA = 0.6403882032022076;
@@ -35,12 +41,12 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
     private PermutationMatrix mxP;
 
     /**
-     * @param matrix 
-     * @param relativeEpsilon 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) > IntMax)
+     * @param matrix
+     * @param relativeEpsilon
      * @throws ProcessFailedException 行列が特異の場合, 極端な値を含み分解が完了できない場合
      */
-    public ModifiedCholeskyPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon) {
+    public ModifiedCholeskyPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
+            throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
             throw new ProcessFailedException("行列が特異(零行列である)");
@@ -50,6 +56,13 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
         this.pivot22 = new boolean[this.matrixDimension.rowAsIntValue() - 1];
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
+    }
+
+    public static boolean acceptedSize(Matrix matrix) {
+        final int dimension = matrix.matrixDimension().rowAsIntValue();
+        final long entrySize = ((long) dimension * dimension + dimension) / 2L;
+
+        return entrySize <= Integer.MAX_VALUE / 2;
     }
 
     public Block2OrderSymmetricDiagonalMatrix getMxM() {
@@ -65,19 +78,15 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
     }
 
     /**
-     * 広義下三角成分を配列へ. 
+     * 広義下三角成分を配列へ.
      * 成分を配列に落とし込む際にスケールする.
      * 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) > IntMax)
      */
     private double[] lowerSideOfMatrixToArray(final EntryReadableMatrix matrix) {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
-        final long long_entrySize = ((long) thisDimension * thisDimension + thisDimension) / 2L;
-        if (long_entrySize > Integer.MAX_VALUE / 2) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
-        }
+        final int entrySize = (thisDimension * thisDimension + thisDimension) / 2;
 
-        double[] outArray = new double[(int) long_entrySize];
+        double[] outArray = new double[entrySize];
         int c = 0;
         for (int j = 0; j < thisDimension; j++) {
             for (int k = 0; k <= j; k++) {
@@ -93,7 +102,7 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
      *
      * @throws ProcessFailedException 行列が特異の場合
      */
-    private void factorize(double threshold) {
+    private void factorize(double threshold) throws ProcessFailedException {
         PermutationMatrix.Builder mxPBuilder = PermutationMatrix.Builder.unitBuilder(this.matrixDimension);
 
         final int thisDimension = this.matrixDimension.rowAsIntValue();
@@ -208,7 +217,7 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
      *
      * @throws ProcessFailedException mxEntryに不正な値が入っている場合
      */
-    private void convertToEachMatrix() {
+    private void convertToEachMatrix() throws ProcessFailedException {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
         final double[] thisMxEntry = this.mxLowerEntry;
 
@@ -217,30 +226,27 @@ public final class ModifiedCholeskyPivotingFactorizationHelper {
         LowerUnitriangularBuilder mxLBuilder = LowerUnitriangularBuilder
                 .unitBuilder(this.matrixDimension);
 
-        try {
-            int c = 0;
-            for (int i = 0; i < thisDimension; i++) {
-                for (int k = 0; k < i - 1; k++) {
-                    mxLBuilder.setValue(i, k, thisMxEntry[c]);
-                    c++;
-                }
-                if (i >= 1) {
-                    if (this.pivot22[i - 1]) {
-                        //スケールをMに反映 
-                        mxMBuilder.setSubDiagonal(i - 1, thisMxEntry[c] * this.scale);
-                        c++;
-                    } else {
-                        mxLBuilder.setValue(i, i - 1, thisMxEntry[c]);
-                        c++;
-                    }
-                }
-                //スケールをMに反映 
-                mxMBuilder.setDiagonal(i, thisMxEntry[c] * this.scale);
+        DoubleFunction<ProcessFailedException> exceptGetter =
+                v -> new ProcessFailedException("行列の成分に極端な値を含む");
+        int c = 0;
+        for (int i = 0; i < thisDimension; i++) {
+            for (int k = 0; k < i - 1; k++) {
+                mxLBuilder.setValue(i, k, thisMxEntry[c]);
                 c++;
             }
-        } catch (IllegalArgumentException e) {
-            //setValueで不正値が入り込む可能性がある
-            throw new ProcessFailedException("行列の成分に極端な値が含まれる");
+            if (i >= 1) {
+                if (this.pivot22[i - 1]) {
+                    //スケールをMに反映 
+                    mxMBuilder.setSubDiagonalOrElseThrow(i - 1, thisMxEntry[c] * this.scale, exceptGetter);
+                    c++;
+                } else {
+                    mxLBuilder.setValueOrElseThrow(i, i - 1, thisMxEntry[c], exceptGetter);
+                    c++;
+                }
+            }
+            //スケールをMに反映 
+            mxMBuilder.setDiagonalOrElseThrow(i, thisMxEntry[c] * this.scale, exceptGetter);
+            c++;
         }
 
         this.mxM = mxMBuilder.build();

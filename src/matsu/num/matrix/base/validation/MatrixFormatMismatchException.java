@@ -1,7 +1,7 @@
 /**
  * 2023.12.22
  */
-package matsu.num.matrix.base.exception;
+package matsu.num.matrix.base.validation;
 
 /**
  * 行列の構造(サイズ等)が規約を満たしていないことを報告する例外. 

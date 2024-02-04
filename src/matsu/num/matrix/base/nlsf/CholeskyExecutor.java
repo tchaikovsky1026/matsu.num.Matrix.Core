@@ -1,19 +1,18 @@
 /**
- * 2023.12.25
+ * 2024.2.2
  */
 package matsu.num.matrix.base.nlsf;
+
+import java.util.Optional;
 
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
-import matsu.num.matrix.base.helper.value.InvertibleDeterminantableSystem;
-import matsu.num.matrix.base.nlsf.helper.fact.CholeskyFactorizationHelper;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
  * <p>
@@ -24,7 +23,8 @@ import matsu.num.matrix.base.nlsf.helper.fact.CholeskyFactorizationHelper;
  * 与えられた正定値対称行列 A を次の形に分解する:
  * A = LD<sup>1/2</sup>D<sup>1/2</sup>L<sup>T</sup>. <br>
  * ただし,
- * D<sup>1/2</sup>: 正定値対角行列, L: 単位(対角成分が1の)下三角行列.
+ * D<sup>1/2</sup>: 正定値対角行列, L: 単位(対角成分が1の)下三角行列. <br>
+ * 行列が正定値であることが, 分解できることの必要十分条件である.
  * </p>
  * 
  * <p>
@@ -32,13 +32,22 @@ import matsu.num.matrix.base.nlsf.helper.fact.CholeskyFactorizationHelper;
  * </p>
  * 
  * <p>
- * このクラスが提供する {@linkplain SolvingFactorizationExecutor} について,
- * メソッド {@code apply(matrix, epsilon)} で追加でスローされる例外は次のとおりである,
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#accepts(Matrix)}
+ * でrejectされる追加条件は次のとおりである.
  * </p>
  * <ul>
- * <li>{@code IllegalArgumentException 行列の有効要素数が大きすぎる場合(後述)}</li>
- * <li>{@code MatrixNotSymmetricException 対称行列でない場合}</li>
- * <li>{@code ProcessFailedException 行列が正定値でない場合}</li>
+ * <li>行列の有効要素数が大きすぎる場合(後述)</li>
+ * <li>対称行列でない場合</li>
+ * </ul>
+ * 
+ * <p>
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#apply(Matrix, double)}
+ * で空が返る追加条件は次のとおりである.
+ * </p>
+ * <ul>
+ * <li>正定値行列でない場合</li>
  * </ul>
  * 
  * <p>
@@ -49,54 +58,59 @@ import matsu.num.matrix.base.nlsf.helper.fact.CholeskyFactorizationHelper;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
-public final class CholeskyExecutor {
+public final class CholeskyExecutor
+        extends SkeletalSolvingFactorizationExecutor<
+                EntryReadableMatrix, SymmetrizedSquareTypeSolver>
+        implements SolvingFactorizationExecutor<
+                EntryReadableMatrix, SymmetrizedSquareTypeSolver> {
 
-    private static final SolvingFactorizationExecutor<
-            EntryReadableMatrix, SymmetrizedSquareTypeSolver> INSTANCE = new ExecutorImpl();
+    private static final CholeskyExecutor INSTANCE = new CholeskyExecutor();
 
+    /**
+     * 内部から呼ばれる.
+     */
     private CholeskyExecutor() {
-        throw new AssertionError();
+        super();
+    }
+
+    @Override
+    MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
+        if (!(matrix instanceof Symmetric)) {
+            return MatrixRejectionInLSF.REJECTED_BY_NOT_SYMMETRIC.get();
+        }
+
+        return CholeskyFactorizationHelper.acceptedSize(matrix)
+                ? MatrixStructureAcceptance.ACCEPTED
+                : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+    }
+
+    @Override
+    final Optional<? extends SymmetrizedSquareTypeSolver> applyConcretely(
+            EntryReadableMatrix matrix, double epsilon) {
+
+        return CholeskySystem.instanceOf(matrix, epsilon);
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
     /**
-     * このクラスの機能を実行するインスタンスを返す.
+     * このクラスのインスタンスを返す.
      * 
      * @return インスタンス
      */
-    public static SolvingFactorizationExecutor<
-            EntryReadableMatrix, SymmetrizedSquareTypeSolver> instance() {
+    public static CholeskyExecutor instance() {
         return INSTANCE;
-    }
-
-    private static final class ExecutorImpl
-            extends SkeletalSolvingFactorizationExecutor<
-                    EntryReadableMatrix, SymmetrizedSquareTypeSolver>
-            implements SolvingFactorizationExecutor<
-                    EntryReadableMatrix, SymmetrizedSquareTypeSolver> {
-
-        private static final String CLASS_EXPLANATION = "CholeskyExecutor";
-
-        @Override
-        final CholeskySystemImpl applyConcretely(EntryReadableMatrix matrix,
-                double epsilon) {
-            if (!(matrix instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("対称行列でない");
-            }
-            return new CholeskySystemImpl(matrix, epsilon);
-        }
-
-        @Override
-        public String toString() {
-            return CLASS_EXPLANATION;
-        }
     }
 
     /**
      * コレスキー分解の具象クラスを提供する.
      */
-    private static final class CholeskySystemImpl
+    private static final class CholeskySystem
             extends SkeletalSymmetrizedSquareTypeSolver
             implements SymmetrizedSquareTypeSolver {
 
@@ -109,14 +123,22 @@ public final class CholeskyExecutor {
         private final DiagonalMatrix mxSqrtD;
         private final LowerUnitriangularEntryReadableMatrix mxL;
 
+        static Optional<CholeskySystem> instanceOf(final EntryReadableMatrix matrix, final double epsilon) {
+            try {
+                return Optional.of(new CholeskySystem(matrix, epsilon));
+            } catch (ProcessFailedException e) {
+                return Optional.empty();
+            }
+        }
+
         /**
-         * ビルダから呼ばれる.
+         * staticファクトリから呼ばれる.
          *
-         * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) >
-         *             IntMax)
          * @throws ProcessFailedException 行列が正定値でない場合, 成分に極端な値を含み分解が完了できない場合
          */
-        private CholeskySystemImpl(final EntryReadableMatrix matrix, final double epsilon) {
+        private CholeskySystem(final EntryReadableMatrix matrix, final double epsilon)
+                throws ProcessFailedException {
+            //ここで例外が発生する可能性がある
             CholeskyFactorizationHelper fact = new CholeskyFactorizationHelper(matrix, epsilon + EPSILON_A);
 
             this.matrix = matrix;
@@ -139,56 +161,54 @@ public final class CholeskyExecutor {
         public String toString() {
             return LUTypeSolver.toString(this, CLASS_STRING);
         }
+    }
 
-        private static final class AsymmetricSqrtSystem
-                extends InvertibleDeterminantableSystem<Matrix> {
+    private static final class AsymmetricSqrtSystem
+            extends InvertibleDeterminantableSystem<Matrix> {
 
-            private final DiagonalMatrix mxSqrtD;
-            private final LowerUnitriangularEntryReadableMatrix mxL;
+        private final DiagonalMatrix mxSqrtD;
+        private final LowerUnitriangularEntryReadableMatrix mxL;
 
-            private final Matrix asymmSqrt;
+        private final Matrix asymmSqrt;
 
-            AsymmetricSqrtSystem(DiagonalMatrix mxSqrtD, LowerUnitriangularEntryReadableMatrix mxL) {
-                super();
-                this.mxSqrtD = mxSqrtD;
-                this.mxL = mxL;
+        AsymmetricSqrtSystem(DiagonalMatrix mxSqrtD, LowerUnitriangularEntryReadableMatrix mxL) {
+            super();
+            this.mxSqrtD = mxSqrtD;
+            this.mxL = mxL;
 
-                /*
-                 * 非対称平方根 B を扱う.
-                 * A = B B^T であるので,
-                 * B = L D^{1/2}
-                 * となる.
-                 */
-                this.asymmSqrt = Matrix.multiply(this.mxL, this.mxSqrtD);
-            }
-
-            @Override
-            public Matrix target() {
-                return this.asymmSqrt;
-            }
-
-            @Override
-            protected InverseAndDeterminantStruct<? extends Matrix> calcInverseDeterminantStruct() {
-                /*
-                 * 非対称平方根 B に関する逆行列, 行列式を扱う.
-                 * B = L D^{1/2} であるので,
-                 * det B = det D^{1/2},
-                 * B^{-1} = D^{-1/2} L^{-1}
-                 * となる.
-                 */
-                final Matrix asymmInvSqrt = Matrix.multiply(
-                        this.mxSqrtD.inverse().get(),
-                        this.mxL.inverse().get());
-
-                final double logDetSqrtL = this.mxSqrtD.logAbsDeterminant();
-
-                return new InverseAndDeterminantStruct<Matrix>(
-                        new DeterminantValues(logDetSqrtL, 1),
-                        asymmInvSqrt);
-            }
-
+            /*
+             * 非対称平方根 B を扱う.
+             * A = B B^T であるので,
+             * B = L D^{1/2}
+             * となる.
+             */
+            this.asymmSqrt = Matrix.multiply(this.mxL, this.mxSqrtD);
         }
 
+        @Override
+        public Matrix target() {
+            return this.asymmSqrt;
+        }
+
+        @Override
+        protected InverstibleAndDeterminantStruct<? extends Matrix> calcInverseDeterminantStruct() {
+            /*
+             * 非対称平方根 B に関する逆行列, 行列式を扱う.
+             * B = L D^{1/2} であるので,
+             * det B = det D^{1/2},
+             * B^{-1} = D^{-1/2} L^{-1}
+             * となる.
+             */
+            final Matrix asymmInvSqrt = Matrix.multiply(
+                    this.mxSqrtD.inverse().get(),
+                    this.mxL.inverse().get());
+
+            final double logDetSqrtL = this.mxSqrtD.logAbsDeterminant();
+
+            return new InverstibleAndDeterminantStruct<Matrix>(
+                    new DeterminantValues(logDetSqrtL, 1),
+                    asymmInvSqrt);
+        }
     }
 
 }

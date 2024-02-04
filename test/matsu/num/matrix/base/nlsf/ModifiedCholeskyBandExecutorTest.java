@@ -3,17 +3,19 @@ package matsu.num.matrix.base.nlsf;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.GeneralBandMatrixBuilder;
 import matsu.num.matrix.base.SymmetricBandMatrixBuilder;
 import matsu.num.matrix.base.Vector;
-import matsu.num.matrix.base.VectorDimension;
-import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
+import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
  * {@link ModifiedCholeskyBandExecutor}クラスのテスト.
@@ -22,6 +24,8 @@ import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
  */
 @RunWith(Enclosed.class)
 public class ModifiedCholeskyBandExecutorTest {
+    
+    public static final Class<?> TEST_CLASS = ModifiedCholeskyBandExecutor.class;
 
     public static class 生成に関する {
 
@@ -32,8 +36,40 @@ public class ModifiedCholeskyBandExecutorTest {
         }
     }
 
+    public static class 要ピボッティング行列行列での振る舞い検証 {
+
+        private BandMatrix matrix;
+
+        @Before
+        public void before_行列の準備() {
+            //最初の段が実行できない
+            /*
+             * 0 2 0 0
+             * 2 5 0 0
+             * 0 0 1 2
+             * 0 0 2 1
+             */
+            SymmetricBandMatrixBuilder builder = SymmetricBandMatrixBuilder.zeroBuilder(
+                    BandMatrixDimension.symmetric(4, 1));
+            builder.setValue(0, 0, 0);
+            builder.setValue(1, 0, 2);
+            builder.setValue(1, 1, 5);
+            builder.setValue(2, 2, 1);
+            builder.setValue(3, 2, 2);
+            builder.setValue(3, 3, 1);
+            matrix = builder.build();
+        }
+
+        @Test
+        public void test_行列分解の失敗() {
+            Optional<? extends LUTypeSolver> cho = ModifiedCholeskyBandExecutor.instance().apply(matrix);
+            assertThat(cho.isEmpty(), is(true));
+        }
+    }
+
     public static class 行列式と逆行列ベクトル積に関する_サイズ4 {
 
+        private BandMatrix matrix;
         private LUTypeSolver mcb;
 
         @Before
@@ -55,7 +91,8 @@ public class ModifiedCholeskyBandExecutorTest {
             builder.setValue(2, 1, 3);
             builder.setValue(3, 1, 4);
             builder.setValue(3, 2, 3);
-            mcb = ModifiedCholeskyBandExecutor.instance().apply(builder.build());
+            matrix = builder.build();
+            mcb = ModifiedCholeskyBandExecutor.instance().apply(matrix).get();
         }
 
         @Test
@@ -75,28 +112,14 @@ public class ModifiedCholeskyBandExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
-            builder.setEntryValue(new double[] { 1, 2, 3, 4 });
-            Vector right = builder.build();
+            for (int i = 0; i < matrix.matrixDimension().columnAsIntValue(); i++) {
+                Vector.Builder builder =
+                        Vector.Builder.zeroBuilder(matrix.matrixDimension().rightOperableVectorDimension());
+                builder.setValue(i, 1d);
+                Vector v = builder.build();
 
-            /*
-             * 0.31578947368421
-             * -0.894736842105263
-             * 0.157894736842105
-             * 1.42105263157895
-             */
-            double[] expected = {
-                    0.31578947368421,
-                    -0.894736842105263,
-                    0.157894736842105,
-                    1.42105263157895
-            };
-            Vector result = mcb.inverse().get().operateTranspose(right);
-            double[] resultArray = result.entryAsArray();
-            for (int i = 0; i < resultArray.length; i++) {
-                assertThat(
-                        String.format("i=%d,result=%f,expected=%f", i, resultArray[i], expected[i]),
-                        resultArray[i], is(closeTo(expected[i], 1E-12)));
+                Vector res = matrix.operate(mcb.inverse().operate(v)).minus(v);
+                assertThat(res.normMax(), is(lessThan(1E-12)));
             }
         }
 
@@ -113,6 +136,7 @@ public class ModifiedCholeskyBandExecutorTest {
 
     public static class 行列式と逆行列ベクトル積に関する_サイズ1 {
 
+        private BandMatrix matrix;
         private LUTypeSolver mcb;
 
         @Before
@@ -123,7 +147,8 @@ public class ModifiedCholeskyBandExecutorTest {
             SymmetricBandMatrixBuilder builder =
                     SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(1, 2));
             builder.setValue(0, 0, 5);
-            mcb = ModifiedCholeskyBandExecutor.instance().apply(builder.build());
+            matrix = builder.build();
+            mcb = ModifiedCholeskyBandExecutor.instance().apply(matrix).get();
         }
 
         @Test
@@ -143,25 +168,40 @@ public class ModifiedCholeskyBandExecutorTest {
 
         @Test
         public void test_逆行列ベクトル積() {
-            Vector.Builder builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
-            builder.setEntryValue(new double[] { 3 });
-            Vector right = builder.build();
+            for (int i = 0; i < matrix.matrixDimension().columnAsIntValue(); i++) {
+                Vector.Builder builder =
+                        Vector.Builder.zeroBuilder(matrix.matrixDimension().rightOperableVectorDimension());
+                builder.setValue(i, 1d);
+                Vector v = builder.build();
 
-            /*
-             * 0.6
-             */
-            double[] expected = {
-                    0.6
-            };
-            Vector result = mcb.inverse().get().operate(right);
-            double[] resultArray = result.entryAsArray();
-            for (int i = 0; i < resultArray.length; i++) {
-                assertThat(
-                        String.format("i=%d,result=%f,expected=%f", i, resultArray[i], expected[i]),
-                        resultArray[i], is(closeTo(expected[i], 1E-12)));
+                Vector res = matrix.operate(mcb.inverse().operate(v)).minus(v);
+                assertThat(res.normMax(), is(lessThan(1E-12)));
             }
         }
 
+    }
+    
+    
+    public static class toString表示 {
+
+        private CholeskyBandExecutor executor = CholeskyBandExecutor.instance();
+        private LUTypeSolver mcb;
+
+        @Before
+        public void before_次元1の正方行列のソルバを用意する() {
+            SymmetricBandMatrixBuilder builder =
+                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(1, 2));
+            builder.setValue(0, 0, 5);
+            mcb = ModifiedCholeskyBandExecutor.instance().apply(builder.build()).get();
+        }
+
+        @Test
+        public void test_toString表示() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(executor);
+            System.out.println(mcb);
+            System.out.println();
+        }
     }
 
 }

@@ -1,17 +1,17 @@
 /**
- * 2023.12.22
+ * 2024.2.1
  */
-package matsu.num.matrix.base.exception;
+package matsu.num.matrix.base.nlsf;
 
 /**
  * 行列に対する処理が正常に行われなかったことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 17.3
+ * @version 19.4
  */
-public final class ProcessFailedException extends IllegalArgumentException {
+final class ProcessFailedException extends Exception {
 
-    private static final long serialVersionUID = -1908839640046918708L;
+    private static final long serialVersionUID = -7042820330052044331L;
 
     /**
      * メッセージ無しの例外を生成する.

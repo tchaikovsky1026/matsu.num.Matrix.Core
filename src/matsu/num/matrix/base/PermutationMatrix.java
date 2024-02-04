@@ -1,27 +1,24 @@
 /**
- * 2023.12.28
+ * 2024.2.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * 置換行列を扱う.
  *
  * @author Matsuura Y.
- * @version 18.2
+ * @version 19.5
  */
 public interface PermutationMatrix extends EntryReadableMatrix,
         OrthogonalMatrix, Determinantable {
 
-    @Override
-    public PermutationMatrix target();
-
     /**
      * <p>
-     * {@link PermutationMatrix}のビルダ. <br>
+     * {@link PermutationMatrix} のビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
      * </p>
      */
@@ -162,7 +159,7 @@ public interface PermutationMatrix extends EntryReadableMatrix,
         }
 
         private static final class PermutationMatrixImpl
-                extends SkeletalOrthogonalMatrix<PermutationMatrix> implements PermutationMatrix {
+                extends SkeletalOrthogonalMatrix implements PermutationMatrix {
 
             private final MatrixDimension matrixDimension;
 
@@ -212,11 +209,6 @@ public interface PermutationMatrix extends EntryReadableMatrix,
                 return even;
             }
 
-            /**
-             * @throws MatrixFormatMismatchException {@inheritDoc }
-             * @throws IllegalArgumentException {@inheritDoc }
-             * @throws NullPointerException {@inheritDoc }
-             */
             @Override
             public Vector operate(Vector operand) {
                 final VectorDimension vectorDimension = operand.vectorDimension();
@@ -241,11 +233,6 @@ public interface PermutationMatrix extends EntryReadableMatrix,
                 return builder.build();
             }
 
-            /**
-             * @throws MatrixFormatMismatchException {@inheritDoc }
-             * @throws IllegalArgumentException {@inheritDoc }
-             * @throws NullPointerException {@inheritDoc }
-             */
             @Override
             public Vector operateTranspose(Vector operand) {
                 final VectorDimension vectorDimension = operand.vectorDimension();

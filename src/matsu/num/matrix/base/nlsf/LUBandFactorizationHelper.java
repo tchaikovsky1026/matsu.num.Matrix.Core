@@ -1,7 +1,9 @@
 /**
- * 2023.8.15
+ * 2024.2.1
  */
-package matsu.num.matrix.base.nlsf.helper.fact;
+package matsu.num.matrix.base.nlsf;
+
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
@@ -9,19 +11,22 @@ import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.LowerUnitriangularBandBuilder;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.MatrixDimension;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 
 /**
+ * <p>
  * 帯行列LU分解のヘルパ. <br>
- * A = LDU. <br>
- * <br>
+ * A = LDU.
+ * </p>
+ * 
+ * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
  * その定数倍は対角行列Dに押し付ける.
+ * </p>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 19.4
  */
-public final class LUBandFactorizationHelper {
+final class LUBandFactorizationHelper {
 
     private final BandMatrixDimension bandMatrixDimension;
     private final double[] mxDiagonalEntry;
@@ -34,12 +39,12 @@ public final class LUBandFactorizationHelper {
     private LowerUnitriangularEntryReadableMatrix mxUt;
 
     /**
-     * @param matrix 
-     * @param relativeEpsilon 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax or dim * ub > IntMax)
-     * @throws ProcessFailedException 行列が特異の場合, あるいはピボッティングが必要な場合, 極端な値を含み分解が完了できない場合
+     * @param matrix 受け入れ可能な行列
+     * @param relativeEpsilon
+     * @throws ProcessFailedException 行列が特異の場合, あるいはピボッティングが必要な場合,
+     *             極端な値を含み分解が完了できない場合
      */
-    public LUBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) {
+    public LUBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
             throw new ProcessFailedException("行列が特異(零行列である)");
@@ -50,6 +55,16 @@ public final class LUBandFactorizationHelper {
         this.mxUpperEntry = upperOfMatrixToArray(matrix);
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
+    }
+
+    public static boolean acceptedSize(BandMatrix matrix) {
+        BandMatrixDimension bandMatrixDimension = matrix.bandMatrixDimension();
+        final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
+        final int lowerBandWidth = bandMatrixDimension.lowerBandWidth();
+        final int upperBandWidth = bandMatrixDimension.lowerBandWidth();
+        final long larger_entrySize = (long) dimension * Math.max(lowerBandWidth, upperBandWidth);
+
+        return larger_entrySize <= Integer.MAX_VALUE;
     }
 
     public DiagonalMatrix getMxD() {
@@ -65,7 +80,7 @@ public final class LUBandFactorizationHelper {
     }
 
     /**
-     * 対角成分を配列へ. 
+     * 対角成分を配列へ.
      * 成分を配列に落とし込む際にスケールする.
      */
     private double[] diagonalOfMatrixToArray(final BandMatrix matrix) {
@@ -80,21 +95,17 @@ public final class LUBandFactorizationHelper {
     }
 
     /**
-     * 狭義下三角成分を配列へ. 
+     * 狭義下三角成分を配列へ.
      * 成分を配列に落とし込む際にスケールする.
      * 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
      */
     private double[] lowerOfMatrixToArray(final BandMatrix matrix) {
 
         final int thisDimension = this.bandMatrixDimension.dimension().rowAsIntValue();
         final int thisLowerBandWidth = this.bandMatrixDimension.lowerBandWidth();
-        final long long_entrySize = (long) thisDimension * thisLowerBandWidth;
-        if (long_entrySize > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
-        }
+        final int lower_entrySize = thisDimension * thisLowerBandWidth;
 
-        double[] outArray = new double[(int) long_entrySize];
+        double[] outArray = new double[lower_entrySize];
         for (int i = 0; i < thisDimension; i++) {
             final int shift = i * thisLowerBandWidth;
             for (int j = 0, l = Math.min(thisLowerBandWidth, thisDimension - i - 1); j < l; j++) {
@@ -107,21 +118,17 @@ public final class LUBandFactorizationHelper {
     }
 
     /**
-     * 狭義上三角成分を配列へ. 
+     * 狭義上三角成分を配列へ.
      * 成分を配列に落とし込む際にスケールする.
      * 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * ub > IntMax)
      */
     private double[] upperOfMatrixToArray(final BandMatrix matrix) {
 
         final int thisDimension = this.bandMatrixDimension.dimension().rowAsIntValue();
         final int thisUpperBandWidth = this.bandMatrixDimension.upperBandWidth();
-        final long long_entrySize = (long) thisDimension * thisUpperBandWidth;
-        if (long_entrySize > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
-        }
+        final int upper_entrySize = thisDimension * thisUpperBandWidth;
 
-        double[] outArray = new double[(int) long_entrySize];
+        double[] outArray = new double[upper_entrySize];
         for (int i = 0; i < thisDimension; i++) {
             final int shift = i * thisUpperBandWidth;
             for (int j = 0, l = Math.min(thisUpperBandWidth, thisDimension - i - 1); j < l; j++) {
@@ -138,7 +145,7 @@ public final class LUBandFactorizationHelper {
      *
      * @throws ProcessFailedException 行列が特異の場合, あるいはピボッティングが必要な場合
      */
-    private void factorize(double threshold) {
+    private void factorize(double threshold) throws ProcessFailedException {
         final int thisDimension = this.bandMatrixDimension.dimension().rowAsIntValue();
         final int thisLowerBandWidth = this.bandMatrixDimension.lowerBandWidth();
         final int thisUpperBandWidth = this.bandMatrixDimension.upperBandWidth();
@@ -194,7 +201,7 @@ public final class LUBandFactorizationHelper {
      *
      * @throws ProcessFailedException mxEntryに不正な値が入っている場合
      */
-    private void convertToEachMatrix() {
+    private void convertToEachMatrix() throws ProcessFailedException {
         final MatrixDimension thisMatrixDimension = this.bandMatrixDimension.dimension();
         final int thisDimension = thisMatrixDimension.rowAsIntValue();
         final int thisLowerBandWidth = this.bandMatrixDimension.lowerBandWidth();
@@ -214,35 +221,32 @@ public final class LUBandFactorizationHelper {
         LowerUnitriangularBandBuilder mxUtBuilder = LowerUnitriangularBandBuilder
                 .unitBuilder(transposedUpperBandMatrixDimension);
 
-        try {
-            //対角成分
-            //スケールを反映
-            for (int i = 0; i < thisDimension; i++) {
-                mxDBuilder.setValue(i, thisDiagonalEntry[i] * this.scale);
-            }
+        DoubleFunction<ProcessFailedException> exceptGetter =
+                v -> new ProcessFailedException("行列の成分に極端な値を含む");
+        //対角成分
+        //スケールを反映
+        for (int i = 0; i < thisDimension; i++) {
+            mxDBuilder.setValueOrElseThrow(i, thisDiagonalEntry[i] * this.scale, exceptGetter);
+        }
 
-            //狭義下三角成分
-            for (int i = 0; i < thisDimension; i++) {
-                final int shift = i * thisLowerBandWidth;
-                for (int j = 0, l = Math.min(thisLowerBandWidth, thisDimension - i - 1); j < l; j++) {
-                    int r = j + i + 1;
-                    int c = i;
-                    mxLBuilder.setValue(r, c, thisLowerEntry[shift + j]);
-                }
+        //狭義下三角成分
+        for (int i = 0; i < thisDimension; i++) {
+            final int shift = i * thisLowerBandWidth;
+            for (int j = 0, l = Math.min(thisLowerBandWidth, thisDimension - i - 1); j < l; j++) {
+                int r = j + i + 1;
+                int c = i;
+                mxLBuilder.setValueOrElseThrow(r, c, thisLowerEntry[shift + j], exceptGetter);
             }
+        }
 
-            //狭義上三角成分
-            for (int i = 0; i < thisDimension; i++) {
-                final int shift = i * thisUpperBandWidth;
-                for (int j = 0, l = Math.min(thisUpperBandWidth, thisDimension - i - 1); j < l; j++) {
-                    int r = j + i + 1;
-                    int c = i;
-                    mxUtBuilder.setValue(r, c, thisUpperEntry[shift + j]);
-                }
+        //狭義上三角成分
+        for (int i = 0; i < thisDimension; i++) {
+            final int shift = i * thisUpperBandWidth;
+            for (int j = 0, l = Math.min(thisUpperBandWidth, thisDimension - i - 1); j < l; j++) {
+                int r = j + i + 1;
+                int c = i;
+                mxUtBuilder.setValueOrElseThrow(r, c, thisUpperEntry[shift + j], exceptGetter);
             }
-        } catch (IllegalArgumentException e) {
-            //setValueで不正値が入り込む可能性がある
-            throw new ProcessFailedException("行列の成分に極端な値が含まれる");
         }
 
         this.mxD = mxDBuilder.build();

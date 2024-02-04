@@ -1,19 +1,18 @@
 /**
- * 2023.12.25
+ * 2024.2.2
  */
 package matsu.num.matrix.base.nlsf;
+
+import java.util.Optional;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
-import matsu.num.matrix.base.helper.value.InvertibleDeterminantableSystem;
-import matsu.num.matrix.base.nlsf.helper.fact.ModifiedCholeskyBandFactorizationHelper;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
  * <p>
@@ -28,17 +27,26 @@ import matsu.num.matrix.base.nlsf.helper.fact.ModifiedCholeskyBandFactorizationH
  * </p>
  * 
  * <p>
- * このクラスが提供する {@linkplain SolvingFactorizationExecutor} について,
  * この行列分解が提供する逆行列には {@linkplain Symmetric} が付与されている.
  * </p>
  * 
  * <p>
- * メソッド {@code apply(matrix, epsilon)} で追加でスローされる例外は次のとおりである,
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#accepts(Matrix)}
+ * でrejectされる追加条件は次のとおりである.
  * </p>
  * <ul>
- * <li>{@code IllegalArgumentException 行列の有効要素数が大きすぎる場合(後述)}</li>
- * <li>{@code MatrixNotSymmetricException 対称行列でない場合}</li>
- * <li>{@code ProcessFailedException ピボッティングが必要な場合}</li>
+ * <li>行列の有効要素数が大きすぎる場合(後述)</li>
+ * <li>対称行列でない場合</li>
+ * </ul>
+ * 
+ * <p>
+ * メソッド
+ * {@linkplain SolvingFactorizationExecutor#apply(Matrix, double)}
+ * で空が返る追加条件は次のとおりである.
+ * </p>
+ * <ul>
+ * <li>ピボッティングが必要な場合</li>
  * </ul>
  * 
  * <p>
@@ -49,50 +57,53 @@ import matsu.num.matrix.base.nlsf.helper.fact.ModifiedCholeskyBandFactorizationH
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
-public final class ModifiedCholeskyBandExecutor {
+public final class ModifiedCholeskyBandExecutor
+        extends SkeletalSolvingFactorizationExecutor<
+                BandMatrix, LUTypeSolver>
+        implements SolvingFactorizationExecutor<BandMatrix, LUTypeSolver> {
 
-    private static SolvingFactorizationExecutor<
-            BandMatrix, LUTypeSolver> INSTANCE = new ExecutorImpl();
+    private static ModifiedCholeskyBandExecutor INSTANCE = new ModifiedCholeskyBandExecutor();
 
+    /**
+     * 内部から呼ばれる.
+     */
     private ModifiedCholeskyBandExecutor() {
-        throw new AssertionError();
+        super();
+    }
+
+    @Override
+    MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
+        if (!(matrix instanceof Symmetric)) {
+            return MatrixRejectionInLSF.REJECTED_BY_NOT_SYMMETRIC.get();
+        }
+
+        return ModifiedCholeskyBandFactorizationHelper.acceptedSize(matrix)
+                ? MatrixStructureAcceptance.ACCEPTED
+                : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+    }
+
+    @Override
+    Optional<? extends LUTypeSolver> applyConcretely(BandMatrix matrix, double epsilon) {
+        return ModifiedCholeskyBandSystem.instanceOf(matrix, epsilon);
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
     /**
-     * このクラスの機能を実行するインスタンスを返す.
+     * このクラスのインスタンスを返す.
      * 
      * @return インスタンス
      */
-    public static SolvingFactorizationExecutor<
-            BandMatrix, LUTypeSolver> instance() {
+    public static ModifiedCholeskyBandExecutor instance() {
         return INSTANCE;
     }
 
-    private static final class ExecutorImpl
-            extends SkeletalSolvingFactorizationExecutor<
-                    BandMatrix, LUTypeSolver>
-            implements SolvingFactorizationExecutor<
-                    BandMatrix, LUTypeSolver> {
-
-        private static final String CLASS_EXPLANATION = "ModifiedCholeskyBandExecutor";
-
-        @Override
-        final LUTypeSolver applyConcretely(BandMatrix matrix, double epsilon) {
-            if (!(matrix instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("対称行列でない");
-            }
-            return new ModifiedCholeskyBandFactorization(matrix, epsilon);
-        }
-
-        @Override
-        public String toString() {
-            return CLASS_EXPLANATION;
-        }
-    }
-
-    private static final class ModifiedCholeskyBandFactorization
+    private static final class ModifiedCholeskyBandSystem
             extends InvertibleDeterminantableSystem<Matrix> implements LUTypeSolver {
 
         private static final String CLASS_STRING = "ModifiedCholesky";
@@ -104,15 +115,24 @@ public final class ModifiedCholeskyBandExecutor {
         private final DiagonalMatrix mxD;
         private final LowerUnitriangularEntryReadableMatrix mxL;
 
+        static Optional<ModifiedCholeskyBandSystem> instanceOf(final BandMatrix matrix, final double epsilon) {
+            try {
+                return Optional.of(new ModifiedCholeskyBandSystem(matrix, epsilon));
+            } catch (ProcessFailedException e) {
+                return Optional.empty();
+            }
+        }
+
         /**
-         * ビルダから呼ばれる.
+         * staticファクトリから呼ばれる.
          *
-         * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
          * @throws ProcessFailedException 行列が特異あるいはピボッティングが必要な場合,
          *             成分に極端な値を含み分解が完了できない場合
          */
-        private ModifiedCholeskyBandFactorization(final BandMatrix matrix, final double epsilon) {
+        private ModifiedCholeskyBandSystem(final BandMatrix matrix, final double epsilon)
+                throws ProcessFailedException {
 
+            //ここで例外が発生する可能性がある
             ModifiedCholeskyBandFactorizationHelper fact = new ModifiedCholeskyBandFactorizationHelper(
                     matrix, epsilon + EPSILON_A);
 
@@ -132,7 +152,7 @@ public final class ModifiedCholeskyBandExecutor {
          * 戻り値は対称行列であり, {@linkplain Symmetric}が付与されている.
          */
         @Override
-        protected InverseAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
+        protected InverstibleAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
             DeterminantValues det = new DeterminantValues(this.mxD.logAbsDeterminant(), this.mxD.signOfDeterminant());
 
             // A^{-1} = (LD(L^T))^{-1} = L^{-T}D^{-1}L^{-1} = (L^{-T})D^{-1}(L^{-T})^T
@@ -140,14 +160,12 @@ public final class ModifiedCholeskyBandExecutor {
                     this.mxD.inverse().get(),
                     this.mxL.inverse().get().transpose());
 
-            return new InverseAndDeterminantStruct<Matrix>(det, invMatrix);
+            return new InverstibleAndDeterminantStruct<Matrix>(det, invMatrix);
         }
 
         @Override
         public String toString() {
             return LUTypeSolver.toString(this, CLASS_STRING);
         }
-
     }
-
 }

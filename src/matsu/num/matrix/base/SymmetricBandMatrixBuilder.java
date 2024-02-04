@@ -1,14 +1,16 @@
 /**
- * 2024.1.16
+ * 2024.2.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
-import matsu.num.matrix.base.exception.MatrixNotSymmetricException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
  * <p>
@@ -25,7 +27,7 @@ import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.5
  */
 public final class SymmetricBandMatrixBuilder {
 
@@ -41,7 +43,7 @@ public final class SymmetricBandMatrixBuilder {
      *
      * @param bandMatrixDimension 帯行列構造
      * @throws MatrixFormatMismatchException 帯行列構造が対称でない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * b > IntMax)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * b > IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     private SymmetricBandMatrixBuilder(final BandMatrixDimension bandMatrixDimension) {
@@ -56,7 +58,7 @@ public final class SymmetricBandMatrixBuilder {
 
         final long long_entrySize = (long) dimension * bandWidth;
         if (long_entrySize > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
+            throw new ElementsTooManyException("サイズが大きすぎる");
         }
         diagonalEntry = new double[dimension];
         bandEntry = new double[(int) long_entrySize];
@@ -78,20 +80,45 @@ public final class SymmetricBandMatrixBuilder {
      * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
      * 同時に (<i>j</i>, <i>i</i>) の値も置き換わる.
      *
-     * @param row i, 行index
-     * @param column j, 列index
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
      * @param value 置き換えた後の値
      * @throws IllegalStateException すでにビルドされている場合
-     * @throws IndexOutOfBoundsException (i, j) が行列の帯領域内でない場合
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の帯領域内でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
     public void setValue(final int row, final int column, final double value) {
+        this.setValueOrElseThrow(
+                row, column, value,
+                v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
+    }
+
+    /**
+     * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
+     * 同時に (<i>j</i>, <i>i</i>) の値も置き換わる. <br>
+     * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+     *
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
+     * @param value 置き換えた後の値
+     * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+     * @param <X> スローされる例外の型
+     * @throws IllegalStateException すでにビルドされている場合
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の帯領域内でない場合
+     * @throws X valueが不正な値である場合
+     * @throws NullPointerException 引数にnullが含まれる場合
+     * @see EntryReadableMatrix#acceptValue(double)
+     */
+    public <X extends Exception> void setValueOrElseThrow(final int row, final int column, final double value,
+            DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+        Objects.requireNonNull(invalidValueExceptionGetter);
         if (Objects.isNull(this.diagonalEntry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
         if (!EntryReadableMatrix.acceptValue(value)) {
-            throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
+            throw invalidValueExceptionGetter.apply(value);
         }
 
         final int thisBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -109,12 +136,12 @@ public final class SymmetricBandMatrixBuilder {
         case OUT_OF_BAND:
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "帯の外側:matrix:%s, (row, column)=(%d, %d)",
+                            "帯の外側:matrix:%s, (row, column)=(%s, %s)",
                             bandMatrixDimension, row, column));
         case OUT_OF_MATRIX:
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                            "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
                             bandMatrixDimension.dimension(), row, column));
         default:
             throw new AssertionError("Bug: 列挙型に想定外の値");
@@ -124,7 +151,7 @@ public final class SymmetricBandMatrixBuilder {
     /**
      * 対称帯行列をビルドする.
      *
-     * @return 対称帯行列, {@link Symmetric}が付与されている
+     * @return 対称帯行列, {@link Symmetric} が付与されている
      * @throws IllegalStateException すでにビルドされている場合
      */
     public BandMatrix build() {
@@ -143,7 +170,7 @@ public final class SymmetricBandMatrixBuilder {
      * @param bandMatrixDimension 帯行列構造
      * @return 零行列で初期化されたビルダ
      * @throws MatrixFormatMismatchException 帯行列構造が対称でない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static SymmetricBandMatrixBuilder zeroBuilder(final BandMatrixDimension bandMatrixDimension) {
@@ -156,7 +183,7 @@ public final class SymmetricBandMatrixBuilder {
      * @param bandMatrixDimension 帯行列構造
      * @return 単位行列で初期化されたビルダ
      * @throws MatrixFormatMismatchException 帯行列構造が対称でない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static SymmetricBandMatrixBuilder unitBuilder(final BandMatrixDimension bandMatrixDimension) {
@@ -173,7 +200,7 @@ public final class SymmetricBandMatrixBuilder {
      * @param src 元行列
      * @return 元行列と等価なビルダ
      * @throws MatrixNotSymmetricException 行列が対称行列でない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      * @see Symmetric
      */
@@ -198,7 +225,7 @@ public final class SymmetricBandMatrixBuilder {
             if (!EntryReadableMatrix.acceptValue(value)) {
                 throw new AssertionError(
                         String.format(
-                                "BandMatrixが適切に実装されていない: entryValue=%.16G", value));
+                                "BandMatrixが適切に実装されていない: entryValue=%s", value));
             }
             outBuilder.setValue(i, i, value);
         }
@@ -213,7 +240,7 @@ public final class SymmetricBandMatrixBuilder {
                 if (!EntryReadableMatrix.acceptValue(value)) {
                     throw new AssertionError(
                             String.format(
-                                    "BandMatrixが適切に実装されていない: entryValue=%.16G", value));
+                                    "BandMatrixが適切に実装されていない: entryValue=%s", value));
                 }
                 outBuilder.setValue(r, c, value);
             }
@@ -281,7 +308,7 @@ public final class SymmetricBandMatrixBuilder {
             case OUT_OF_MATRIX:
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
                                 bandMatrixDimension.dimension(), row, column));
             default:
                 throw new AssertionError("Bug: 列挙型に想定外の値");

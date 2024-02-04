@@ -1,39 +1,37 @@
 /**
- * 2024.1.16
+ * 2024.2.4
  */
-package matsu.num.matrix.base.nlsf.helper.fact;
+package matsu.num.matrix.base.nlsf;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.Determinantable;
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.Inversion;
+import matsu.num.matrix.base.Invertible;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 import matsu.num.matrix.base.common.ArraysUtil;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * 1*1 あるいは 2*2の対称ブロック要素を持つ, ブロック対角行列とそれを係数に持つ連立方程式の解法を扱う.
  *
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.6
  */
-public interface Block2OrderSymmetricDiagonalMatrix
+interface Block2OrderSymmetricDiagonalMatrix
         extends BandMatrix, Symmetric,
-        Inversion, Determinantable {
-
-    @Override
-    public abstract Block2OrderSymmetricDiagonalMatrix target();
+        Invertible, Determinantable {
 
     @Override
     public abstract Block2OrderSymmetricDiagonalMatrix transpose();
@@ -44,7 +42,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
     /**
      * {@link Block2OrderSymmetricDiagonalMatrix}のビルダ. スレッドセーフでない.
      */
-    public static final class Builder {
+    static final class Builder {
 
         private BandMatrixDimension bandMatrixDimension;
 
@@ -77,24 +75,45 @@ public interface Block2OrderSymmetricDiagonalMatrix
          *
          * @param index i, 対角成分index
          * @param value 置き換えた後の値
-         * @return this
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (i,i)が行列内でない場合
          * @throws IllegalArgumentException valueが不正な値の場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
-        public Builder setDiagonal(final int index, final double value) {
+        public void setDiagonal(final int index, final double value) {
+            this.setDiagonalOrElseThrow(
+                    index, value,
+                    v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
+        }
+
+        /**
+         * 対角要素:(<i>i</i>,<i>i</i>)要素を指定した値に置き換える. <br>
+         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+         *
+         * @param index i, 対角成分index
+         * @param value 置き換えた後の値
+         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+         * @param <X> スローされる例外の型パラメータ
+         * @throws IllegalStateException すでにビルドされている場合
+         * @throws IndexOutOfBoundsException (i,i)が行列内でない場合
+         * @throws X valueが不正な値の場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         * @see EntryReadableMatrix#acceptValue(double)
+         */
+        public <X extends Exception> void setDiagonalOrElseThrow(final int index, final double value,
+                DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+            Objects.requireNonNull(invalidValueExceptionGetter);
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
             if (!EntryReadableMatrix.acceptValue(value)) {
-                throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
+                throw invalidValueExceptionGetter.apply(value);
             }
             if (!(0 <= index && index < this.bandMatrixDimension.dimension().rowAsIntValue())) {
-                throw new IndexOutOfBoundsException(String.format("行列内部でない:(%d, %d)", index, index));
+                throw new IndexOutOfBoundsException(String.format("行列内部でない:(%s, %s)", index, index));
             }
             this.diagonalEntry[index] = value;
-            return this;
         }
 
         /**
@@ -103,38 +122,60 @@ public interface Block2OrderSymmetricDiagonalMatrix
          *
          * @param index i, 副対角成分index
          * @param value 置き換えた後の値
-         * @return this
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (i+1,i)が行列の帯領域内でない場合
-         * @throws IllegalArgumentException valueが不正な値(絶対値が大きすぎる, inf, NaN)の場合,
+         * @throws IllegalArgumentException valueが不正な値の場合,
          *             valueを代入することでブロック対角行列でなくなる場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
-        public Builder setSubDiagonal(final int index, final double value) {
+        public void setSubDiagonal(final int index, final double value) {
+            this.setSubDiagonalOrElseThrow(
+                    index, value,
+                    v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
+        }
+
+        /**
+         * 副対角要素:(<i>i</i> + 1,<i>i</i>)要素を指定した値に置き換える. <br>
+         * 同時に(<i>i</i>,<i>i</i> + 1)の値も置き換わる. <br>
+         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+         *
+         * @param index i, 副対角成分index
+         * @param value 置き換えた後の値
+         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+         * @param <X> スローされる例外の型パラメータ
+         * @throws IllegalStateException すでにビルドされている場合
+         * @throws IndexOutOfBoundsException (i+1,i)が行列の帯領域内でない場合
+         * @throws X valueが不正な値の場合,
+         *             valueを代入することでブロック対角行列でなくなる場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         * @see EntryReadableMatrix#acceptValue(double)
+         */
+        public <X extends Exception> void setSubDiagonalOrElseThrow(final int index, final double value,
+                DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+            Objects.requireNonNull(invalidValueExceptionGetter);
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
             if (!EntryReadableMatrix.acceptValue(value)) {
-                throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
+                throw invalidValueExceptionGetter.apply(value);
             }
             if (!(0 <= index && index < this.bandMatrixDimension.dimension().rowAsIntValue() - 1)) {
-                throw new IndexOutOfBoundsException(String.format("行列内部でない:(%d, %d)", index + 1, index));
+                throw new IndexOutOfBoundsException(String.format("行列内部でない:(%s, %s)", index + 1, index));
             }
             //0以外が代入される場合にはその両側を確認する
             if (Double.compare(value, 0.0) != 0) {
                 if (index >= 1 && Double.compare(this.subdiagonalEntry[index - 1], 0.0) != 0) {
                     throw new IllegalArgumentException(
-                            String.format("この代入によりブロック対角行列でなくなる:(%d, %d)", index + 1, index));
+                            String.format("この代入によりブロック対角行列でなくなる:(%s, %s)", index + 1, index));
                 }
                 if (index < this.bandMatrixDimension.dimension().rowAsIntValue() - 2
                         && Double.compare(this.subdiagonalEntry[index + 1], 0.0) != 0) {
                     throw new IllegalArgumentException(
-                            String.format("個の代入によりブロック対角行列でなくなる:(%d, %d)", index + 1, index));
+                            String.format("この代入によりブロック対角行列でなくなる:(%s, %s)", index + 1, index));
                 }
             }
             this.subdiagonalEntry[index] = value;
-
-            return this;
         }
 
         /**
@@ -142,12 +183,11 @@ public interface Block2OrderSymmetricDiagonalMatrix
          * 同時に(<i>i</i>,<i>i</i> + 1)の値も置き換わる.
          *
          * @param index i, 副対角成分index
-         * @return this
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (i+1,i)が行列の帯領域内でない場合
          */
-        public Builder setSubDiagonalToZero(final int index) {
-            return this.setSubDiagonal(index, 0.0);
+        public void setSubDiagonalToZero(final int index) {
+            this.setSubDiagonal(index, 0.0);
         }
 
         /**
@@ -156,7 +196,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
          * @return 対称ブロック行列
          * @throws IllegalStateException すでにビルドされている場合
          */
-        public Block2OrderSymmetricDiagonalMatrix build() {
+        Block2OrderSymmetricDiagonalMatrix build() {
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -175,7 +215,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
          * @throws MatrixFormatMismatchException 行列次元(サイズ)が正方行列でない場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
-        public static Builder zeroBuilder(final MatrixDimension matrixDimension) {
+        static Builder zeroBuilder(final MatrixDimension matrixDimension) {
             return new Builder(matrixDimension);
         }
 
@@ -209,7 +249,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
             //thisの逆行列と行列式を表す. 
             //すでに計算されている場合について埋め込まれる
             //もし計算されていない状態(ビルダから生成された場合)はnull
-            private final InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse;
+            private final InverstibleAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse;
 
             /**
              * ビルダから呼ばれる
@@ -231,7 +271,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
              */
             private Block2OrderSymmetricDiagonalMatrixImpl(
                     BandMatrixDimension bandMatrixDimension, double[] diagonalEntry, double[] subDiagonalEntry,
-                    InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse) {
+                    InverstibleAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invAndDetOfInverse) {
                 this.bandMatrixDimension = bandMatrixDimension;
                 this.diagonalEntry = diagonalEntry;
                 this.subdiagonalEntry = subDiagonalEntry;
@@ -264,7 +304,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
                 case OUT_OF_MATRIX:
                     throw new IndexOutOfBoundsException(
                             String.format(
-                                    "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                                    "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
                                     bandMatrixDimension.dimension(), row, column));
                 default:
                     throw new AssertionError("Bug: 列挙型に想定外の値");
@@ -282,7 +322,6 @@ public interface Block2OrderSymmetricDiagonalMatrix
 
             /**
              * @throws MatrixFormatMismatchException {@inheritDoc }
-             * @throws IllegalArgumentException {@inheritDoc }
              * @throws NullPointerException {@inheritDoc }
              */
             @Override
@@ -322,16 +361,6 @@ public interface Block2OrderSymmetricDiagonalMatrix
             }
 
             /**
-             * @throws MatrixFormatMismatchException {@inheritDoc }
-             * @throws IllegalArgumentException {@inheritDoc }
-             * @throws NullPointerException {@inheritDoc }
-             */
-            @Override
-            public Vector operateTranspose(Vector operand) {
-                return this.operate(operand);
-            }
-
-            /**
              * このオブジェクトの文字列説明表現を返す.
              * 
              * <p>
@@ -348,7 +377,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
             }
 
             @Override
-            protected InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> createInvAndDetWrapper() {
+            protected InverstibleAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> createInvAndDetWrapper() {
                 if (Objects.nonNull(this.invAndDetOfInverse)) {
                     return this.invAndDetOfInverse;
                 }
@@ -392,7 +421,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
                  * 
                  * @return 逆行列と行列式
                  */
-                public InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix>
+                public InverstibleAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix>
                         execute() {
                     double[] thisDiagonalEntry = this.src.diagonalEntry;
                     double[] thisSubdiagonalEntry = this.src.subdiagonalEntry;
@@ -415,7 +444,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
                         if (!state22) {
                             State s = this.applyUnderState1(i, thisDiagonalEntry[i]);
                             if (s.equals(State.SINGULAR)) {
-                                return new InverseAndDeterminantStruct<>();
+                                return new InverstibleAndDeterminantStruct<>();
                             }
 
                             continue;
@@ -425,7 +454,7 @@ public interface Block2OrderSymmetricDiagonalMatrix
                                 i, thisDiagonalEntry[i - 1], thisDiagonalEntry[i], thisSubdiagonalEntry[i - 1]);
 
                         if (s.equals(State.SINGULAR)) {
-                            return new InverseAndDeterminantStruct<>();
+                            return new InverstibleAndDeterminantStruct<>();
                         }
 
                         state22 = false;
@@ -438,14 +467,14 @@ public interface Block2OrderSymmetricDiagonalMatrix
                             logAbsDeterminant,
                             sign ? 1 : -1);
                     //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
-                    InverseAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invWrapper =
-                            new InverseAndDeterminantStruct<>(
+                    InverstibleAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invWrapper =
+                            new InverstibleAndDeterminantStruct<>(
                                     thisDet.createInverse(), this.src);
 
                     Block2OrderSymmetricDiagonalMatrix invMatrix = new Block2OrderSymmetricDiagonalMatrixImpl(
                             this.src.bandMatrixDimension, inverseDiagEntry, inverseSubDiagEntry, invWrapper);
 
-                    return new InverseAndDeterminantStruct<>(thisDet, invMatrix);
+                    return new InverstibleAndDeterminantStruct<>(thisDet, invMatrix);
                 }
 
                 private State applyUnderState1(int i, double m_00) {

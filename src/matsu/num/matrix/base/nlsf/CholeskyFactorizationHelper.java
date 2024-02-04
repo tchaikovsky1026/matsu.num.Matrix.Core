@@ -1,26 +1,32 @@
 /**
- * 2024.1.16
+ * 2024.2.1
  */
-package matsu.num.matrix.base.nlsf.helper.fact;
+package matsu.num.matrix.base.nlsf;
+
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangularBuilder;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 
 /**
- * Cholesky分解のヘルパ. <br>
- * A = LD<sup>1/2</sup>D<sup>1/2</sup>L<sup>T</sup>. <br>
- * <br>
+ * <p>
+ * Cholesky分解のヘルパ.
+ * A = LD<sup>1/2</sup>D<sup>1/2</sup>L<sup>T</sup>.
+ * </p>
+ * 
+ * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
  * その定数倍は対角行列Dに押し付ける.
+ * </p>
  *
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.4
  */
-public final class CholeskyFactorizationHelper {
+final class CholeskyFactorizationHelper {
 
     private final double scale;
     private final MatrixDimension matrixDimension;
@@ -30,12 +36,12 @@ public final class CholeskyFactorizationHelper {
     private LowerUnitriangularEntryReadableMatrix mxL;
 
     /**
-     * @param matrix 
-     * @param relativeEpsilon 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) > IntMax)
-         * @throws ProcessFailedException 行列が正定値でない場合, 極端な値を含み分解が完了できない場合
+     * @param matrix
+     * @param relativeEpsilon
+     * @throws ProcessFailedException 行列が正定値でない場合, 極端な値を含み分解が完了できない場合
      */
-    public CholeskyFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon) {
+    public CholeskyFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
+            throws ProcessFailedException {
         this.matrixDimension = matrix.matrixDimension();
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
@@ -45,6 +51,12 @@ public final class CholeskyFactorizationHelper {
         this.mxLowerEntry = lowerSideOfMatrixToArray(matrix);
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
+    }
+
+    public static boolean acceptedSize(Matrix matrix) {
+        final int thisDimension = matrix.matrixDimension().rowAsIntValue();
+        final long long_entrySize = ((long) thisDimension * thisDimension + thisDimension) / 2L;
+        return long_entrySize <= Integer.MAX_VALUE / 2;
     }
 
     public DiagonalMatrix getMxSqrtD() {
@@ -57,17 +69,12 @@ public final class CholeskyFactorizationHelper {
 
     /**
      * 成分を配列に落とし込む際にスケールする.
-     * 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) > IntMax)
      */
     private double[] lowerSideOfMatrixToArray(final EntryReadableMatrix matrix) {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
-        final long long_entrySize = ((long) thisDimension * thisDimension + thisDimension) / 2L;
-        if (long_entrySize > Integer.MAX_VALUE / 2) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
-        }
+        final int entrySize = (thisDimension * thisDimension + thisDimension) / 2;
 
-        double[] outArray = new double[(int) long_entrySize];
+        double[] outArray = new double[entrySize];
         int c = 0;
         for (int j = 0; j < thisDimension; j++) {
             for (int k = 0; k <= j; k++) {
@@ -83,7 +90,7 @@ public final class CholeskyFactorizationHelper {
      *
      * @throws ProcessFailedException 行列が正定値でない場合
      */
-    private void factorize(double threshold) {
+    private void factorize(double threshold) throws ProcessFailedException {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
         final double[] thisMxEntry = this.mxLowerEntry;
         final double[] thisMxUEntry_bk = new double[thisDimension];
@@ -123,7 +130,7 @@ public final class CholeskyFactorizationHelper {
      *
      * @throws ProcessFailedException mxEntryに不正な値が入っている場合
      */
-    private void convertToEachMatrix() {
+    private void convertToEachMatrix() throws ProcessFailedException {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
         final double[] thisMxEntry = this.mxLowerEntry;
 
@@ -133,19 +140,16 @@ public final class CholeskyFactorizationHelper {
 
         //対角行列(sqrtD)にスケールを反映させる
         double sqrtScale = Math.sqrt(this.scale);
-        try {
-            int c = 0;
-            for (int i = 0; i < thisDimension; i++) {
-                for (int k = 0; k < i; k++) {
-                    mxLBuilder.setValue(i, k, thisMxEntry[c]);
-                    c++;
-                }
-                mxSqrtDBuilder.setValue(i, thisMxEntry[c] * sqrtScale);
+        DoubleFunction<ProcessFailedException> exceptGetter =
+                v -> new ProcessFailedException("行列の成分に極端な値を含む");
+        int c = 0;
+        for (int i = 0; i < thisDimension; i++) {
+            for (int k = 0; k < i; k++) {
+                mxLBuilder.setValueOrElseThrow(i, k, thisMxEntry[c], exceptGetter);
                 c++;
             }
-        } catch (IllegalArgumentException e) {
-            //setValueで不正値が入り込む可能性がある
-            throw new ProcessFailedException("行列にの成分に極端な値が含まれる");
+            mxSqrtDBuilder.setValueOrElseThrow(i, thisMxEntry[c] * sqrtScale, exceptGetter);
+            c++;
         }
 
         this.mxSqrtD = mxSqrtDBuilder.build();

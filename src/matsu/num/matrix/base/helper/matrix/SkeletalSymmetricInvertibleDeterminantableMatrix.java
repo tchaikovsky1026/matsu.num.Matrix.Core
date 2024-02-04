@@ -1,5 +1,5 @@
 /**
- * 2023.12.29
+ * 2024.2.4
  */
 package matsu.num.matrix.base.helper.matrix;
 
@@ -7,29 +7,31 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import matsu.num.matrix.base.Determinantable;
-import matsu.num.matrix.base.Inversion;
+import matsu.num.matrix.base.Invertible;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
+import matsu.num.matrix.base.Vector;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * 逆行列と行列式が計算可能な行列に対する, 骨格実装を提供する. <br>
- * {@linkplain InverseAndDeterminantStruct} のキャッシュの仕組みを提供している.
+ * {@linkplain InverstibleAndDeterminantStruct} のキャッシュの仕組みを提供している.
  * 
  * @author Matsuura Y.
- * @version 18.2
- * @param <MT> thisのタイプ, target, transposeメソッドの戻り値に影響
+ * @version 19.6
+ * @param <MT> thisのタイプ, transposeメソッドの戻り値に影響
  * @param <IT> inverseのタイプ
  */
 public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extends Matrix, IT extends Matrix>
-        implements Matrix, Inversion, Determinantable, Symmetric {
+        implements Matrix, Invertible, Determinantable, Symmetric {
 
     private final MT castedThis;
 
     //循環参照が生じるため, 逆行列は遅延初期化
     //逆行列と行列式はそれぞれの整合性のため, セットで扱う
-    private Supplier<InverseAndDeterminantStruct<IT>> invAndDetStructSupplier;
+    private Supplier<InverstibleAndDeterminantStruct<IT>> invAndDetStructSupplier;
 
     /**
      * 骨格実装のコンストラクタ.
@@ -47,11 +49,6 @@ public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extend
         @SuppressWarnings("unchecked")
         MT t = (MT) this;
         this.castedThis = t;
-    }
-
-    @Override
-    public final MT target() {
-        return this.castedThis;
     }
 
     @Override
@@ -80,6 +77,15 @@ public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extend
     }
 
     /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public final Vector operateTranspose(Vector operand) {
+        return this.operate(operand);
+    }
+
+    /**
      * 逆行列と行列式の生成を行う抽象メソッド.
      * 
      * <p>
@@ -89,6 +95,6 @@ public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extend
      * 
      * @return 行列式, 逆行列
      */
-    protected abstract InverseAndDeterminantStruct<IT> createInvAndDetWrapper();
+    protected abstract InverstibleAndDeterminantStruct<IT> createInvAndDetWrapper();
 
 }

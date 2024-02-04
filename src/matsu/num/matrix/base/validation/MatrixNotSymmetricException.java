@@ -1,7 +1,7 @@
 /**
  * 2023.12.22
  */
-package matsu.num.matrix.base.exception;
+package matsu.num.matrix.base.validation;
 
 /**
  * 行列オブジェクトが対称行列でないことを報告する例外.

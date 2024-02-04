@@ -1,14 +1,16 @@
 /**
- * 2024.1.16
+ * 2024.2.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
@@ -34,7 +36,7 @@ import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.5
  * @see LowerUnitriangularEntryReadableMatrix
  */
 public final class LowerUnitriangularBandBuilder {
@@ -49,7 +51,7 @@ public final class LowerUnitriangularBandBuilder {
      * @param bandMatrixDimension 下三角である帯行列構造
      * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
      *             {@link BandMatrixDimension#upperBandWidth} &gt; 0である場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     private LowerUnitriangularBandBuilder(final BandMatrixDimension bandMatrixDimension) {
@@ -61,7 +63,7 @@ public final class LowerUnitriangularBandBuilder {
         final long long_entrySize = (long) bandMatrixDimension.dimension().rowAsIntValue()
                 * bandMatrixDimension.lowerBandWidth();
         if (long_entrySize > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
+            throw new ElementsTooManyException("サイズが大きすぎる");
         }
         this.lowerEntry = new double[(int) long_entrySize];
     }
@@ -69,21 +71,44 @@ public final class LowerUnitriangularBandBuilder {
     /**
      * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
      *
-     * @param row i, 行index
-     * @param column j, 列index
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
      * @param value 置き換えた後の値
      * @throws IllegalStateException すでにビルドされている場合
-     * @throws IndexOutOfBoundsException (i, j) が行列の狭義下側帯領域内でない場合
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の狭義下側帯領域内でない場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
     public void setValue(final int row, final int column, final double value) {
+        this.setValueOrElseThrow(
+                row, column, value,
+                v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
+    }
 
+    /**
+     * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
+     * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+     *
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
+     * @param value 置き換えた後の値
+     * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+     * @param <X> スローされる例外の型
+     * @throws IllegalStateException すでにビルドされている場合
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の狭義下側帯領域内でない場合
+     * @throws X valueが不正な値である場合
+     * @throws NullPointerException 引数にnullが含まれる場合
+     * @see EntryReadableMatrix#acceptValue(double)
+     */
+    public <X extends Exception> void setValueOrElseThrow(final int row, final int column, final double value,
+            DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+        Objects.requireNonNull(invalidValueExceptionGetter);
         if (Objects.isNull(this.lowerEntry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
         if (!EntryReadableMatrix.acceptValue(value)) {
-            throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
+            throw invalidValueExceptionGetter.apply(value);
         }
 
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -92,7 +117,7 @@ public final class LowerUnitriangularBandBuilder {
         case DIAGONAL:
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "対角成分は変更不可:matrix:%s, (row, column)=(%d, %d)",
+                            "対角成分は変更不可:matrix:%s, (row, column)=(%s, %s)",
                             bandMatrixDimension, row, column));
         case LOWER_BAND:
             lowerEntry[column * thisLowerBandWidth + (row - column - 1)] = value;
@@ -107,7 +132,7 @@ public final class LowerUnitriangularBandBuilder {
         case OUT_OF_MATRIX:
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                            "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
                             bandMatrixDimension.dimension(), row, column));
         default:
             throw new AssertionError("Bug: 列挙型に想定外の値");
@@ -137,7 +162,7 @@ public final class LowerUnitriangularBandBuilder {
      * @return 単位行列で初期化されたビルダ
      * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
      *             {@link BandMatrixDimension#upperBandWidth} &gt; 0である場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static LowerUnitriangularBandBuilder unitBuilder(final BandMatrixDimension bandMatrixDimension) {
@@ -179,11 +204,6 @@ public final class LowerUnitriangularBandBuilder {
         }
 
         @Override
-        public LowerUnitriangularEntryReadableMatrix target() {
-            return this;
-        }
-
-        @Override
         public BandMatrixDimension bandMatrixDimension() {
             return this.bandMatrixDimension;
         }
@@ -208,7 +228,7 @@ public final class LowerUnitriangularBandBuilder {
             case OUT_OF_MATRIX:
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
                                 bandMatrixDimension.dimension(), row, column));
             default:
                 throw new AssertionError("Bug: 列挙型に想定外の値");

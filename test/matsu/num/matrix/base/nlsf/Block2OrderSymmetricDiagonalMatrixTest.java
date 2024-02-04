@@ -1,4 +1,4 @@
-package matsu.num.matrix.base.nlsf.helper.fact;
+package matsu.num.matrix.base.nlsf;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * {@link Block2OrderSymmetricDiagonalMatrix}クラスのテスト.
@@ -32,29 +32,33 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
         @Test(expected = IllegalArgumentException.class)
         public void test_副対角1が埋まっているときに副対角0は代入できないIAEx() {
-            Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(4))
-                    .setSubDiagonal(1, 1)
-                    .setSubDiagonal(0, 1);
+            Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                    Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(4));
+            builder.setSubDiagonal(1, 1);
+            builder.setSubDiagonal(0, 1);
 
         }
 
         @Test(expected = IllegalArgumentException.class)
         public void test_副対角n_m3が埋まっているときに副対角n_m2は代入できないIAEx() {
-            Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(4))
-                    .setSubDiagonal(1, 1)
-                    .setSubDiagonal(2, 1);
+            Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                    Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(4));
+            builder.setSubDiagonal(1, 1);
+            builder.setSubDiagonal(2, 1);
         }
 
         @Test(expected = IndexOutOfBoundsException.class)
         public void test_副対角n_m1は行列外IIEx() {
-            Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(4))
-                    .setSubDiagonal(3, 1);
+            Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                    Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(4));
+            builder.setSubDiagonal(3, 1);
         }
 
         @Test(expected = IndexOutOfBoundsException.class)
         public void test_次元1の場合_副対角n_m1は行列外IIEx() {
-            Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(1))
-                    .setSubDiagonal(0, 1);
+            Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                    Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(1));
+            builder.setSubDiagonal(0, 1);
         }
     }
 
@@ -75,16 +79,17 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
                  * 0 0 0 0 14 5
                  * 0 0 0 0 5 15
                  */
-                matrix = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6))
-                        .setDiagonal(0, 10)
-                        .setDiagonal(1, 11)
-                        .setDiagonal(2, 12)
-                        .setDiagonal(3, 13)
-                        .setDiagonal(4, 14)
-                        .setDiagonal(5, 15)
-                        .setSubDiagonal(1, 2)
-                        .setSubDiagonal(4, 5)
-                        .build();
+                Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                        Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6));
+                builder.setDiagonal(0, 10);
+                builder.setDiagonal(1, 11);
+                builder.setDiagonal(2, 12);
+                builder.setDiagonal(3, 13);
+                builder.setDiagonal(4, 14);
+                builder.setDiagonal(5, 15);
+                builder.setSubDiagonal(1, 2);
+                builder.setSubDiagonal(4, 5);
+                matrix = builder.build();
             }
 
             @Test
@@ -117,16 +122,17 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
                  * 0 0 0 2 17 0
                  * 0 0 0 0 0 -18
                  */
-                matrix = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6))
-                        .setDiagonal(0, -13)
-                        .setDiagonal(1, 14)
-                        .setDiagonal(2, -15)
-                        .setDiagonal(3, 16)
-                        .setDiagonal(4, 17)
-                        .setDiagonal(5, -18)
-                        .setSubDiagonal(0, 3)
-                        .setSubDiagonal(3, 2)
-                        .build();
+                Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                        Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6));
+                builder.setDiagonal(0, -13);
+                builder.setDiagonal(1, 14);
+                builder.setDiagonal(2, -15);
+                builder.setDiagonal(3, 16);
+                builder.setDiagonal(4, 17);
+                builder.setDiagonal(5, -18);
+                builder.setSubDiagonal(0, 3);
+                builder.setSubDiagonal(3, 2);
+                matrix = builder.build();
             }
 
             @Test
@@ -154,9 +160,10 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
                 /*
                  * 2
                  */
-                matrix = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(1))
-                        .setDiagonal(0, -2)
-                        .build();
+                Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                        Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(1));
+                builder.setDiagonal(0, -2);
+                matrix = builder.build();
             }
 
             @Test
@@ -189,16 +196,17 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
                  * 0 0 0 2m 17m 0
                  * 0 0 0 0 0 -18m
                  */
-                matrix = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6))
-                        .setDiagonal(0, -13E90)
-                        .setDiagonal(1, 14E90)
-                        .setDiagonal(2, -15E90)
-                        .setDiagonal(3, 16E45)
-                        .setDiagonal(4, 17E45)
-                        .setDiagonal(5, -18E-90)
-                        .setSubDiagonal(0, 3E90)
-                        .setSubDiagonal(3, 2E45)
-                        .build();
+                Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                        Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6));
+                builder.setDiagonal(0, -13E90);
+                builder.setDiagonal(1, 14E90);
+                builder.setDiagonal(2, -15E90);
+                builder.setDiagonal(3, 16E45);
+                builder.setDiagonal(4, 17E45);
+                builder.setDiagonal(5, -18E-90);
+                builder.setSubDiagonal(0, 3E90);
+                builder.setSubDiagonal(3, 2E45);
+                matrix = builder.build();
             }
 
             @Test
@@ -233,16 +241,17 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
                  * 0 0 0 2m 17m 0
                  * 0 0 0 0 0 -18m
                  */
-                matrix = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6))
-                        .setDiagonal(0, -13E-90)
-                        .setDiagonal(1, 14E-90)
-                        .setDiagonal(2, -15E-90)
-                        .setDiagonal(3, 16E-45)
-                        .setDiagonal(4, 17E-45)
-                        .setDiagonal(5, -18E+90)
-                        .setSubDiagonal(0, 3E-90)
-                        .setSubDiagonal(3, 2E-45)
-                        .build();
+                Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                        Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6));
+                builder.setDiagonal(0, -13E-90);
+                builder.setDiagonal(1, 14E-90);
+                builder.setDiagonal(2, -15E-90);
+                builder.setDiagonal(3, 16E-45);
+                builder.setDiagonal(4, 17E-45);
+                builder.setDiagonal(5, -18E+90);
+                builder.setSubDiagonal(0, 3E-90);
+                builder.setSubDiagonal(3, 2E-45);
+                matrix = builder.build();
             }
 
             @Test
@@ -277,16 +286,17 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
                  * 0 0 0 2 17 0
                  * 0 0 0 0 0 -18
                  */
-                matrix = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6))
-                        .setDiagonal(0, -13)
-                        .setDiagonal(1, 14)
-                        .setDiagonal(2, 0)
-                        .setDiagonal(3, 16)
-                        .setDiagonal(4, 17)
-                        .setDiagonal(5, -18)
-                        .setSubDiagonal(0, 3)
-                        .setSubDiagonal(3, 2)
-                        .build();
+                Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                        Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6));
+                builder.setDiagonal(0, -13);
+                builder.setDiagonal(1, 14);
+                builder.setDiagonal(2, 0);
+                builder.setDiagonal(3, 16);
+                builder.setDiagonal(4, 17);
+                builder.setDiagonal(5, -18);
+                builder.setSubDiagonal(0, 3);
+                builder.setSubDiagonal(3, 2);
+                matrix = builder.build();
             }
 
             @Test
@@ -319,16 +329,17 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
                  * 0 0 0 2 17 0
                  * 0 0 0 0 0 -18
                  */
-                matrix = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6))
-                        .setDiagonal(0, 1)
-                        .setDiagonal(1, 9)
-                        .setDiagonal(2, 15)
-                        .setDiagonal(3, 16)
-                        .setDiagonal(4, 17)
-                        .setDiagonal(5, -18)
-                        .setSubDiagonal(0, 3)
-                        .setSubDiagonal(3, 2)
-                        .build();
+                Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                        Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6));
+                builder.setDiagonal(0, 1);
+                builder.setDiagonal(1, 9);
+                builder.setDiagonal(2, 15);
+                builder.setDiagonal(3, 16);
+                builder.setDiagonal(4, 17);
+                builder.setDiagonal(5, -18);
+                builder.setSubDiagonal(0, 3);
+                builder.setSubDiagonal(3, 2);
+                matrix = builder.build();
             }
 
             @Test
@@ -351,7 +362,7 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
     public static class 行列逆行列ベクトル積 {
 
-        private Block2OrderSymmetricDiagonalMatrix bsdm;
+        private Block2OrderSymmetricDiagonalMatrix matrix;
 
         private Vector right;
 
@@ -373,27 +384,28 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
              * 0 0 0 0 3 2
              * 0 0 0 0 2 2
              */
-            bsdm = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6))
-                    .setDiagonal(0, 2)
-                    .setDiagonal(1, 1)
-                    .setDiagonal(2, 2)
-                    .setDiagonal(3, 1)
-                    .setDiagonal(4, 3)
-                    .setDiagonal(5, 2)
-                    .setSubDiagonal(0, 2)
-                    .setSubDiagonal(4, 2)
-                    .build();
+            Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                    Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(6));
+            builder.setDiagonal(0, 2);
+            builder.setDiagonal(1, 1);
+            builder.setDiagonal(2, 2);
+            builder.setDiagonal(3, 1);
+            builder.setDiagonal(4, 3);
+            builder.setDiagonal(5, 2);
+            builder.setSubDiagonal(0, 2);
+            builder.setSubDiagonal(4, 2);
+            matrix = builder.build();
         }
 
         @Test
         public void test_成分最大ノルムの検証() {
-            assertThat(bsdm.entryNormMax(), is(3.0));
+            assertThat(matrix.entryNormMax(), is(3.0));
         }
 
         @Test
         public void test_行列ベクトル積() {
             double[] expected = { 6, 4, 6, 4, 27, 22 };
-            assertThat(Arrays.equals(bsdm.operate(right).entryAsArray(), expected), is(true));
+            assertThat(Arrays.equals(matrix.operate(right).entryAsArray(), expected), is(true));
         }
 
         @Test
@@ -402,19 +414,19 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
 
             //逆行列の逆行列は自分自身
             //注意：このテストは実装の詳細に依存している
-            assertThat(bsdm.inverse().get().inverse().get(), is(bsdm));
+            assertThat(matrix.inverse().get().inverse().get(), is(matrix));
 
             //逆行列の演算テスト
-            assertThat(bsdm.inverse().get().operate(right).entryAsArray(), is(expected));
+            assertThat(matrix.inverse().get().operate(right).entryAsArray(), is(expected));
         }
 
         @Test
         public void test_逆行列の行列式の検証() {
 
             //行列式の評価
-            assertThat(bsdm.inverse().get().logAbsDeterminant(), is(closeTo(-bsdm.logAbsDeterminant(), 1E-10)));
-            assertThat(bsdm.inverse().get().signOfDeterminant(), is(bsdm.signOfDeterminant()));
-            assertThat(bsdm.inverse().get().determinant(), is(closeTo(1 / bsdm.determinant(), 1E-10)));
+            assertThat(matrix.inverse().get().logAbsDeterminant(), is(closeTo(-matrix.logAbsDeterminant(), 1E-10)));
+            assertThat(matrix.inverse().get().signOfDeterminant(), is(matrix.signOfDeterminant()));
+            assertThat(matrix.inverse().get().determinant(), is(closeTo(1 / matrix.determinant(), 1E-10)));
         }
 
         @Test
@@ -423,19 +435,19 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
             //注意:このテストは実装の詳細に依存している
 
             //逆行列の逆行列は自分自身
-            assertThat(bsdm.inverse().get().inverse().get(), is(bsdm));
+            assertThat(matrix.inverse().get().inverse().get(), is(matrix));
 
             //逆行列の複数回の呼び出しは同一インスタンスを返す
-            assertThat(bsdm.inverse() == bsdm.inverse(), is(true));
+            assertThat(matrix.inverse() == matrix.inverse(), is(true));
             //逆行列の逆行列の複数回の呼び出しは同一インスタンスを返す.
-            assertThat(bsdm.inverse().get().inverse(), is(bsdm.inverse().get().inverse()));
+            assertThat(matrix.inverse().get().inverse(), is(matrix.inverse().get().inverse()));
 
         }
     }
 
     public static class 副対角の退化_サイズ1 {
 
-        private Block2OrderSymmetricDiagonalMatrix bsdm;
+        private Block2OrderSymmetricDiagonalMatrix matrix;
 
         private Vector right;
 
@@ -452,27 +464,28 @@ public class Block2OrderSymmetricDiagonalMatrixTest {
             /*
              * 2
              */
-            bsdm = Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(1))
-                    .setDiagonal(0, 2)
-                    .build();
+            Block2OrderSymmetricDiagonalMatrix.Builder builder =
+                    Block2OrderSymmetricDiagonalMatrix.Builder.zeroBuilder(MatrixDimension.square(1));
+            builder.setDiagonal(0, 2);
+            matrix = builder.build();
         }
 
         @Test
         public void test_成分最大ノルムの検証() {
-            assertThat(bsdm.entryNormMax(), is(2.0));
+            assertThat(matrix.entryNormMax(), is(2.0));
         }
 
         @Test
         public void test_行列ベクトル積() {
             double[] expected = { 6 };
-            Vector result = bsdm.operate(right);
+            Vector result = matrix.operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
         }
 
         @Test
         public void test_逆行列ベクトル積() {
             double[] expected = { 1.5 };
-            Vector result = bsdm.inverse().get().operate(right);
+            Vector result = matrix.inverse().get().operate(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
         }
     }

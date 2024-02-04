@@ -1,7 +1,9 @@
 /**
- * 2023.8.15
+ * 2024.2.1
  */
-package matsu.num.matrix.base.nlsf.helper.fact;
+package matsu.num.matrix.base.nlsf;
+
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
@@ -9,38 +11,40 @@ import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.LowerUnitriangularBandBuilder;
 import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
 import matsu.num.matrix.base.MatrixDimension;
-import matsu.num.matrix.base.exception.ProcessFailedException;
 
 /**
- * 帯行列の修正Cholesky分解のヘルパ. <br>
- * A = LDL<sup>T</sup>. <br>
- * <br>
+ * <p>
+ * 帯行列のCholesky分解のヘルパ. <br>
+ * A = LD<sup>1/2</sup>D<sup>1/2</sup>L<sup>T</sup>.
+ * </p>
+ * 
+ * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
  * その定数倍は対角行列Dに押し付ける.
+ * </p>
  *
  * @author Matsuura Y.
- * @version 15.0
+ * @version 19.4
  */
-public final class ModifiedCholeskyBandFactorizationHelper {
+final class CholeskyBandFactorizationHelper {
 
     private final BandMatrixDimension bandMatrixDimension;
     private final double[] mxDiagonalEntry;
     private final double[] mxLowerEntry;
-    private final double scale;
 
-    private DiagonalMatrix mxD;
+    private final double scale;
+    private DiagonalMatrix mxSqrtD;
     private LowerUnitriangularEntryReadableMatrix mxL;
 
     /**
-     * @param matrix 
-     * @param relativeEpsilon 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
-     * @throws ProcessFailedException 行列が特異の場合, ピボッティングが必要な場合, 極端な値を含み分解が完了できない場合
+     * @param matrix
+     * @param relativeEpsilon
+     * @throws ProcessFailedException 行列が正定値でない場合, 極端な値を含み分解が完了できない場合
      */
-    public ModifiedCholeskyBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) {
+    CholeskyBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
-            throw new ProcessFailedException("行列が特異(零行列である)");
+            throw new ProcessFailedException("正定値でない(零行列である)");
         }
 
         this.bandMatrixDimension = matrix.bandMatrixDimension();
@@ -50,8 +54,16 @@ public final class ModifiedCholeskyBandFactorizationHelper {
         this.convertToEachMatrix();
     }
 
-    public DiagonalMatrix getMxD() {
-        return this.mxD;
+    static boolean acceptedSize(BandMatrix matrix) {
+        BandMatrixDimension bandMatrixDimension = matrix.bandMatrixDimension();
+        final int thisDimension = bandMatrixDimension.dimension().rowAsIntValue();
+        final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
+        final long long_entrySize = (long) thisDimension * thisLowerBandWidth;
+        return long_entrySize <= Integer.MAX_VALUE;
+    }
+
+    public DiagonalMatrix getMxSqrtD() {
+        return this.mxSqrtD;
     }
 
     public LowerUnitriangularEntryReadableMatrix getMxL() {
@@ -59,7 +71,7 @@ public final class ModifiedCholeskyBandFactorizationHelper {
     }
 
     /**
-     * 対角成分を配列へ. 
+     * 対角成分を配列へ.
      * 成分を配列に落とし込む際にスケールする.
      */
     private double[] diagonalOfMatrixToArray(final BandMatrix matrix) {
@@ -74,21 +86,16 @@ public final class ModifiedCholeskyBandFactorizationHelper {
     }
 
     /**
-     * 狭義下三角成分を配列へ. 
+     * 非対角成分を配列へ.
      * 成分を配列に落とし込む際にスケールする.
-     * 
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
      */
     private double[] lowerOfMatrixToArray(final BandMatrix matrix) {
 
         final int thisDimension = this.bandMatrixDimension.dimension().rowAsIntValue();
         final int thisLowerBandWidth = this.bandMatrixDimension.lowerBandWidth();
-        final long long_entrySize = (long) thisDimension * thisLowerBandWidth;
-        if (long_entrySize > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
-        }
+        final int entrySize = thisDimension * thisLowerBandWidth;
 
-        double[] outArray = new double[(int) long_entrySize];
+        double[] outArray = new double[entrySize];
         for (int i = 0; i < thisDimension; i++) {
             final int shift = i * thisLowerBandWidth;
             for (int j = 0, l = Math.min(thisLowerBandWidth, thisDimension - i - 1); j < l; j++) {
@@ -103,26 +110,26 @@ public final class ModifiedCholeskyBandFactorizationHelper {
     /**
      * 行列を分解する.
      *
-     * @throws ProcessFailedException 行列が特異の場合, あるいはピボッティングが必要な場合
+     * @throws ProcessFailedException 行列が正定値でない場合
      */
-    private void factorize(double threshold) {
+    private void factorize(double threshold) throws ProcessFailedException {
         final int thisDimension = this.bandMatrixDimension.dimension().rowAsIntValue();
         final int thisBandWidth = this.bandMatrixDimension.lowerBandWidth();
         final double[] thisMxDEntry = this.mxDiagonalEntry;
         final double[] thisMxLEntry = this.mxLowerEntry;
 
         final double[] thisMxUEntry_bk = new double[thisBandWidth];
-
         int in = -thisBandWidth;
         for (int i = 0; i < thisDimension; i++) {
             in += thisBandWidth;
             //正則性チェック
             final double d = thisMxDEntry[i];
-            if (Math.abs(d) <= threshold) {
-                throw new ProcessFailedException("行列が特異あるいはピボッティングが必要");
+            if (d <= threshold) {
+                throw new ProcessFailedException("行列が正定値でない");
             }
             //Dの計算
             final double invD = 1 / d;
+            thisMxDEntry[i] = Math.sqrt(d);
             //Lの計算
             for (int j = 0, l = Math.min(thisBandWidth, thisDimension - i - 1); j < l; j++) {
                 thisMxUEntry_bk[j] = thisMxLEntry[in + j];
@@ -137,7 +144,7 @@ public final class ModifiedCholeskyBandFactorizationHelper {
                 kp1n += thisBandWidth;
                 final double u_k = thisMxUEntry_bk[k];
                 for (int j = 0, l = Math.min(thisBandWidth - k - 1, thisDimension - i - k - 1); j < l; j++) {
-                    thisMxLEntry[in + kp1n + j] -= thisMxLEntry[in + k + j + 1] * u_k;
+                    thisMxLEntry[in + kp1n + j] -= thisMxLEntry[in + k + 1 + j] * u_k;
                 }
             }
         }
@@ -146,49 +153,48 @@ public final class ModifiedCholeskyBandFactorizationHelper {
     /**
      * 分解されたmxEntryを行列オブジェクトに変換.
      *
-     * @throws ProcessFailedException mxEntryに不正な値が入っている場合
+     * @throws ProcessFailedException mxEntryに不正な値が入っている場合, 逆行列が生成されない場合
      */
-    private void convertToEachMatrix() {
+    private void convertToEachMatrix() throws ProcessFailedException {
         final MatrixDimension thisMatrixDimension = this.bandMatrixDimension.dimension();
-        final int thisDimension = this.bandMatrixDimension.dimension().rowAsIntValue();
-        final int thisLowerBandWidth = this.bandMatrixDimension.lowerBandWidth();
+        final int thisDimension = thisMatrixDimension.rowAsIntValue();
+        final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
         final BandMatrixDimension lowerBandMatrixDimension = BandMatrixDimension.of(
                 thisMatrixDimension, thisLowerBandWidth, 0);
 
-        final double[] thisDiagonalEntry = this.mxDiagonalEntry;
+        final double[] thisSqrtDiagonalEntry = this.mxDiagonalEntry;
         final double[] thisLowerEntry = this.mxLowerEntry;
 
-        DiagonalMatrix.Builder mxDBuilder = DiagonalMatrix.Builder.zeroBuilder(thisMatrixDimension);
+        DiagonalMatrix.Builder mxSqrtDBuilder = DiagonalMatrix.Builder.zeroBuilder(thisMatrixDimension);
         LowerUnitriangularBandBuilder mxLBuilder = LowerUnitriangularBandBuilder
                 .unitBuilder(lowerBandMatrixDimension);
 
-        try {
-            //対角成分
-            //スケールを対角成分へ反映 
-            for (int i = 0; i < thisDimension; i++) {
-                mxDBuilder.setValue(i, thisDiagonalEntry[i] * this.scale);
-            }
+        //対角行列(sqrtD)にスケールを反映させる
 
-            //狭義下三角成分
-            for (int i = 0; i < thisDimension; i++) {
-                final int shift = i * thisLowerBandWidth;
-                for (int j = 0, l = Math.min(thisLowerBandWidth, thisDimension - i - 1); j < l; j++) {
-                    int r = j + i + 1;
-                    int c = i;
-                    mxLBuilder.setValue(r, c, thisLowerEntry[shift + j]);
-                }
-            }
-        } catch (IllegalArgumentException e) {
-            //setValueで不正値が入り込む可能性がある
-            throw new ProcessFailedException("行列の成分に極端な値が含まれる");
+        double sqrtScale = Math.sqrt(this.scale);
+        DoubleFunction<ProcessFailedException> exceptGetter =
+                v -> new ProcessFailedException("行列の成分に極端な値を含む");
+        //対角成分
+        for (int i = 0; i < thisDimension; i++) {
+            mxSqrtDBuilder.setValueOrElseThrow(i, thisSqrtDiagonalEntry[i] * sqrtScale, exceptGetter);
         }
 
-        this.mxD = mxDBuilder.build();
+        //狭義下三角成分
+        for (int i = 0; i < thisDimension; i++) {
+            final int shift = i * thisLowerBandWidth;
+            for (int j = 0, l = Math.min(thisLowerBandWidth, thisDimension - i - 1); j < l; j++) {
+                int r = j + i + 1;
+                int c = i;
+                mxLBuilder.setValueOrElseThrow(r, c, thisLowerEntry[shift + j], exceptGetter);
+            }
+        }
+
+        this.mxSqrtD = mxSqrtDBuilder.build();
         this.mxL = mxLBuilder.build();
 
         //スケールの関係で特異になるかもしれないので, 正則判定
-        if (this.mxD.signOfDeterminant() == 0) {
-            throw new ProcessFailedException("行列が特異あるいはピボッティングが必要");
+        if (this.mxSqrtD.signOfDeterminant() == 0) {
+            throw new ProcessFailedException("行列が正定値でない");
         }
     }
 

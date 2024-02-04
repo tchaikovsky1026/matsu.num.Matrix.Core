@@ -1,5 +1,5 @@
 /**
- * 2023.12.29
+ * 2024.1.19
  */
 package matsu.num.matrix.base.helper.matrix;
 
@@ -7,30 +7,29 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import matsu.num.matrix.base.Determinantable;
-import matsu.num.matrix.base.Inversion;
+import matsu.num.matrix.base.Invertible;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.SkeletalMatrix;
-import matsu.num.matrix.base.helper.value.InverseAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
  * 逆行列と行列式が計算可能な行列に対する, 骨格実装を提供する. <br>
- * {@linkplain InverseAndDeterminantStruct} のキャッシュの仕組みを提供している.
+ * {@linkplain InverstibleAndDeterminantStruct} のキャッシュの仕組みを提供している.
  * 
  * @author Matsuura Y.
- * @version 18.2
- * @param <MT> thisのタイプ, targetメソッドも戻り値に影響
+ * @version 19.0
  * @param <IT> inverseのタイプ
+ * @deprecated 使用されていないため,一時的にdeprecatedにしている.
  */
-public abstract class SkeletalInvertibleDeterminantableMatrix<MT extends Matrix, IT extends Matrix>
+@Deprecated
+public abstract class SkeletalInvertibleDeterminantableMatrix<IT extends Matrix>
         extends SkeletalMatrix
-        implements Matrix, Inversion, Determinantable {
-
-    private final MT castedThis;
+        implements Matrix, Invertible, Determinantable {
 
     //循環参照が生じるため, 逆行列は遅延初期化
     //逆行列と行列式はそれぞれの整合性のため, セットで扱う
-    private Supplier<InverseAndDeterminantStruct<IT>> invAndDetStructSupplier;
+    private Supplier<InverstibleAndDeterminantStruct<IT>> invAndDetStructSupplier;
 
     /**
      * 骨格実装のコンストラクタ.
@@ -39,20 +38,6 @@ public abstract class SkeletalInvertibleDeterminantableMatrix<MT extends Matrix,
         super();
         this.invAndDetStructSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createInvAndDetWrapper());
-
-        /*
-         * 警告抑制をしているが, ジェネリックキャストなので実行時は全て
-         * Matrix に置き換えられ,
-         * ClassCastException は発生しない.
-         */
-        @SuppressWarnings("unchecked")
-        MT t = (MT) this;
-        this.castedThis = t;
-    }
-
-    @Override
-    public final MT target() {
-        return this.castedThis;
     }
 
     @Override
@@ -85,6 +70,6 @@ public abstract class SkeletalInvertibleDeterminantableMatrix<MT extends Matrix,
      * 
      * @return 行列式, 逆行列
      */
-    protected abstract InverseAndDeterminantStruct<IT> createInvAndDetWrapper();
+    protected abstract InverstibleAndDeterminantStruct<IT> createInvAndDetWrapper();
 
 }

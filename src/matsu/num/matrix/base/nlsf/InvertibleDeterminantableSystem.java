@@ -1,14 +1,15 @@
 /**
- * 2023.12.25
+ * 2024.1.19
  */
-package matsu.num.matrix.base.helper.value;
+package matsu.num.matrix.base.nlsf;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import matsu.num.matrix.base.Determinantable;
 import matsu.num.matrix.base.Inversion;
+import matsu.num.matrix.base.Invertible;
 import matsu.num.matrix.base.Matrix;
+import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
@@ -21,7 +22,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * このクラスでは抽象メソッド {@linkplain #calcInverseDeterminantStruct()} を定義している.
  * <br>
  * 実装者は, このメソッドで逆行列と行列式を計算するように実装する. <br>
- * {@linkplain Inversion} と {@linkplain Determinantable}
+ * {@linkplain Invertible} と {@linkplain Determinantable}
  * のインターフェースの実装はこの抽象クラス内で実装されおり,
  * {@code final} である.
  * </p>
@@ -33,14 +34,14 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.0
  * @param <IT> 逆行列の型パラメータ
  */
-public abstract class InvertibleDeterminantableSystem<IT extends Matrix>
+abstract class InvertibleDeterminantableSystem<IT extends Matrix>
         implements Determinantable, Inversion {
 
     //継承先のオーバーライドメソッドに依存するため, 遅延初期化される
-    private final Supplier<InverseAndDeterminantStruct<? extends IT>> invAndDetStructSupplier;
+    private final Supplier<InverstibleAndDeterminantStruct<? extends IT>> invAndDetStructSupplier;
 
     /**
      * 新しいオブジェクトの作成.
@@ -52,8 +53,8 @@ public abstract class InvertibleDeterminantableSystem<IT extends Matrix>
     }
 
     @Override
-    public final Optional<? extends IT> inverse() {
-        return this.invAndDetStructSupplier.get().inverseMatrix();
+    public final IT inverse() {
+        return this.invAndDetStructSupplier.get().inverseMatrix().get();
     }
 
     @Override
@@ -81,6 +82,6 @@ public abstract class InvertibleDeterminantableSystem<IT extends Matrix>
      * 
      * @return 行列式と逆行列の構造体
      */
-    protected abstract InverseAndDeterminantStruct<? extends IT> calcInverseDeterminantStruct();
+    protected abstract InverstibleAndDeterminantStruct<? extends IT> calcInverseDeterminantStruct();
 
 }

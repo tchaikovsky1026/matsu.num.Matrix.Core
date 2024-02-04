@@ -1,13 +1,15 @@
 /**
- * 2024.1.16
+ * 2024.2.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
-import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
@@ -24,7 +26,7 @@ import matsu.num.matrix.base.exception.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.5
  * @see LowerUnitriangularEntryReadableMatrix
  */
 public final class LowerUnitriangularBuilder {
@@ -39,7 +41,7 @@ public final class LowerUnitriangularBuilder {
      *
      * @param matrixDimension 行列サイズ
      * @throws MatrixFormatMismatchException 行列サイズが正方サイズでない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(dim * (dim - 1) >
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * (dim - 1) >
      *             IntMax)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
@@ -53,7 +55,7 @@ public final class LowerUnitriangularBuilder {
         final int dimension = matrixDimension.rowAsIntValue();
         final long long_entrySize = (long) dimension * (long) (dimension - 1) / 2;
         if (long_entrySize > Integer.MAX_VALUE / 2) {
-            throw new IllegalArgumentException("サイズが大きすぎる");
+            throw new ElementsTooManyException("サイズが大きすぎる");
         }
         this.lowerEntry = new double[(int) long_entrySize];
     }
@@ -61,25 +63,49 @@ public final class LowerUnitriangularBuilder {
     /**
      * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
      *
-     * @param row i, 行index
-     * @param column j, 列index
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
      * @param value 置き換えた後の値
-     * @throws IndexOutOfBoundsException (i, j) が行列の狭義下三角成分でない場合
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の狭義下三角成分でない場合
      * @throws IllegalStateException すでにビルドされている場合
      * @throws IllegalArgumentException valueが不正な値の場合
      * @see EntryReadableMatrix#acceptValue(double)
      */
     public void setValue(final int row, final int column, final double value) {
+        this.setValueOrElseThrow(
+                row, column, value,
+                v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
+    }
+
+    /**
+     * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
+     * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+     *
+     * @param row <i>i</i>, 行index
+     * @param column <i>j</i>, 列index
+     * @param value 置き換えた後の値
+     * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+     * @param <X> スローされる例外の型
+     * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の狭義下三角成分でない場合
+     * @throws IllegalStateException すでにビルドされている場合
+     * @throws X valueが不正な値である場合
+     * @throws NullPointerException 引数にnullが含まれる場合
+     * @see EntryReadableMatrix#acceptValue(double)
+     */
+    public <X extends Exception> void setValueOrElseThrow(final int row, final int column, final double value,
+            DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+        Objects.requireNonNull(invalidValueExceptionGetter);
         if (Objects.isNull(this.lowerEntry)) {
             throw new IllegalStateException("すでにビルドされています");
         }
         if (!EntryReadableMatrix.acceptValue(value)) {
-            throw new IllegalArgumentException(String.format("不正な値:value=%.16G", value));
+            throw invalidValueExceptionGetter.apply(value);
         }
         if (!(matrixDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%d, %d)",
+                            "行列外:matrix:%s, (row, column)=(%s, %s)",
                             matrixDimension, row, column));
         }
 
@@ -88,7 +114,7 @@ public final class LowerUnitriangularBuilder {
         } else {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "狭義下側三角成分でない:matrix:%s, (row, column)=(%d, %d)",
+                            "狭義下側三角成分でない:matrix:%s, (row, column)=(%s, %s)",
                             matrixDimension, row, column));
         }
     }
@@ -115,7 +141,7 @@ public final class LowerUnitriangularBuilder {
      * @param matrixDimension 行列サイズ
      * @return 単位行列で初期化されたビルダ
      * @throws MatrixFormatMismatchException 行列サイズが正方サイズでない場合
-     * @throws IllegalArgumentException 行列の有効要素数が大きすぎる場合(クラス説明文)
+     * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static LowerUnitriangularBuilder unitBuilder(final MatrixDimension matrixDimension) {
@@ -154,11 +180,6 @@ public final class LowerUnitriangularBuilder {
         }
 
         @Override
-        public LowerUnitriangularEntryReadableMatrix target() {
-            return this;
-        }
-
-        @Override
         public MatrixDimension matrixDimension() {
             return this.matrixDimension;
         }
@@ -186,7 +207,7 @@ public final class LowerUnitriangularBuilder {
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row, column)=(%d, %d)",
+                                "行列外:matrix:%s, (row, column)=(%s, %s)",
                                 matrixDimension, row, column));
             }
 
@@ -382,7 +403,5 @@ public final class LowerUnitriangularBuilder {
                 }
             };
         }
-
     }
-
 }

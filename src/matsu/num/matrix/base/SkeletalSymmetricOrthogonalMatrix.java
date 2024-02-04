@@ -1,9 +1,11 @@
 /**
- * 2023.12.28
+ * 2024.2.4
  */
 package matsu.num.matrix.base;
 
 import java.util.Optional;
+
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
@@ -19,8 +21,8 @@ import java.util.Optional;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 18.2
- * @param <T> {@code this} のタイプ, {@linkplain #target()},
+ * @version 19.6
+ * @param <T> {@code this} のタイプ,
  *            {@linkplain #transpose()},
  *            {@linkplain #inverse()} の戻り値型
  */
@@ -48,11 +50,6 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<T extends OrthogonalMatr
     }
 
     @Override
-    public final T target() {
-        return this.castedThis;
-    }
-
-    @Override
     public final Optional<? extends T> inverse() {
         return this.thisOptional;
     }
@@ -60,6 +57,15 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<T extends OrthogonalMatr
     @Override
     public final T transpose() {
         return this.castedThis;
+    }
+
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public final Vector operateTranspose(Vector operand) {
+        return this.operate(operand);
     }
 
 }

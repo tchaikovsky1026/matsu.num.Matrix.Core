@@ -1,31 +1,21 @@
 /**
- * 2024.1.16
+ * 2024.1.19
  */
 package matsu.num.matrix.base.helper.value;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import matsu.num.matrix.base.Determinantable;
-import matsu.num.matrix.base.Inversion;
 import matsu.num.matrix.base.Matrix;
 
 /**
  * 逆行列と行列式がセットになった概念を扱う.
  * 
- * <p>
- * {@linkplain Determinantable}の概念は{@linkplain Inversion}と強く結びつくことが多いので,
- * 同時生成されやすい. <br>
- * このクラスはそれらを構造体的に扱うための仕組みである.
- * </p>
- * 
  * @author Matsuura Y.
- * @version 18.3
+ * @version 19.0
  * @param <T> 逆行列の型パラメータ
- * @see Inversion
- * @see Determinantable
  */
-public final class InverseAndDeterminantStruct<T extends Matrix> {
+public final class InverstibleAndDeterminantStruct<T extends Matrix> {
 
     private final DeterminantValues determinantValues;
     private final Optional<T> inverseMatrix;
@@ -43,7 +33,7 @@ public final class InverseAndDeterminantStruct<T extends Matrix> {
      * @throws IllegalArgumentException 符号が0である場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public InverseAndDeterminantStruct(DeterminantValues determinantValues, T inverseMatrix) {
+    public InverstibleAndDeterminantStruct(DeterminantValues determinantValues, T inverseMatrix) {
         super();
         this.determinantValues = Objects.requireNonNull(determinantValues);
         this.inverseMatrix = Optional.of(inverseMatrix);
@@ -57,7 +47,7 @@ public final class InverseAndDeterminantStruct<T extends Matrix> {
      * 特異行列(逆行列が存在しないこと)を表す概念を生成する. <br>
      * 特異行列であるので行列式は0である.
      */
-    public InverseAndDeterminantStruct() {
+    public InverstibleAndDeterminantStruct() {
         super();
         this.determinantValues = new DeterminantValues();
         this.inverseMatrix = Optional.empty();

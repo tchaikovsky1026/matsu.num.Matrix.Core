@@ -1,5 +1,5 @@
 /**
- * 2023.12.22
+ * 2024.2.1
  */
 package matsu.num.matrix.base;
 
@@ -7,13 +7,13 @@ package matsu.num.matrix.base;
  * <p>
  * ベクトルの次元を扱う不変クラス. <br>
  * 扱うのは1次元以上である. <br>
- * このクラスのインスタンスは, 次元の値に基づくequalityを有する.
+ * このクラスのインスタンスは, 次元の値に基づくequality, comparabilityを有する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 18.0
+ * @version 19.5
  */
-public final class VectorDimension {
+public final class VectorDimension implements Comparable<VectorDimension> {
 
     private static final int MIN_DIMENSION = 1;
 
@@ -82,6 +82,23 @@ public final class VectorDimension {
     }
 
     /**
+     * <p>
+     * ベクトルディメンジョンを比較する. <br>
+     * 次元の値に関する <br>
+     * {@code Integer.compare(this, target)} <br>
+     * に一致する.
+     * </p>
+     * 
+     * @param target 比較相手
+     * @return 比較結果
+     * @throws NullPointerException 引数にnullが含まれる場合
+     */
+    @Override
+    public int compareTo(VectorDimension target) {
+        return Integer.compare(this.dimension, target.dimension);
+    }
+
+    /**
      * ハッシュコードを返す.
      * 
      * @return ハッシュコード
@@ -136,8 +153,8 @@ public final class VectorDimension {
     /**
      * 与えられた値のベクトル次元を返す.
      *
-     * @param dimension n(次元)
-     * @return 値が n のベクトル次元
+     * @param dimension <i>n</i> (次元)
+     * @return 値が <i>n</i> のベクトル次元
      * @throws IllegalArgumentException 引数が1未満である場合
      */
     public static VectorDimension valueOf(int dimension) {
