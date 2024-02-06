@@ -1,5 +1,5 @@
 /**
- * 2024.2.1
+ * 2024.2.5
  */
 package matsu.num.matrix.base;
 
@@ -31,7 +31,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.5
+ * @version 20.0
  */
 public abstract class SkeletalOrthogonalMatrix implements OrthogonalMatrix {
 
@@ -98,6 +98,9 @@ public abstract class SkeletalOrthogonalMatrix implements OrthogonalMatrix {
         return OrthogonalMatrix.toString(this);
     }
 
+    /**
+     * 直交行列の転置を扱う.
+     */
     private static final class TransposedOrthogonal implements OrthogonalMatrix {
 
         private final Optional<OrthogonalMatrix> original;

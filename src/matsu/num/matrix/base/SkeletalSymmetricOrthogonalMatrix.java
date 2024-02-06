@@ -1,5 +1,5 @@
 /**
- * 2024.2.4
+ * 2024.2.5
  */
 package matsu.num.matrix.base;
 
@@ -9,7 +9,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
- * {@linkplain Symmetric} が付与された,
+ * {@linkplain Symmetric} が付与された
  * {@linkplain OrthogonalMatrix} の骨格実装. <br>
  * {@linkplain OrthogonalMatrix#inverse()} の実装の提供が主な効果である.
  * </p>
@@ -21,7 +21,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.6
+ * @version 20.0
  * @param <T> {@code this} のタイプ,
  *            {@linkplain #transpose()},
  *            {@linkplain #inverse()} の戻り値型

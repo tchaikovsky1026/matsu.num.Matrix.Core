@@ -1,5 +1,5 @@
 /**
- * 2024.2.1
+ * 2024.2.5
  */
 package matsu.num.matrix.base;
 
@@ -10,12 +10,12 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
  * <p>
- * {@link Matrix} の骨格実装. <br>
- * {@link Matrix#transpose()} の実装の提供が主な効果である.
+ * {@linkplain Matrix} の骨格実装. <br>
+ * {@linkplain Matrix#transpose()} の実装の提供が主な効果である.
  * </p>
  * 
  * <p>
- * {@link Matrix} は不変であるので, {@linkplain Matrix#transpose()} は関数的に振る舞う. <br>
+ * {@linkplain Matrix} は不変であるので, {@linkplain Matrix#transpose()} は関数的に振る舞う. <br>
  * この骨格実装は,
  * 初めて {@linkplain #transpose()} が呼ばれたときに転置行列を
  * {@linkplain #createTranspose()} によって生成し,
@@ -23,7 +23,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.5
+ * @version 20.0
  */
 public abstract class SkeletalMatrix implements Matrix {
 
@@ -75,13 +75,14 @@ public abstract class SkeletalMatrix implements Matrix {
 
     /**
      * <p>
-     * このオブジェクトの文字列説明表現を返す.
+     * このインスタンスの文字列説明表現を返す.
      * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim(%dimension)]}
+     * {@code Matrix[dim(%dimension)]} <br>
+     * ただし, サブクラスがより良い表現を提供するかもしれない.
      * </p>
      * 
      * @return 説明表現

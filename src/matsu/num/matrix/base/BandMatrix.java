@@ -11,16 +11,15 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBand;
  * 正方形の帯行列を扱う.
  * 
  * <p>
- * {@link Matrix} のクラス説明の規約に従う.
+ * {@linkplain Matrix} のクラス説明の規約に従う.
  * </p>
  * 
  * <p>
- * <i>実装仕様: <br>
- * {@link Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
+ * 実装仕様: <br>
+ * {@linkplain Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
  * すなわち, <br>
  * {@code this.bandMatrixDimension().isSymmetric() == true} <br>
  * でなければならない.
- * </i>
  * </p>
  *
  * @author Matsuura Y.

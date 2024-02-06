@@ -5,7 +5,6 @@ package matsu.num.matrix.base;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
@@ -18,7 +17,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 19.6
+ * @version 20.0
  */
 public interface DiagonalMatrix extends BandMatrix, Symmetric,
         Invertible, Determinantable {
@@ -30,7 +29,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
     public abstract DiagonalMatrix transpose();
 
     /**
-     * {@link DiagonalMatrix}のビルダ. <br>
+     * 対角行列の実装を提供するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
      */
     public static final class Builder {
@@ -52,39 +51,21 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
         }
 
         /**
+         * <p>
          * (<i>i</i>, <i>i</i>) 要素を指定した値に置き換える.
+         * </p>
+         * 
+         * <p>
+         * 値が不正ならば, 正常値に修正される.
+         * </p>
          *
          * @param index <i>i</i>, 行, 列index
          * @param value 置き換えた後の値
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (<i>i</i>, <i>i</i>) が対角成分でない場合
-         * @throws IllegalArgumentException valueが不正な値の場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
-        public void setValue(final int index, final double value) {
-            this.setValueOrElseThrow(
-                    index, value,
-                    v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
-        }
-
-        /**
-         * (<i>i</i>, <i>i</i>) 要素を指定した値に置き換える. <br>
-         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
-         *
-         * @param index <i>i</i>, 行, 列index
-         * @param value 置き換えた後の値
-         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
-         * @param <X> スローされる例外の型
-         * @throws IllegalStateException すでにビルドされている場合
-         * @throws IndexOutOfBoundsException (<i>i</i>, <i>i</i>) が対角成分でない場合
-         * @throws X valueが不正な値である場合
-         * @throws NullPointerException 引数にnullが含まれる場合
-         * @see EntryReadableMatrix#acceptValue(double)
-         */
-        public <X extends Exception> void setValueOrElseThrow(final int index, final double value,
-                DoubleFunction<X> invalidValueExceptionGetter) throws X {
-
-            Objects.requireNonNull(invalidValueExceptionGetter);
+        public void setValue(final int index, double value) {
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
@@ -95,9 +76,10 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                                 "行列外:matrix:%s, (i, i)=(%s, %s)",
                                 matrixDimension, index, index));
             }
-            if (!EntryReadableMatrix.acceptValue(value)) {
-                throw invalidValueExceptionGetter.apply(value);
-            }
+
+            //値を修正する
+            value = EntryReadableMatrix.modified(value);
+
             this.diagonalEntry[index] = value;
         }
 
@@ -145,6 +127,9 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
             return out;
         }
 
+        /**
+         * 対角行列の実装.
+         */
         private static final class DiagonalMatrixImpl
                 extends SkeletalSymmetricInvertibleDeterminantableMatrix<DiagonalMatrix, DiagonalMatrix>
                 implements DiagonalMatrix {

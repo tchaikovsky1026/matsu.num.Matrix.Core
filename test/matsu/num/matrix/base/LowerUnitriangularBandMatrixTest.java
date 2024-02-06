@@ -13,24 +13,24 @@ import org.junit.runner.RunWith;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * {@link LowerUnitriangularBandBuilder}クラスのテスト.
+ * {@link LowerUnitriangularBandMatrix} クラスのテスト.
  *
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class LowerUnitriangularBandBuilderTest {
+public class LowerUnitriangularBandMatrixTest {
 
     public static class 生成に関する {
 
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_下三角構造でなければMFMEx() {
-            LowerUnitriangularBandBuilder.unitBuilder(BandMatrixDimension.of(3, 1, 1));
+            LowerUnitriangularBandMatrix.Builder.unit(BandMatrixDimension.of(3, 1, 1));
         }
     }
 
     public static class 行列の評価と演算に関する {
 
-        private LowerUnitriangularEntryReadableMatrix lbm;
+        private LowerUnitriangular lbm;
 
         private Vector right;
 
@@ -50,8 +50,8 @@ public class LowerUnitriangularBandBuilderTest {
              * 3 4 1 0
              * 0 5 6 1
              */
-            LowerUnitriangularBandBuilder builder =
-                    LowerUnitriangularBandBuilder.unitBuilder(BandMatrixDimension.of(4, 2, 0));
+            LowerUnitriangularBandMatrix.Builder builder =
+                    LowerUnitriangularBandMatrix.Builder.unit(BandMatrixDimension.of(4, 2, 0));
             builder.setValue(1, 0, 2);
             builder.setValue(2, 0, 3);
             builder.setValue(2, 1, 4);
@@ -111,7 +111,7 @@ public class LowerUnitriangularBandBuilderTest {
 
     public static class 帯の退化に関する {
 
-        private LowerUnitriangularEntryReadableMatrix lbm;
+        private LowerUnitriangular lbm;
 
         private Vector right;
 
@@ -128,7 +128,7 @@ public class LowerUnitriangularBandBuilderTest {
             /*
              * 1
              */
-            lbm = LowerUnitriangularBandBuilder.unitBuilder(BandMatrixDimension.of(1, 0, 0))
+            lbm = LowerUnitriangularBandMatrix.Builder.unit(BandMatrixDimension.of(1, 0, 0))
                     .build();
         }
 

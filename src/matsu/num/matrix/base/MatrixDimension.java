@@ -1,5 +1,5 @@
 /**
- * 2024.2.4
+ * 2024.2.5
  */
 package matsu.num.matrix.base;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Matsuura Y.
- * @version 19.6
+ * @version 20.0
  */
 public final class MatrixDimension {
 
@@ -279,7 +279,7 @@ public final class MatrixDimension {
     }
 
     /**
-     * このインスタンスの→に適合する正方形ディメンジョンを返す.
+     * このインスタンスの右に適合する正方形ディメンジョンを返す.
      * 
      * @return 右に適合する正方形ディメンジョン
      */

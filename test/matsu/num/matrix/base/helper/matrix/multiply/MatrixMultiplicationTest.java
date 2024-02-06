@@ -9,10 +9,10 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 import matsu.num.matrix.base.DiagonalMatrix;
-import matsu.num.matrix.base.GeneralMatrixBuilder;
+import matsu.num.matrix.base.GeneralMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
-import matsu.num.matrix.base.SymmetricMatrixBuilder;
+import matsu.num.matrix.base.SymmetricMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 
@@ -37,22 +37,22 @@ public class MatrixMultiplicationTest {
 
         @Before
         public void before_行列の準備() {
-            GeneralMatrixBuilder builder_m1 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(4, 2));
+            GeneralMatrix.Builder builder_m1 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(4, 2));
             builder_m1.setValue(0, 0, 2.2);
             builder_m1.setValue(2, 1, 3.1);
             m1 = builder_m1.build();
 
-            GeneralMatrixBuilder builder_m2 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3));
+            GeneralMatrix.Builder builder_m2 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(2, 3));
             builder_m2.setValue(0, 1, 0.1);
             builder_m2.setValue(1, 0, 2.1);
             m2 = builder_m2.build();
 
-            GeneralMatrixBuilder builder_m3 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 5));
+            GeneralMatrix.Builder builder_m3 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(3, 5));
             builder_m3.setValue(2, 4, 1.2);
             builder_m3.setValue(0, 3, 0.8);
             m3 = builder_m3.build();
 
-            GeneralMatrixBuilder builder_m4 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(5, 6));
+            GeneralMatrix.Builder builder_m4 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(5, 6));
             builder_m4.setValue(4, 1, 2.5);
             builder_m4.setValue(3, 5, 0.7);
             m4 = builder_m4.build();
@@ -148,7 +148,7 @@ public class MatrixMultiplicationTest {
 
         @Before
         public void before_行列の準備() {
-            GeneralMatrixBuilder lBuilder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(4, 2));
+            GeneralMatrix.Builder lBuilder = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(4, 2));
             lBuilder.setValue(0, 0, 2.2);
             lBuilder.setValue(2, 1, 3.1);
             mxL = lBuilder.build();
@@ -196,12 +196,12 @@ public class MatrixMultiplicationTest {
 
         @Before
         public void before_行列の準備() {
-            m1 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(4, 2)).build();
-            m2 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(2, 3)).build();
-            m3 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 5)).build();
-            m4 = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(5, 6)).build();
+            m1 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(4, 2)).build();
+            m2 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(2, 3)).build();
+            m3 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(3, 5)).build();
+            m4 = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(5, 6)).build();
 
-            symm_2 = SymmetricMatrixBuilder.unitBuilder(MatrixDimension.square(2)).build();
+            symm_2 = SymmetricMatrix.Builder.unit(MatrixDimension.square(2)).build();
         }
 
         @Test

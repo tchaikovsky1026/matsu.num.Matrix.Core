@@ -1,13 +1,14 @@
 /**
- * 2024.2.2
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.DiagonalMatrix;
-import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
@@ -58,7 +59,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.5
+ * @version 20.0
  */
 public final class CholeskyBandExecutor
         extends SkeletalSolvingFactorizationExecutor<BandMatrix, SymmetrizedSquareTypeSolver>
@@ -71,6 +72,11 @@ public final class CholeskyBandExecutor
      */
     private CholeskyBandExecutor() {
         super();
+        
+        //シングルトンを強制
+        if (Objects.nonNull(INSTANCE)) {
+            throw new AssertionError();
+        }
     }
 
     @Override
@@ -114,8 +120,19 @@ public final class CholeskyBandExecutor
         private final BandMatrix matrix;
 
         private final DiagonalMatrix mxSqrtD;
-        private final LowerUnitriangularEntryReadableMatrix mxL;
+        private final LowerUnitriangular mxL;
 
+        /**
+         * <p>
+         * 与えた行列を分解し, 分解構造を返す. <br>
+         * 分解できなかった場合, 空が返る.
+         * </p>
+         * 
+         * <p>
+         * このメソッドはエンクロージングクラスから呼ばれ,
+         * 必ず構造的にacceptedな引数が与えられる.
+         * </p>
+         */
         static Optional<CholeskyBandSystem> instanceOf(final BandMatrix matrix, final double epsilon) {
             try {
                 return Optional.of(new CholeskyBandSystem(matrix, epsilon));
@@ -127,7 +144,7 @@ public final class CholeskyBandExecutor
         /**
          * staticファクトリから呼ばれる.
          *
-         * @throws ProcessFailedException 行列が正定値でない場合, 成分に極端な値を含み分解が完了できない場合
+         * @throws ProcessFailedException 行列が正定値でない場合
          */
         private CholeskyBandSystem(final BandMatrix matrix, final double epsilon) throws ProcessFailedException {
             CholeskyBandFactorizationHelper fact =
@@ -159,11 +176,11 @@ public final class CholeskyBandExecutor
             extends InvertibleDeterminantableSystem<Matrix> {
 
         private final DiagonalMatrix mxSqrtD;
-        private final LowerUnitriangularEntryReadableMatrix mxL;
+        private final LowerUnitriangular mxL;
 
         private final Matrix asymmSqrt;
 
-        AsymmetricSqrtSystem(DiagonalMatrix mxSqrtD, LowerUnitriangularEntryReadableMatrix mxL) {
+        AsymmetricSqrtSystem(DiagonalMatrix mxSqrtD, LowerUnitriangular mxL) {
             super();
             this.mxSqrtD = mxSqrtD;
             this.mxL = mxL;

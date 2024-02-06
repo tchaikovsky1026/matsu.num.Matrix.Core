@@ -12,8 +12,8 @@ import org.junit.runner.RunWith;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
-import matsu.num.matrix.base.GeneralBandMatrixBuilder;
-import matsu.num.matrix.base.SymmetricBandMatrixBuilder;
+import matsu.num.matrix.base.GeneralBandMatrix;
+import matsu.num.matrix.base.SymmetricBandMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
@@ -32,7 +32,7 @@ public class ModifiedCholeskyBandExecutorTest {
         @Test(expected = MatrixNotSymmetricException.class)
         public void test_対称行列でなければMNSEx() {
             ModifiedCholeskyBandExecutor.instance().apply(
-                    GeneralBandMatrixBuilder.unitBulder(BandMatrixDimension.symmetric(2, 0)).build());
+                    GeneralBandMatrix.Builder.unit(BandMatrixDimension.symmetric(2, 0)).build());
         }
     }
 
@@ -49,7 +49,7 @@ public class ModifiedCholeskyBandExecutorTest {
              * 0 0 1 2
              * 0 0 2 1
              */
-            SymmetricBandMatrixBuilder builder = SymmetricBandMatrixBuilder.zeroBuilder(
+            SymmetricBandMatrix.Builder builder = SymmetricBandMatrix.Builder.zero(
                     BandMatrixDimension.symmetric(4, 1));
             builder.setValue(0, 0, 0);
             builder.setValue(1, 0, 2);
@@ -80,8 +80,8 @@ public class ModifiedCholeskyBandExecutorTest {
              * 2 3 5 3
              * 0 4 3 5
              */
-            SymmetricBandMatrixBuilder builder =
-                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(4, 2));
+            SymmetricBandMatrix.Builder builder =
+                    SymmetricBandMatrix.Builder.unit(BandMatrixDimension.symmetric(4, 2));
             builder.setValue(0, 0, 5);
             builder.setValue(1, 1, 5);
             builder.setValue(2, 2, 5);
@@ -144,8 +144,8 @@ public class ModifiedCholeskyBandExecutorTest {
             /*
              * 5
              */
-            SymmetricBandMatrixBuilder builder =
-                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(1, 2));
+            SymmetricBandMatrix.Builder builder =
+                    SymmetricBandMatrix.Builder.unit(BandMatrixDimension.symmetric(1, 2));
             builder.setValue(0, 0, 5);
             matrix = builder.build();
             mcb = ModifiedCholeskyBandExecutor.instance().apply(matrix).get();
@@ -189,8 +189,8 @@ public class ModifiedCholeskyBandExecutorTest {
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
-            SymmetricBandMatrixBuilder builder =
-                    SymmetricBandMatrixBuilder.unitBuilder(BandMatrixDimension.symmetric(1, 2));
+            SymmetricBandMatrix.Builder builder =
+                    SymmetricBandMatrix.Builder.unit(BandMatrixDimension.symmetric(1, 2));
             builder.setValue(0, 0, 5);
             mcb = ModifiedCholeskyBandExecutor.instance().apply(builder.build()).get();
         }

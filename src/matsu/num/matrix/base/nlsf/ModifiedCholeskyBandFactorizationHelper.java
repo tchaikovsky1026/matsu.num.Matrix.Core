@@ -1,15 +1,13 @@
 /**
- * 2024.2.1
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
-
-import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.DiagonalMatrix;
-import matsu.num.matrix.base.LowerUnitriangularBandBuilder;
-import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.LowerUnitriangular;
+import matsu.num.matrix.base.LowerUnitriangularBandMatrix;
 import matsu.num.matrix.base.MatrixDimension;
 
 /**
@@ -24,7 +22,7 @@ import matsu.num.matrix.base.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 19.4
+ * @version 20.0
  */
 final class ModifiedCholeskyBandFactorizationHelper {
 
@@ -34,13 +32,12 @@ final class ModifiedCholeskyBandFactorizationHelper {
     private final double scale;
 
     private DiagonalMatrix mxD;
-    private LowerUnitriangularEntryReadableMatrix mxL;
+    private LowerUnitriangular mxL;
 
     /**
      * @param matrix
      * @param relativeEpsilon
-     * @throws ProcessFailedException 行列が特異の場合, ピボッティングが必要な場合,
-     *             極端な値を含み分解が完了できない場合
+     * @throws ProcessFailedException 行列が特異の場合, ピボッティングが必要な場合
      */
     public ModifiedCholeskyBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon)
             throws ProcessFailedException {
@@ -69,7 +66,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
         return this.mxD;
     }
 
-    public LowerUnitriangularEntryReadableMatrix getMxL() {
+    public LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
@@ -156,7 +153,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
     /**
      * 分解されたmxEntryを行列オブジェクトに変換.
      *
-     * @throws ProcessFailedException mxEntryに不正な値が入っている場合
+     * @throws ProcessFailedException mxDが特異な場合
      */
     private void convertToEachMatrix() throws ProcessFailedException {
         final MatrixDimension thisMatrixDimension = this.bandMatrixDimension.dimension();
@@ -169,15 +166,13 @@ final class ModifiedCholeskyBandFactorizationHelper {
         final double[] thisLowerEntry = this.mxLowerEntry;
 
         DiagonalMatrix.Builder mxDBuilder = DiagonalMatrix.Builder.zeroBuilder(thisMatrixDimension);
-        LowerUnitriangularBandBuilder mxLBuilder = LowerUnitriangularBandBuilder
-                .unitBuilder(lowerBandMatrixDimension);
+        LowerUnitriangularBandMatrix.Builder mxLBuilder =
+                LowerUnitriangularBandMatrix.Builder.unit(lowerBandMatrixDimension);
 
-        DoubleFunction<ProcessFailedException> exceptGetter =
-                v -> new ProcessFailedException("行列の成分に極端な値を含む");
         //対角成分
         //スケールを対角成分へ反映 
         for (int i = 0; i < thisDimension; i++) {
-            mxDBuilder.setValueOrElseThrow(i, thisDiagonalEntry[i] * this.scale, exceptGetter);
+            mxDBuilder.setValue(i, thisDiagonalEntry[i] * this.scale);
         }
 
         //狭義下三角成分
@@ -186,7 +181,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
             for (int j = 0, l = Math.min(thisLowerBandWidth, thisDimension - i - 1); j < l; j++) {
                 int r = j + i + 1;
                 int c = i;
-                mxLBuilder.setValueOrElseThrow(r, c, thisLowerEntry[shift + j], exceptGetter);
+                mxLBuilder.setValue(r, c, thisLowerEntry[shift + j]);
             }
         }
 

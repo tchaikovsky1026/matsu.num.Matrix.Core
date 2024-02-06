@@ -10,9 +10,9 @@ import org.junit.runner.RunWith;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
-import matsu.num.matrix.base.GeneralBandMatrixBuilder;
+import matsu.num.matrix.base.GeneralBandMatrix;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.SymmetricBandMatrixBuilder;
+import matsu.num.matrix.base.SymmetricBandMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 
@@ -43,7 +43,7 @@ public class TranspositionBandTest {
         @Before
         public void before_サイズ4_下2_上1の行列の作成_と_転置() {
             BandMatrixDimension dimension = BandMatrixDimension.of(4, 2, 1);
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(dimension);
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(dimension);
             builder.setValue(0, 0, 1);
             builder.setValue(0, 1, 2);
             builder.setValue(1, 0, 5);
@@ -125,7 +125,7 @@ public class TranspositionBandTest {
         @Before
         public void before_サイズ4_帯2の行列の作成_と_転置() {
             BandMatrixDimension dimension = BandMatrixDimension.symmetric(4, 2);
-            SymmetricBandMatrixBuilder builder = SymmetricBandMatrixBuilder.zeroBuilder(dimension);
+            SymmetricBandMatrix.Builder builder = SymmetricBandMatrix.Builder.zero(dimension);
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 5);
             builder.setValue(1, 1, 6);

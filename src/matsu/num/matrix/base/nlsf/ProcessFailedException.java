@@ -7,7 +7,7 @@ package matsu.num.matrix.base.nlsf;
  * 行列に対する処理が正常に行われなかったことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 19.4
+ * @version 20.0
  */
 final class ProcessFailedException extends Exception {
 

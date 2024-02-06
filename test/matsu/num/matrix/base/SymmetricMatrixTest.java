@@ -14,18 +14,18 @@ import org.junit.runner.RunWith;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * {@link SymmetricMatrixBuilder}クラスのテスト.
+ * {@link SymmetricMatrix} クラスのテスト.
  *
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class SymmetricMatrixBuilderTest {
+public class SymmetricMatrixTest {
 
     public static class 生成に関する {
 
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_長方形次元でMFMEx() {
-            SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2));
+            SymmetricMatrix.Builder.zero(MatrixDimension.rectangle(3, 2));
         }
     }
 
@@ -40,7 +40,7 @@ public class SymmetricMatrixBuilderTest {
              * 2 3 5
              * 4 5 6
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(3));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 3);
@@ -75,7 +75,7 @@ public class SymmetricMatrixBuilderTest {
              * 2 3 5
              * 4 5 6
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(3));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 3);
@@ -110,7 +110,7 @@ public class SymmetricMatrixBuilderTest {
              * 2 8 5 3 12
              * 11 14 13 12 15
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(5));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(5));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 3);
@@ -157,7 +157,7 @@ public class SymmetricMatrixBuilderTest {
 
         @Before
         public void before_サイズ3の単位行列を生成() {
-            sm = SymmetricMatrixBuilder.unitBuilder(MatrixDimension.square(3)).build();
+            sm = SymmetricMatrix.Builder.unit(MatrixDimension.square(3)).build();
         }
 
         @Test
@@ -211,14 +211,14 @@ public class SymmetricMatrixBuilderTest {
              * 2 3 5
              * 4 5 6
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(3));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 3);
             builder.setValue(0, 2, 4);
             builder.setValue(1, 2, 5);
             builder.setValue(2, 2, 6);
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.from(new WrappedMatrix(builder.build())).build();
+            EntryReadableMatrix sm = SymmetricMatrix.Builder.from(new WrappedMatrix(builder.build())).build();
 
             double[][] entries = { { 1, 2, 4 }, { 2, 3, 5 }, { 4, 5, 6 } };
 
@@ -278,14 +278,14 @@ public class SymmetricMatrixBuilderTest {
              * 2 3 5
              * 4 5 6
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(3));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 3);
             builder.setValue(0, 2, 4);
             builder.setValue(1, 2, 5);
             builder.setValue(2, 2, 6);
-            EntryReadableMatrix sm = SymmetricMatrixBuilder.from(new WrappedMatrix(builder.build())).build();
+            EntryReadableMatrix sm = SymmetricMatrix.Builder.from(new WrappedMatrix(builder.build())).build();
 
             double[][] entries = { { 1, 2, 4 }, { 2, 3, 5 }, { 4, 5, 6 } };
 
@@ -305,7 +305,7 @@ public class SymmetricMatrixBuilderTest {
 
         @Before
         public void before_行列生成() {
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(3));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(3));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 3);

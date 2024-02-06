@@ -1,13 +1,11 @@
 /**
- * 2024.2.1
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
 
-import java.util.function.DoubleFunction;
-
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.LowerUnitriangularBuilder;
-import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.LowerUnitriangular;
+import matsu.num.matrix.base.LowerUnitriangularMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
@@ -24,7 +22,7 @@ import matsu.num.matrix.base.PermutationMatrix;
  * </p>
  *
  * @author Matsuura Y.
- * @version 19.4
+ * @version 20.0
  */
 final class ModifiedCholeskyPivotingFactorizationHelper {
 
@@ -37,13 +35,13 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
     private final double scale;
 
     private Block2OrderSymmetricDiagonalMatrix mxM;
-    private LowerUnitriangularEntryReadableMatrix mxL;
+    private LowerUnitriangular mxL;
     private PermutationMatrix mxP;
 
     /**
      * @param matrix
      * @param relativeEpsilon
-     * @throws ProcessFailedException 行列が特異の場合, 極端な値を含み分解が完了できない場合
+     * @throws ProcessFailedException 行列が特異の場合
      */
     public ModifiedCholeskyPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
             throws ProcessFailedException {
@@ -69,7 +67,7 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
         return this.mxM;
     }
 
-    public LowerUnitriangularEntryReadableMatrix getMxL() {
+    public LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
@@ -215,7 +213,7 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
     /**
      * 分解されたmxEntryを行列オブジェクトに変換.
      *
-     * @throws ProcessFailedException mxEntryに不正な値が入っている場合
+     * @throws ProcessFailedException mxMが特異な場合
      */
     private void convertToEachMatrix() throws ProcessFailedException {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
@@ -223,11 +221,9 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
 
         Block2OrderSymmetricDiagonalMatrix.Builder mxMBuilder = Block2OrderSymmetricDiagonalMatrix.Builder
                 .zeroBuilder(this.matrixDimension);
-        LowerUnitriangularBuilder mxLBuilder = LowerUnitriangularBuilder
-                .unitBuilder(this.matrixDimension);
+        LowerUnitriangularMatrix.Builder mxLBuilder =
+                LowerUnitriangularMatrix.Builder.unit(this.matrixDimension);
 
-        DoubleFunction<ProcessFailedException> exceptGetter =
-                v -> new ProcessFailedException("行列の成分に極端な値を含む");
         int c = 0;
         for (int i = 0; i < thisDimension; i++) {
             for (int k = 0; k < i - 1; k++) {
@@ -237,15 +233,15 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
             if (i >= 1) {
                 if (this.pivot22[i - 1]) {
                     //スケールをMに反映 
-                    mxMBuilder.setSubDiagonalOrElseThrow(i - 1, thisMxEntry[c] * this.scale, exceptGetter);
+                    mxMBuilder.setSubDiagonal(i - 1, thisMxEntry[c] * this.scale);
                     c++;
                 } else {
-                    mxLBuilder.setValueOrElseThrow(i, i - 1, thisMxEntry[c], exceptGetter);
+                    mxLBuilder.setValue(i, i - 1, thisMxEntry[c]);
                     c++;
                 }
             }
             //スケールをMに反映 
-            mxMBuilder.setDiagonalOrElseThrow(i, thisMxEntry[c] * this.scale, exceptGetter);
+            mxMBuilder.setDiagonal(i, thisMxEntry[c] * this.scale);
             c++;
         }
 

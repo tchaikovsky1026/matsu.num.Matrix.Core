@@ -1,11 +1,10 @@
 /**
- * 2024.2.4
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
@@ -27,7 +26,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 1*1 あるいは 2*2の対称ブロック要素を持つ, ブロック対角行列とそれを係数に持つ連立方程式の解法を扱う.
  *
  * @author Matsuura Y.
- * @version 19.6
+ * @version 20.0
  */
 interface Block2OrderSymmetricDiagonalMatrix
         extends BandMatrix, Symmetric,
@@ -40,7 +39,10 @@ interface Block2OrderSymmetricDiagonalMatrix
     public Optional<? extends Block2OrderSymmetricDiagonalMatrix> inverse();
 
     /**
-     * {@link Block2OrderSymmetricDiagonalMatrix}のビルダ. スレッドセーフでない.
+     * <p>
+     * ブロック対角行列のビルダ. <br>
+     * スレッドセーフでない.
+     * </p>
      */
     static final class Builder {
 
@@ -71,94 +73,55 @@ interface Block2OrderSymmetricDiagonalMatrix
         }
 
         /**
+         * <p>
          * 対角要素:(<i>i</i>,<i>i</i>)要素を指定した値に置き換える.
+         * </p>
+         * 
+         * <p>
+         * 値が不正ならば, 正常値に修正される.
+         * </p>
          *
          * @param index i, 対角成分index
          * @param value 置き換えた後の値
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (i,i)が行列内でない場合
-         * @throws IllegalArgumentException valueが不正な値の場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
-        public void setDiagonal(final int index, final double value) {
-            this.setDiagonalOrElseThrow(
-                    index, value,
-                    v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
-        }
-
-        /**
-         * 対角要素:(<i>i</i>,<i>i</i>)要素を指定した値に置き換える. <br>
-         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
-         *
-         * @param index i, 対角成分index
-         * @param value 置き換えた後の値
-         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
-         * @param <X> スローされる例外の型パラメータ
-         * @throws IllegalStateException すでにビルドされている場合
-         * @throws IndexOutOfBoundsException (i,i)が行列内でない場合
-         * @throws X valueが不正な値の場合
-         * @throws NullPointerException 引数にnullが含まれる場合
-         * @see EntryReadableMatrix#acceptValue(double)
-         */
-        public <X extends Exception> void setDiagonalOrElseThrow(final int index, final double value,
-                DoubleFunction<X> invalidValueExceptionGetter) throws X {
-
-            Objects.requireNonNull(invalidValueExceptionGetter);
+        public void setDiagonal(final int index, double value) {
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
-            }
-            if (!EntryReadableMatrix.acceptValue(value)) {
-                throw invalidValueExceptionGetter.apply(value);
             }
             if (!(0 <= index && index < this.bandMatrixDimension.dimension().rowAsIntValue())) {
                 throw new IndexOutOfBoundsException(String.format("行列内部でない:(%s, %s)", index, index));
             }
+
+            //値を修正する
+            value = EntryReadableMatrix.modified(value);
+
             this.diagonalEntry[index] = value;
         }
 
         /**
+         * <p>
          * 副対角要素:(<i>i</i> + 1,<i>i</i>)要素を指定した値に置き換える. <br>
          * 同時に(<i>i</i>,<i>i</i> + 1)の値も置き換わる.
+         * </p>
+         * 
+         * <p>
+         * 値が不正ならば, 正常値に修正される.
+         * </p>
          *
          * @param index i, 副対角成分index
          * @param value 置き換えた後の値
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IndexOutOfBoundsException (i+1,i)が行列の帯領域内でない場合
-         * @throws IllegalArgumentException valueが不正な値の場合,
-         *             valueを代入することでブロック対角行列でなくなる場合
+         * @throws IllegalArgumentException valueを代入することでブロック対角行列でなくなる場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
-        public void setSubDiagonal(final int index, final double value) {
-            this.setSubDiagonalOrElseThrow(
-                    index, value,
-                    v -> new IllegalArgumentException(String.format("不正な値:value=%s", v)));
-        }
+        public void setSubDiagonal(final int index, double value) {
 
-        /**
-         * 副対角要素:(<i>i</i> + 1,<i>i</i>)要素を指定した値に置き換える. <br>
-         * 同時に(<i>i</i>,<i>i</i> + 1)の値も置き換わる. <br>
-         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
-         *
-         * @param index i, 副対角成分index
-         * @param value 置き換えた後の値
-         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
-         * @param <X> スローされる例外の型パラメータ
-         * @throws IllegalStateException すでにビルドされている場合
-         * @throws IndexOutOfBoundsException (i+1,i)が行列の帯領域内でない場合
-         * @throws X valueが不正な値の場合,
-         *             valueを代入することでブロック対角行列でなくなる場合
-         * @throws NullPointerException 引数にnullが含まれる場合
-         * @see EntryReadableMatrix#acceptValue(double)
-         */
-        public <X extends Exception> void setSubDiagonalOrElseThrow(final int index, final double value,
-                DoubleFunction<X> invalidValueExceptionGetter) throws X {
-
-            Objects.requireNonNull(invalidValueExceptionGetter);
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
-            }
-            if (!EntryReadableMatrix.acceptValue(value)) {
-                throw invalidValueExceptionGetter.apply(value);
             }
             if (!(0 <= index && index < this.bandMatrixDimension.dimension().rowAsIntValue() - 1)) {
                 throw new IndexOutOfBoundsException(String.format("行列内部でない:(%s, %s)", index + 1, index));
@@ -175,6 +138,10 @@ interface Block2OrderSymmetricDiagonalMatrix
                             String.format("この代入によりブロック対角行列でなくなる:(%s, %s)", index + 1, index));
                 }
             }
+
+            //値を修正する
+            value = EntryReadableMatrix.modified(value);
+
             this.subdiagonalEntry[index] = value;
         }
 

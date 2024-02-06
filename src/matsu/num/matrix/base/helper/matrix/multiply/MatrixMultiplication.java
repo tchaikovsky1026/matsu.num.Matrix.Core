@@ -54,7 +54,7 @@ public final class MatrixMultiplication {
     /**
      * 行列の対称化二乗を返す. <br>
      * すなわち, 与えた行列Aに対して, AA<sup>T</sup>を返す. <br>
-     * 戻り値には{@link Symmetric}が付与されている.
+     * 戻り値には {@linkplain Symmetric} が付与されている.
      * 
      * @param original 元の行列
      * @return 対称化二乗
@@ -69,8 +69,8 @@ public final class MatrixMultiplication {
     /**
      * 対称な行列積を返す. <br>
      * すなわち, 与えた行列L,Dに対して, LDL<sup>T</sup>を返す. <br>
-     * 戻り値には{@link Symmetric}が付与されている. <br>
-     * 与える行列Dには{@link Symmetric}が付与されていなければならない.
+     * 戻り値には {@linkplain Symmetric} が付与されている. <br>
+     * 与える行列Dには {@linkplain Symmetric} が付与されていなければならない.
      * 
      * @param mid 行列D, 中央の行列
      * @param leftSide 行列L, 左サイドの行列

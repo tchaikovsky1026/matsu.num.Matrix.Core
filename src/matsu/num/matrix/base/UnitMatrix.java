@@ -14,7 +14,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  */
 public final class UnitMatrix
         extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>
-        implements PermutationMatrix, DiagonalMatrix, LowerUnitriangularEntryReadableMatrix {
+        implements PermutationMatrix, DiagonalMatrix, LowerUnitriangular {
 
     private final BandMatrixDimension bandMatrixDimension;
 
@@ -96,12 +96,6 @@ public final class UnitMatrix
 
     /**
      * このオブジェクトの文字列説明表現を返す.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code OrthogonalMatrix[dim(%dimension), unit]}
-     * </p>
      * 
      * @return 説明表現
      */

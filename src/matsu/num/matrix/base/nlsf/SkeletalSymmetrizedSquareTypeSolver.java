@@ -12,7 +12,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
  * <p>
- * {@link SymmetrizedSquareTypeSolver} の骨格実装. <br>
+ * {@linkplain SymmetrizedSquareTypeSolver} の骨格実装. <br>
  * ターゲット行列 A を, A = BB<sup>T</sup> と分解することに関する.
  * </p>
  * 

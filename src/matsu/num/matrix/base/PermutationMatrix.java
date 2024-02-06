@@ -18,7 +18,7 @@ public interface PermutationMatrix extends EntryReadableMatrix,
 
     /**
      * <p>
-     * {@link PermutationMatrix} のビルダ. <br>
+     * 置換行列の実装を提供するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
      * </p>
      */

@@ -22,7 +22,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * 
  * <p>
  * 実装仕様: <br>
- * {@link Symmetric} インターフェースが付与される場合, 必ず正方形次元 (サイズ) でなければならない. <br>
+ * {@linkplain Symmetric} インターフェースが付与される場合, 必ず正方形次元 (サイズ) でなければならない. <br>
  * すなわち, <br>
  * {@code this.matrixDimension().isSquare() == true} <br>
  * でなければならない.

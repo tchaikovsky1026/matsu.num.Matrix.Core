@@ -1,14 +1,12 @@
 /**
- * 2024.2.1
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
 
-import java.util.function.DoubleFunction;
-
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.LowerUnitriangularBuilder;
-import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.LowerUnitriangular;
+import matsu.num.matrix.base.LowerUnitriangularMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 
@@ -24,7 +22,7 @@ import matsu.num.matrix.base.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 19.4
+ * @version 20.0
  */
 final class CholeskyFactorizationHelper {
 
@@ -33,12 +31,12 @@ final class CholeskyFactorizationHelper {
     private final double[] mxLowerEntry;
 
     private DiagonalMatrix mxSqrtD;
-    private LowerUnitriangularEntryReadableMatrix mxL;
+    private LowerUnitriangular mxL;
 
     /**
      * @param matrix
      * @param relativeEpsilon
-     * @throws ProcessFailedException 行列が正定値でない場合, 極端な値を含み分解が完了できない場合
+     * @throws ProcessFailedException 行列が正定値でない場合
      */
     public CholeskyFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
             throws ProcessFailedException {
@@ -63,7 +61,7 @@ final class CholeskyFactorizationHelper {
         return this.mxSqrtD;
     }
 
-    public LowerUnitriangularEntryReadableMatrix getMxL() {
+    public LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
@@ -128,27 +126,25 @@ final class CholeskyFactorizationHelper {
     /**
      * 分解されたmxEntryを行列オブジェクトに変換.
      *
-     * @throws ProcessFailedException mxEntryに不正な値が入っている場合
+     * @throws ProcessFailedException mxDが正則にならない場合
      */
     private void convertToEachMatrix() throws ProcessFailedException {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
         final double[] thisMxEntry = this.mxLowerEntry;
 
         DiagonalMatrix.Builder mxSqrtDBuilder = DiagonalMatrix.Builder.zeroBuilder(this.matrixDimension);
-        LowerUnitriangularBuilder mxLBuilder = LowerUnitriangularBuilder
-                .unitBuilder(this.matrixDimension);
+        LowerUnitriangularMatrix.Builder mxLBuilder =
+                LowerUnitriangularMatrix.Builder.unit(this.matrixDimension);
 
         //対角行列(sqrtD)にスケールを反映させる
         double sqrtScale = Math.sqrt(this.scale);
-        DoubleFunction<ProcessFailedException> exceptGetter =
-                v -> new ProcessFailedException("行列の成分に極端な値を含む");
         int c = 0;
         for (int i = 0; i < thisDimension; i++) {
             for (int k = 0; k < i; k++) {
-                mxLBuilder.setValueOrElseThrow(i, k, thisMxEntry[c], exceptGetter);
+                mxLBuilder.setValue(i, k, thisMxEntry[c]);
                 c++;
             }
-            mxSqrtDBuilder.setValueOrElseThrow(i, thisMxEntry[c] * sqrtScale, exceptGetter);
+            mxSqrtDBuilder.setValue(i, thisMxEntry[c] * sqrtScale);
             c++;
         }
 

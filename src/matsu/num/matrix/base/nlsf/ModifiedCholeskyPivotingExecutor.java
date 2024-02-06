@@ -1,12 +1,13 @@
 /**
- * 2024.2.2
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.PermutationMatrix;
 import matsu.num.matrix.base.Symmetric;
@@ -54,7 +55,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.5
+ * @version 20.0
  */
 public final class ModifiedCholeskyPivotingExecutor
         extends SkeletalSolvingFactorizationExecutor<
@@ -68,6 +69,11 @@ public final class ModifiedCholeskyPivotingExecutor
      */
     private ModifiedCholeskyPivotingExecutor() {
         super();
+
+        //シングルトンを強制
+        if (Objects.nonNull(INSTANCE)) {
+            throw new AssertionError();
+        }
     }
 
     @Override
@@ -112,9 +118,20 @@ public final class ModifiedCholeskyPivotingExecutor
         private final EntryReadableMatrix matrix;
 
         private final Block2OrderSymmetricDiagonalMatrix mxM;
-        private final LowerUnitriangularEntryReadableMatrix mxL;
+        private final LowerUnitriangular mxL;
         private final PermutationMatrix mxP;
 
+        /**
+         * <p>
+         * 与えた行列を分解し, 分解構造を返す. <br>
+         * 分解できなかった場合, 空が返る.
+         * </p>
+         * 
+         * <p>
+         * このメソッドはエンクロージングクラスから呼ばれ,
+         * 必ず構造的にacceptedな引数が与えられる.
+         * </p>
+         */
         static Optional<ModifiedCholeskyPivotingSystem> instanceOf(
                 final EntryReadableMatrix matrix, final double epsilon) {
             try {
@@ -127,7 +144,7 @@ public final class ModifiedCholeskyPivotingExecutor
         /**
          * staticファクトリから呼ばれる.
          * 
-         * @throws ProcessFailedException 行列が特異に近い場合, 成分に極端な値を含み分解が完了できない場合
+         * @throws ProcessFailedException 行列が特異に近い場合
          */
         private ModifiedCholeskyPivotingSystem(final EntryReadableMatrix matrix, final double epsilon)
                 throws ProcessFailedException {

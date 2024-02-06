@@ -8,11 +8,11 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.GeneralMatrixBuilder;
+import matsu.num.matrix.base.GeneralMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.SymmetricMatrixBuilder;
+import matsu.num.matrix.base.SymmetricMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 
@@ -52,7 +52,7 @@ public class TranspositionTest {
         @Before
         public void before_縦3横4の行列の作成_と_転置() {
             MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(dimension);
             int count = 0;
             for (int j = 0; j < dimension.rowAsIntValue(); j++) {
                 for (int k = 0; k < dimension.columnAsIntValue(); k++) {
@@ -118,7 +118,7 @@ public class TranspositionTest {
         @Before
         public void before_サイズ3の行列の作成_と_転置() {
             MatrixDimension dimension = MatrixDimension.square(3);
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(dimension);
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(dimension);
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 5);
             builder.setValue(1, 1, 6);

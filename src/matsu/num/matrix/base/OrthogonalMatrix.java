@@ -20,7 +20,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.
+ * {@linkplain Matrix} のクラス説明の規約に従う.
  * </p>
  * 
  * @author Matsuura Y.

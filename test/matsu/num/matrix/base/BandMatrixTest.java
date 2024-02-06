@@ -34,7 +34,7 @@ public class BandMatrixTest {
         @Before
         public void before_サイズ4_下2_上1の行列の作成_と_転置() {
             BandMatrixDimension dimension = BandMatrixDimension.of(4, 2, 1);
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(dimension);
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(dimension);
             builder.setValue(0, 0, 1);
             builder.setValue(0, 1, 2);
             builder.setValue(1, 0, 5);
@@ -100,7 +100,7 @@ public class BandMatrixTest {
         @Before
         public void before_サイズ4_帯2の行列の作成_と_転置() {
             BandMatrixDimension dimension = BandMatrixDimension.symmetric(4, 2);
-            SymmetricBandMatrixBuilder builder = SymmetricBandMatrixBuilder.zeroBuilder(dimension);
+            SymmetricBandMatrix.Builder builder = SymmetricBandMatrix.Builder.zero(dimension);
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 5);
             builder.setValue(1, 1, 6);
@@ -155,7 +155,7 @@ public class BandMatrixTest {
         @Test
         public void test_toString表示_BandMatrix提供() {
             BandMatrixDimension dimension = BandMatrixDimension.of(4, 2, 1);
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(dimension);
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(dimension);
             builder.setValue(0, 0, 1);
             builder.setValue(0, 1, 2);
             builder.setValue(1, 0, 5);

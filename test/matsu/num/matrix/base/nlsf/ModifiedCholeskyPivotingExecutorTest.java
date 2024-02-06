@@ -11,9 +11,9 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.GeneralMatrixBuilder;
+import matsu.num.matrix.base.GeneralMatrix;
 import matsu.num.matrix.base.MatrixDimension;
-import matsu.num.matrix.base.SymmetricMatrixBuilder;
+import matsu.num.matrix.base.SymmetricMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
@@ -32,7 +32,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
         @Test(expected = MatrixNotSymmetricException.class)
         public void test_非対称行列は使用できないMNSEx() {
             ModifiedCholeskyPivotingExecutor.instance().apply(
-                    GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(3)).build());
+                    GeneralMatrix.Builder.zero(MatrixDimension.square(3)).build());
         }
     }
 
@@ -49,7 +49,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
              * 0 0 1 -1
              * 0 0 -1 1
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(4));
             builder.setValue(0, 0, 0);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 5);
@@ -81,7 +81,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
              * 15 14 13 12 11 17
              * 21 20 19 18 17 16
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(6));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(6));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 1, 2);
             builder.setValue(1, 0, 3);
@@ -160,7 +160,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
              * 11 12 13 14 15 20
              * 16 17 18 19 20 21
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(6));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(6));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 3);
@@ -230,7 +230,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
              * 11 12 13 0 0 0
              * 16 17 18 19 0 0
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(6));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(6));
             builder.setValue(1, 0, 2);
             builder.setValue(2, 0, 4);
             builder.setValue(2, 1, 5);
@@ -286,7 +286,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
             /*
              * 2
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             matrix = builder.build();
             mcp = ModifiedCholeskyPivotingExecutor.instance().apply(matrix).get();
@@ -331,7 +331,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
             /*
              * 2
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             EntryReadableMatrix em = builder.build();
             mcp = executor.apply(em).get();

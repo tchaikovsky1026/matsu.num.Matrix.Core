@@ -13,24 +13,24 @@ import org.junit.runner.RunWith;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * {@link LowerUnitriangularBuilder}クラスのテスト.
+ * {@link LowerUnitriangularMatrix} クラスのテスト.
  *
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class LowerUnitriangularBuilderTest {
+public class LowerUnitriangularMatrixTest {
 
     public static class 生成に関する {
 
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_長方形行列は生成できない() {
-            LowerUnitriangularBuilder.unitBuilder(MatrixDimension.rectangle(3, 4));
+            LowerUnitriangularMatrix.Builder.unit(MatrixDimension.rectangle(3, 4));
         }
     }
 
     public static class 行列の評価と演算に関する {
 
-        private LowerUnitriangularEntryReadableMatrix lm;
+        private LowerUnitriangular lm;
 
         private Vector right;
 
@@ -49,7 +49,8 @@ public class LowerUnitriangularBuilderTest {
              * 2 1 0
              * 3 4 1
              */
-            LowerUnitriangularBuilder builder = LowerUnitriangularBuilder.unitBuilder(MatrixDimension.square(3));
+            LowerUnitriangularMatrix.Builder builder =
+                    LowerUnitriangularMatrix.Builder.unit(MatrixDimension.square(3));
             builder.setValue(1, 0, 2);
             builder.setValue(2, 0, 3);
             builder.setValue(2, 1, 4);
@@ -107,7 +108,7 @@ public class LowerUnitriangularBuilderTest {
 
     public static class 狭義下三角の退化_サイズ1_に関する {
 
-        private LowerUnitriangularEntryReadableMatrix lm;
+        private LowerUnitriangular lm;
 
         private Vector right;
 
@@ -124,7 +125,7 @@ public class LowerUnitriangularBuilderTest {
             /*
              * 1
              */
-            lm = LowerUnitriangularBuilder.unitBuilder(MatrixDimension.square(1))
+            lm = LowerUnitriangularMatrix.Builder.unit(MatrixDimension.square(1))
                     .build();
         }
 

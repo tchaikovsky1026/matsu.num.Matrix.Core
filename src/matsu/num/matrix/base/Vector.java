@@ -1,5 +1,5 @@
 /**
- * 2024.2.2
+ * 2024.2.6
  */
 package matsu.num.matrix.base;
 
@@ -17,11 +17,11 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 
  * <p>
  * 所望のベクトルの生成にはビルダ ({@linkplain Builder}) を用いる. <br>
- * 値の検証にはstaticメソッド {@link #acceptValue(double) } を使用する.
+ * 値の検証にはstaticメソッド {@linkplain #acceptValue(double) } を使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 19.5
+ * @version 20.0
  */
 public final class Vector {
 
@@ -48,9 +48,6 @@ public final class Vector {
 
     /**
      * ビルダから呼ばれる.
-     * 
-     * @param vectorDimension
-     * @param entry
      */
     private Vector(final VectorDimension vectorDimension, final double[] entry) {
         this(vectorDimension, entry, false);
@@ -59,10 +56,6 @@ public final class Vector {
     /**
      * 内部から呼ばれる.
      * 必要なパラメータが渡される.
-     * 
-     * @param vectorDimension
-     * @param entry
-     * @param normalized
      */
     private Vector(final VectorDimension vectorDimension, final double[] entry, boolean normalized) {
         this.vectorDimension = vectorDimension;
@@ -75,7 +68,7 @@ public final class Vector {
     /**
      * ベクトルの要素 <i>i</i> の値を返す.
      *
-     * @param index <i>i</i>, index
+     * @param index <i>i</i>
      * @return 要素 <i>i</i> の値
      * @throws IndexOutOfBoundsException indexが範囲外の場合
      */
@@ -124,7 +117,7 @@ public final class Vector {
      * 与えられたベクトルが自身と同じ次元かどうかを判定する.
      *
      * @param other 比較対象
-     * @return 同じ次元なら, true
+     * @return 同じ次元なら {@code true}
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public boolean equalDimensionTo(Vector other) {
@@ -132,17 +125,18 @@ public final class Vector {
     }
 
     /**
-     * 他のベクトルとの和を計算する: <b>w</b> = <b>v</b> + <b>u</b>. <br>
+     * 他のベクトルとの和を計算して返す: <b>w</b> = <b>v</b> + <b>u</b>. <br>
      * <b>v</b>: {@code this}, <br>
      * <b>u</b>: 作用ベクトル, <br>
      * <b>w</b>: 計算結果.
      *
      * @param reference <b>u</b>, 作用ベクトル
      * @return 計算結果
-     * @throws MatrixFormatMismatchException thisと作用ベクトルの次元が一致しない場合
+     * @throws MatrixFormatMismatchException {@code this} と作用ベクトルの次元が一致しない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector plus(final Vector reference) {
+        //ここで例外が発生する可能性がある
         this.validateDimensionMatch(reference);
 
         double[] result = this.entry.clone();
@@ -151,7 +145,7 @@ public final class Vector {
     }
 
     /**
-     * 他のベクトルとの差を計算する: <b>w</b> = <b>v</b> - <b>u</b>.
+     * 他のベクトルとの差を計算して返す: <b>w</b> = <b>v</b> - <b>u</b>.
      * <br>
      * <b>v</b>: {@code this}, <br>
      * <b>u</b>: 作用ベクトル, <br>
@@ -159,10 +153,11 @@ public final class Vector {
      *
      * @param reference <b>u</b>, 作用ベクトル
      * @return 計算結果
-     * @throws MatrixFormatMismatchException thisと作用ベクトルの次元が一致しない場合
+     * @throws MatrixFormatMismatchException {@code this} と作用ベクトルの次元が一致しない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector minus(final Vector reference) {
+        //ここで例外が発生する可能性がある
         this.validateDimensionMatch(reference);
 
         double[] result = this.entry.clone();
@@ -171,7 +166,7 @@ public final class Vector {
     }
 
     /**
-     * 他のベクトルのスカラー倍との和を計算する:
+     * 他のベクトルのスカラー倍との和を計算して返す:
      * <b>w</b> = <b>v</b> + <i>c</i> <b>u</b>. <br>
      * 
      * <b>v</b>: {@code this}, <br>
@@ -182,10 +177,11 @@ public final class Vector {
      * @param reference <b>u</b>, 作用ベクトル
      * @param scalar <i>c</i>, スカラー
      * @return 計算結果
-     * @throws MatrixFormatMismatchException thisと作用ベクトルの次元が一致しない場合
+     * @throws MatrixFormatMismatchException {@code this} と作用ベクトルの次元が一致しない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public Vector plusCTimes(final Vector reference, final double scalar) {
+        //ここで例外が発生する可能性がある
         this.validateDimensionMatch(reference);
 
         double[] result = this.entry.clone();
@@ -194,7 +190,7 @@ public final class Vector {
     }
 
     /**
-     * 自身のスカラー倍を計算する:
+     * 自身のスカラー倍を計算して返す:
      * <b>w</b> = <i>c</i> <b>v</b>. <br>
      * 
      * <b>v</b>: {@code this}, <br>
@@ -211,7 +207,7 @@ public final class Vector {
     }
 
     /**
-     * 内積を計算する:
+     * ベクトルの内積:
      * <b>u</b> &middot; <b>v</b>. <br>
      * 
      * <b>v</b>: {@code this}, <br>
@@ -223,6 +219,7 @@ public final class Vector {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public double dot(final Vector reference) {
+        //ここで例外が発生する可能性がある
         this.validateDimensionMatch(reference);
 
         return ArraysUtil.dot(this.entry, reference.entry);
@@ -245,7 +242,7 @@ public final class Vector {
     }
 
     /**
-     * 1-ノルムを計算する:
+     * 1-ノルム:
      * ||<b>v</b>||<sub>1</sub>.
      *
      * @return 1-ノルム
@@ -263,7 +260,7 @@ public final class Vector {
     }
 
     /**
-     * 2-ノルム(Euclidノルム)の二乗を計算する:
+     * 2-ノルム (Euclidノルム) の二乗:
      * ||<b>v</b>||<sub>2</sub><sup>2</sup>.
      *
      * @return 2-ノルムの二乗
@@ -281,7 +278,7 @@ public final class Vector {
     }
 
     /**
-     * 2-ノルム(Euclidノルム)を計算する:
+     * 2-ノルム (Euclidノルム):
      * ||<b>v</b>||<sub>2</sub>.
      *
      * @return 2-ノルム
@@ -299,7 +296,7 @@ public final class Vector {
     }
 
     /**
-     * 最大値ノルムを計算する:
+     * 最大値ノルム:
      * ||<b>v</b>||<sub>&infin;</sub>.
      *
      * @return 最大値ノルム
@@ -309,12 +306,16 @@ public final class Vector {
         return this.normMax;
     }
 
+    /**
+     * 最大値ノルムを計算する.
+     */
     private double calcNormMax() {
         return ArraysUtil.normMax(this.entry);
     }
 
     /**
-     * 自身を規格化したベクトルを返す. <br>
+     * Euclidノルムにより自身を規格化したベクトル:
+     * <b>v</b> / ||<b>v</b>||<sub>2</sub>. <br>
      * 自身の大きさが厳密に0である場合のみ, 規格化されずに0を返す.
      * 
      * @return 自身を規格化したベクトル
@@ -324,40 +325,10 @@ public final class Vector {
             return this;
         }
 
-        double[] canoEntry = this.canonicalize();
-        double canoNorm2 = ArraysUtil.norm2(canoEntry);
-        ArraysUtil.multiply(canoEntry, 1 / canoNorm2);
-
-        Vector out = new Vector(this.vectorDimension, canoEntry, true);
+        Vector out = new Vector(this.vectorDimension, ArraysUtil.normalizeEuclidean(this.entry), true);
         Double value1 = Double.valueOf(1d);
         out.norm2 = value1;
         out.norm2Square = value1;
-        return out;
-    }
-
-    /**
-     * ユークリッドノルムでの規格化のための準備.
-     * 
-     * <p>
-     * ベクトルの成分が大きすぎる場合,
-     * 2-ノルムがinfになる場合がある. <br>
-     * ベクトルの成分が小さすぎる場合 (非正規数に突入する場合),
-     * 2ノルムが正確でなくなる場合がある. <br>
-     * このメソッドは, そのような極端な状況を回避するための, 正規化を提供する.
-     * </p>
-     * 
-     * @return 正常化した成分
-     */
-    private double[] canonicalize() {
-        double[] out = this.entry.clone();
-        if (this.normMax < 1E-280) {
-            ArraysUtil.multiply(out, 1E200);
-            return out;
-        }
-        if (this.normMax > 1E280) {
-            ArraysUtil.multiply(out, 1E-200);
-            return out;
-        }
         return out;
     }
 
@@ -395,7 +366,7 @@ public final class Vector {
     }
 
     /**
-     * {@link Vector} の成分として有効な値であるかを判定する.
+     * {@linkplain Vector} の成分として有効な値であるかを判定する.
      *
      * @param value 検証する値
      * @return 有効である場合はtrue
@@ -405,7 +376,7 @@ public final class Vector {
     }
 
     /**
-     * {@link Vector} のビルダ. <br>
+     * {@linkplain Vector} のビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
      */
     public static final class Builder {

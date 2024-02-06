@@ -27,7 +27,7 @@ public class MatrixTest {
                 matrixs = new ArrayList<>();
             }
             MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(dimension);
             int count = 0;
             for (int j = 0; j < dimension.rowAsIntValue(); j++) {
                 for (int k = 0; k < dimension.columnAsIntValue(); k++) {

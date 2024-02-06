@@ -11,7 +11,7 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.GeneralMatrixBuilder;
+import matsu.num.matrix.base.GeneralMatrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
@@ -30,7 +30,7 @@ public class LUPivotingExecutorTest {
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_長方形行列は使用できないMFMEx() {
             LUPivotingExecutor.instance().apply(
-                    GeneralMatrixBuilder.zeroBuilder(MatrixDimension.rectangle(3, 2)).build());
+                    GeneralMatrix.Builder.zero(MatrixDimension.rectangle(3, 2)).build());
         }
     }
 
@@ -47,7 +47,7 @@ public class LUPivotingExecutorTest {
                     { 2, 6, 1, 2 },
                     { -1, 0, 2, 4 }
             };
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(MatrixDimension.square(4));
             for (int j = 0; j < entry.length; j++) {
                 for (int k = 0; k < entry[j].length; k++) {
                     builder.setValue(j, k, entry[j][k]);
@@ -82,7 +82,7 @@ public class LUPivotingExecutorTest {
                     { 2, 6, 3, 1 },
                     { -1, 0, 1, 1 }
             };
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(MatrixDimension.square(4));
             for (int j = 0; j < entry.length; j++) {
                 for (int k = 0; k < entry[j].length; k++) {
                     builder.setValue(j, k, entry[j][k]);
@@ -153,7 +153,7 @@ public class LUPivotingExecutorTest {
             /*
              * 2
              */
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             matrix = builder.build();
             lup = LUPivotingExecutor.instance().apply(matrix).get();
@@ -208,7 +208,7 @@ public class LUPivotingExecutorTest {
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             lup = executor.apply(builder.build()).get();
         }

@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
-import matsu.num.matrix.base.GeneralBandMatrixBuilder;
+import matsu.num.matrix.base.GeneralBandMatrix;
 import matsu.num.matrix.base.Vector;
 
 /**
@@ -38,7 +38,7 @@ public class LUBandExecutorTest {
              * 0 3 3 3
              * 0 0 5 4
              */
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(4, 1, 1));
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(BandMatrixDimension.of(4, 1, 1));
             builder.setValue(0, 0, 0);
             builder.setValue(1, 1, 2);
             builder.setValue(2, 2, 3);
@@ -72,7 +72,7 @@ public class LUBandExecutorTest {
              * 2 3 3 3
              * 0 4 5 4
              */
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(4, 2, 1));
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(BandMatrixDimension.of(4, 2, 1));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 1, 2);
             builder.setValue(2, 2, 3);
@@ -144,7 +144,7 @@ public class LUBandExecutorTest {
              * 0 2 3 6
              * 0 0 1 4
              */
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(4, 1, 2));
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(BandMatrixDimension.of(4, 1, 2));
             builder.setValue(0, 0, 1);
             builder.setValue(1, 1, 2);
             builder.setValue(2, 2, 3);
@@ -222,7 +222,7 @@ public class LUBandExecutorTest {
             /*
              * -2
              */
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(1, 1, 1));
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(BandMatrixDimension.of(1, 1, 1));
             builder.setValue(0, 0, -2);
             matrix = builder.build();
             lub = LUBandExecutor.instance().apply(matrix).get();
@@ -267,7 +267,7 @@ public class LUBandExecutorTest {
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
-            GeneralBandMatrixBuilder builder = GeneralBandMatrixBuilder.zeroBuilder(BandMatrixDimension.of(1, 1, 1));
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(BandMatrixDimension.of(1, 1, 1));
             builder.setValue(0, 0, -2);
             lub = executor.apply(builder.build()).get();
         }

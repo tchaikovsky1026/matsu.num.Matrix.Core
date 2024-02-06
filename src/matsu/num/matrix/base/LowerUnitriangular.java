@@ -1,5 +1,5 @@
 /**
- * 2024.1.19
+ * 2024.2.5
  */
 package matsu.num.matrix.base;
 
@@ -19,14 +19,14 @@ import java.util.Optional;
  * </p>
  *
  * <p>
- * {@link Matrix}のクラス説明の規約に従う.
+ * {@linkplain Matrix} のクラス説明の規約に従う.
  * </p>
  *
  * @author Matsuura Y.
- * @version 19.0
+ * @version 20.0
  * @see Matrix
  */
-public interface LowerUnitriangularEntryReadableMatrix
+public interface LowerUnitriangular
         extends EntryReadableMatrix, Invertible, Determinantable {
 
     /**

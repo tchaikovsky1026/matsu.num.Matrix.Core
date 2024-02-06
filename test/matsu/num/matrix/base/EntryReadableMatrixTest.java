@@ -28,7 +28,7 @@ public class EntryReadableMatrixTest {
         @Before
         public void before_縦3横4の行列の作成_と_転置() {
             MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(dimension);
             int count = 0;
             for (int j = 0; j < dimension.rowAsIntValue(); j++) {
                 for (int k = 0; k < dimension.columnAsIntValue(); k++) {
@@ -91,7 +91,7 @@ public class EntryReadableMatrixTest {
         @Before
         public void before_サイズ3の行列の作成_と_転置() {
             MatrixDimension dimension = MatrixDimension.square(3);
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(dimension);
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(dimension);
             builder.setValue(0, 0, 1);
             builder.setValue(1, 0, 5);
             builder.setValue(1, 1, 6);
@@ -143,7 +143,7 @@ public class EntryReadableMatrixTest {
                 matrixs = new ArrayList<>();
             }
             MatrixDimension dimension = MatrixDimension.rectangle(2, 2);
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(dimension);
             int count = 0;
             for (int j = 0; j < dimension.rowAsIntValue(); j++) {
                 for (int k = 0; k < dimension.columnAsIntValue(); k++) {
@@ -161,7 +161,7 @@ public class EntryReadableMatrixTest {
                 matrixs = new ArrayList<>();
             }
             MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            GeneralMatrixBuilder builder = GeneralMatrixBuilder.zeroBuilder(dimension);
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(dimension);
             int count = 0;
             for (int j = 0; j < dimension.rowAsIntValue(); j++) {
                 for (int k = 0; k < dimension.columnAsIntValue(); k++) {

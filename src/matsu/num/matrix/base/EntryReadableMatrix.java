@@ -1,5 +1,5 @@
 /**
- * 2024.2.1
+ * 2024.2.5
  */
 package matsu.num.matrix.base;
 
@@ -10,22 +10,33 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadable;
 /**
  * <p>
  * 成分に <i>O</i>(1) でアクセス可能な行列を表す. <br>
- * 成分に不正値 (inf, NaN) を含んではいけない.
+ * 成分に不正値 (inf, NaN) を含んではいけない
+ * (扱うことができる値は {@linkplain #MIN_VALUE}, {@linkplain #MAX_VALUE} で規定される).
  * </p>
  * 
  * <p>
- * {@link Matrix} のクラス説明の規約に従う.
+ * {@linkplain Matrix} の説明の規約に従う.
  * </p>
  * 
  * <p>
- * 値の検証には {@link #acceptValue(double) } メソッドを使用する.
+ * 値の検証には {@linkplain #acceptValue(double)} メソッドを使用する. <br>
+ * もし値の修正を行うならば {@linkplain #modified(double)} メソッドを使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 19.5
- * @see Matrix
+ * @version 20.0
  */
 public interface EntryReadableMatrix extends Matrix {
+
+    /**
+     * 扱うことができる成分の最小値.
+     */
+    public static final double MAX_VALUE = Double.MAX_VALUE;
+
+    /**
+     * 扱うことができる成分の最大値.
+     */
+    public static final double MIN_VALUE = -Double.MAX_VALUE;
 
     /**
      * (<i>i</i>, <i>j</i>) 要素の値を取得する.
@@ -45,13 +56,39 @@ public interface EntryReadableMatrix extends Matrix {
     public double entryNormMax();
 
     /**
-     * {@link EntryReadableMatrix} の成分として有効な値であるかを判定する.
+     * {@linkplain EntryReadableMatrix} の成分として有効な値であるかを判定する.
      *
      * @param value 検証する値
      * @return 有効である場合はtrue
      */
     public static boolean acceptValue(double value) {
-        return Double.isFinite(value);
+        return MIN_VALUE <= value && value <= MAX_VALUE;
+    }
+
+    /**
+     * 与えられた値を成分として使用できるように修正する. <br>
+     * 正常値を与えた場合はそのまま, 不正な値を与えた場合は正常な値に修正して返す.
+     * 
+     * @param value 元の値
+     * @return 修正された値
+     */
+    public static double modified(double value) {
+        if (acceptValue(value)) {
+            return value;
+        }
+
+        //+infの場合
+        if (value >= 0) {
+            return MAX_VALUE;
+        }
+
+        //-infの場合
+        if (value <= 0) {
+            return MIN_VALUE;
+        }
+
+        //NaNの場合
+        return 0d;
     }
 
     /**
@@ -176,7 +213,7 @@ public interface EntryReadableMatrix extends Matrix {
      * </p>
      * 
      * @param matrix 行列
-     * @return {@link String} 形式に変換された行列
+     * @return {@linkplain String} 形式に変換された行列
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static String allEntryToCSVFormat(EntryReadableMatrix matrix) {

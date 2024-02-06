@@ -1,5 +1,5 @@
 /**
- * 2024.2.2
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -53,7 +53,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </ul>
  * 
  * @author Matsuura Y.
- * @version 19.5
+ * @version 20.0
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */
@@ -86,7 +86,7 @@ public interface SolvingFactorizationExecutor<
      * 
      * <p>
      * 分解開始後に失敗した場合は, 空のオプショナルが返る. <br>
-     * 正則行列でない場合, 正則であるが数値が {@code double} で表現できない場合には分解に失敗する. <br>
+     * 正則行列でない場合には分解に失敗する. <br>
      * その他の条件は, サブタイプのクラス説明文に従う.
      * </p>
      * 

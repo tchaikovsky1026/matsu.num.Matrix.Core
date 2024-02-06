@@ -1,14 +1,12 @@
 /**
- * 2024.2.1
+ * 2024.2.5
  */
 package matsu.num.matrix.base.nlsf;
 
-import java.util.function.DoubleFunction;
-
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.LowerUnitriangularBuilder;
-import matsu.num.matrix.base.LowerUnitriangularEntryReadableMatrix;
+import matsu.num.matrix.base.LowerUnitriangular;
+import matsu.num.matrix.base.LowerUnitriangularMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
@@ -25,7 +23,7 @@ import matsu.num.matrix.base.PermutationMatrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.4
+ * @version 20.0
  */
 final class LUPivotingFactorizationHelper {
 
@@ -34,14 +32,14 @@ final class LUPivotingFactorizationHelper {
     private final double scale;
 
     private DiagonalMatrix mxD;
-    private LowerUnitriangularEntryReadableMatrix mxL;
-    private LowerUnitriangularEntryReadableMatrix mxUt;
+    private LowerUnitriangular mxL;
+    private LowerUnitriangular mxUt;
     private PermutationMatrix mxP;
 
     /**
      * @param matrix 受け入れ可能な行列
      * @param relativeEpsilon
-     * @throws ProcessFailedException 行列が特異の場合, 極端な値を含み分解が完了できない場合
+     * @throws ProcessFailedException 行列が特異の場合
      */
     public LUPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
             throws ProcessFailedException {
@@ -65,11 +63,11 @@ final class LUPivotingFactorizationHelper {
         return this.mxD;
     }
 
-    public LowerUnitriangularEntryReadableMatrix getMxL() {
+    public LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
-    public LowerUnitriangularEntryReadableMatrix getMxUt() {
+    public LowerUnitriangular getMxUt() {
         return this.mxUt;
     }
 
@@ -100,7 +98,7 @@ final class LUPivotingFactorizationHelper {
      *
      * @throws ProcessFailedException 行列が特異の場合
      */
-    private void factorize(double threshold) throws ProcessFailedException{
+    private void factorize(double threshold) throws ProcessFailedException {
         PermutationMatrix.Builder mxPBuilder = PermutationMatrix.Builder.unitBuilder(this.matrixDimension);
 
         final int thisDimension = this.matrixDimension.rowAsIntValue();
@@ -158,31 +156,29 @@ final class LUPivotingFactorizationHelper {
     /**
      * 分解されたmxEntryを行列オブジェクトに変換.
      *
-     * @throws IllegalArgumentException mxEntryに不正な値が入っている場合
+     * @throws IllegalArgumentException mxDが正則でない場合
      */
     private void convertToEachMatrix() throws ProcessFailedException {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
         final double[] thisMxEntry = this.mxEntry;
 
         DiagonalMatrix.Builder mxDBuilder = DiagonalMatrix.Builder.zeroBuilder(this.matrixDimension);
-        LowerUnitriangularBuilder mxLBuilder = LowerUnitriangularBuilder
-                .unitBuilder(this.matrixDimension);
-        LowerUnitriangularBuilder mxUtBuilder = LowerUnitriangularBuilder
-                .unitBuilder(this.matrixDimension);
+        LowerUnitriangularMatrix.Builder mxLBuilder =
+                LowerUnitriangularMatrix.Builder.unit(this.matrixDimension);
+        LowerUnitriangularMatrix.Builder mxUtBuilder =
+                LowerUnitriangularMatrix.Builder.unit(this.matrixDimension);
 
-        DoubleFunction<ProcessFailedException> exceptGetter =
-                v -> new ProcessFailedException("行列の成分に極端な値を含む");
         int c = 0;
         for (int j = 0; j < thisDimension; j++) {
             for (int k = 0; k < j; k++) {
-                mxLBuilder.setValueOrElseThrow(j, k, thisMxEntry[c], exceptGetter);
+                mxLBuilder.setValue(j, k, thisMxEntry[c]);
                 c++;
             }
             //対角成分はスケールを反映する
-            mxDBuilder.setValueOrElseThrow(j, thisMxEntry[c] * this.scale, exceptGetter);
+            mxDBuilder.setValue(j, thisMxEntry[c] * this.scale);
             c++;
             for (int k = j + 1; k < thisDimension; k++) {
-                mxUtBuilder.setValueOrElseThrow(k, j, thisMxEntry[c], exceptGetter);
+                mxUtBuilder.setValue(k, j, thisMxEntry[c]);
                 c++;
             }
         }

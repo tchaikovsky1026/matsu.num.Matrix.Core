@@ -11,10 +11,10 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.GeneralMatrixBuilder;
+import matsu.num.matrix.base.GeneralMatrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.SymmetricMatrixBuilder;
+import matsu.num.matrix.base.SymmetricMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
@@ -33,7 +33,7 @@ public class CholeskyExecutorTest {
         @Test(expected = MatrixNotSymmetricException.class)
         public void test_非対称行列は使用できないMNSEx() {
             CholeskyExecutor.instance().apply(
-                    GeneralMatrixBuilder.zeroBuilder(MatrixDimension.square(3)).build());
+                    GeneralMatrix.Builder.zero(MatrixDimension.square(3)).build());
         }
     }
 
@@ -50,7 +50,7 @@ public class CholeskyExecutorTest {
              * 2 -1 5 1
              * -1 0 1 3
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(4));
             builder.setValue(0, 0, -1);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 5);
@@ -84,7 +84,7 @@ public class CholeskyExecutorTest {
              * 2 -1 5 1
              * -1 0 1 3
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(4));
             builder.setValue(0, 0, 3);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 5);
@@ -147,7 +147,7 @@ public class CholeskyExecutorTest {
             /*
              * 2
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             matrix = builder.build();
             cho = CholeskyExecutor.instance().apply(matrix).get();
@@ -190,7 +190,7 @@ public class CholeskyExecutorTest {
              * 2 -1 5 1
              * -1 0 1 3
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(4));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(4));
             builder.setValue(0, 0, 3);
             builder.setValue(1, 0, 2);
             builder.setValue(1, 1, 5);
@@ -262,7 +262,7 @@ public class CholeskyExecutorTest {
             /*
              * 2
              */
-            SymmetricMatrixBuilder builder = SymmetricMatrixBuilder.zeroBuilder(MatrixDimension.square(1));
+            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             EntryReadableMatrix em = builder.build();
             cho = executor.apply(em).get();
