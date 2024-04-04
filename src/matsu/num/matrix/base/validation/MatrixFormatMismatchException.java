@@ -1,13 +1,19 @@
-/**
- * 2023.12.22
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.validation;
 
 /**
- * 行列の構造(サイズ等)が規約を満たしていないことを報告する例外. 
+ * 行列の構造(サイズ等)が規約を満たしていないことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 17.3
+ * @version 21.0
  */
 public final class MatrixFormatMismatchException extends IllegalArgumentException {
 
@@ -22,6 +28,7 @@ public final class MatrixFormatMismatchException extends IllegalArgumentExceptio
 
     /**
      * メッセージ有りの例外を生成する.
+     * 
      * @param string メッセージ
      */
     public MatrixFormatMismatchException(String string) {

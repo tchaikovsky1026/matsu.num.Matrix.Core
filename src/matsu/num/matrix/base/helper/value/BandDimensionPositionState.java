@@ -1,15 +1,21 @@
-/**
- * 2023.11.30
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.helper.value;
 
 import matsu.num.matrix.base.BandMatrixDimension;
 
 /**
- * 帯行列上での位置属性(対角位置, 下側帯内, 上側帯内, 帯外, 行列外)を表す列挙型. 
+ * 帯行列上での位置属性(対角位置, 下側帯内, 上側帯内, 帯外, 行列外)を表す列挙型.
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 21.0
  */
 public enum BandDimensionPositionState {
     /**

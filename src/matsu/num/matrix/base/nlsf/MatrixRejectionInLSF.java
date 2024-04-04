@@ -1,5 +1,11 @@
-/**
- * 2024.1.22
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -16,7 +22,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * このパッケージで扱う, reject理由を表す列挙型.
  * 
  * @author Matsuura Y.
- * @version 19.1
+ * @version 21.0
  */
 enum MatrixRejectionInLSF {
 

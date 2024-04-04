@@ -13,5 +13,8 @@
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
         <folder path="/matsu.num.matrix.Base/javadoc-file"/>
         <javaElement handleIdentifier="=matsu.num.matrix.Base/src"/>
+        <file path="/matsu.num.matrix.Base/history.txt"/>
+        <file path="/matsu.num.matrix.Base/LICENSE.txt"/>
+        <file path="/matsu.num.matrix.Base/README.md"/>
     </selectedElements>
 </jardesc>

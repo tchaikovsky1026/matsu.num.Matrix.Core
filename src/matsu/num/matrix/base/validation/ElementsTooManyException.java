@@ -1,5 +1,11 @@
-/**
- * 2024.1.22
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.validation;
 
@@ -7,7 +13,7 @@ package matsu.num.matrix.base.validation;
  * 有効要素数が多すぎて対応できないことを報告する例外.
  * 
  * @author Matsuura Y.
- * @version 19.1
+ * @version 21.0
  */
 public class ElementsTooManyException extends IllegalArgumentException {
 

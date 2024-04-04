@@ -1,5 +1,11 @@
-/**
- * 2024.2.5
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base;
 
@@ -31,7 +37,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 20.0
+ * @version 21.0
  */
 public abstract class SkeletalOrthogonalMatrix implements OrthogonalMatrix {
 

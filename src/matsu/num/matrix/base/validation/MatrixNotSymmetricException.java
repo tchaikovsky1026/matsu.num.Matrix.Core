@@ -1,5 +1,11 @@
-/**
- * 2023.12.22
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.validation;
 
@@ -7,7 +13,7 @@ package matsu.num.matrix.base.validation;
  * 行列オブジェクトが対称行列でないことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 17.3
+ * @version 21.0
  */
 public final class MatrixNotSymmetricException extends IllegalArgumentException {
 
@@ -22,6 +28,7 @@ public final class MatrixNotSymmetricException extends IllegalArgumentException 
 
     /**
      * メッセージ有りの例外を生成する.
+     * 
      * @param string メッセージ
      */
     public MatrixNotSymmetricException(String string) {

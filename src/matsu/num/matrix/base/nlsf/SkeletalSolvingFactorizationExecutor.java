@@ -1,5 +1,11 @@
-/**
- * 2024.2.2
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -30,7 +36,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.5
+ * @version 21.0
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */
@@ -92,7 +98,7 @@ abstract class SkeletalSolvingFactorizationExecutor<
     public final Optional<? extends ST> apply(MT matrix) {
         return this.apply(matrix, PseudoRegularMatrixProcess.DEFAULT_EPSILON);
     }
-    
+
     /**
      * このインスタンスの文字列表現を返す.
      * 

@@ -1,5 +1,11 @@
-/**
- * 2024.1.22
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.validation;
 
@@ -20,7 +26,7 @@ import matsu.num.matrix.base.Matrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.1
+ * @version 21.0
  */
 public abstract class MatrixStructureAcceptance {
 

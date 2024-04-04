@@ -1,5 +1,11 @@
-/**
- * 2024.2.4
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.helper.matrix;
 
@@ -20,7 +26,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * {@linkplain InverstibleAndDeterminantStruct} のキャッシュの仕組みを提供している.
  * 
  * @author Matsuura Y.
- * @version 19.6
+ * @version 21.0
  * @param <MT> thisのタイプ, transposeメソッドの戻り値に影響
  * @param <IT> inverseのタイプ
  */

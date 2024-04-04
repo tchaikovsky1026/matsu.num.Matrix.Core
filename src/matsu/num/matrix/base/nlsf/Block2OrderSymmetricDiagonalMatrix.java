@@ -1,5 +1,11 @@
-/**
- * 2024.2.5
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -26,7 +32,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 1*1 あるいは 2*2の対称ブロック要素を持つ, ブロック対角行列とそれを係数に持つ連立方程式の解法を扱う.
  *
  * @author Matsuura Y.
- * @version 20.0
+ * @version 21.0
  */
 interface Block2OrderSymmetricDiagonalMatrix
         extends BandMatrix, Symmetric,

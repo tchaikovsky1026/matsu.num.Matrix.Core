@@ -1,5 +1,11 @@
-/**
- * 2023.11.30
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -23,7 +29,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * 行列積を扱う.
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 21.0
  */
 public final class MatrixMultiplication {
 

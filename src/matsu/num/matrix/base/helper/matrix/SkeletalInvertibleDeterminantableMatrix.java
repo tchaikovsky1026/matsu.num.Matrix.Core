@@ -1,5 +1,11 @@
-/**
- * 2024.1.19
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.helper.matrix;
 
@@ -18,7 +24,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * {@linkplain InverstibleAndDeterminantStruct} のキャッシュの仕組みを提供している.
  * 
  * @author Matsuura Y.
- * @version 19.0
+ * @version 21.0
  * @param <IT> inverseのタイプ
  * @deprecated 使用されていないため,一時的にdeprecatedにしている.
  */

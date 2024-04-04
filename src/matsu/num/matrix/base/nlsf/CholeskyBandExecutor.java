@@ -1,5 +1,11 @@
-/**
- * 2024.2.5
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -59,7 +65,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 20.0
+ * @version 21.0
  */
 public final class CholeskyBandExecutor
         extends SkeletalSolvingFactorizationExecutor<BandMatrix, SymmetrizedSquareTypeSolver>
@@ -72,7 +78,7 @@ public final class CholeskyBandExecutor
      */
     private CholeskyBandExecutor() {
         super();
-        
+
         //シングルトンを強制
         if (Objects.nonNull(INSTANCE)) {
             throw new AssertionError();

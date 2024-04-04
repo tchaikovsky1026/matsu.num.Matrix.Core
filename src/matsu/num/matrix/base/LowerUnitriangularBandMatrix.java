@@ -1,5 +1,11 @@
-/**
- * 2024.2.5
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base;
 
@@ -21,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 20.0
+ * @version 21.0
  */
 public final class LowerUnitriangularBandMatrix
         extends SkeletalMatrix implements LowerUnitriangular, BandMatrix {
@@ -319,7 +325,8 @@ public final class LowerUnitriangularBandMatrix
          *
          * @param bandMatrixDimension 下三角である帯行列構造
          * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
-         *             {@linkplain BandMatrixDimension#upperBandWidth} &gt; 0である場合
+         *             {@linkplain BandMatrixDimension#upperBandWidth} &gt;
+         *             0である場合
          * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
          * @throws NullPointerException 引数にnullが含まれる場合
          */
@@ -412,7 +419,8 @@ public final class LowerUnitriangularBandMatrix
          * @param bandMatrixDimension 下三角である帯行列構造
          * @return 単位行列で初期化されたビルダ
          * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
-         *             {@linkplain BandMatrixDimension#upperBandWidth} &gt; 0である場合
+         *             {@linkplain BandMatrixDimension#upperBandWidth} &gt;
+         *             0である場合
          * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
          * @throws NullPointerException 引数にnullが含まれる場合
          */

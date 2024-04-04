@@ -1,5 +1,11 @@
-/**
- * 2024.2.5
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base;
 
@@ -13,7 +19,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Matsuura Y.
- * @version 20.0
+ * @version 21.0
  */
 public final class MatrixDimension {
 

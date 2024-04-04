@@ -1,5 +1,11 @@
-/**
- * 2024.2.1
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -7,7 +13,7 @@ package matsu.num.matrix.base.nlsf;
  * 行列に対する処理が正常に行われなかったことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 20.0
+ * @version 21.0
  */
 final class ProcessFailedException extends Exception {
 

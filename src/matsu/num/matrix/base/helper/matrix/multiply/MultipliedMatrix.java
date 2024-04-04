@@ -1,5 +1,11 @@
-/**
- * 2023.11.30
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -11,7 +17,7 @@ import matsu.num.matrix.base.Matrix;
  * 行列が行列積として表現されていることを通知可能にするインターフェース.
  * 
  * @author Matsuura Y.
- * @version 17.1
+ * @version 21.0
  */
 public interface MultipliedMatrix extends Matrix {
 

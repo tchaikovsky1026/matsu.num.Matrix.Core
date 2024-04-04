@@ -1,5 +1,11 @@
-/**
- * 2024.1.19
+/*
+ * Copyright (c) 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
+/*
+ * 2024.4.4
  */
 package matsu.num.matrix.base;
 
@@ -26,7 +32,7 @@ package matsu.num.matrix.base;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 19.0
+ * @version 21.0
  */
 public interface Inversion {
 
