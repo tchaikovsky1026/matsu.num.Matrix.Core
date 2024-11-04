@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base.helper.matrix;
 
@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 import matsu.num.matrix.base.Determinantable;
 import matsu.num.matrix.base.Invertible;
 import matsu.num.matrix.base.Matrix;
+import matsu.num.matrix.base.SkeletalSymmetricMatrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
@@ -22,18 +23,30 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * 逆行列と行列式が計算可能な行列に対する, 骨格実装を提供する. <br>
- * {@linkplain InverstibleAndDeterminantStruct} のキャッシュの仕組みを提供している.
+ * 逆行列と行列式が計算可能な行列に対する, 骨格実装.
+ * 
+ * <p>
+ * このクラスは, {@link SkeletalSymmetricMatrix} による {@link #transpose()} の実装に加え,
+ * {@link #inverse()},
+ * {@link #determinant()}, {@link #logAbsDeterminant()},
+ * {@link #signOfDeterminant()}
+ * の適切な実装を提供する. <br>
+ * 初めてそれらの行列式, 逆行列関係のメソッドが呼ばれたときに,
+ * 行列式逆行列構造体である {@link InverstibleAndDeterminantStruct} を
+ * {@link #createInvAndDetWrapper()} によって生成, キャッシュし,
+ * 以降はそのキャッシュから値を抽出して戻す.
+ * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
- * @param <MT> thisのタイプ, transposeメソッドの戻り値に影響
+ * @version 22.0
+ * @param <MT> thisのタイプ, 再帰的ジェネリクスによりtransposeの戻り値型を具象クラスにゆだねる.
  * @param <IT> inverseのタイプ
  */
-public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extends Matrix, IT extends Matrix>
+public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<
+        MT extends SkeletalSymmetricInvertibleDeterminantableMatrix<MT, IT>,
+        IT extends Matrix>
+        extends SkeletalSymmetricMatrix<MT>
         implements Matrix, Invertible, Determinantable, Symmetric {
-
-    private final MT castedThis;
 
     //循環参照が生じるため, 逆行列は遅延初期化
     //逆行列と行列式はそれぞれの整合性のため, セットで扱う
@@ -46,20 +59,6 @@ public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extend
         super();
         this.invAndDetStructSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createInvAndDetWrapper());
-
-        /*
-         * 警告抑制をしているが, ジェネリックキャストなので実行時は全て
-         * Matrix に置き換えられ,
-         * ClassCastException は発生しない.
-         */
-        @SuppressWarnings("unchecked")
-        MT t = (MT) this;
-        this.castedThis = t;
-    }
-
-    @Override
-    public MT transpose() {
-        return this.castedThis;
     }
 
     @Override
@@ -95,12 +94,15 @@ public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<MT extend
      * 逆行列と行列式の生成を行う抽象メソッド.
      * 
      * <p>
-     * このメソッドは内部から呼ばれることが想定された内部から一度だけ呼ばれる. <br>
+     * {@link #inverse()},
+     * {@link #determinant()}, {@link #logAbsDeterminant()},
+     * {@link #signOfDeterminant()}
+     * を遅延初期化するために実装されるメソッドである. <br>
+     * それらのどれかが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけこのメソッドが呼ばれる. <br>
      * 公開してはいけない.
      * </p>
      * 
      * @return 行列式, 逆行列
      */
     protected abstract InverstibleAndDeterminantStruct<IT> createInvAndDetWrapper();
-
 }

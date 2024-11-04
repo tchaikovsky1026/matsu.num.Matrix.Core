@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.3
  */
 package matsu.num.matrix.base;
 
@@ -26,9 +26,10 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
-public final class GeneralMatrix extends SkeletalMatrix implements EntryReadableMatrix {
+public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
+        implements EntryReadableMatrix {
 
     /*
      * 行列の各要素を, 内部では1次元配列として,
@@ -66,6 +67,16 @@ public final class GeneralMatrix extends SkeletalMatrix implements EntryReadable
                             matrixDimension, row, column));
         }
         return entry[row * matrixDimension.columnAsIntValue() + column];
+    }
+
+    /**
+     * 外部からの呼び出し不可.
+     * 
+     * @return -
+     */
+    @Override
+    protected EntryReadableMatrix createTranspose() {
+        return EntryReadableMatrix.createTransposedOf(this);
     }
 
     /**
@@ -163,7 +174,9 @@ public final class GeneralMatrix extends SkeletalMatrix implements EntryReadable
      */
     @Override
     public String toString() {
-        return EntryReadableMatrix.toString(this);
+        return String.format(
+                "Matrix[dim:%s, %s]",
+                this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -176,7 +189,7 @@ public final class GeneralMatrix extends SkeletalMatrix implements EntryReadable
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
      * 有効要素数が大きすぎるとは, <br>
      * 行列の行数を <i>r</i>, 列数を <i>c</i> として, <br>
-     * <i>r</i> * <i>c</i> &gt; {@linkplain Integer#MAX_VALUE} <br>
+     * <i>r</i> * <i>c</i> &gt; {@link Integer#MAX_VALUE} <br>
      * である状態である.
      * </p>
      */

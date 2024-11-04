@@ -22,7 +22,7 @@ import matsu.num.matrix.base.VectorDimension;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class TranspositionBandTest {
+final class TranspositionBandTest {
 
     public static class 非対称帯行列に関する転置テスト {
 

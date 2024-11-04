@@ -3,10 +3,6 @@ package matsu.num.matrix.base;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -18,7 +14,7 @@ import org.junit.runner.RunWith;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class EntryReadableMatrixTest {
+final class EntryReadableMatrixTest {
 
     public static class 長方形行列に関する転置テスト {
 
@@ -132,57 +128,4 @@ public class EntryReadableMatrixTest {
             assertThat(transposedMatrix instanceof Symmetric, is(true));
         }
     }
-
-    public static class toStringの表示 {
-
-        private List<EntryReadableMatrix> matrixs;
-
-        @Before
-        public void before_行列_サイズ小() {
-            if (Objects.isNull(matrixs)) {
-                matrixs = new ArrayList<>();
-            }
-            MatrixDimension dimension = MatrixDimension.rectangle(2, 2);
-            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(dimension);
-            int count = 0;
-            for (int j = 0; j < dimension.rowAsIntValue(); j++) {
-                for (int k = 0; k < dimension.columnAsIntValue(); k++) {
-                    count++;
-                    builder.setValue(j, k, count);
-                }
-            }
-            EntryReadableMatrix matrix = builder.build();
-            matrixs.add(matrix);
-        }
-
-        @Before
-        public void before_行列_サイズ大() {
-            if (Objects.isNull(matrixs)) {
-                matrixs = new ArrayList<>();
-            }
-            MatrixDimension dimension = MatrixDimension.rectangle(3, 4);
-            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(dimension);
-            int count = 0;
-            for (int j = 0; j < dimension.rowAsIntValue(); j++) {
-                for (int k = 0; k < dimension.columnAsIntValue(); k++) {
-                    count++;
-                    builder.setValue(j, k, count);
-                }
-            }
-            EntryReadableMatrix matrix = builder.build();
-            matrixs.add(matrix);
-        }
-
-        @Test
-        public void test_toString表示_EntryReadableMatrix提供() {
-            System.out.println(EntryReadableMatrix.class.getName() + ":");
-            matrixs.stream()
-                    .forEach(m -> {
-                        System.out.println(EntryReadableMatrix.toString(m));
-                        System.out.println(EntryReadableMatrix.toString(m, "X", "YY"));
-                    });
-            System.out.println();
-        }
-    }
-
 }

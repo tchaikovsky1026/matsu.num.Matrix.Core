@@ -11,10 +11,12 @@ import org.junit.runner.RunWith;
 /**
  * {@link VectorDimension}クラスのテスト.
  *
- * @author Matsuura, Y.
+ * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class VectorDimensionTest {
+final class VectorDimensionTest {
+
+    public static final Class<?> TEST_CLASS = VectorDimension.class;
 
     public static class 生成に関するテスト {
 
@@ -67,6 +69,16 @@ public class VectorDimensionTest {
         @Test
         public void test_次元10000と10000はハッシュコードが等しい() {
             assertThat(VectorDimension.valueOf(10000).hashCode(), is(dimension_10000.hashCode()));
+        }
+    }
+
+    public static class toString表示 {
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(VectorDimension.valueOf(3));
+            System.out.println();
         }
     }
 }

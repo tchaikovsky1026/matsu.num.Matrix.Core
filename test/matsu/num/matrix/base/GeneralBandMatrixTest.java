@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class GeneralBandMatrixTest {
+final class GeneralBandMatrixTest {
+
+    public static final Class<?> TEST_CLASS = GeneralBandMatrix.class;
 
     public static class 帯行列の評価と演算に関する {
 
@@ -135,12 +137,17 @@ public class GeneralBandMatrixTest {
 
     public static class fromBandMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalMatrix implements BandMatrix {
+        private static class WrappedMatrix extends SkeletalAsymmetricMatrix<BandMatrix> implements BandMatrix {
 
             private final BandMatrix mx;
 
             WrappedMatrix(BandMatrix src) {
                 this.mx = Objects.requireNonNull(src);
+            }
+
+            @Override
+            protected BandMatrix createTranspose() {
+                return mx.transpose();
             }
 
             @Override
@@ -198,7 +205,35 @@ public class GeneralBandMatrixTest {
                 }
             }
         }
-
     }
 
+    public static class toString表示 {
+
+        private Matrix mx;
+
+        @Before
+        public void before_行列を生成() {
+            /*
+             * 1 0 0
+             * 4 2 0
+             * 5 6 3
+             */
+            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(BandMatrixDimension.of(3, 2, 0));
+            builder.setValue(0, 0, 1);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 2);
+            builder.setValue(2, 0, 5);
+            builder.setValue(2, 1, 6);
+            builder.setValue(2, 2, 3);
+            mx = builder.build();
+        }
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(mx);
+            System.out.println(mx.transpose());
+            System.out.println();
+        }
+    }
 }

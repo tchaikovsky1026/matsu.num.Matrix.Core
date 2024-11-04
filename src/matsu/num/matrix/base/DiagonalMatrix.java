@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base;
 
@@ -23,10 +23,10 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
-public interface DiagonalMatrix extends BandMatrix, Symmetric,
-        Invertible, Determinantable {
+public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
+        Invertible, Determinantable permits DiagonalMatrixSealed, UnitMatrix {
 
     @Override
     public abstract Optional<? extends DiagonalMatrix> inverse();
@@ -99,7 +99,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            DiagonalMatrix out = new DiagonalMatrixImpl(this.bandMatrixDimension, this.diagonalEntry);
+            DiagonalMatrix out = new DiagonalMatrixImpl(this);
             this.diagonalEntry = null;
 
             return out;
@@ -137,8 +137,9 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
          * 対角行列の実装.
          */
         private static final class DiagonalMatrixImpl
-                extends SkeletalSymmetricInvertibleDeterminantableMatrix<DiagonalMatrix, DiagonalMatrix>
-                implements DiagonalMatrix {
+                extends SkeletalSymmetricInvertibleDeterminantableMatrix<
+                        DiagonalMatrixImpl, DiagonalMatrix>
+                implements DiagonalMatrixSealed {
 
             private final BandMatrixDimension bandMatrixDimension;
             private final double[] diagonalEntry;
@@ -146,36 +147,20 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
             private final double entryNormMax;
 
             /**
-             * thisの逆行列と行列式を表す. <br>
-             * すでに計算されている場合について埋め込まれる. <br>
-             * もし計算されていない状態(ビルダから生成された場合)はnull.
+             * ビルダから呼ばれる.
              */
-            private final InverstibleAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse;
+            DiagonalMatrixImpl(final Builder builder) {
+                this(builder.bandMatrixDimension, builder.diagonalEntry);
+            }
 
             /**
-             * ビルダから呼ばれる.
+             * 内部から呼ばれる.
              */
             private DiagonalMatrixImpl(final BandMatrixDimension bandMatrixDimension, double[] diagonalEntry) {
                 this.bandMatrixDimension = bandMatrixDimension;
                 this.diagonalEntry = diagonalEntry;
 
                 this.entryNormMax = this.calcEntryNormMax();
-
-                this.invAndDetOfInverse = null;
-            }
-
-            /**
-             * 内部から呼ばれる. <br>
-             * 生成される行列に対し, 逆行列を直接紐づける.
-             */
-            private DiagonalMatrixImpl(final BandMatrixDimension bandMatrixDimension, double[] diagonalEntry,
-                    InverstibleAndDeterminantStruct<DiagonalMatrix> invAndDetOfInverse) {
-                this.bandMatrixDimension = bandMatrixDimension;
-                this.diagonalEntry = diagonalEntry;
-
-                this.entryNormMax = this.calcEntryNormMax();
-
-                this.invAndDetOfInverse = Objects.requireNonNull(invAndDetOfInverse);
             }
 
             @Override
@@ -204,6 +189,16 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                 }
             }
 
+            /**
+             * 外部からの呼び出し不可
+             * 
+             * @return -
+             */
+            @Override
+            protected DiagonalMatrixImpl self() {
+                return this;
+            }
+
             @Override
             public Vector operate(Vector operand) {
 
@@ -230,10 +225,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
 
             @Override
             protected InverstibleAndDeterminantStruct<DiagonalMatrix> createInvAndDetWrapper() {
-                if (Objects.nonNull(this.invAndDetOfInverse)) {
-                    return this.invAndDetOfInverse;
-                }
-                return new CreateInvAndDetWrapper(this).execute();
+                return new CreateInvAndDetWrapper().execute();
             }
 
             @Override
@@ -258,14 +250,16 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
              */
             @Override
             public String toString() {
-                return BandMatrix.toString(this, "diagonal");
+                return String.format(
+                        "Matrix[band:%s, %s, diagonal]",
+                        this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
             }
 
             /**
-             * {@linkplain Block2OrderSymmetricDiagonalMatrixImpl} の内部で使う,
+             * {@link Block2OrderSymmetricDiagonalMatrixImpl} の内部で使う,
              * 行列式と逆行列の計算を支援する仕組み.
              */
-            private static final class CreateInvAndDetWrapper {
+            private final class CreateInvAndDetWrapper {
 
                 //logAbsDetの計算で使う定数
                 private static final double SHIFT_CONSTANT = 1E150;
@@ -273,8 +267,6 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                 private static final double REVERSE_SHIFT_CONSTANT = 1 / SHIFT_CONSTANT;
                 private static final double REVERSE_SHIFT_CONSTANT_SQUARE = 1 / SHIFT_CONSTANT_SQUARE;
                 private static final double LOG_SHIFT_CONSTANT = Math.log(SHIFT_CONSTANT);
-
-                private final DiagonalMatrixImpl src;
 
                 /*
                  * 配列は結果行列内に埋め込まれるので, このクラス内での値の書き換えに注意する.
@@ -286,9 +278,8 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                 private int shifting;
                 private double absDetResidual;
 
-                CreateInvAndDetWrapper(DiagonalMatrixImpl src) {
+                CreateInvAndDetWrapper() {
                     super();
-                    this.src = src;
                 }
 
                 /**
@@ -298,7 +289,7 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                  */
                 public InverstibleAndDeterminantStruct<DiagonalMatrix>
                         execute() {
-                    double[] thisDiagonalEntry = this.src.diagonalEntry;
+                    double[] thisDiagonalEntry = DiagonalMatrixImpl.this.diagonalEntry;
                     final int dimension = thisDiagonalEntry.length;
 
                     this.sign = true;
@@ -319,13 +310,11 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                     DeterminantValues thisDet = new DeterminantValues(
                             logAbsDeterminant,
                             sign ? 1 : -1);
-                    //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
-                    InverstibleAndDeterminantStruct<DiagonalMatrix> invWrapper =
-                            new InverstibleAndDeterminantStruct<>(
-                                    thisDet.createInverse(), this.src);
 
-                    DiagonalMatrix invMatrix = new DiagonalMatrixImpl(
-                            this.src.bandMatrixDimension, inverseDiagEntry, invWrapper);
+                    DiagonalMatrix invMatrix = new InverseAndDeterminantAttachedDiagonalMatrixImpl(
+                            new DiagonalMatrixImpl(
+                                    DiagonalMatrixImpl.this.bandMatrixDimension, inverseDiagEntry),
+                            thisDet.createInverse(), DiagonalMatrixImpl.this);
 
                     return new InverstibleAndDeterminantStruct<>(thisDet, invMatrix);
                 }
@@ -393,9 +382,87 @@ public interface DiagonalMatrix extends BandMatrix, Symmetric,
                 private static enum State {
                     REGULAR, SINGULAR;
                 }
+            }
+        }
 
+        /**
+         * 行列式と逆行列を直接結びつけた対角行列. <br>
+         * originalをラップし, 行列式と逆行列関連のメソッドを隠ぺいする.
+         */
+        private static final class InverseAndDeterminantAttachedDiagonalMatrixImpl
+                extends SkeletalSymmetricMatrix<InverseAndDeterminantAttachedDiagonalMatrixImpl>
+                implements DiagonalMatrixSealed {
+
+            private final DiagonalMatrix original;
+            private final DeterminantValues determinantValues;
+            private final Optional<DiagonalMatrix> opInverse;
+
+            /**
+             * 唯一のコンストラクタ.
+             * 引数の正当性はチェックしていない.
+             */
+            InverseAndDeterminantAttachedDiagonalMatrixImpl(DiagonalMatrix original,
+                    DeterminantValues determinantValues, DiagonalMatrix inverse) {
+                super();
+                this.original = original;
+                this.determinantValues = determinantValues;
+                this.opInverse = Optional.of(inverse);
+            }
+
+            @Override
+            public BandMatrixDimension bandMatrixDimension() {
+                return this.original.bandMatrixDimension();
+            }
+
+            @Override
+            public double valueAt(int row, int column) {
+                return this.original.valueAt(row, column);
+            }
+
+            @Override
+            public double entryNormMax() {
+                return this.original.entryNormMax();
+            }
+
+            @Override
+            public Vector operate(Vector operand) {
+                return this.original.operate(operand);
+            }
+
+            @Override
+            public Vector operateTranspose(Vector operand) {
+                return this.original.operateTranspose(operand);
+            }
+
+            @Override
+            public double determinant() {
+                return this.determinantValues.determinant();
+            }
+
+            @Override
+            public double logAbsDeterminant() {
+                return this.determinantValues.logAbsDeterminant();
+            }
+
+            @Override
+            public int signOfDeterminant() {
+                return this.determinantValues.sign();
+            }
+
+            @Override
+            public Optional<? extends DiagonalMatrix> inverse() {
+                return this.opInverse;
+            }
+
+            @Override
+            protected InverseAndDeterminantAttachedDiagonalMatrixImpl self() {
+                return this;
+            }
+
+            @Override
+            public String toString() {
+                return this.original.toString();
             }
         }
     }
-
 }

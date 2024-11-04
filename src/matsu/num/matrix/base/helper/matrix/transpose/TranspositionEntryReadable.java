@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base.helper.matrix.transpose;
 
@@ -17,10 +17,10 @@ import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 
 /**
- * {@linkplain EntryReadableMatrix}の転置を扱う.
+ * {@link EntryReadableMatrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public final class TranspositionEntryReadable {
 
@@ -33,8 +33,8 @@ public final class TranspositionEntryReadable {
     }
 
     /**
-     * 行列の転置行列を生成する. <br>
-     * {@linkplain Symmetric}が付与されている場合, 戻り値も{@linkplain Symmetric}である.
+     * {@link EntryReadableMatrix} の推奨される実装規約に則った転置行列を返す. <br>
+     * {@link Symmetric} が付与されている場合は, 引数をそのまま返す.
      *
      * @param original 元の行列
      * @return 転置行列
@@ -108,7 +108,9 @@ public final class TranspositionEntryReadable {
 
         @Override
         public String toString() {
-            return EntryReadableMatrix.toString(this);
+            return String.format(
+                    "Matrix[dim:%s, %s]",
+                    this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
         }
     }
 }

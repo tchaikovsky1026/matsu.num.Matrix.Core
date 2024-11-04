@@ -23,7 +23,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class ModifiedCholeskyPivotingExecutorTest {
+final class ModifiedCholeskyPivotingExecutorTest {
 
     public static final Class<?> TEST_CLASS = ModifiedCholeskyPivotingExecutor.class;
 
@@ -320,7 +320,7 @@ public class ModifiedCholeskyPivotingExecutorTest {
             }
         }
     }
-    
+
     public static class toString表示 {
 
         private ModifiedCholeskyPivotingExecutor executor = ModifiedCholeskyPivotingExecutor.instance();

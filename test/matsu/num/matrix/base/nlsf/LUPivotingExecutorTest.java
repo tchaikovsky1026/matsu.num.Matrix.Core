@@ -22,7 +22,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class LUPivotingExecutorTest {
+final class LUPivotingExecutorTest {
     public static final Class<?> TEST_CLASS = LUPivotingExecutor.class;
 
     public static class 生成に関する {

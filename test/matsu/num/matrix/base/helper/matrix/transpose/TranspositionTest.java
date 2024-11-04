@@ -22,7 +22,7 @@ import matsu.num.matrix.base.VectorDimension;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class TranspositionTest {
+final class TranspositionTest {
 
     public static class 長方形行列に関する転置テスト {
 

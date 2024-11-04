@@ -21,8 +21,8 @@ import matsu.num.matrix.base.Vector;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class LUBandExecutorTest {
-    
+final class LUBandExecutorTest {
+
     public static final Class<?> TEST_CLASS = LUBandExecutor.class;
 
     public static class 要ピボッティング行列での振る舞い検証 {
@@ -259,7 +259,7 @@ public class LUBandExecutorTest {
             }
         }
     }
-    
+
     public static class toString表示 {
 
         private LUBandExecutor executor = LUBandExecutor.instance();

@@ -18,7 +18,9 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class LowerUnitriangularBandMatrixTest {
+final class LowerUnitriangularBandMatrixTest {
+
+    public static final Class<?> TEST_CLASS = LowerUnitriangularBandMatrix.class;
 
     public static class 生成に関する {
 
@@ -163,6 +165,38 @@ public class LowerUnitriangularBandMatrixTest {
             double[] expected = { 3 };
             Vector result = lbm.inverse().get().operateTranspose(right);
             assertThat(Arrays.equals(result.entryAsArray(), expected), is(true));
+        }
+    }
+
+    public static class toString表示 {
+
+        private LowerUnitriangular lbm;
+
+        @Before
+        public void before_サイズ4_成分2_3_4_5_6の単位下三角行列を生成() {
+            /*
+             * 1 0 0 0
+             * 2 1 0 0
+             * 3 4 1 0
+             * 0 5 6 1
+             */
+            LowerUnitriangularBandMatrix.Builder builder =
+                    LowerUnitriangularBandMatrix.Builder.unit(BandMatrixDimension.of(4, 2, 0));
+            builder.setValue(1, 0, 2);
+            builder.setValue(2, 0, 3);
+            builder.setValue(2, 1, 4);
+            builder.setValue(3, 1, 5);
+            builder.setValue(3, 2, 6);
+            lbm = builder.build();
+        }
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(lbm);
+            System.out.println(lbm.transpose());
+            System.out.println(lbm.inverse().get());
+            System.out.println();
         }
     }
 }

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.2
  */
 package matsu.num.matrix.base;
 
@@ -21,7 +21,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public final class BandMatrixDimension {
 
@@ -194,7 +194,7 @@ public final class BandMatrixDimension {
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code (dim(%dimension), band(%l, %u))}
+     * {@code (dim:(%dimension), bandwidth(%l, %u))}
      * </p>
      * 
      * @return 説明表現
@@ -202,7 +202,7 @@ public final class BandMatrixDimension {
     @Override
     public String toString() {
         return String.format(
-                "[dim%s, band(%s, %s)]",
+                "[dim:%s, bandwidth:(%s, %s)]",
                 this.matrixDimension, this.lowerBandWidth, this.upperBandWidth);
     }
 

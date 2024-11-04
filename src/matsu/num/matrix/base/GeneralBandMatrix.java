@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.3
  */
 package matsu.num.matrix.base;
 
@@ -26,9 +26,9 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
-public final class GeneralBandMatrix extends SkeletalMatrix implements BandMatrix {
+public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix> implements BandMatrix {
 
     /*
      * 行列の各要素は対角成分, 狭義下三角成分, 狭義上三角成分に分けて, それぞれ1次元配列として扱う.
@@ -99,6 +99,16 @@ public final class GeneralBandMatrix extends SkeletalMatrix implements BandMatri
         default:
             throw new AssertionError("Bug: 列挙型に想定外の値");
         }
+    }
+
+    /**
+     * 外部からの呼び出し不可.
+     * 
+     * @return -
+     */
+    @Override
+    protected BandMatrix createTranspose() {
+        return BandMatrix.createTransposedOf(this);
     }
 
     /**
@@ -245,7 +255,9 @@ public final class GeneralBandMatrix extends SkeletalMatrix implements BandMatri
      */
     @Override
     public String toString() {
-        return BandMatrix.toString(this);
+        return String.format(
+                "Matrix[band:%s, %s]",
+                this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -258,7 +270,7 @@ public final class GeneralBandMatrix extends SkeletalMatrix implements BandMatri
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
      * 有効要素数が大きすぎるとは, <br>
      * 行列の行数(= 列数)を <i>n</i>, 上側帯幅と下側帯幅の大きい方を <i>b</i> として, <br>
-     * <i>n</i> * <i>b</i> &gt; {@linkplain Integer#MAX_VALUE} <br>
+     * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE} <br>
      * である状態である.
      * </p>
      */

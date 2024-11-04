@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.3
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -19,7 +19,7 @@ import java.util.Optional;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.OrthogonalMatrix;
-import matsu.num.matrix.base.SkeletalOrthogonalMatrix;
+import matsu.num.matrix.base.SkeletalAsymmetricOrthogonalMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 直交行列の行列積を扱う.
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public final class OrthogonalMatrixMultiplication {
 
@@ -52,7 +52,7 @@ public final class OrthogonalMatrixMultiplication {
         if (following.length == 0) {
             return Objects.requireNonNull(first);
         }
-        return new MultiplyingSeries(first, following);
+        return MultiplyingSeries.from(first, following);
     }
 
     /**
@@ -68,42 +68,16 @@ public final class OrthogonalMatrixMultiplication {
      * 直交行列の行列積を表現する行列.
      */
     private static final class MultiplyingSeries
-            extends SkeletalOrthogonalMatrix
+            extends SkeletalAsymmetricOrthogonalMatrix<MultipliedOrthogonalMatrix>
             implements MultipliedOrthogonalMatrix {
 
         private final Deque<OrthogonalMatrix> series;
         private final MatrixDimension matrixDimension;
 
-        private final OrthogonalMatrix transpose;
-
-        MultiplyingSeries(OrthogonalMatrix first, OrthogonalMatrix... following) {
-            this.transpose = null;
-
-            Deque<OrthogonalMatrix> rawSeries = new LinkedList<>();
-            rawSeries.add(Objects.requireNonNull(first));
-            for (OrthogonalMatrix mx : following) {
-                rawSeries.add(Objects.requireNonNull(mx));
-            }
-
-            this.series = expand(
-                    requireFormatMatch(rawSeries)
-                            .orElseThrow(() -> new MatrixFormatMismatchException("行列積が定義不可な組み合わせ")));
-
-            this.matrixDimension = this.series.getFirst().matrixDimension();
-        }
-
-        /**
-         * このクラス内部から呼ばれる. <br>
-         * transposeを表現するためのコンストラクタ.
-         * 
-         */
-        private MultiplyingSeries(MatrixDimension matrixDimension,
-                Deque<OrthogonalMatrix> series, OrthogonalMatrix transpose) {
+        private MultiplyingSeries(MatrixDimension matrixDimension, Deque<OrthogonalMatrix> series) {
             super();
-            this.series = series;
-            //直交行列は正方行列なので, 行列次元をそのまま得る
             this.matrixDimension = matrixDimension;
-            this.transpose = Objects.requireNonNull(transpose);
+            this.series = series;
         }
 
         /**
@@ -182,21 +156,99 @@ public final class OrthogonalMatrixMultiplication {
         }
 
         @Override
-        protected OrthogonalMatrix createInverse() {
-            if (Objects.nonNull(this.transpose)) {
-                return this.transpose;
-            }
+        protected MultipliedOrthogonalMatrix createTranspose() {
 
             Deque<OrthogonalMatrix> transposedSeries = new LinkedList<>();
             for (Iterator<OrthogonalMatrix> ite = this.series.descendingIterator(); ite.hasNext();) {
                 transposedSeries.add(ite.next().transpose());
             }
-            return new MultiplyingSeries(this.matrixDimension.transpose(), transposedSeries, this);
+
+            return new TransposeAttachedMultipliedOrthogonalMatrix(
+                    new MultiplyingSeries(this.matrixDimension.transpose(), transposedSeries),
+                    Optional.of(this));
+        }
+
+        /**
+         * <p>
+         * 行列積の転置は行列積で表現される. <br>
+         * それを実現することを意図して,
+         * {@link MultipliedOrthogonalMatrix} を返すように実装されなければならない.
+         * </p>
+         */
+        static MultipliedOrthogonalMatrix from(OrthogonalMatrix first, OrthogonalMatrix... following) {
+            Deque<OrthogonalMatrix> rawSeries = new LinkedList<>();
+            rawSeries.add(Objects.requireNonNull(first));
+            for (OrthogonalMatrix mx : following) {
+                rawSeries.add(Objects.requireNonNull(mx));
+            }
+
+            Deque<OrthogonalMatrix> series = expand(
+                    requireFormatMatch(rawSeries)
+                            .orElseThrow(() -> new MatrixFormatMismatchException("行列積が定義不可な組み合わせ")));
+
+            MatrixDimension matrixDimension = series.getFirst().matrixDimension();
+
+            return new MultiplyingSeries(matrixDimension, series);
+        }
+    }
+
+    /**
+     * 転置行列を直接紐づけるように {@link MultipliedOrthogonalMatrix} をラップする. <br>
+     * オリジナルの transpose, inverse は呼ばれなくなる.
+     */
+    private static final class TransposeAttachedMultipliedOrthogonalMatrix
+            implements MultipliedOrthogonalMatrix {
+
+        private final MultipliedOrthogonalMatrix original;
+        private final Optional<MultipliedOrthogonalMatrix> opTranspose;
+
+        /**
+         * 唯一のコンストラクタ.
+         * 引数の正当性は検査されていない.
+         */
+        TransposeAttachedMultipliedOrthogonalMatrix(
+                MultipliedOrthogonalMatrix original,
+                Optional<MultipliedOrthogonalMatrix> opTranspose) {
+            super();
+            this.original = original;
+            this.opTranspose = opTranspose;
+        }
+
+        @Override
+        public MatrixDimension matrixDimension() {
+            return this.original.matrixDimension();
+        }
+
+        @Override
+        public Vector operate(Vector operand) {
+            return this.original.operate(operand);
+        }
+
+        @Override
+        public Vector operateTranspose(Vector operand) {
+            return this.original.operateTranspose(operand);
+        }
+
+        @Override
+        public MultipliedOrthogonalMatrix transpose() {
+            return this.opTranspose.get();
+        }
+
+        @Override
+        public Optional<? extends MultipliedOrthogonalMatrix> inverse() {
+            return this.opTranspose;
+        }
+
+        @Override
+        public Deque<? extends OrthogonalMatrix> toSeries() {
+            return this.original.toSeries();
         }
 
         @Override
         public String toString() {
-            return OrthogonalMatrix.toString(this);
+            return String.format(
+                    "Matrix[dim:%s, orthogonal]",
+                    this.matrixDimension());
         }
     }
 }

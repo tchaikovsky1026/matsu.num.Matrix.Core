@@ -19,7 +19,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class SymmetricMatrixTest {
+final class SymmetricMatrixTest {
 
     public static class 生成に関する {
 
@@ -176,7 +176,7 @@ public class SymmetricMatrixTest {
 
     public static class fromMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalMatrix implements Matrix, Symmetric {
+        private static class WrappedMatrix extends SkeletalSymmetricMatrix<WrappedMatrix> implements Matrix, Symmetric {
 
             private final Matrix mx;
 
@@ -200,6 +200,11 @@ public class SymmetricMatrixTest {
             @Override
             public Vector operateTranspose(Vector operand) {
                 return mx.operateTranspose(operand);
+            }
+
+            @Override
+            protected WrappedMatrix self() {
+                return this;
             }
 
         }
@@ -234,7 +239,8 @@ public class SymmetricMatrixTest {
 
     public static class fromEntryReadableに関する {
 
-        private static class WrappedMatrix extends SkeletalMatrix implements EntryReadableMatrix, Symmetric {
+        private static class WrappedMatrix extends SkeletalSymmetricMatrix<WrappedMatrix>
+                implements EntryReadableMatrix, Symmetric {
 
             private final EntryReadableMatrix mx;
 
@@ -268,6 +274,11 @@ public class SymmetricMatrixTest {
             @Override
             public double entryNormMax() {
                 return mx.entryNormMax();
+            }
+
+            @Override
+            protected WrappedMatrix self() {
+                return this;
             }
         }
 
@@ -317,7 +328,7 @@ public class SymmetricMatrixTest {
 
         @Test
         public void test_転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalMatrix) {
+            if (original instanceof SkeletalAsymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose(), is(original.transpose()));
             }
@@ -326,7 +337,7 @@ public class SymmetricMatrixTest {
 
         @Test
         public void test_転置の転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalMatrix) {
+            if (original instanceof SkeletalAsymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose().transpose(), is(original.transpose().transpose()));
             }
@@ -335,7 +346,7 @@ public class SymmetricMatrixTest {
 
         @Test
         public void test_転置の転置は自身と同一() {
-            if (original instanceof SkeletalMatrix) {
+            if (original instanceof SkeletalAsymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose().transpose(), is(original));
             }

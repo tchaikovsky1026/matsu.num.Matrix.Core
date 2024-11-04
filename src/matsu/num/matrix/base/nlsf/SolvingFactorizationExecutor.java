@@ -28,12 +28,12 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * <p>
  * 対応できる行列の型は型パラメータにより制限されるが,
  * 分解が成功するかどうかは具象クラスにゆだねられる. <br>
- * 行列に構造上の問題がある場合は {@linkplain IllegalArgumentException} のサブクラスの例外をスローし,
+ * 行列に構造上の問題がある場合は {@link IllegalArgumentException} のサブクラスの例外をスローし,
  * 構造に問題はないが行列分解に失敗する場合は空のオプショナルを返す.
  * </p>
  * 
  * <p>
- * 行列に構造上の問題があるかどうかは, {@linkplain #accepts(Matrix)} により検証される. <br>
+ * 行列に構造上の問題があるかどうかは, {@link #accepts(Matrix)} により検証される. <br>
  * 戻り値の {@code type()} がacceptedならば, 行列分解時に例外はスローされない. <br>
  * acceptedにならない条件はドキュメントに記載するべきである. <br>
  * </p>
@@ -85,9 +85,9 @@ public interface SolvingFactorizationExecutor<
      * </p>
      * 
      * <p>
-     * 分解が開始されるためには, {@linkplain #accepts(Matrix)} の戻り値の {@code type()}
+     * 分解が開始されるためには, {@link #accepts(Matrix)} の戻り値の {@code type()}
      * がacceptedでなければならない. <br>
-     * そうでないなら, {@linkplain IllegalArgumentException} (のサブクラス) の例外がスローされる.
+     * そうでないなら, {@link IllegalArgumentException} (のサブクラス) の例外がスローされる.
      * </p>
      * 
      * <p>
@@ -109,11 +109,11 @@ public interface SolvingFactorizationExecutor<
      * <p>
      * 行列の正則性を判定する相対epsilonにデフォルト値を使用して, 線形連立方程式の解法向けの行列分解を実行する. <br>
      * デフォルトepsilonは次の値である:
-     * {@linkplain PseudoRegularMatrixProcess#DEFAULT_EPSILON}
+     * {@link PseudoRegularMatrixProcess#DEFAULT_EPSILON}
      * </p>
      * 
      * <p>
-     * 例外と戻り値の仕様は {@linkplain #apply(Matrix, double)} に準拠する.
+     * 例外と戻り値の仕様は {@link #apply(Matrix, double)} に準拠する.
      * </p>
      * 
      * @param matrix 分解する行列

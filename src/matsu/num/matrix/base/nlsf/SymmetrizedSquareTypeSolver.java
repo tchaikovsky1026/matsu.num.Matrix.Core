@@ -16,20 +16,20 @@ import matsu.num.matrix.base.Symmetric;
  * <p>
  * 対称化二乗型分解:
  * 正定値対称行列 A について A = BB<sup>T</sup> と分解された
- * {@linkplain LUTypeSolver}. <br>
+ * {@link LUTypeSolver}. <br>
  * B に関する線形連立方程式解法の機能も提供する. <br>
  * 主に, Cholesky分解の抽象化.
  * </p>
  * 
  * <p>
- * {@linkplain #target()} によって返される行列 A,
- * {@linkplain #inverse()} によって返される行列 A<sup>-1</sup> には,
- * {@linkplain Symmetric} が付与されている.
+ * {@link #target()} によって返される行列 A,
+ * {@link #inverse()} によって返される行列 A<sup>-1</sup> には,
+ * {@link Symmetric} が付与されている.
  * </p>
  * 
  * <p>
- * 紐づけられる {@linkplain Matrix} はインスタンスの生成と同時に決定される. <br>
- * {@linkplain Matrix} が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
+ * 紐づけられる {@link Matrix} はインスタンスの生成と同時に決定される. <br>
+ * {@link Matrix} が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
  * 全てのメソッドは関数的かつスレッドセーフである.
  * </p>
  * 

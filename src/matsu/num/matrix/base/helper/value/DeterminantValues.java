@@ -12,7 +12,7 @@ package matsu.num.matrix.base.helper.value;
 import matsu.num.matrix.base.Determinantable;
 
 /**
- * 行列式({@linkplain Determinantable})に関する値のデータクラス.
+ * 行列式({@link Determinantable})に関する値のデータクラス.
  * 
  * @author Matsuura Y.
  * @version 21.0

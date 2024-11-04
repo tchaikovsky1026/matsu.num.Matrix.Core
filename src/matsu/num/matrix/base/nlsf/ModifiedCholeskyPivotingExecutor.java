@@ -34,12 +34,12 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * <p>
- * この行列分解が提供する逆行列には {@linkplain Symmetric} が付与されている.
+ * この行列分解が提供する逆行列には {@link Symmetric} が付与されている.
  * </p>
  * 
  * <p>
  * メソッド
- * {@linkplain SolvingFactorizationExecutor#accepts(Matrix)}
+ * {@link SolvingFactorizationExecutor#accepts(Matrix)}
  * でrejectされる追加条件は次のとおりである.
  * </p>
  * <ul>
@@ -49,14 +49,14 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * 
  * <p>
  * メソッド
- * {@linkplain SolvingFactorizationExecutor#apply(Matrix, double)}
+ * {@link SolvingFactorizationExecutor#apply(Matrix, double)}
  * で空が返る追加条件は無い.
  * </p>
  * 
  * <p>
  * 有効要素数が大きすぎるとは, <br>
  * 行列の行数(= 列数)を <i>n</i> として, <br>
- * <i>n</i> * (<i>n</i> + 1) &gt; {@linkplain Integer#MAX_VALUE} <br>
+ * <i>n</i> * (<i>n</i> + 1) &gt; {@link Integer#MAX_VALUE} <br>
  * である状態である.
  * </p>
  * 
@@ -173,7 +173,7 @@ public final class ModifiedCholeskyPivotingExecutor
 
         /**
          * {@inheritDoc } <br>
-         * 戻り値は対称行列であり, {@linkplain Symmetric}が付与されている.
+         * 戻り値は対称行列であり, {@link Symmetric}が付与されている.
          */
         @Override
         protected InverstibleAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {

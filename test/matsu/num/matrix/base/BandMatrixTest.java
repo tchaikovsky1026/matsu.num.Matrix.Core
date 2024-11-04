@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class BandMatrixTest {
+final class BandMatrixTest {
 
     public static class 非対称帯行列に関する転置テスト {
 
@@ -147,33 +147,6 @@ public class BandMatrixTest {
         @Test
         public void test_転置しても対称である() {
             assertThat(transposedMatrix instanceof Symmetric, is(true));
-        }
-    }
-
-    public static class toStringの表示 {
-
-        @Test
-        public void test_toString表示_BandMatrix提供() {
-            BandMatrixDimension dimension = BandMatrixDimension.of(4, 2, 1);
-            GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(dimension);
-            builder.setValue(0, 0, 1);
-            builder.setValue(0, 1, 2);
-            builder.setValue(1, 0, 5);
-            builder.setValue(1, 1, 6);
-            builder.setValue(1, 2, 7);
-            builder.setValue(2, 0, 9);
-            builder.setValue(2, 1, 10);
-            builder.setValue(2, 2, 11);
-            builder.setValue(2, 3, 12);
-            builder.setValue(3, 1, 13);
-            builder.setValue(3, 2, 14);
-            builder.setValue(3, 3, 15);
-            BandMatrix bm = builder.build();
-
-            System.out.println(BandMatrix.class.getName() + ":");
-            System.out.println(BandMatrix.toString(bm));
-            System.out.println(BandMatrix.toString(bm, "X", "YY"));
-            System.out.println();
         }
     }
 }

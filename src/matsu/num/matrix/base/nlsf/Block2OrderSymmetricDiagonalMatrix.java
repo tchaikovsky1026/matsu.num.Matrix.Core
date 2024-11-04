@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.3
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -32,7 +32,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 1*1 あるいは 2*2の対称ブロック要素を持つ, ブロック対角行列とそれを係数に持つ連立方程式の解法を扱う.
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 interface Block2OrderSymmetricDiagonalMatrix
         extends BandMatrix, Symmetric,
@@ -194,7 +194,7 @@ interface Block2OrderSymmetricDiagonalMatrix
 
         private static final class Block2OrderSymmetricDiagonalMatrixImpl
                 extends SkeletalSymmetricInvertibleDeterminantableMatrix<
-                        Block2OrderSymmetricDiagonalMatrix, Block2OrderSymmetricDiagonalMatrix>
+                        Block2OrderSymmetricDiagonalMatrixImpl, Block2OrderSymmetricDiagonalMatrix>
                 implements Block2OrderSymmetricDiagonalMatrix {
 
             /*
@@ -284,6 +284,16 @@ interface Block2OrderSymmetricDiagonalMatrix
                 }
             }
 
+            /**
+             * 外部からの呼び出し不可
+             * 
+             * @return -
+             */
+            @Override
+            protected Block2OrderSymmetricDiagonalMatrixImpl self() {
+                return this;
+            }
+
             @Override
             public double entryNormMax() {
                 return this.entryNormMax;
@@ -337,16 +347,16 @@ interface Block2OrderSymmetricDiagonalMatrix
              * このオブジェクトの文字列説明表現を返す.
              * 
              * <p>
-             * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-             * おそらくは次のような表現であろう. <br>
-             * {@literal @hashCode[dimension: %dimension, entry: %entry, block2Order]}
+             * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない).
              * </p>
              * 
              * @return 説明表現
              */
             @Override
             public String toString() {
-                return EntryReadableMatrix.toString(this, "block2Order");
+                return String.format(
+                        "Matrix[band:%s, %s, block2Order]",
+                        this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
             }
 
             @Override
@@ -355,14 +365,14 @@ interface Block2OrderSymmetricDiagonalMatrix
                     return this.invAndDetOfInverse;
                 }
 
-                return new CreateInvAndDetWrapper(this).execute();
+                return new CreateInvAndDetWrapper().execute();
             }
 
             /**
-             * {@linkplain Block2OrderSymmetricDiagonalMatrixImpl} の内部で使う,
+             * {@link Block2OrderSymmetricDiagonalMatrixImpl} の内部で使う,
              * 行列式と逆行列の計算を支援する仕組み.
              */
-            private static final class CreateInvAndDetWrapper {
+            private final class CreateInvAndDetWrapper {
 
                 //logAbsDetの計算で使う定数
                 private static final double SHIFT_CONSTANT = 1E150;
@@ -370,8 +380,6 @@ interface Block2OrderSymmetricDiagonalMatrix
                 private static final double REVERSE_SHIFT_CONSTANT = 1 / SHIFT_CONSTANT;
                 private static final double REVERSE_SHIFT_CONSTANT_SQUARE = 1 / SHIFT_CONSTANT_SQUARE;
                 private static final double LOG_SHIFT_CONSTANT = Math.log(SHIFT_CONSTANT);
-
-                private final Block2OrderSymmetricDiagonalMatrixImpl src;
 
                 /*
                  * 配列は結果行列内に埋め込まれるので, このクラス内での値の書き換えに注意する.
@@ -384,9 +392,8 @@ interface Block2OrderSymmetricDiagonalMatrix
                 private int shifting;
                 private double absDetResidual;
 
-                CreateInvAndDetWrapper(Block2OrderSymmetricDiagonalMatrixImpl src) {
+                CreateInvAndDetWrapper() {
                     super();
-                    this.src = src;
                 }
 
                 /**
@@ -396,8 +403,8 @@ interface Block2OrderSymmetricDiagonalMatrix
                  */
                 public InverstibleAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix>
                         execute() {
-                    double[] thisDiagonalEntry = this.src.diagonalEntry;
-                    double[] thisSubdiagonalEntry = this.src.subdiagonalEntry;
+                    double[] thisDiagonalEntry = diagonalEntry;
+                    double[] thisSubdiagonalEntry = subdiagonalEntry;
                     final int dimension = thisDiagonalEntry.length;
 
                     this.sign = true;
@@ -442,10 +449,11 @@ interface Block2OrderSymmetricDiagonalMatrix
                     //逆行列に埋め込まれるinverse: 逆行列の行列式とthisを埋め込む
                     InverstibleAndDeterminantStruct<Block2OrderSymmetricDiagonalMatrix> invWrapper =
                             new InverstibleAndDeterminantStruct<>(
-                                    thisDet.createInverse(), this.src);
+                                    thisDet.createInverse(),
+                                    Block2OrderSymmetricDiagonalMatrixImpl.this);
 
                     Block2OrderSymmetricDiagonalMatrix invMatrix = new Block2OrderSymmetricDiagonalMatrixImpl(
-                            this.src.bandMatrixDimension, inverseDiagEntry, inverseSubDiagEntry, invWrapper);
+                            bandMatrixDimension, inverseDiagEntry, inverseSubDiagEntry, invWrapper);
 
                     return new InverstibleAndDeterminantStruct<>(thisDet, invMatrix);
                 }

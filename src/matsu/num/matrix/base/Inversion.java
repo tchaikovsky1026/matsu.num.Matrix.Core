@@ -16,7 +16,7 @@ package matsu.num.matrix.base;
  * 
  * <p>
  * このインターフェースの実装がインスタンス化された時点で,
- * {@linkplain #inverse()} により逆行列が取得できることが確定する.
+ * {@link #inverse()} により逆行列が取得できることが確定する.
  * </p>
  * 
  * <p>
@@ -27,7 +27,7 @@ package matsu.num.matrix.base;
  * <p>
  * 実装仕様: <br>
  * 逆行列が対称行列であることが確証できる場合,
- * {@linkplain #inverse()}の戻り値に{@linkplain Symmetric}マーカインターフェースを付与し,
+ * {@link #inverse()}の戻り値に{@link Symmetric}マーカインターフェースを付与し,
  * その旨を文書化すべきである.
  * </p>
  * 

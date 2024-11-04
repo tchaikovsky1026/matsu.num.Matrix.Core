@@ -10,7 +10,7 @@
 package matsu.num.matrix.base;
 
 /**
- * {@linkplain Matrix} インターフェースのサブタイプに付与される,
+ * {@link Matrix} インターフェースのサブタイプに付与される,
  * 対称行列仕様であることを示すマーカインターフェース.
  *
  * @author Matsuura Y.

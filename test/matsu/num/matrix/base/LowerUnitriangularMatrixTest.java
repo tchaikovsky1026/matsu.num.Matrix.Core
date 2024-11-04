@@ -18,7 +18,9 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class LowerUnitriangularMatrixTest {
+final class LowerUnitriangularMatrixTest {
+
+    public static final Class<?> TEST_CLASS = LowerUnitriangularMatrix.class;
 
     public static class 生成に関する {
 
@@ -163,4 +165,32 @@ public class LowerUnitriangularMatrixTest {
         }
     }
 
+    public static class toString表示 {
+
+        private LowerUnitriangular lm;
+
+        @Before
+        public void before_サイズ3_成分2_3_4の単位下三角行列を生成() {
+            /*
+             * 1 0 0
+             * 2 1 0
+             * 3 4 1
+             */
+            LowerUnitriangularMatrix.Builder builder =
+                    LowerUnitriangularMatrix.Builder.unit(MatrixDimension.square(3));
+            builder.setValue(1, 0, 2);
+            builder.setValue(2, 0, 3);
+            builder.setValue(2, 1, 4);
+            lm = builder.build();
+        }
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(lm);
+            System.out.println(lm.transpose());
+            System.out.println(lm.inverse().get());
+            System.out.println();
+        }
+    }
 }

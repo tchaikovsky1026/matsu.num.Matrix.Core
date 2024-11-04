@@ -21,7 +21,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class Block2OrderSymmetricDiagonalMatrixTest {
+final class Block2OrderSymmetricDiagonalMatrixTest {
 
     public static class ビルダに関する {
 

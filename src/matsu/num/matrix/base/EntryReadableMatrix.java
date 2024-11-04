@@ -5,32 +5,34 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base;
-
-import java.util.Objects;
 
 import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadable;
 
 /**
  * <p>
  * 成分に <i>O</i>(1) でアクセス可能な行列を表す. <br>
- * 成分に不正値 (inf, NaN) を含んではいけない
- * (扱うことができる値は {@linkplain #MIN_VALUE}, {@linkplain #MAX_VALUE} で規定される).
+ * 成分に不正値 (inf, NaN) を含まない
+ * (扱うことができる値は {@link #MIN_VALUE}, {@link #MAX_VALUE} で規定される).
  * </p>
  * 
  * <p>
- * {@linkplain Matrix} の説明の規約に従う.
+ * インスタンスの構築などで成分として適当かどうかを判断するには {@link #acceptValue(double)} メソッドを使用する. <br>
+ * もし値の修正を行うならば {@link #modified(double)} メソッドを使用する.
  * </p>
  * 
+ * <hr>
+ * 
+ * <h2>実装規約</h2>
+ * 
  * <p>
- * 値の検証には {@linkplain #acceptValue(double)} メソッドを使用する. <br>
- * もし値の修正を行うならば {@linkplain #modified(double)} メソッドを使用する.
+ * {@link Matrix} の規約に従う.
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public interface EntryReadableMatrix extends Matrix {
 
@@ -61,8 +63,11 @@ public interface EntryReadableMatrix extends Matrix {
      */
     public double entryNormMax();
 
+    @Override
+    public abstract EntryReadableMatrix transpose();
+
     /**
-     * {@linkplain EntryReadableMatrix} の成分として有効な値であるかを判定する.
+     * {@link EntryReadableMatrix} の成分として有効な値であるかを判定する.
      *
      * @param value 検証する値
      * @return 有効である場合はtrue
@@ -98,63 +103,7 @@ public interface EntryReadableMatrix extends Matrix {
     }
 
     /**
-     * 行列の転置行列を生成する. <br>
-     * {@linkplain Symmetric} が付与されている場合, 戻り値も {@linkplain Symmetric} である.
-     *
-     * @param original 元の行列
-     * @return 転置行列
-     * @throws NullPointerException 引数にnullが含まれる場合
-     */
-    public static EntryReadableMatrix createTransposedOf(EntryReadableMatrix original) {
-        return TranspositionEntryReadable.instance().apply(original);
-    }
-
-    /**
-     * {@linkplain EntryReadableMatrix} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
-     * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code EntryReadableMatrix[dim(%dimension), %entry]} <br>
-     * {@code EntryReadableMatrix[dim(%dimension), %character1, %character2,..., %entry]}
-     * </p>
-     * 
-     * <p>
-     * {@code matrix} が {@code null} の場合は, おそらくは次であろう. <br>
-     * {@code null}
-     * </p>
-     * 
-     * @param matrix インスタンス
-     * @param characters 付加する属性表現
-     * @return 説明表現
-     */
-    public static String toString(EntryReadableMatrix matrix, String... characters) {
-        if (Objects.isNull(matrix)) {
-            return "null";
-        }
-
-        StringBuilder fieldString = new StringBuilder();
-        fieldString.append("dim")
-                .append(matrix.matrixDimension());
-
-        if (Objects.nonNull(characters)) {
-            for (String character : characters) {
-                fieldString.append(", ")
-                        .append(character);
-            }
-        }
-
-        fieldString.append(", ")
-                .append(EntryReadableMatrix.toSimplifiedEntryString(matrix));
-
-        return String.format(
-                "EntryReadableMatrix[%s]",
-                fieldString.toString());
-    }
-
-    /**
-     * {@linkplain EntryReadableMatrix} の成分の値についての簡略化された文字列表現を返す.
+     * {@link EntryReadableMatrix} の成分の値についての簡略化された文字列表現を返す.
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
@@ -219,7 +168,7 @@ public interface EntryReadableMatrix extends Matrix {
      * </p>
      * 
      * @param matrix 行列
-     * @return {@linkplain String} 形式に変換された行列
+     * @return {@link String} 形式に変換された行列
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static String allEntryToCSVFormat(EntryReadableMatrix matrix) {
@@ -236,5 +185,37 @@ public interface EntryReadableMatrix extends Matrix {
         }
         sb.append(sp);
         return sb.toString();
+    }
+
+    /**
+     * 与えられた行列の転置行列を生成する.
+     * 
+     * <p>
+     * 引数 {@code original}, 戻り値 {@code returnValue} について,
+     * {@code returnValue.transpose() == original} が {@code true} である.
+     * <br>
+     * {@code original} に {@link Symmetric} が付与されている場合,
+     * {@code returnValue == original} が {@code true} である.
+     * </p>
+     * 
+     * <p>
+     * <i>
+     * <u>このメソッドの利用について</u> <br>
+     * {@link EntryReadableMatrix} およびそのサブタイプから転置行列を得るには,
+     * {@link #transpose()} を呼ぶことが推奨される. <br>
+     * このメソッドは {@link #transpose()} や
+     * {@link SkeletalAsymmetricMatrix#createTranspose()}
+     * の戻り値の生成を補助するために用意されている. <br>
+     * (ただし, {@link #transpose()}
+     * の複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * </i>
+     * </p>
+     *
+     * @param original 元の行列
+     * @return 転置行列
+     * @throws NullPointerException 引数にnullが含まれる場合
+     */
+    public static EntryReadableMatrix createTransposedOf(EntryReadableMatrix original) {
+        return TranspositionEntryReadable.instance().apply(original);
     }
 }

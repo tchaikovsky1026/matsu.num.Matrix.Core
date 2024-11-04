@@ -23,8 +23,8 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class ModifiedCholeskyBandExecutorTest {
-    
+final class ModifiedCholeskyBandExecutorTest {
+
     public static final Class<?> TEST_CLASS = ModifiedCholeskyBandExecutor.class;
 
     public static class 生成に関する {
@@ -180,8 +180,7 @@ public class ModifiedCholeskyBandExecutorTest {
         }
 
     }
-    
-    
+
     public static class toString表示 {
 
         private CholeskyBandExecutor executor = CholeskyBandExecutor.instance();

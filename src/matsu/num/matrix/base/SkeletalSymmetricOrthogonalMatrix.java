@@ -5,64 +5,58 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.3
  */
 package matsu.num.matrix.base;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
- * {@linkplain Symmetric} が付与された
- * {@linkplain OrthogonalMatrix} の骨格実装. <br>
- * {@linkplain OrthogonalMatrix#inverse()} の実装の提供が主な効果である.
+ * {@link Symmetric} が付与された
+ * {@link OrthogonalMatrix} の骨格実装.
  * </p>
  * 
  * <p>
- * 対称な直交行列は逆行列と転置行列が自分自身であるので,
- * それらを実現するように実装を提供し,
- * 同時にオーバーライドを禁止する.
+ * このクラスは, {@link #transpose()}, {@link #inverse()} の適切な実装を提供する. <br>
+ * {@link #transpose()} の戻り値は {@code this} である. <br>
+ * {@link #inverse()} が最初に呼ばれたときに
+ * {@code this} の {@link Optional} が生成, キャッシュされ,
+ * 以降はそのキャッシュを戻す. <br>
+ * ただし, 戻り値型を具象クラスにゆだねるため, ジェネリクスと {@link #self()} メソッドの実装を要求する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  * @param <T> {@code this} のタイプ,
- *            {@linkplain #transpose()},
- *            {@linkplain #inverse()} の戻り値型
+ *            {@link #transpose()},
+ *            {@link #inverse()} の戻り値型
  */
-public abstract class SkeletalSymmetricOrthogonalMatrix<T extends OrthogonalMatrix>
+public abstract class SkeletalSymmetricOrthogonalMatrix<
+        T extends SkeletalSymmetricOrthogonalMatrix<T>>
+        extends SkeletalSymmetricMatrix<T>
         implements OrthogonalMatrix, Symmetric {
 
-    private final T castedThis;
-    private final Optional<? extends T> thisOptional;
+    /**
+     * thisのオプショナルを生成するサプライヤ.
+     */
+    private final Supplier<Optional<T>> opSelfSupplier;
 
     /**
      * 骨格実装を生成する唯一のコンストラクタ.
      */
     protected SkeletalSymmetricOrthogonalMatrix() {
         super();
-        /*
-         * 警告抑制をしているが, ジェネリックキャストなので実行時は全て
-         * OrthogonalMatrix に置き換えられ,
-         * ClassCastException は発生しない.
-         */
-        @SuppressWarnings("unchecked")
-        T t = (T) this;
-        this.castedThis = t;
-
-        this.thisOptional = Optional.of(this.castedThis);
+        this.opSelfSupplier = ImmutableLazyCacheSupplier.of(() -> Optional.of(this.self()));
     }
 
     @Override
-    public final Optional<? extends T> inverse() {
-        return this.thisOptional;
-    }
-
-    @Override
-    public final T transpose() {
-        return this.castedThis;
+    public final Optional<T> inverse() {
+        return this.opSelfSupplier.get();
     }
 
     /**
@@ -74,4 +68,10 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<T extends OrthogonalMatr
         return this.operate(operand);
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "Matrix[dim:%s, orthogonal]",
+                this.matrixDimension());
+    }
 }

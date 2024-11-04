@@ -19,7 +19,7 @@ import matsu.num.matrix.base.common.ArraysUtil;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public final class VectorTest {
+final class VectorTest {
 
     public static class 二項演算に関するテスト {
 

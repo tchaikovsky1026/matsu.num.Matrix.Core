@@ -24,7 +24,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class CholeskyExecutorTest {
+final class CholeskyExecutorTest {
 
     public static final Class<?> TEST_CLASS = CholeskyExecutor.class;
 

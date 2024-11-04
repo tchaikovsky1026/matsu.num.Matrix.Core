@@ -16,7 +16,7 @@ import java.util.function.Function;
 import matsu.num.matrix.base.Matrix;
 
 /**
- * 拒絶を表す {@linkplain MatrixStructureAcceptance} を扱う.
+ * 拒絶を表す {@link MatrixStructureAcceptance} を扱う.
  * 
  * @author Matsuura Y.
  * @version 21.0

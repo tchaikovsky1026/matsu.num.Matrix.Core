@@ -18,7 +18,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public final class PermutationMatrixTest {
+final class PermutationMatrixTest {
 
     public static final Class<?> TEST_CLASS = PermutationMatrix.class;
 
@@ -215,7 +215,7 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_逆行列の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalOrthogonalMatrix) {
+            if (original instanceof SkeletalAsymmetricOrthogonalMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 //オプショナルの一致でテスト
                 assertThat(original.inverse() == original.inverse(), is(true));
@@ -225,7 +225,7 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_逆行列の逆行列の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalOrthogonalMatrix) {
+            if (original instanceof SkeletalAsymmetricOrthogonalMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.inverse().get().inverse() == original.inverse().get().inverse(), is(true));
             }
@@ -234,7 +234,7 @@ public final class PermutationMatrixTest {
 
         @Test
         public void test_逆行列の逆行列は自身と同一() {
-            if (original instanceof SkeletalOrthogonalMatrix) {
+            if (original instanceof SkeletalAsymmetricOrthogonalMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.inverse().get().inverse().get(), is(original));
             }
@@ -244,10 +244,22 @@ public final class PermutationMatrixTest {
 
     public static class toString表示 {
 
+        private PermutationMatrix pm;
+
+        @Before
+        public void before() {
+            PermutationMatrix.Builder builder =
+                    PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
+            builder.swapColumns(0, 1);
+            builder.swapRows(1, 2);
+            pm = builder.build();
+        }
+
         @Test
         public void test_toString() {
             System.out.println(TEST_CLASS.getName());
-            System.out.println(PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3)).build());
+            System.out.println(pm);
+            System.out.println(pm.inverse().get());
             System.out.println();
         }
     }

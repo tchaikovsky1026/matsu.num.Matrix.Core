@@ -5,32 +5,32 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base;
-
-import java.util.Objects;
 
 import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBand;
 
 /**
  * 正方形の帯行列を扱う.
  * 
+ * <hr>
+ * 
+ * <h2>実装規約</h2>
+ * 
  * <p>
- * {@linkplain Matrix} のクラス説明の規約に従う.
+ * {@link Matrix} の規約に従う.
  * </p>
  * 
  * <p>
- * 実装仕様: <br>
- * {@linkplain Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
- * すなわち, <br>
- * {@code this.bandMatrixDimension().isSymmetric() == true} <br>
+ * {@link Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
+ * すなわち,
+ * {@code this.bandMatrixDimension().isSymmetric() == true}
  * でなければならない.
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
- * @see Matrix
+ * @version 22.0
  */
 public interface BandMatrix extends EntryReadableMatrix {
 
@@ -46,8 +46,32 @@ public interface BandMatrix extends EntryReadableMatrix {
         return this.bandMatrixDimension().dimension();
     }
 
+    @Override
+    public abstract BandMatrix transpose();
+
     /**
-     * 帯行列の転置行列を生成する.
+     * 与えられた帯行列の転置行列を生成する.
+     * 
+     * <p>
+     * 引数 {@code original}, 戻り値 {@code returnValue} について,
+     * {@code returnValue.transpose() == original} が {@code true} である.
+     * <br>
+     * {@code original} に {@link Symmetric} が付与されている場合,
+     * {@code returnValue == original} が {@code true} である.
+     * </p>
+     * 
+     * <p>
+     * <i>
+     * <u>このメソッドの利用について</u> <br>
+     * {@link EntryReadableMatrix} およびそのサブタイプから転置行列を得るには,
+     * {@link #transpose()} を呼ぶことが推奨される. <br>
+     * このメソッドは {@link #transpose()} や
+     * {@link SkeletalAsymmetricMatrix#createTranspose()}
+     * の戻り値の生成を補助するために用意されている. <br>
+     * (ただし, {@link #transpose()}
+     * の複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * </i>
+     * </p>
      *
      * @param original 元の行列
      * @return 転置行列
@@ -55,48 +79,5 @@ public interface BandMatrix extends EntryReadableMatrix {
      */
     public static BandMatrix createTransposedOf(BandMatrix original) {
         return TranspositionBand.instance().apply(original);
-    }
-
-    /**
-     * {@linkplain BandMatrix} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
-     * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code BandMatrix[struct[%bandStructure], %entry]} <br>
-     * {@code BandMatrix[struct[%bandStructure], %character1, %character2,..., %entry]}
-     * </p>
-     * 
-     * <p>
-     * {@code matrix} が {@code null} の場合は, おそらくは次であろう. <br>
-     * {@code null}
-     * </p>
-     * 
-     * @param matrix インスタンス
-     * @param characters 付加する属性表現
-     * @return 説明表現
-     */
-    public static String toString(BandMatrix matrix, String... characters) {
-        if (Objects.isNull(matrix)) {
-            return "null";
-        }
-
-        StringBuilder fieldString = new StringBuilder();
-        fieldString.append("struct");
-        fieldString.append(matrix.bandMatrixDimension());
-
-        if (Objects.nonNull(characters)) {
-            for (String character : characters) {
-                fieldString.append(", ");
-                fieldString.append(character);
-            }
-        }
-        fieldString.append(", ");
-        fieldString.append(EntryReadableMatrix.toSimplifiedEntryString(matrix));
-
-        return String.format(
-                "BandMatrix[%s]",
-                fieldString.toString());
     }
 }

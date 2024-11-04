@@ -19,7 +19,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class DiagonalMatrixTest {
+final class DiagonalMatrixTest {
 
     public static final Class<?> TEST_CLASS = DiagonalMatrix.class;
 
@@ -322,10 +322,22 @@ public class DiagonalMatrixTest {
 
     public static class toString表示 {
 
+        private DiagonalMatrix dm;
+
+        @Before
+        public void before() {
+            DiagonalMatrix.Builder builder =
+                    DiagonalMatrix.Builder.unitBuilder(MatrixDimension.square(3));
+            builder.setValue(0, 3);
+            dm = builder.build();
+        }
+
         @Test
         public void test_toString() {
+
             System.out.println(TEST_CLASS.getName());
-            System.out.println(DiagonalMatrix.Builder.unitBuilder(MatrixDimension.square(3)).build());
+            System.out.println(dm);
+            System.out.println(dm.inverse().get());
             System.out.println();
         }
     }

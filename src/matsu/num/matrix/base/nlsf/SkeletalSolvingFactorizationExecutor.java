@@ -18,19 +18,19 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
  * <p>
- * {@linkplain SolvingFactorizationExecutor} の骨格実装.
+ * {@link SolvingFactorizationExecutor} の骨格実装.
  * </p>
  * 
  * <p>
  * インターフェースのメソッドの説明の通り,
- * {@linkplain #apply(Matrix)} と {@linkplain #apply(Matrix, double)} の違いは
+ * {@link #apply(Matrix)} と {@link #apply(Matrix, double)} の違いは
  * epsilonにデフォルト値を使うかどうかである. <br>
  * このクラスではそれらのメソッドの中で, 引数 {@code matrix}, {@code epsilon} の事前条件チェックを行い,
- * その後に抽象メソッド {@linkplain #applyConcretely(Matrix, double)} を呼ぶことで具体的な分解の実行する.
+ * その後に抽象メソッド {@link #applyConcretely(Matrix, double)} を呼ぶことで具体的な分解の実行する.
  * </p>
  * 
  * <p>
- * {@linkplain #applyConcretely(Matrix, double)} のオーバーライドでは,
+ * {@link #applyConcretely(Matrix, double)} のオーバーライドでは,
  * 受け入れ可能なMatrixと正当なepsilonを使って行列分解を実行し, その結果を返すように実装する. <br>
  * 行列分解が実行不可能な場合は, インターフェースの要件通り空のオプショナルを返す.
  * </p>

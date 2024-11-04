@@ -25,17 +25,17 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * <p>
- * このクラスでは抽象メソッド {@linkplain #calcInverseDeterminantStruct()} を定義している.
+ * このクラスでは抽象メソッド {@link #calcInverseDeterminantStruct()} を定義している.
  * <br>
  * 実装者は, このメソッドで逆行列と行列式を計算するように実装する. <br>
- * {@linkplain Invertible} と {@linkplain Determinantable}
+ * {@link Invertible} と {@link Determinantable}
  * のインターフェースの実装はこの抽象クラス内で実装されおり,
  * {@code final} である.
  * </p>
  * 
  * <p>
  * 逆行列や行列式の値が呼ばれたときに1度だけ
- * {@linkplain #calcInverseDeterminantStruct()}
+ * {@link #calcInverseDeterminantStruct()}
  * が呼ばれ, 抽象クラス内ででキャッシュ化される.
  * </p>
  * 

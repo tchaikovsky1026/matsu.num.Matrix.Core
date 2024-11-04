@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.2
  */
 package matsu.num.matrix.base;
 
@@ -27,9 +27,9 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
-public final class SymmetricBandMatrix extends SkeletalMatrix
+public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<SymmetricBandMatrix>
         implements BandMatrix, Symmetric {
     /*
      * 行列の各要素は対角成分, 副対角成分に分けて, それぞれ1次元配列として扱う.
@@ -95,6 +95,16 @@ public final class SymmetricBandMatrix extends SkeletalMatrix
         default:
             throw new AssertionError("Bug: 列挙型に想定外の値");
         }
+    }
+
+    /**
+     * 外部からの呼び出し不可.
+     * 
+     * @return -
+     */
+    @Override
+    protected SymmetricBandMatrix self() {
+        return this;
     }
 
     /**
@@ -181,7 +191,9 @@ public final class SymmetricBandMatrix extends SkeletalMatrix
      */
     @Override
     public String toString() {
-        return BandMatrix.toString(this, "symmetric");
+        return String.format(
+                "Matrix[band:%s, %s]",
+                this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -194,7 +206,7 @@ public final class SymmetricBandMatrix extends SkeletalMatrix
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
      * 有効要素数が大きすぎるとは, <br>
      * 行列の行数(= 列数)を <i>n</i>, 片側帯幅を <i>b</i> として, <br>
-     * <i>n</i> * <i>b</i> &gt; {@linkplain Integer#MAX_VALUE} <br>
+     * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE} <br>
      * である状態である.
      * </p>
      */
@@ -301,7 +313,7 @@ public final class SymmetricBandMatrix extends SkeletalMatrix
         /**
          * 対称帯行列をビルドする.
          *
-         * @return 対称帯行列, {@linkplain Symmetric} が付与されている
+         * @return 対称帯行列, {@link Symmetric} が付与されている
          * @throws IllegalStateException すでにビルドされている場合
          */
         public SymmetricBandMatrix build() {

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.2
  */
 package matsu.num.matrix.base;
 
@@ -26,9 +26,10 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
-public final class SymmetricMatrix extends SkeletalMatrix implements EntryReadableMatrix, Symmetric {
+public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
+        implements EntryReadableMatrix, Symmetric {
 
     /*
      * 行列の各要素は, 内部では1次元配列として,
@@ -70,6 +71,16 @@ public final class SymmetricMatrix extends SkeletalMatrix implements EntryReadab
                             matrixDimension, row, column));
         }
         return entry[row >= column ? column + (row * (row + 1)) / 2 : row + (column * (column + 1)) / 2];
+    }
+
+    /**
+     * 外部からの呼び出し不可.
+     * 
+     * @return -
+     */
+    @Override
+    protected SymmetricMatrix self() {
+        return this;
     }
 
     /**
@@ -146,7 +157,9 @@ public final class SymmetricMatrix extends SkeletalMatrix implements EntryReadab
      */
     @Override
     public String toString() {
-        return EntryReadableMatrix.toString(this, "symmetric");
+        return String.format(
+                "Matrix[dim:%s, %s]",
+                this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -159,7 +172,7 @@ public final class SymmetricMatrix extends SkeletalMatrix implements EntryReadab
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
      * 有効要素数が大きすぎるとは, <br>
      * 行列の行数(= 列数)を<i>n</i>として, <br>
-     * <i>n</i> * (<i>n</i> + 1) &gt; {@linkplain Integer#MAX_VALUE} <br>
+     * <i>n</i> * (<i>n</i> + 1) &gt; {@link Integer#MAX_VALUE} <br>
      * である状態である.
      * </p>
      */
@@ -299,7 +312,7 @@ public final class SymmetricMatrix extends SkeletalMatrix implements EntryReadab
         /**
          * 対称行列をビルドする.
          *
-         * @return 対称行列, {@linkplain Symmetric} が付与されている
+         * @return 対称行列, {@link Symmetric} が付与されている
          * @throws IllegalStateException すでにビルドされている場合
          */
         public SymmetricMatrix build() {

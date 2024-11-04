@@ -20,9 +20,9 @@ import matsu.num.matrix.base.Matrix;
  * </p>
  * 
  * <p>
- * 行列が対応していることは, シングルトンインスタンス {@linkplain #ACCEPTED}
+ * 行列が対応していることは, シングルトンインスタンス {@link #ACCEPTED}
  * により表される. <br>
- * 対応していないことを表すインスタンスは, {@linkplain MatrixRejected} により構築することができる.
+ * 対応していないことを表すインスタンスは, {@link MatrixRejected} により構築することができる.
  * </p>
  * 
  * @author Matsuura Y.
@@ -71,7 +71,7 @@ public abstract class MatrixStructureAcceptance {
     /**
      * <p>
      * このインスタンスの拒絶理由に適した例外インスタンスを取得する. <br>
-     * {@linkplain #type()} が {@linkplain Type#ACCEPTED} の場合は空を返す.
+     * {@link #type()} が {@link Type#ACCEPTED} の場合は空を返す.
      * </p>
      * 
      * @param matrix 関連付けられる行列
@@ -88,7 +88,7 @@ public abstract class MatrixStructureAcceptance {
         /**
          * 対応していることを表す. <br>
          * このタイプを有するのはシングルトン
-         * {@linkplain MatrixStructureAcceptance#ACCEPTED}
+         * {@link MatrixStructureAcceptance#ACCEPTED}
          * のみである.
          */
         ACCEPTED,

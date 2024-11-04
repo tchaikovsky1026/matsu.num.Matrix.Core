@@ -39,8 +39,8 @@ import matsu.num.matrix.base.Matrix;
  * </p>
  * 
  * <p>
- * 紐づけられる {@linkplain Matrix} はインスタンスの生成と同時に決定される. <br>
- * {@linkplain Matrix} が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
+ * 紐づけられる {@link Matrix} はインスタンスの生成と同時に決定される. <br>
+ * {@link Matrix} が不変であるので, このインターフェースにかかわる属性は実質的に不変であり,
  * 全てのメソッドは関数的かつスレッドセーフである.
  * </p>
  * 
@@ -51,7 +51,7 @@ public interface LUTypeSolver
         extends Inversion, Determinantable {
 
     /**
-     * {@linkplain LUTypeSolver} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
+     * {@link LUTypeSolver} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
      * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
      * 
      * <p>
@@ -81,7 +81,7 @@ public interface LUTypeSolver
     }
 
     /**
-     * {@linkplain LUTypeSolver} インターフェースを実装した,
+     * {@link LUTypeSolver} インターフェースを実装した,
      * 手法非公開のクラス向けの文字列説明表現を提供する. <br>
      * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
      * 

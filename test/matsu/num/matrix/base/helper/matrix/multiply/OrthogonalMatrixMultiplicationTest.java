@@ -21,8 +21,8 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class OrthogonalMatrixMultiplicationTest {
-    
+final class OrthogonalMatrixMultiplicationTest {
+
     public static final Class<?> TEST_CLASS = OrthogonalMatrixMultiplication.class;
 
     public static class 行列積のテスト {

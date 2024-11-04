@@ -5,11 +5,12 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
@@ -17,10 +18,23 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 置換行列を扱う.
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
-public interface PermutationMatrix extends EntryReadableMatrix,
-        OrthogonalMatrix, Determinantable {
+public sealed interface PermutationMatrix extends EntryReadableMatrix,
+        OrthogonalMatrix, Determinantable permits PermutationMatrixSealed, UnitMatrix {
+
+    /**
+     * 行列の偶奇を取得する.
+     *
+     * @return 偶置換のときtrue
+     */
+    public abstract boolean isEven();
+
+    @Override
+    public abstract PermutationMatrix transpose();
+
+    @Override
+    public abstract Optional<? extends PermutationMatrix> inverse();
 
     /**
      * <p>
@@ -165,7 +179,7 @@ public interface PermutationMatrix extends EntryReadableMatrix,
         }
 
         private static final class PermutationMatrixImpl
-                extends SkeletalOrthogonalMatrix implements PermutationMatrix {
+                extends SkeletalAsymmetricOrthogonalMatrix<PermutationMatrix> implements PermutationMatrixSealed {
 
             private final MatrixDimension matrixDimension;
 
@@ -206,13 +220,20 @@ public interface PermutationMatrix extends EntryReadableMatrix,
                 return permutationHorizontal[row] == column ? 1.0 : 0.0;
             }
 
-            /**
-             * 行列の偶奇を取得する.
-             *
-             * @return 偶置換のときtrue
-             */
-            private boolean isEven() {
-                return even;
+            @Override
+            protected PermutationMatrix createTranspose() {
+                return new InverseAndDeterminantAttachedPermutationMatrixImpl(
+                        new PermutationMatrixImpl(
+                                this.matrixDimension,
+                                this.permutationHorizontal,
+                                this.permutationVertical,
+                                this.even),
+                        this);
+            }
+
+            @Override
+            public boolean isEven() {
+                return this.even;
             }
 
             @Override
@@ -288,22 +309,99 @@ public interface PermutationMatrix extends EntryReadableMatrix,
              * <p>
              * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
              * おそらくは次のような表現であろう. <br>
-             * {@code @hashCode[dimension: %dimension, permutation(%sign)]}
+             * {@code Matrix[dim:(%dimension), permutation(%sign)]}
              * </p>
              * 
              * @return 説明表現
              */
             @Override
             public String toString() {
-                StringBuilder characterString = new StringBuilder();
-
-                characterString.append("permutation(")
-                        .append(even ? "even" : "odd")
-                        .append(')');
-
-                return OrthogonalMatrix.toString(this, characterString.toString());
+                return String.format(
+                        "Matrix[dim:%s, permutation(%s)]",
+                        this.matrixDimension(), this.isEven() ? "even" : "odd");
             }
         }
 
+        /**
+         * 逆行列に相当する置換行列を直接結びつけた置換行列. <br>
+         * originalをラップし, 逆行列関連のメソッドを隠ぺいする.
+         */
+        private static final class InverseAndDeterminantAttachedPermutationMatrixImpl
+                implements PermutationMatrixSealed {
+
+            private final PermutationMatrix original;
+            private final Optional<PermutationMatrix> opInverse;
+
+            /**
+             * 唯一のコンストラクタ.
+             * 引数の正当性はチェックしていない.
+             */
+            InverseAndDeterminantAttachedPermutationMatrixImpl(
+                    PermutationMatrix original, PermutationMatrix inverse) {
+                super();
+                this.original = original;
+                this.opInverse = Optional.of(inverse);
+            }
+
+            @Override
+            public MatrixDimension matrixDimension() {
+                return this.original.matrixDimension();
+            }
+
+            @Override
+            public PermutationMatrix transpose() {
+                return this.opInverse.get();
+            }
+
+            @Override
+            public double valueAt(int row, int column) {
+                return this.original.valueAt(row, column);
+            }
+
+            @Override
+            public double entryNormMax() {
+                return this.original.entryNormMax();
+            }
+
+            @Override
+            public Vector operate(Vector operand) {
+                return this.original.operate(operand);
+            }
+
+            @Override
+            public Vector operateTranspose(Vector operand) {
+                return this.original.operateTranspose(operand);
+            }
+
+            @Override
+            public double determinant() {
+                return this.original.determinant();
+            }
+
+            @Override
+            public double logAbsDeterminant() {
+                return this.original.logAbsDeterminant();
+            }
+
+            @Override
+            public int signOfDeterminant() {
+                return this.original.signOfDeterminant();
+            }
+
+            @Override
+            public boolean isEven() {
+                return this.original.isEven();
+            }
+
+            @Override
+            public Optional<? extends PermutationMatrix> inverse() {
+                return this.opInverse;
+            }
+
+            @Override
+            public String toString() {
+                return this.original.toString();
+            }
+        }
     }
 }

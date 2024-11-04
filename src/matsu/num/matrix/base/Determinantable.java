@@ -21,9 +21,9 @@ package matsu.num.matrix.base;
  * 
  * <p>
  * 実装仕様: <br>
- * このインターフェースを実装するクラスが {@linkplain Invertible} や {@linkplain Inversion}
+ * このインターフェースを実装するクラスが {@link Invertible} や {@link Inversion}
  * のような逆行列を扱うインターフェースも実装する場合,
- * 符号 {@linkplain #signOfDeterminant()} が0でないことと逆行列が存在することとは等価である.
+ * 符号 {@link #signOfDeterminant()} が0でないことと逆行列が存在することとは等価である.
  * </p>
  *
  * @author Matsuura Y.

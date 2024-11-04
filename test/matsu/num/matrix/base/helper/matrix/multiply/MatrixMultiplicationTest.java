@@ -22,7 +22,7 @@ import matsu.num.matrix.base.VectorDimension;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class MatrixMultiplicationTest {
+final class MatrixMultiplicationTest {
 
     public static class 行列積のテスト {
         private Matrix m1;

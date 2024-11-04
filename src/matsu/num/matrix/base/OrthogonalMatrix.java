@@ -5,36 +5,58 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplication;
+import matsu.num.matrix.base.helper.matrix.transpose.TranspositionOrthogonal;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * <p>
  * 直交行列であることを表す.
- * </p>
  * 
  * <p>
  * 直交行列は転置行列が逆行列に一致する. <br>
  * したがって, 逆行列は必ず取得できる.
  * </p>
  * 
+ * <hr>
+ * 
+ * <h2>実装規約</h2>
+ * 
  * <p>
- * {@linkplain Matrix} のクラス説明の規約に従う.
+ * {@link Matrix}, {@link Invertible} の規約に従う.
  * </p>
  * 
+ * <h2>{@link #transpose()} と {@link #inverse()} の整合に関する規約</h2>
+ * 
+ * <p>
+ * {@link #inverse()} メソッドの戻り値の要素と {@link #transpose()}
+ * の戻り値は同一のインスタンスを返すべきである. <br>
+ * {@link Symmetric} インターフェースが付与されている場合,
+ * {@link #inverse()} メソッドの戻り値の要素は自身としなければならない.
+ * </p>
+ * 
+ * <blockquote>
+ * 
+ * <pre>
+ * // 推奨: 次がtrue (転置行列と逆行列は同一)
+ * this.inverse().get() == this.transpose()
+ * 
+ * // this instanceof Symmetric がtrueのときに
+ * // 必須: 次がtrue (対称直交行列の逆行列は自身)
+ * this.inverse().get() == this
+ * </pre>
+ * 
+ * </blockquote>
+ * 
  * @author Matsuura Y.
- * @version 21.0
- * @see Matrix
+ * @version 22.0
  */
-public interface OrthogonalMatrix
-        extends Matrix, Invertible {
+public interface OrthogonalMatrix extends Matrix, Invertible {
 
     /**
      * この行列の転置行列を返す.
@@ -45,13 +67,10 @@ public interface OrthogonalMatrix
     public abstract OrthogonalMatrix transpose();
 
     /**
-     * <p>
      * 逆行列を取得する. <br>
      * 必ず逆行列が存在するため, 戻り値は空でない.
-     * </p>
      * 
      * @return {@inheritDoc }, 空でない
-     * 
      */
     @Override
     public abstract Optional<? extends OrthogonalMatrix> inverse();
@@ -70,43 +89,42 @@ public interface OrthogonalMatrix
     }
 
     /**
-     * {@linkplain OrthogonalMatrix}インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
-     * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
+     * 
+     * 与えられた直交行列の転置行列 (逆行列) を生成する.
      * 
      * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code OrthogonalMatrix[dim(%dimension)]} <br>
-     * {@code OrthogonalMatrix[dim(%dimension), %character1, %character2,...]}
+     * 引数 {@code original}, 戻り値 {@code returnValue} について,
+     * 次が {@code true} である.
+     * </p>
+     * 
+     * <ul>
+     * <li>{@code returnValue.transpose() == original}</li>
+     * <li>{@code returnValue.inverse().get() == original}</li>
+     * </ul>
+     * 
+     * <p>
+     * {@code original} に {@link Symmetric} が付与されている場合,
+     * {@code returnValue == original} が {@code true} である.
      * </p>
      * 
      * <p>
-     * {@code matrix}が{@code null}の場合は, おそらくは次であろう. <br>
-     * {@code null}
+     * <i>
+     * <u>このメソッドの利用について</u> <br>
+     * {@link OrthogonalMatrix} およびそのサブタイプから転置行列や逆行列を得るには,
+     * {@link #transpose()}, {@link #inverse()} を呼ぶことが推奨される. <br>
+     * このメソッドは {@link #transpose()} や {@link #inverse()},
+     * {@link SkeletalAsymmetricOrthogonalMatrix#createTranspose()}
+     * の戻り値の生成を補助するために用意されている. <br>
+     * (ただし, {@link #transpose()}, {@link #inverse()}
+     * の複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * </i>
      * </p>
-     * 
-     * @param matrix インスタンス
-     * @param characters 付加する属性表現
-     * @return 説明表現
+     *
+     * @param original 元の行列
+     * @return 転置行列
+     * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public static String toString(OrthogonalMatrix matrix, String... characters) {
-        if (Objects.isNull(matrix)) {
-            return "null";
-        }
-
-        StringBuilder fieldString = new StringBuilder();
-        fieldString.append(String.format("dim%s", matrix.matrixDimension()));
-
-        if (Objects.nonNull(characters)) {
-            for (String character : characters) {
-                fieldString.append(", ")
-                        .append(character);
-            }
-        }
-
-        return String.format(
-                "OrthogonalMatrix[%s]",
-                fieldString.toString());
+    public static OrthogonalMatrix createTransposedOf(OrthogonalMatrix original) {
+        return TranspositionOrthogonal.instance().apply(original);
     }
-
 }

@@ -21,11 +21,11 @@ import java.util.Optional;
  * 行列式は1である. <br>
  * したがって, 逆行列は必ず存在する. <br>
  * 単位下三角行列の逆行列は, 行列ベクトル積が容易に計算できるので,
- * このインターフェースは {@linkplain Invertible} を継承する.
+ * このインターフェースは {@link Invertible} を継承する.
  * </p>
  *
  * <p>
- * {@linkplain Matrix} のクラス説明の規約に従う.
+ * {@link Matrix} のクラス説明の規約に従う.
  * </p>
  *
  * @author Matsuura Y.

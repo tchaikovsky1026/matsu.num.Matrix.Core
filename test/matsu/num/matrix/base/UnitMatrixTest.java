@@ -15,10 +15,10 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 /**
  * {@link UnitMatrix}クラスのテスト.
  *
- * @author Matsuura, Y.
+ * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class UnitMatrixTest {
+final class UnitMatrixTest {
 
     public static final Class<?> TEST_CLASS = UnitMatrix.class;
 

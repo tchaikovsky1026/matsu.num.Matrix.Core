@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base.helper.matrix.transpose;
 
@@ -13,14 +13,15 @@ import java.util.Objects;
 
 import matsu.num.matrix.base.BandMatrix;
 import matsu.num.matrix.base.BandMatrixDimension;
+import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 
 /**
- * {@linkplain BandMatrix}の転置を扱う.
+ * {@link BandMatrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public final class TranspositionBand {
 
@@ -33,7 +34,8 @@ public final class TranspositionBand {
     }
 
     /**
-     * 帯行列の転置行列を生成する.
+     * {@link BandMatrix} の推奨される実装規約に則った転置行列を返す. <br>
+     * {@link Symmetric} が付与されている場合は, 引数をそのまま返す.
      *
      * @param original 元の行列
      * @return 転置行列
@@ -107,7 +109,9 @@ public final class TranspositionBand {
 
         @Override
         public String toString() {
-            return BandMatrix.toString(this);
+            return String.format(
+                    "Matrix[band:%s, %s]",
+                    this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
         }
     }
 }

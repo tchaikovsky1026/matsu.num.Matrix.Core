@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class SymmetricBandMatrixTest {
+final class SymmetricBandMatrixTest {
 
     public static class 対称帯行列の評価と演算に関する {
 
@@ -106,7 +106,8 @@ public class SymmetricBandMatrixTest {
 
     public static class fromBandMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalMatrix implements BandMatrix, Symmetric {
+        private static class WrappedMatrix extends SkeletalSymmetricMatrix<WrappedMatrix>
+                implements BandMatrix, Symmetric {
 
             private final BandMatrix mx;
 
@@ -140,6 +141,11 @@ public class SymmetricBandMatrixTest {
             @Override
             public double entryNormMax() {
                 return mx.entryNormMax();
+            }
+
+            @Override
+            protected WrappedMatrix self() {
+                return this;
             }
         }
 

@@ -35,12 +35,12 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * <p>
- * この行列分解が提供する逆行列には {@linkplain Symmetric} が付与されている.
+ * この行列分解が提供する逆行列には {@link Symmetric} が付与されている.
  * </p>
  * 
  * <p>
  * メソッド
- * {@linkplain SolvingFactorizationExecutor#accepts(Matrix)}
+ * {@link SolvingFactorizationExecutor#accepts(Matrix)}
  * でrejectされる追加条件は次のとおりである.
  * </p>
  * <ul>
@@ -50,7 +50,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * 
  * <p>
  * メソッド
- * {@linkplain SolvingFactorizationExecutor#apply(Matrix, double)}
+ * {@link SolvingFactorizationExecutor#apply(Matrix, double)}
  * で空が返る追加条件は次のとおりである.
  * </p>
  * <ul>
@@ -60,7 +60,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * <p>
  * 有効要素数が大きすぎるとは, <br>
  * 行列の行数(= 列数)を <i>n</i>, 片側帯幅を <i>b</i> として, <br>
- * <i>n</i> * <i>b</i> &gt; {@linkplain Integer#MAX_VALUE} <br>
+ * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE} <br>
  * である状態である.
  * </p>
  * 

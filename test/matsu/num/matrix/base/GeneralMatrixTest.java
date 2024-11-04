@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class GeneralMatrixTest {
+final class GeneralMatrixTest {
+
+    public static final Class<?> TEST_CLASS = GeneralMatrix.class;
 
     public static class 成分の評価に関する {
 
@@ -190,7 +192,7 @@ public class GeneralMatrixTest {
 
     public static class fromMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalMatrix implements Matrix {
+        private static class WrappedMatrix extends SkeletalAsymmetricMatrix<Matrix> implements Matrix {
 
             private final Matrix mx;
 
@@ -201,6 +203,11 @@ public class GeneralMatrixTest {
             @Override
             public MatrixDimension matrixDimension() {
                 return mx.matrixDimension();
+            }
+
+            @Override
+            protected Matrix createTranspose() {
+                return mx.transpose();
             }
 
             @Override
@@ -275,7 +282,8 @@ public class GeneralMatrixTest {
 
     public static class fromEntryReadableMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalMatrix implements EntryReadableMatrix {
+        private static class WrappedMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
+                implements EntryReadableMatrix {
 
             private final EntryReadableMatrix mx;
 
@@ -286,6 +294,11 @@ public class GeneralMatrixTest {
             @Override
             public MatrixDimension matrixDimension() {
                 return mx.matrixDimension();
+            }
+
+            @Override
+            protected EntryReadableMatrix createTranspose() {
+                return mx.transpose();
             }
 
             @Override
@@ -386,7 +399,7 @@ public class GeneralMatrixTest {
 
         @Test
         public void test_転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalMatrix) {
+            if (original instanceof SkeletalAsymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose(), is(original.transpose()));
             }
@@ -395,7 +408,7 @@ public class GeneralMatrixTest {
 
         @Test
         public void test_転置の転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalMatrix) {
+            if (original instanceof SkeletalAsymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose().transpose(), is(original.transpose().transpose()));
             }
@@ -404,7 +417,7 @@ public class GeneralMatrixTest {
 
         @Test
         public void test_転置の転置は自身と同一() {
-            if (original instanceof SkeletalMatrix) {
+            if (original instanceof SkeletalAsymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose().transpose(), is(original));
             }
@@ -412,4 +425,32 @@ public class GeneralMatrixTest {
         }
     }
 
+    public static class toString表示 {
+
+        private Matrix mx;
+
+        @Before
+        public void before_行列を生成() {
+            /*
+             * 1 2 3
+             * 4 5 6
+             */
+            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(2, 3));
+            builder.setValue(0, 0, 1);
+            builder.setValue(0, 1, 2);
+            builder.setValue(0, 2, 3);
+            builder.setValue(1, 0, 4);
+            builder.setValue(1, 1, 5);
+            builder.setValue(1, 2, 6);
+            mx = builder.build();
+        }
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(mx);
+            System.out.println(mx.transpose());
+            System.out.println();
+        }
+    }
 }

@@ -5,13 +5,12 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base;
 
-import java.util.Objects;
-
 import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplication;
+import matsu.num.matrix.base.helper.matrix.transpose.Transposition;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
@@ -21,21 +20,54 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </p>
  * 
  * <p>
- * このインターフェースを実装した全てのクラスの属性は実質的に不変であり,
- * (このインターフェース以外を含む) 全てのメソッドは関数的かつスレッドセーフである. <br>
- * (実装者にはそのようにクラス設計することを強制し, 違反した場合は振る舞いが保証されない.)
+ * このインターフェースを実装した全てのクラスは実質的にイミュータブルであり,
+ * (このインターフェース以外を含む) 全てのメソッドは関数的かつスレッドセーフである.
+ * </p>
+ * 
+ * <hr>
+ * 
+ * <h2>実装規約</h2>
+ * 
+ * <p>
+ * 実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
+ * 違反した場合は振る舞いが保証されない.
  * </p>
  * 
  * <p>
- * 実装仕様: <br>
- * {@linkplain Symmetric} インターフェースが付与される場合, 必ず正方形次元 (サイズ) でなければならない. <br>
- * すなわち, <br>
- * {@code this.matrixDimension().isSquare() == true} <br>
+ * {@link Symmetric} インターフェースが付与される場合, 必ず正方形次元 (サイズ) でなければならない. <br>
+ * すなわち,
+ * {@code this.matrixDimension().isSquare() == true}
  * でなければならない.
  * </p>
+ * 
+ * <h3>{@link #transpose()} に関する規約</h3>
+ * 
+ * <p>
+ * 自身の転置行列を返す {@link #transpose()} メソッドの戻り値は,
+ * このメソッドの複数回の呼び出しにおいて同一のインスタンスを返すべきである. <br>
+ * また, その転置行列の {@link #transpose()} メソッドの戻り値は自身となることが望ましい. <br>
+ * {@link Symmetric} インターフェースが付与されている場合,
+ * 自身の {@link #transpose()} メソッドの戻り値は自身としなければならない.
+ * </p>
+ * 
+ * <blockquote>
+ * 
+ * <pre>
+ * // 推奨: 次がtrue (複数回の呼び出しで同一のインスタンスを返す)
+ * this.transpose() == this.transpose()
+ * 
+ * // 推奨: 次がtrue (転置の転置は自身)
+ * this.transpose().transpose() == this 
+ * 
+ * // this instanceof Symmetric がtrueのときに
+ * // 必須: 次がtrue (対称行列の転置は自身)
+ * this.transpose() == this
+ * </pre>
+ * 
+ * </blockquote>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public interface Matrix {
 
@@ -58,7 +90,7 @@ public interface Matrix {
      * </p>
      * 
      * <p>
-     * ただし, 演算結果は {@linkplain Vector} が扱うことができる値の範囲を超えないように修正される.
+     * ただし, 演算結果は {@link Vector} が扱うことができる値の範囲を超えないように修正される.
      * </p>
      *
      * @param operand <b>v</b>, 作用ベクトル
@@ -78,7 +110,7 @@ public interface Matrix {
      * </p>
      * 
      * <p>
-     * ただし, 演算結果は {@linkplain Vector} が扱うことができる値の範囲を超えないように修正される.
+     * ただし, 演算結果は {@link Vector} が扱うことができる値の範囲を超えないように修正される.
      * </p>
      *
      * @param operand <b>v</b>, 作用ベクトル
@@ -113,7 +145,7 @@ public interface Matrix {
     /**
      * 行列の対称化二乗を返す. <br>
      * すなわち, 与えた行列 A に対して, AA<sup>T</sup> を返す. <br>
-     * 戻り値には {@linkplain Symmetric} が付与されている.
+     * 戻り値には {@link Symmetric} が付与されている.
      * 
      * @param original 元の行列
      * @return 対称行列積
@@ -126,8 +158,8 @@ public interface Matrix {
     /**
      * 対称な行列積を返す. <br>
      * すなわち, 与えた行列 L, D に対して, LDL<sup>T</sup> を返す. <br>
-     * 戻り値には {@linkplain Symmetric} が付与されている. <br>
-     * 与える行列Dには {@linkplain Symmetric} が付与されていなければならない.
+     * 戻り値には {@link Symmetric} が付与されている. <br>
+     * 与える行列Dには {@link Symmetric} が付与されていなければならない.
      * 
      * @param mid 行列 D, 中央の行列
      * @param leftSide 行列 L, 左サイドの行列
@@ -141,43 +173,34 @@ public interface Matrix {
     }
 
     /**
-     * {@linkplain Matrix} インターフェースを実装したクラス向けの文字列説明表現を提供する. <br>
-     * ただし, サブタイプがより良い文字列表現を提供するかもしれない.
+     * 与えられた行列の転置行列を生成する.
      * 
      * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim(%dimension)]} <br>
-     * {@code Matrix[dim(%dimension), %character1, %character2,...]}
+     * 引数 {@code original}, 戻り値 {@code returnValue} について,
+     * {@code returnValue.transpose() == original} が {@code true} である.
+     * <br>
+     * {@code original} に {@link Symmetric} が付与されている場合,
+     * {@code returnValue == original} が {@code true} である.
      * </p>
      * 
      * <p>
-     * {@code matrix} が {@code null} の場合は, おそらくは次であろう. <br>
-     * {@code null}
+     * <i>
+     * <u>このメソッドの利用について</u> <br>
+     * {@link Matrix} およびそのサブタイプから転置行列を得るには,
+     * {@link #transpose()} を呼ぶことが推奨される. <br>
+     * このメソッドは {@link #transpose()} や
+     * {@link SkeletalAsymmetricMatrix#createTranspose()}
+     * の戻り値の生成を補助するために用意されている. <br>
+     * (ただし, {@link #transpose()}
+     * の複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * </i>
      * </p>
      * 
-     * @param matrix インスタンス
-     * @param characters 付加する属性表現
-     * @return 説明表現
+     * @param original 元の行列
+     * @return 転置行列
+     * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public static String toString(Matrix matrix, String... characters) {
-        if (Objects.isNull(matrix)) {
-            return "null";
-        }
-
-        StringBuilder fieldString = new StringBuilder();
-        fieldString.append(String.format("dim%s", matrix.matrixDimension()));
-
-        if (Objects.nonNull(characters)) {
-            for (String character : characters) {
-                fieldString.append(", ")
-                        .append(character);
-            }
-        }
-
-        return String.format(
-                "Matrix[%s]",
-                fieldString.toString());
+    public static Matrix createTransposedOf(Matrix original) {
+        return Transposition.instance().apply(original);
     }
-
 }

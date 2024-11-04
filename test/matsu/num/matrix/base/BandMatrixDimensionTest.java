@@ -18,7 +18,9 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class BandMatrixDimensionTest {
+final class BandMatrixDimensionTest {
+
+    public static final Class<?> TEST_CLASS = BandMatrixDimension.class;
 
     public static class 生成に関する {
 
@@ -150,6 +152,16 @@ public class BandMatrixDimensionTest {
             BandMatrixDimension bandMatrixDimension = BandMatrixDimension.symmetric(4, 2);
             //遅延初期化の可能性があるので2回実行
             assertThat(bandMatrixDimension.transpose().transpose(), is(BandMatrixDimension.symmetric(4, 2)));
+        }
+    }
+    
+    public static class toString表示 {
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(BandMatrixDimension.of(4, 2, 1));
+            System.out.println();
         }
     }
 }

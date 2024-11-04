@@ -10,11 +10,13 @@ import org.junit.runner.RunWith;
 
 /**
  * {@link MatrixDimension}クラスのテスト.
- *
- * @author Matsuura, Y.
+ * 
+ * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-public class MatrixDimensionTest {
+final class MatrixDimensionTest {
+
+    public static final Class<?> TEST_CLASS = MatrixDimension.class;
 
     public static class 生成に関する {
 
@@ -104,6 +106,16 @@ public class MatrixDimensionTest {
             //遅延初期化の可能性があるため2回実行
             assertThat(dimension.transpose().transpose(), is(MatrixDimension.square(4)));
             assertThat(dimension.transpose().transpose(), is(MatrixDimension.square(4)));
+        }
+    }
+
+    public static class toString表示 {
+
+        @Test
+        public void test_toString() {
+            System.out.println(TEST_CLASS.getName());
+            System.out.println(MatrixDimension.rectangle(3, 4));
+            System.out.println();
         }
     }
 }

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.4
  */
 package matsu.num.matrix.base;
 
@@ -16,7 +16,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 単位行列を扱う.
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public final class UnitMatrix
         extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>
@@ -66,6 +66,16 @@ public final class UnitMatrix
     }
 
     /**
+     * 外部からの呼び出し不可.
+     * 
+     * @return -
+     */
+    @Override
+    protected UnitMatrix self() {
+        return this;
+    }
+
+    /**
      * @throws MatrixFormatMismatchException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
@@ -100,6 +110,11 @@ public final class UnitMatrix
         return 1;
     }
 
+    @Override
+    public boolean isEven() {
+        return true;
+    }
+
     /**
      * このオブジェクトの文字列説明表現を返す.
      * 
@@ -107,7 +122,9 @@ public final class UnitMatrix
      */
     @Override
     public String toString() {
-        return OrthogonalMatrix.toString(this, "unit");
+        return String.format(
+                "Matrix[dim:%s, unit]",
+                this.matrixDimension());
     }
 
     /**

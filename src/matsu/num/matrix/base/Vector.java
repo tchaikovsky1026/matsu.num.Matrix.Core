@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.2
  */
 package matsu.num.matrix.base;
 
@@ -22,12 +22,12 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * <p>
- * 所望のベクトルの生成にはビルダ ({@linkplain Builder}) を用いる. <br>
- * 値の検証にはstaticメソッド {@linkplain #acceptValue(double) } を使用する.
+ * 所望のベクトルの生成にはビルダ ({@link Builder}) を用いる. <br>
+ * 値の検証にはstaticメソッド {@link #acceptValue(double) } を使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public final class Vector {
 
@@ -367,12 +367,12 @@ public final class Vector {
         }
 
         return String.format(
-                "Vector[dim(%s), {%s}]",
+                "Vector[dim:%s, {%s}]",
                 this.vectorDimension, entryString.toString());
     }
 
     /**
-     * {@linkplain Vector} の成分として有効な値であるかを判定する.
+     * {@link Vector} の成分として有効な値であるかを判定する.
      *
      * @param value 検証する値
      * @return 有効である場合はtrue
@@ -382,7 +382,7 @@ public final class Vector {
     }
 
     /**
-     * {@linkplain Vector} のビルダ. <br>
+     * {@link Vector} のビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
      */
     public static final class Builder {

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.3
  */
 package matsu.num.matrix.base;
 
@@ -27,10 +27,10 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  */
 public final class LowerUnitriangularBandMatrix
-        extends SkeletalMatrix implements LowerUnitriangular, BandMatrix {
+        extends SkeletalAsymmetricMatrix<BandMatrix> implements LowerUnitriangular, BandMatrix {
 
     /*
      * 行列の各要素は, 内部では狭義下三角成分を1次元配列として扱う.
@@ -93,6 +93,16 @@ public final class LowerUnitriangularBandMatrix
         default:
             throw new AssertionError("Bug: 列挙型に想定外の値");
         }
+    }
+
+    /**
+     * 外部からの呼び出し不可.
+     * 
+     * @return -
+     */
+    @Override
+    protected BandMatrix createTranspose() {
+        return BandMatrix.createTransposedOf(this);
     }
 
     /**
@@ -210,7 +220,9 @@ public final class LowerUnitriangularBandMatrix
      */
     @Override
     public String toString() {
-        return BandMatrix.toString(this, "lower_unitriangular");
+        return String.format(
+                "Matrix[band:%s, %s, lower, unitriangular]",
+                this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -219,11 +231,16 @@ public final class LowerUnitriangularBandMatrix
      * @return 逆行列
      */
     private Matrix createInverse() {
-        return new SkeletalMatrix() {
+        return new SkeletalAsymmetricMatrix<Matrix>() {
 
             @Override
             public MatrixDimension matrixDimension() {
                 return bandMatrixDimension.dimension();
+            }
+
+            @Override
+            protected Matrix createTranspose() {
+                return Matrix.createTransposedOf(this);
             }
 
             @Override
@@ -311,7 +328,7 @@ public final class LowerUnitriangularBandMatrix
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
      * 有効要素数が大きすぎるとは, <br>
      * 行列の行数(= 列数)を <i>n</i>, 下側帯幅を <i>b</i> として, <br>
-     * <i>n</i> * <i>b</i> &gt; {@linkplain Integer#MAX_VALUE} <br>
+     * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE} <br>
      * である状態である.
      * </p>
      */
@@ -325,7 +342,7 @@ public final class LowerUnitriangularBandMatrix
          *
          * @param bandMatrixDimension 下三角である帯行列構造
          * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
-         *             {@linkplain BandMatrixDimension#upperBandWidth} &gt;
+         *             {@link BandMatrixDimension#upperBandWidth} &gt;
          *             0である場合
          * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
          * @throws NullPointerException 引数にnullが含まれる場合
@@ -419,7 +436,7 @@ public final class LowerUnitriangularBandMatrix
          * @param bandMatrixDimension 下三角である帯行列構造
          * @return 単位行列で初期化されたビルダ
          * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
-         *             {@linkplain BandMatrixDimension#upperBandWidth} &gt;
+         *             {@link BandMatrixDimension#upperBandWidth} &gt;
          *             0である場合
          * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
          * @throws NullPointerException 引数にnullが含まれる場合
