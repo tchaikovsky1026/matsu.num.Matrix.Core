@@ -16,14 +16,14 @@ import matsu.num.matrix.base.GeneralBandMatrix;
 import matsu.num.matrix.base.Vector;
 
 /**
- * {@link LUBandExecutor}クラスのテスト.
+ * {@link LUBand} クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class LUBandExecutorTest {
+final class LUBandTest {
 
-    public static final Class<?> TEST_CLASS = LUBandExecutor.class;
+    public static final Class<?> TEST_CLASS = LUBand.class;
 
     public static class 要ピボッティング行列での振る舞い検証 {
 
@@ -54,7 +54,7 @@ final class LUBandExecutorTest {
 
         @Test
         public void test_行列分解の失敗() {
-            Optional<? extends LUTypeSolver> lub = LUBandExecutor.instance().apply(matrix);
+            Optional<LUBand> lub = LUBand.executor().apply(matrix);
             assertThat(lub.isEmpty(), is(true));
         }
     }
@@ -62,7 +62,7 @@ final class LUBandExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元4_パターン1 {
 
         private BandMatrix matrix;
-        private LUTypeSolver lub;
+        private LUBand lub;
 
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
@@ -86,7 +86,7 @@ final class LUBandExecutorTest {
             builder.setValue(1, 2, 2);
             builder.setValue(2, 3, 3);
             matrix = builder.build();
-            lub = LUBandExecutor.instance().apply(matrix).get();
+            lub = LUBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -134,7 +134,7 @@ final class LUBandExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元4_パターン2 {
 
         private BandMatrix matrix;
-        private LUTypeSolver lub;
+        private LUBand lub;
 
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
@@ -158,7 +158,7 @@ final class LUBandExecutorTest {
             builder.setValue(2, 1, 2);
             builder.setValue(3, 2, 1);
             matrix = builder.build();
-            lub = LUBandExecutor.instance().apply(matrix).get();
+            lub = LUBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -205,8 +205,6 @@ final class LUBandExecutorTest {
         @Test
         public void test_逆行列生成の実装に関する() {
 
-            //注意:このテストは実装の詳細に依存している
-
             //逆行列の複数回の呼び出しは同一インスタンスを返す
             assertThat(lub.inverse() == lub.inverse(), is(true));
         }
@@ -215,7 +213,7 @@ final class LUBandExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
         private BandMatrix matrix;
-        private LUTypeSolver lub;
+        private LUBand lub;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -225,7 +223,7 @@ final class LUBandExecutorTest {
             GeneralBandMatrix.Builder builder = GeneralBandMatrix.Builder.zero(BandMatrixDimension.of(1, 1, 1));
             builder.setValue(0, 0, -2);
             matrix = builder.build();
-            lub = LUBandExecutor.instance().apply(matrix).get();
+            lub = LUBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -262,8 +260,8 @@ final class LUBandExecutorTest {
 
     public static class toString表示 {
 
-        private LUBandExecutor executor = LUBandExecutor.instance();
-        private LUTypeSolver lub;
+        private LUBand.Executor executor = LUBand.executor();
+        private LUBand lub;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -277,6 +275,8 @@ final class LUBandExecutorTest {
             System.out.println(TEST_CLASS.getName());
             System.out.println(executor);
             System.out.println(lub);
+            System.out.println(lub.target());
+            System.out.println(lub.inverse());
             System.out.println();
         }
     }

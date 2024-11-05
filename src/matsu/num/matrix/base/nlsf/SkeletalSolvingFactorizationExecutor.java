@@ -5,10 +5,13 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.5
  */
 package matsu.num.matrix.base.nlsf;
 
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -17,54 +20,63 @@ import matsu.num.matrix.base.PseudoRegularMatrixProcess;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
- * <p>
  * {@link SolvingFactorizationExecutor} の骨格実装.
+ * 
+ * <p>
+ * このクラスでは,
+ * {@link #accepts(Matrix)}, {@link #apply(Matrix)},
+ * {@link #apply(Matrix, double)}
+ * メソッドの適切な実装を提供する.
  * </p>
  * 
  * <p>
- * インターフェースのメソッドの説明の通り,
- * {@link #apply(Matrix)} と {@link #apply(Matrix, double)} の違いは
- * epsilonにデフォルト値を使うかどうかである. <br>
- * このクラスではそれらのメソッドの中で, 引数 {@code matrix}, {@code epsilon} の事前条件チェックを行い,
- * その後に抽象メソッド {@link #applyConcretely(Matrix, double)} を呼ぶことで具体的な分解の実行する.
+ * {@link #accepts(Matrix)} の実装では,
+ * 正方行列でない場合は無条件にrejectされる. <br>
+ * さらに, 正方行列に対して抽象メソッド {@link #acceptsConcretely(Matrix)}
+ * により検証される.
  * </p>
  * 
  * <p>
- * {@link #applyConcretely(Matrix, double)} のオーバーライドでは,
- * 受け入れ可能なMatrixと正当なepsilonを使って行列分解を実行し, その結果を返すように実装する. <br>
- * 行列分解が実行不可能な場合は, インターフェースの要件通り空のオプショナルを返す.
+ * {@link #apply(Matrix)}, {@link #apply(Matrix, double)} の実装では,
+ * ({@code epsilon} の検証と) {@link #accepts(Matrix)} による行列の正当性の検証が行われ, <br>
+ * 正当な行列に対して {@link #applyConcretely(Matrix, double)} によって行列分解が実行される.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */
-abstract class SkeletalSolvingFactorizationExecutor<
+abstract non-sealed class SkeletalSolvingFactorizationExecutor<
         MT extends Matrix, ST extends LUTypeSolver>
         implements SolvingFactorizationExecutor<MT, ST> {
 
-    SkeletalSolvingFactorizationExecutor() {
+    /**
+     * 唯一のコンストラクタ.
+     */
+    protected SkeletalSolvingFactorizationExecutor() {
         super();
     }
 
     /**
-     * 正方行列に対して, 受け入れ可能かの詳細を判定する.
+     * 正方行列に対して, 受け入れ可能かの詳細を判定する. <br>
+     * 公開してはいけない.
      * 
      * @param matrix 正方行列であることが確定した行列(当然nullでない)
      * @return 判定結果
      */
-    abstract MatrixStructureAcceptance acceptsConcretely(MT matrix);
+    protected abstract MatrixStructureAcceptance acceptsConcretely(MT matrix);
 
     /**
-     * 行列分解を実際に実行する. <br>
-     * 受け入れ可能であることが確定しているため, 例外をスローしてはいけない.
+     * 受け入れ可能であることが確定した行列に対して, 行列分解を実際に実行する. <br>
+     * 例外をスローしてはいけない. <br>
+     * 公開してはいけない.
      * 
      * @param matrix 受け入れ可能であることが確定した行列
      * @param epsilon 正常(0以上の有限数)であることが確定した相対epsilon
      * @return 行列分解
      */
-    abstract Optional<? extends ST> applyConcretely(MT matrix, double epsilon);
+    protected abstract Optional<ST> applyConcretely(MT matrix, double epsilon);
 
     /**
      * @throws NullPointerException {@inheritDoc }
@@ -82,7 +94,7 @@ abstract class SkeletalSolvingFactorizationExecutor<
      * @throws NullPointerException {@inheritDoc }
      */
     @Override
-    public final Optional<? extends ST> apply(MT matrix, double epsilon) {
+    public final Optional<ST> apply(MT matrix, double epsilon) {
         if (!Double.isFinite(epsilon) || epsilon < 0) {
             throw new IllegalArgumentException(String.format("不正な値:epsilon=%s", epsilon));
         }
@@ -95,7 +107,7 @@ abstract class SkeletalSolvingFactorizationExecutor<
     }
 
     @Override
-    public final Optional<? extends ST> apply(MT matrix) {
+    public final Optional<ST> apply(MT matrix) {
         return this.apply(matrix, PseudoRegularMatrixProcess.DEFAULT_EPSILON);
     }
 
@@ -105,5 +117,25 @@ abstract class SkeletalSolvingFactorizationExecutor<
      * @return 文字列表現
      */
     @Override
-    public abstract String toString();
+    public String toString() {
+        Deque<Class<?>> enclosingClassLevels = new LinkedList<>();
+
+        Class<?> currentLevel = this.getClass();
+        while (Objects.nonNull(currentLevel)) {
+            enclosingClassLevels.add(currentLevel);
+            currentLevel = currentLevel.getEnclosingClass();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Iterator<Class<?>> ite = enclosingClassLevels.descendingIterator();
+                ite.hasNext();) {
+            Class<?> clazz = ite.next();
+            sb.append(clazz.getSimpleName());
+            if (ite.hasNext()) {
+                sb.append('.');
+            }
+        }
+
+        return sb.toString();
+    }
 }

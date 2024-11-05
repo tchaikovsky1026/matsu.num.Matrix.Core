@@ -18,20 +18,20 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
- * {@link ModifiedCholeskyBandExecutor}クラスのテスト.
+ * {@link ModifiedCholeskyBand} クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class ModifiedCholeskyBandExecutorTest {
+final class ModifiedCholeskyBandTest {
 
-    public static final Class<?> TEST_CLASS = ModifiedCholeskyBandExecutor.class;
+    public static final Class<?> TEST_CLASS = ModifiedCholeskyBand.class;
 
     public static class 生成に関する {
 
         @Test(expected = MatrixNotSymmetricException.class)
         public void test_対称行列でなければMNSEx() {
-            ModifiedCholeskyBandExecutor.instance().apply(
+            ModifiedCholeskyBand.executor().apply(
                     GeneralBandMatrix.Builder.unit(BandMatrixDimension.symmetric(2, 0)).build());
         }
     }
@@ -62,7 +62,7 @@ final class ModifiedCholeskyBandExecutorTest {
 
         @Test
         public void test_行列分解の失敗() {
-            Optional<? extends LUTypeSolver> cho = ModifiedCholeskyBandExecutor.instance().apply(matrix);
+            Optional<ModifiedCholeskyBand> cho = ModifiedCholeskyBand.executor().apply(matrix);
             assertThat(cho.isEmpty(), is(true));
         }
     }
@@ -70,7 +70,7 @@ final class ModifiedCholeskyBandExecutorTest {
     public static class 行列式と逆行列ベクトル積に関する_サイズ4 {
 
         private BandMatrix matrix;
-        private LUTypeSolver mcb;
+        private ModifiedCholeskyBand mcb;
 
         @Before
         public void before_生成() {
@@ -92,7 +92,7 @@ final class ModifiedCholeskyBandExecutorTest {
             builder.setValue(3, 1, 4);
             builder.setValue(3, 2, 3);
             matrix = builder.build();
-            mcb = ModifiedCholeskyBandExecutor.instance().apply(matrix).get();
+            mcb = ModifiedCholeskyBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -126,8 +126,6 @@ final class ModifiedCholeskyBandExecutorTest {
         @Test
         public void test_逆行列生成の実装に関する() {
 
-            //注意:このテストは実装の詳細に依存している
-
             //逆行列の複数回の呼び出しは同一インスタンスを返す
             assertThat(mcb.inverse() == mcb.inverse(), is(true));
         }
@@ -137,7 +135,7 @@ final class ModifiedCholeskyBandExecutorTest {
     public static class 行列式と逆行列ベクトル積に関する_サイズ1 {
 
         private BandMatrix matrix;
-        private LUTypeSolver mcb;
+        private ModifiedCholeskyBand mcb;
 
         @Before
         public void before_生成() {
@@ -148,7 +146,7 @@ final class ModifiedCholeskyBandExecutorTest {
                     SymmetricBandMatrix.Builder.unit(BandMatrixDimension.symmetric(1, 2));
             builder.setValue(0, 0, 5);
             matrix = builder.build();
-            mcb = ModifiedCholeskyBandExecutor.instance().apply(matrix).get();
+            mcb = ModifiedCholeskyBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -183,15 +181,15 @@ final class ModifiedCholeskyBandExecutorTest {
 
     public static class toString表示 {
 
-        private CholeskyBandExecutor executor = CholeskyBandExecutor.instance();
-        private LUTypeSolver mcb;
+        private ModifiedCholeskyBand.Executor executor = ModifiedCholeskyBand.executor();
+        private ModifiedCholeskyBand mcb;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
             SymmetricBandMatrix.Builder builder =
                     SymmetricBandMatrix.Builder.unit(BandMatrixDimension.symmetric(1, 2));
             builder.setValue(0, 0, 5);
-            mcb = ModifiedCholeskyBandExecutor.instance().apply(builder.build()).get();
+            mcb = executor.apply(builder.build()).get();
         }
 
         @Test
@@ -199,6 +197,8 @@ final class ModifiedCholeskyBandExecutorTest {
             System.out.println(TEST_CLASS.getName());
             System.out.println(executor);
             System.out.println(mcb);
+            System.out.println(mcb.target());
+            System.out.println(mcb.inverse());
             System.out.println();
         }
     }

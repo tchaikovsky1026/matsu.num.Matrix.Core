@@ -19,20 +19,20 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
- * {@link CholeskyExecutor}クラスのテスト.
+ * {@link Cholesky} クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class CholeskyExecutorTest {
+final class CholeskyTest {
 
-    public static final Class<?> TEST_CLASS = CholeskyExecutor.class;
+    public static final Class<?> TEST_CLASS = Cholesky.class;
 
     public static class 生成に関する {
 
         @Test(expected = MatrixNotSymmetricException.class)
         public void test_非対称行列は使用できないMNSEx() {
-            CholeskyExecutor.instance().apply(
+            Cholesky.executor().apply(
                     GeneralMatrix.Builder.zero(MatrixDimension.square(3)).build());
         }
     }
@@ -66,7 +66,7 @@ final class CholeskyExecutorTest {
 
         @Test
         public void test_行列分解の失敗() {
-            Optional<? extends LUTypeSolver> cho = CholeskyExecutor.instance().apply(matrix);
+            Optional<Cholesky> cho = Cholesky.executor().apply(matrix);
             assertThat(cho.isEmpty(), is(true));
         }
     }
@@ -74,7 +74,7 @@ final class CholeskyExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元4 {
 
         private EntryReadableMatrix matrix;
-        private SymmetrizedSquareTypeSolver cho;
+        private Cholesky cho;
 
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
@@ -96,7 +96,7 @@ final class CholeskyExecutorTest {
             builder.setValue(3, 2, 1);
             builder.setValue(3, 3, 3);
             matrix = builder.build();
-            cho = CholeskyExecutor.instance().apply(matrix).get();
+            cho = Cholesky.executor().apply(matrix).get();
         }
 
         @Test
@@ -130,8 +130,6 @@ final class CholeskyExecutorTest {
         @Test
         public void test_逆行列生成の実装に関する() {
 
-            //注意:このテストは実装の詳細に依存している
-
             //逆行列の複数回の呼び出しは同一インスタンスを返す
             assertThat(cho.inverse() == cho.inverse(), is(true));
         }
@@ -140,7 +138,7 @@ final class CholeskyExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
         private EntryReadableMatrix matrix;
-        private SymmetrizedSquareTypeSolver cho;
+        private Cholesky cho;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -150,7 +148,7 @@ final class CholeskyExecutorTest {
             SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             matrix = builder.build();
-            cho = CholeskyExecutor.instance().apply(matrix).get();
+            cho = Cholesky.executor().apply(matrix).get();
         }
 
         @Test
@@ -180,7 +178,7 @@ final class CholeskyExecutorTest {
     public static class 行列の非対称平方根に関するテスト {
 
         private EntryReadableMatrix matrix;
-        private SymmetrizedSquareTypeSolver cho;
+        private Cholesky cho;
 
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
@@ -202,7 +200,7 @@ final class CholeskyExecutorTest {
             builder.setValue(3, 2, 1);
             builder.setValue(3, 3, 3);
             matrix = builder.build();
-            cho = CholeskyExecutor.instance().apply(matrix).get();
+            cho = Cholesky.executor().apply(matrix).get();
         }
 
         @Test
@@ -221,8 +219,6 @@ final class CholeskyExecutorTest {
 
         @Test
         public void test_平方根生成の実装に関する() {
-
-            //注意:このテストは実装の詳細に依存している
 
             //平方根の複数回の呼び出しは同一インスタンスを返す
             assertThat(cho.inverseAsymmSqrt(), is(cho.inverseAsymmSqrt()));
@@ -245,8 +241,6 @@ final class CholeskyExecutorTest {
         @Test
         public void test_平方根の逆行列生成の実装に関する() {
 
-            //注意:このテストは実装の詳細に依存している
-
             //平方根の逆行列の複数回の呼び出しは同一インスタンスを返す
             assertThat(cho.inverseAsymmSqrt() == cho.inverseAsymmSqrt(), is(true));
         }
@@ -254,8 +248,8 @@ final class CholeskyExecutorTest {
 
     public static class toString表示 {
 
-        private CholeskyExecutor executor = CholeskyExecutor.instance();
-        private SymmetrizedSquareTypeSolver cho;
+        private Cholesky.Executor executor = Cholesky.executor();
+        private Cholesky cho;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -273,6 +267,8 @@ final class CholeskyExecutorTest {
             System.out.println(TEST_CLASS.getName());
             System.out.println(executor);
             System.out.println(cho);
+            System.out.println(cho.target());
+            System.out.println(cho.inverse());
             System.out.println(cho.asymmSqrt());
             System.out.println(cho.inverseAsymmSqrt());
             System.out.println();

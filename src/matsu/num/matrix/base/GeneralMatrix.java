@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.3
+ * 2024.11.5
  */
 package matsu.num.matrix.base;
 
@@ -70,7 +70,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
     }
 
     /**
-     * 外部からの呼び出し不可.
+     * <i>(外部からの呼び出し不可)</i>
      * 
      * @return -
      */

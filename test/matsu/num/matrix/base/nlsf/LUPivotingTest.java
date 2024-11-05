@@ -17,19 +17,19 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * {@link LUPivotingExecutor}クラスのテスト.
+ * {@link LUPivoting} クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class LUPivotingExecutorTest {
-    public static final Class<?> TEST_CLASS = LUPivotingExecutor.class;
+final class LUPivotingTest {
+    public static final Class<?> TEST_CLASS = LUPivoting.class;
 
     public static class 生成に関する {
 
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_長方形行列は使用できないMFMEx() {
-            LUPivotingExecutor.instance().apply(
+            LUPivoting.executor().apply(
                     GeneralMatrix.Builder.zero(MatrixDimension.rectangle(3, 2)).build());
         }
     }
@@ -58,7 +58,7 @@ final class LUPivotingExecutorTest {
 
         @Test
         public void test_行列分解の失敗() {
-            Optional<? extends LUTypeSolver> lup = LUPivotingExecutor.instance().apply(matrix);
+            Optional<? extends LUTypeSolver> lup = LUPivoting.executor().apply(matrix);
             assertThat(lup.isEmpty(), is(true));
         }
     }
@@ -66,7 +66,7 @@ final class LUPivotingExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元4 {
 
         private EntryReadableMatrix matrix;
-        private LUTypeSolver lup;
+        private LUPivoting lup;
 
         @Before
         public void before_次元4の正方行列のソルバを用意する() {
@@ -89,7 +89,7 @@ final class LUPivotingExecutorTest {
                 }
             }
             matrix = builder.build();
-            lup = LUPivotingExecutor.instance().apply(matrix).get();
+            lup = LUPivoting.executor().apply(matrix).get();
         }
 
         @Test
@@ -136,8 +136,6 @@ final class LUPivotingExecutorTest {
         @Test
         public void test_逆行列生成の実装に関する() {
 
-            //注意:このテストは実装の詳細に依存している
-
             //逆行列の複数回の呼び出しは同一インスタンスを返す
             assertThat(lup.inverse() == lup.inverse(), is(true));
         }
@@ -146,7 +144,7 @@ final class LUPivotingExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
         private EntryReadableMatrix matrix;
-        private LUTypeSolver lup;
+        private LUPivoting lup;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -156,7 +154,7 @@ final class LUPivotingExecutorTest {
             GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             matrix = builder.build();
-            lup = LUPivotingExecutor.instance().apply(matrix).get();
+            lup = LUPivoting.executor().apply(matrix).get();
         }
 
         @Test
@@ -203,8 +201,8 @@ final class LUPivotingExecutorTest {
 
     public static class toString表示 {
 
-        private LUPivotingExecutor executor = LUPivotingExecutor.instance();
-        private LUTypeSolver lup;
+        private LUPivoting.Executor executor = LUPivoting.executor();
+        private LUPivoting lup;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -218,6 +216,8 @@ final class LUPivotingExecutorTest {
             System.out.println(TEST_CLASS.getName());
             System.out.println(executor);
             System.out.println(lup);
+            System.out.println(lup.target());
+            System.out.println(lup.inverse());
             System.out.println();
         }
     }

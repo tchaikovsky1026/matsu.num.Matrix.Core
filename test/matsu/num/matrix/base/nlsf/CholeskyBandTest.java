@@ -19,20 +19,20 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
- * {@link CholeskyBandExecutor}クラスのテスト.
+ * {@link CholeskyBand} クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class CholeskyBandExecutorTest {
+final class CholeskyBandTest {
 
-    public static final Class<?> TEST_CLASS = CholeskyBandExecutor.class;
+    public static final Class<?> TEST_CLASS = CholeskyBand.class;
 
     public static class 生成に関する {
 
         @Test(expected = MatrixNotSymmetricException.class)
         public void test_対称行列でなければMNSEx() {
-            CholeskyBandExecutor.instance().apply(
+            CholeskyBand.executor().apply(
                     GeneralBandMatrix.Builder.unit(BandMatrixDimension.symmetric(2, 0)).build());
         }
     }
@@ -66,7 +66,7 @@ final class CholeskyBandExecutorTest {
 
         @Test
         public void test_行列分解の失敗() {
-            Optional<? extends LUTypeSolver> cb = CholeskyBandExecutor.instance().apply(matrix);
+            Optional<CholeskyBand> cb = CholeskyBand.executor().apply(matrix);
             assertThat(cb.isEmpty(), is(true));
         }
     }
@@ -74,7 +74,7 @@ final class CholeskyBandExecutorTest {
     public static class 行列式と逆行列ベクトル積に関する_サイズ4 {
 
         private BandMatrix matrix;
-        private SymmetrizedSquareTypeSolver cb;
+        private CholeskyBand cb;
 
         @Before
         public void before_生成() {
@@ -96,7 +96,7 @@ final class CholeskyBandExecutorTest {
             builder.setValue(3, 1, 4);
             builder.setValue(3, 2, 3);
             matrix = builder.build();
-            cb = CholeskyBandExecutor.instance().apply(matrix).get();
+            cb = CholeskyBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -130,8 +130,6 @@ final class CholeskyBandExecutorTest {
         @Test
         public void test_逆行列生成の実装に関する() {
 
-            //注意:このテストは実装の詳細に依存している
-
             //逆行列の複数回の呼び出しは同一インスタンスを返す
             assertThat(cb.inverse() == cb.inverse(), is(true));
         }
@@ -140,7 +138,7 @@ final class CholeskyBandExecutorTest {
     public static class 行列式と逆行列ベクトル積に関する_サイズ1 {
 
         private BandMatrix matrix;
-        private SymmetrizedSquareTypeSolver cb;
+        private CholeskyBand cb;
 
         @Before
         public void before_生成() {
@@ -151,7 +149,7 @@ final class CholeskyBandExecutorTest {
                     SymmetricBandMatrix.Builder.unit(BandMatrixDimension.symmetric(1, 2));
             builder.setValue(0, 0, 5);
             matrix = builder.build();
-            cb = CholeskyBandExecutor.instance().apply(matrix).get();
+            cb = CholeskyBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -176,13 +174,12 @@ final class CholeskyBandExecutorTest {
                 assertThat(res.normMax(), is(lessThan(1E-12)));
             }
         }
-
     }
 
     public static class 行列の非対称平方根に関するテスト {
 
         private BandMatrix matrix;
-        private SymmetrizedSquareTypeSolver cho;
+        private CholeskyBand cho;
 
         @Before
         public void before_生成() {
@@ -204,7 +201,7 @@ final class CholeskyBandExecutorTest {
             builder.setValue(3, 1, 4);
             builder.setValue(3, 2, 3);
             matrix = builder.build();
-            cho = CholeskyBandExecutor.instance().apply(matrix).get();
+            cho = CholeskyBand.executor().apply(matrix).get();
         }
 
         @Test
@@ -238,8 +235,8 @@ final class CholeskyBandExecutorTest {
 
     public static class toString表示 {
 
-        private CholeskyBandExecutor executor = CholeskyBandExecutor.instance();
-        private SymmetrizedSquareTypeSolver cb;
+        private CholeskyBand.Executor executor = CholeskyBand.executor();
+        private CholeskyBand cb;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -253,6 +250,8 @@ final class CholeskyBandExecutorTest {
             System.out.println(TEST_CLASS.getName());
             System.out.println(executor);
             System.out.println(cb);
+            System.out.println(cb.target());
+            System.out.println(cb.inverse());
             System.out.println(cb.asymmSqrt());
             System.out.println(cb.inverseAsymmSqrt());
             System.out.println();

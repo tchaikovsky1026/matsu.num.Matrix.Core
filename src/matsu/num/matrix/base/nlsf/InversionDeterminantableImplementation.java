@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.5
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -13,50 +13,50 @@ import java.util.function.Supplier;
 
 import matsu.num.matrix.base.Determinantable;
 import matsu.num.matrix.base.Inversion;
-import matsu.num.matrix.base.Invertible;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
+ * {@link Inversion} と {@link Determinantable} を実装したクラスの骨格実装を扱う.
+ * 
  * <p>
- * 逆行列と行列式を同時に扱う仕組みを扱う. <br>
- * 実質的に不変であり, 全てのメソッドは関数的かつスレッドセーフである.
+ * このクラスでは,
+ * {@link #inverse()}, {@link #signOfDeterminant()},
+ * {@link #determinant()}, {@link #logAbsDeterminant()}
+ * メソッドの適切な実装を提供する. <br>
+ * これらの戻り値は {@link #createInverseDeterminantStruct()}
+ * メソッドにより一度だけ計算, キャッシュされ,
+ * 以降はそのキャッシュを戻す.
  * </p>
  * 
  * <p>
- * このクラスでは抽象メソッド {@link #calcInverseDeterminantStruct()} を定義している.
- * <br>
- * 実装者は, このメソッドで逆行列と行列式を計算するように実装する. <br>
- * {@link Invertible} と {@link Determinantable}
- * のインターフェースの実装はこの抽象クラス内で実装されおり,
- * {@code final} である.
- * </p>
- * 
- * <p>
- * 逆行列や行列式の値が呼ばれたときに1度だけ
- * {@link #calcInverseDeterminantStruct()}
- * が呼ばれ, 抽象クラス内ででキャッシュ化される.
+ * この抽象クラスは {@link #toString()} の適切な実装を提供しないので,
+ * インスタンスを外部から参照できる場合はサブクラスでオーバーライドすることを推奨する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
- * @param <IT> 逆行列の型パラメータ
+ * @version 22.0
+ * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
+ * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
  */
-abstract class InvertibleDeterminantableSystem<IT extends Matrix>
-        implements Determinantable, Inversion {
+abstract class InversionDeterminantableImplementation<TT extends Matrix, IT extends Matrix>
+        implements Inversion, Determinantable {
 
     //継承先のオーバーライドメソッドに依存するため, 遅延初期化される
     private final Supplier<InverstibleAndDeterminantStruct<? extends IT>> invAndDetStructSupplier;
 
     /**
-     * 新しいオブジェクトの作成.
+     * 唯一のコンストラクタ.
      */
-    protected InvertibleDeterminantableSystem() {
+    protected InversionDeterminantableImplementation() {
         super();
         this.invAndDetStructSupplier = ImmutableLazyCacheSupplier.of(
-                () -> this.calcInverseDeterminantStruct());
+                () -> this.createInverseDeterminantStruct());
     }
+
+    @Override
+    public abstract TT target();
 
     @Override
     public final IT inverse() {
@@ -79,7 +79,9 @@ abstract class InvertibleDeterminantableSystem<IT extends Matrix>
     }
 
     /**
-     * ターゲット行列に関する, 行列式と逆行列を計算する抽象メソッド.
+     * ターゲット行列に関する, 行列式と逆行列を計算する抽象メソッド. <br>
+     * インスタンスが生成されてから一度だけ呼ばれる. <br>
+     * 公開してはいけない.
      * 
      * <p>
      * 逆行列が存在することが確定しているため,
@@ -88,6 +90,5 @@ abstract class InvertibleDeterminantableSystem<IT extends Matrix>
      * 
      * @return 行列式と逆行列の構造体
      */
-    protected abstract InverstibleAndDeterminantStruct<? extends IT> calcInverseDeterminantStruct();
-
+    protected abstract InverstibleAndDeterminantStruct<IT> createInverseDeterminantStruct();
 }

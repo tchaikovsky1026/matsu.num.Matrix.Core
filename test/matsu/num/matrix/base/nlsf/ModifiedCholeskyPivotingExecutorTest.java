@@ -18,20 +18,20 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
- * {@link ModifiedCholeskyPivotingExecutor}クラスのテスト.
+ * {@link ModifiedCholeskyPivoting} クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
 final class ModifiedCholeskyPivotingExecutorTest {
 
-    public static final Class<?> TEST_CLASS = ModifiedCholeskyPivotingExecutor.class;
+    public static final Class<?> TEST_CLASS = ModifiedCholeskyPivoting.class;
 
     public static class 生成に関する {
 
         @Test(expected = MatrixNotSymmetricException.class)
         public void test_非対称行列は使用できないMNSEx() {
-            ModifiedCholeskyPivotingExecutor.instance().apply(
+            ModifiedCholeskyPivoting.executor().apply(
                     GeneralMatrix.Builder.zero(MatrixDimension.square(3)).build());
         }
     }
@@ -61,7 +61,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
 
         @Test
         public void test_行列分解の失敗() {
-            Optional<? extends LUTypeSolver> cho = ModifiedCholeskyPivotingExecutor.instance().apply(matrix);
+            Optional<ModifiedCholeskyPivoting> cho = ModifiedCholeskyPivoting.executor().apply(matrix);
             assertThat(cho.isEmpty(), is(true));
         }
     }
@@ -69,7 +69,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元6_パターン1 {
 
         private EntryReadableMatrix matrix;
-        private LUTypeSolver mcp;
+        private ModifiedCholeskyPivoting mcp;
 
         @Before
         public void before_次元6の正方行列のソルバを用意する() {
@@ -104,7 +104,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
             builder.setValue(5, 1, 20);
             builder.setValue(5, 0, 21);
             matrix = builder.build();
-            mcp = ModifiedCholeskyPivotingExecutor.instance().apply(matrix).get();
+            mcp = ModifiedCholeskyPivoting.executor().apply(matrix).get();
         }
 
         @Test
@@ -148,7 +148,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元6_パターン2 {
 
         private EntryReadableMatrix matrix;
-        private LUTypeSolver mcp;
+        private ModifiedCholeskyPivoting mcp;
 
         @Before
         public void before_次元6の正方行列のソルバを用意する() {
@@ -183,7 +183,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
             builder.setValue(5, 4, 20);
             builder.setValue(5, 5, 21);
             matrix = builder.build();
-            mcp = ModifiedCholeskyPivotingExecutor.instance().apply(matrix).get();
+            mcp = ModifiedCholeskyPivoting.executor().apply(matrix).get();
         }
 
         @Test
@@ -218,7 +218,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元6_パターン3 {
 
         private EntryReadableMatrix matrix;
-        private LUTypeSolver mcp;
+        private ModifiedCholeskyPivoting mcp;
 
         @Before
         public void before_次元6の正方行列のソルバを用意する() {
@@ -244,7 +244,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
             builder.setValue(5, 2, 18);
             builder.setValue(5, 3, 19);
             matrix = builder.build();
-            mcp = ModifiedCholeskyPivotingExecutor.instance().apply(matrix).get();
+            mcp = ModifiedCholeskyPivoting.executor().apply(matrix).get();
         }
 
         @Test
@@ -279,7 +279,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
     public static class 行列分解と逆行列ベクトル積_次元1 {
 
         private EntryReadableMatrix matrix;
-        private LUTypeSolver mcp;
+        private ModifiedCholeskyPivoting mcp;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -289,7 +289,7 @@ final class ModifiedCholeskyPivotingExecutorTest {
             SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(1));
             builder.setValue(0, 0, 2);
             matrix = builder.build();
-            mcp = ModifiedCholeskyPivotingExecutor.instance().apply(matrix).get();
+            mcp = ModifiedCholeskyPivoting.executor().apply(matrix).get();
         }
 
         @Test
@@ -323,8 +323,8 @@ final class ModifiedCholeskyPivotingExecutorTest {
 
     public static class toString表示 {
 
-        private ModifiedCholeskyPivotingExecutor executor = ModifiedCholeskyPivotingExecutor.instance();
-        private LUTypeSolver mcp;
+        private ModifiedCholeskyPivoting.Executor executor = ModifiedCholeskyPivoting.executor();
+        private ModifiedCholeskyPivoting mcp;
 
         @Before
         public void before_次元1の正方行列のソルバを用意する() {
@@ -342,6 +342,8 @@ final class ModifiedCholeskyPivotingExecutorTest {
             System.out.println(TEST_CLASS.getName());
             System.out.println(executor);
             System.out.println(mcp);
+            System.out.println(mcp.target());
+            System.out.println(mcp.inverse());
             System.out.println();
         }
     }

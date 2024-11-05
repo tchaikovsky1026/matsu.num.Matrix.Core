@@ -5,76 +5,84 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.5
  */
 package matsu.num.matrix.base.nlsf;
 
 import java.util.function.Supplier;
 
+import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * <p>
- * {@link SymmetrizedSquareTypeSolver} の骨格実装. <br>
- * ターゲット行列 A を, A = BB<sup>T</sup> と分解することに関する.
- * </p>
+ * {@link SymmetrizedSquareTypeSolver} の骨格実装.
  * 
  * <p>
- * この骨格実装は, 新たに {@link #createAsymmetricSqrtSystem()} を定義している. <br>
- * 実装者は, 非対称平方根 B に関する連立方程式向け行列分解を生成(構築)するように実装する. <br>
- * インターフェースに定義された A の行列式や逆行列の呼び出しメソッド,
- * Bの連立方程式向け行列分解の呼び出しは,
- * この抽象クラスで実装されている. <br>
- * それらが呼ばれたときに1度だけこの
- * {@link #calcInverseDeterminantStruct()}
- * を呼ぶように, 骨格実装内でキャッシュ化してある.
+ * このクラスでは,
+ * {@link #inverse()}, {@link #signOfDeterminant()},
+ * {@link #determinant()}, {@link #logAbsDeterminant()},
+ * {@link #asymmSqrt()}, {@link #inverseAsymmSqrt()}
+ * メソッドの適切な実装を提供する. <br>
+ * これらの戻り値は {@link #createAsymmetricSqrtSystem()}
+ * メソッドにより一度だけ計算, キャッシュされ,
+ * 以降はそのキャッシュを戻す.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.0
+ * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
+ * @param <ST> 非対称平方根行列の型パラメータ, {@link #asymmSqrt()} の戻り値型をサブタイプにゆだねる.
+ * @param <SIT> 非対称平方根の逆行列の型パラメータ, {@link #inverseAsymmSqrt()} の戻り値型をサブタイプにゆだねる.
  */
-abstract class SkeletalSymmetrizedSquareTypeSolver
-        extends InvertibleDeterminantableSystem<Matrix> implements SymmetrizedSquareTypeSolver {
+abstract non-sealed class SkeletalSymmetrizedSquareTypeSolver<
+        TT extends EntryReadableMatrix, ST extends Matrix, SIT extends Matrix>
+        extends SkeletalLUTypeSolver<TT, Matrix> implements SymmetrizedSquareTypeSolver {
 
     //継承先のオーバーライドに依存するため, 遅延初期化される
-    private final Supplier<InvertibleDeterminantableSystem<Matrix>> asymmetricSqrtSupplier;
+    private final Supplier<InversionDeterminantableImplementation<ST, SIT>> asymmetricSqrtSupplier;
 
     /**
-     * 新しいオブジェクトの作成
+     * 唯一のコンストラクタ.
      */
-    SkeletalSymmetrizedSquareTypeSolver() {
+    protected SkeletalSymmetrizedSquareTypeSolver() {
         super();
         this.asymmetricSqrtSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createAsymmetricSqrtSystem());
     }
 
+    /**
+     * <i>(外部からの呼び出し不可)</i>
+     * 
+     * @return -
+     */
     @Override
-    protected final InverstibleAndDeterminantStruct<Matrix> calcInverseDeterminantStruct() {
-        InvertibleDeterminantableSystem<Matrix> sqrtMatrixStructure = this.asymmetricSqrtSupplier.get();
+    protected final InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
+        InversionDeterminantableImplementation<ST, SIT> sqrtMatrixStructure =
+                this.asymmetricSqrtSupplier.get();
         return new InverstibleAndDeterminantStruct<Matrix>(
                 new DeterminantValues(2 * sqrtMatrixStructure.logAbsDeterminant(), 1),
                 Matrix.symmetrizedSquare(sqrtMatrixStructure.inverse().transpose()));
     }
 
     @Override
-    public Matrix asymmSqrt() {
+    public final ST asymmSqrt() {
         return this.asymmetricSqrtSupplier.get().target();
     }
 
     @Override
-    public final Matrix inverseAsymmSqrt() {
+    public final SIT inverseAsymmSqrt() {
         return this.asymmetricSqrtSupplier.get().inverse();
     }
 
     /**
-     * <p>
-     * 非対称平方根 B に関する連立方程式向け行列分解を構築する.
-     * </p>
+     * 非対称平方根 B に関する行列式と逆行列システムを作成する抽象メソッド. <br>
+     * インスタンスが生成されてから一度だけ呼ばれる. <br>
+     * 公開してはいけない.
      * 
-     * @return 非対称平方根行列に関する行列分解システム
+     * @return 非対称平方根行列に関する行列分解
      */
-    abstract InvertibleDeterminantableSystem<Matrix> createAsymmetricSqrtSystem();
+    protected abstract InversionDeterminantableImplementation<ST, SIT> createAsymmetricSqrtSystem();
 }
