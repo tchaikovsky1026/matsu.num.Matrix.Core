@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.11.6
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -39,7 +39,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.1
  */
 public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
 
@@ -83,10 +83,12 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
     }
 
     /**
-     * <i>(外部からの呼び出し不可)</i>
+     * -
      * 
      * @return -
+     * @deprecated (外部からの呼び出し不可)
      */
+    @Deprecated
     @Override
     protected InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         DeterminantValues det =
@@ -101,10 +103,12 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
     }
 
     /**
-     * <i>(外部からの呼び出し不可)</i>
+     * -
      * 
      * @return -
+     * @deprecated (外部からの呼び出し不可)
      */
+    @Deprecated
     @Override
     protected String solverName() {
         return super.solverName();
@@ -167,11 +171,13 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
         }
 
         /**
-         * <i>(外部からの呼び出し不可)</i>
+         * -
          * 
          * @param matrix -
          * @return -
+         * @deprecated (外部からの呼び出し不可)
          */
+        @Deprecated
         @Override
         protected MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
             if (!(matrix instanceof Symmetric)) {
@@ -184,12 +190,14 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
         }
 
         /**
-         * <i>(外部からの呼び出し不可)</i>
+         * -
          * 
          * @param matrix -
          * @param epsilon -
          * @return -
+         * @deprecated (外部からの呼び出し不可)
          */
+        @Deprecated
         @Override
         protected Optional<ModifiedCholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {
             try {

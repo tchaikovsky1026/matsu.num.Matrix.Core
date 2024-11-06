@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.6
  */
 package matsu.num.matrix.base;
 
@@ -23,7 +23,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.1
  */
 public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
         Invertible, Determinantable permits DiagonalMatrixSealed, UnitMatrix {
@@ -190,10 +190,12 @@ public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
             }
 
             /**
-             * 外部からの呼び出し不可
+             * -
              * 
              * @return -
+             * @deprecated (外部からの呼び出し不可)
              */
+            @Deprecated
             @Override
             protected DiagonalMatrixImpl self() {
                 return this;
@@ -223,6 +225,13 @@ public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
                 return builder.build();
             }
 
+            /**
+             * -
+             * 
+             * @return -
+             * @deprecated (外部からの呼び出し不可)
+             */
+            @Deprecated
             @Override
             protected InverstibleAndDeterminantStruct<DiagonalMatrix> createInvAndDetWrapper() {
                 return new CreateInvAndDetWrapper().execute();
@@ -454,6 +463,13 @@ public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
                 return this.opInverse;
             }
 
+            /**
+             * -
+             * 
+             * @return -
+             * @deprecated (外部からの呼び出し不可)
+             */
+            @Deprecated
             @Override
             protected InverseAndDeterminantAttachedDiagonalMatrixImpl self() {
                 return this;

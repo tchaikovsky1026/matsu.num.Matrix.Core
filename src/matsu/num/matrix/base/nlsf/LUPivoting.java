@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.11.6
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -29,7 +29,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.1
  */
 public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, Matrix> {
 
@@ -76,10 +76,12 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
     }
 
     /**
-     * <i>(外部からの呼び出し不可)</i>
+     * -
      * 
      * @return -
+     * @deprecated (外部からの呼び出し不可)
      */
+    @Deprecated
     @Override
     protected InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         DeterminantValues det = new DeterminantValues(
@@ -96,10 +98,12 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
     }
 
     /**
-     * <i>(外部からの呼び出し不可)</i>
+     * -
      * 
      * @return -
+     * @deprecated (外部からの呼び出し不可)
      */
+    @Deprecated
     @Override
     protected String solverName() {
         return super.solverName();
@@ -156,11 +160,13 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
         }
 
         /**
-         * <i>(外部からの呼び出し不可)</i>
+         * -
          * 
          * @param matrix -
          * @return -
+         * @deprecated (外部からの呼び出し不可)
          */
+        @Deprecated
         @Override
         protected final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
             return LUPivotingFactorizationHelper.acceptedSize(matrix)
@@ -169,12 +175,14 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
         }
 
         /**
-         * <i>(外部からの呼び出し不可)</i>
+         * -
          * 
          * @param matrix -
          * @param epsilon -
          * @return -
+         * @deprecated (外部からの呼び出し不可)
          */
+        @Deprecated
         @Override
         protected final Optional<LUPivoting>
                 applyConcretely(EntryReadableMatrix matrix, double epsilon) {

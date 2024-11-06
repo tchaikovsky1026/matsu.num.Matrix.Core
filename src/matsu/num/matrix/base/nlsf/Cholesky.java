@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.11.6
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -40,7 +40,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.1
  */
 public final class Cholesky
         extends SkeletalSymmetrizedSquareTypeSolver<
@@ -84,20 +84,24 @@ public final class Cholesky
     }
 
     /**
-     * <i>(外部からの呼び出し不可)</i>
+     * -
      * 
      * @return -
+     * @deprecated (外部からの呼び出し不可)
      */
+    @Deprecated
     @Override
     protected final InversionDeterminantableImplementation<Matrix, Matrix> createAsymmetricSqrtSystem() {
         return new AsymmetricSqrtSystem(mxSqrtD, mxL);
     }
 
     /**
-     * <i>(外部からの呼び出し不可)</i>
+     * -
      * 
      * @return -
+     * @deprecated (外部からの呼び出し不可)
      */
+    @Deprecated
     @Override
     protected String solverName() {
         return super.solverName();
@@ -161,11 +165,13 @@ public final class Cholesky
         }
 
         /**
-         * <i>(外部からの呼び出し不可)</i>
+         * -
          * 
          * @param matrix -
          * @return -
+         * @deprecated (外部からの呼び出し不可)
          */
+        @Deprecated
         @Override
         protected MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
             if (!(matrix instanceof Symmetric)) {
@@ -178,12 +184,14 @@ public final class Cholesky
         }
 
         /**
-         * <i>(外部からの呼び出し不可)</i>
+         * -
          * 
          * @param matrix -
          * @param epsilon -
          * @return -
+         * @deprecated (外部からの呼び出し不可)
          */
+        @Deprecated
         @Override
         protected final Optional<Cholesky> applyConcretely(
                 EntryReadableMatrix matrix, double epsilon) {
@@ -223,10 +231,12 @@ public final class Cholesky
         }
 
         /**
-         * <i>(外部からの呼び出し不可)</i>
+         * -
          * 
          * @return -
+         * @deprecated (外部からの呼び出し不可)
          */
+        @Deprecated
         @Override
         protected InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
             /*

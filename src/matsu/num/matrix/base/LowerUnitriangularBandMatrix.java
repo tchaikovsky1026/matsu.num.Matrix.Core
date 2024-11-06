@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.11.6
  */
 package matsu.num.matrix.base;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.1
  */
 public final class LowerUnitriangularBandMatrix
         extends SkeletalAsymmetricMatrix<BandMatrix> implements LowerUnitriangular, BandMatrix {
@@ -96,10 +96,12 @@ public final class LowerUnitriangularBandMatrix
     }
 
     /**
-     * <i>(外部からの呼び出し不可)</i>
+     * -
      * 
      * @return -
+     * @deprecated (外部からの呼び出し不可)
      */
+    @Deprecated
     @Override
     protected BandMatrix createTranspose() {
         return BandMatrix.createTransposedOf(this);
@@ -238,6 +240,13 @@ public final class LowerUnitriangularBandMatrix
                 return bandMatrixDimension.dimension();
             }
 
+            /**
+             * -
+             * 
+             * @return -
+             * @deprecated (外部からの呼び出し不可)
+             */
+            @Deprecated
             @Override
             protected Matrix createTranspose() {
                 return Matrix.createTransposedOf(this);
