@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -13,7 +13,7 @@ package matsu.num.matrix.base.nlsf;
  * 行列に対する処理が正常に行われなかったことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.2
  */
 final class ProcessFailedException extends Exception {
 
@@ -22,7 +22,7 @@ final class ProcessFailedException extends Exception {
     /**
      * メッセージ無しの例外を生成する.
      */
-    public ProcessFailedException() {
+    ProcessFailedException() {
         super();
     }
 
@@ -31,7 +31,7 @@ final class ProcessFailedException extends Exception {
      * 
      * @param string メッセージ
      */
-    public ProcessFailedException(String string) {
+    ProcessFailedException(String string) {
         super(string);
     }
 }

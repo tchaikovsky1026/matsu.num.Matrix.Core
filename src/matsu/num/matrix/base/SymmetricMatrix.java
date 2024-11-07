@@ -150,6 +150,12 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
         return this.entryNormMax;
     }
 
+    /**
+     * 成分ごとのノルムの最大ノルムを計算する. <br>
+     * 一度だけ呼ばれる.
+     * 
+     * @return ノルム
+     */
     private double calcEntryNormMax() {
         return ArraysUtil.normMax(entry);
     }

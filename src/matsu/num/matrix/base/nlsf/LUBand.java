@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.6
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -34,7 +34,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.1
+ * @version 22.2
  */
 public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
 
@@ -84,7 +84,7 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
      */
     @Deprecated
     @Override
-    protected InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
+    InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         DeterminantValues det =
                 new DeterminantValues(this.mxD.logAbsDeterminant(), this.mxD.signOfDeterminant());
         // A^{-1} = (LDU)^{-1} = U^{-1}D^{-1}L^{-1}
@@ -103,7 +103,7 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
      */
     @Deprecated
     @Override
-    protected String solverName() {
+    String solverName() {
         return super.solverName();
     }
 
@@ -171,7 +171,7 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
          */
         @Deprecated
         @Override
-        protected MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
+        MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
             return LUBandFactorizationHelper.acceptedSize(matrix)
                     ? MatrixStructureAcceptance.ACCEPTED
                     : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
@@ -187,7 +187,7 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
          */
         @Deprecated
         @Override
-        protected final Optional<LUBand> applyConcretely(BandMatrix matrix, double epsilon) {
+        final Optional<LUBand> applyConcretely(BandMatrix matrix, double epsilon) {
             try {
                 return Optional.of(new LUBand(matrix, epsilon));
             } catch (ProcessFailedException e) {

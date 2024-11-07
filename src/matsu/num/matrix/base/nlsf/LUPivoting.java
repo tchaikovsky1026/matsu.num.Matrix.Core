@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.6
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -29,7 +29,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.1
+ * @version 22.2
  */
 public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, Matrix> {
 
@@ -83,7 +83,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      */
     @Deprecated
     @Override
-    protected InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
+    InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         DeterminantValues det = new DeterminantValues(
                 this.mxD.logAbsDeterminant(), this.mxP.signOfDeterminant() * this.mxD.signOfDeterminant());
 
@@ -105,7 +105,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      */
     @Deprecated
     @Override
-    protected String solverName() {
+    String solverName() {
         return super.solverName();
     }
 
@@ -168,7 +168,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
          */
         @Deprecated
         @Override
-        protected final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
+        final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
             return LUPivotingFactorizationHelper.acceptedSize(matrix)
                     ? MatrixStructureAcceptance.ACCEPTED
                     : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
@@ -184,7 +184,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
          */
         @Deprecated
         @Override
-        protected final Optional<LUPivoting>
+        final Optional<LUPivoting>
                 applyConcretely(EntryReadableMatrix matrix, double epsilon) {
 
             try {

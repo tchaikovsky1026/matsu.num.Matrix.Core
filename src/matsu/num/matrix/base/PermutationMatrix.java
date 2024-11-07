@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base;
 
@@ -18,7 +18,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 置換行列を扱う.
  *
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.2
  */
 public sealed interface PermutationMatrix extends EntryReadableMatrix,
         OrthogonalMatrix, Determinantable permits PermutationMatrixSealed, UnitMatrix {
@@ -190,9 +190,9 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
             private final boolean even;
 
             /**
-             * フィールド指定コンストラクタ.
+             * 唯一のコンストラクタ.
              */
-            private PermutationMatrixImpl(
+            PermutationMatrixImpl(
                     final MatrixDimension matrixDimension,
                     final int[] permutationVertical, final int[] permutationHorizontal, final boolean even) {
                 this.matrixDimension = matrixDimension;

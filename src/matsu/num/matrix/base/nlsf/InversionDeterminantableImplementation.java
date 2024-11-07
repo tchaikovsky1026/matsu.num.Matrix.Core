@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -36,7 +36,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.2
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
  */
@@ -49,7 +49,7 @@ abstract class InversionDeterminantableImplementation<TT extends Matrix, IT exte
     /**
      * 唯一のコンストラクタ.
      */
-    protected InversionDeterminantableImplementation() {
+    InversionDeterminantableImplementation() {
         super();
         this.invAndDetStructSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createInverseDeterminantStruct());
@@ -90,5 +90,5 @@ abstract class InversionDeterminantableImplementation<TT extends Matrix, IT exte
      * 
      * @return 行列式と逆行列の構造体
      */
-    protected abstract InverstibleAndDeterminantStruct<IT> createInverseDeterminantStruct();
+    abstract InverstibleAndDeterminantStruct<IT> createInverseDeterminantStruct();
 }

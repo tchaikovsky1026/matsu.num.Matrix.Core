@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base;
 
@@ -32,7 +32,7 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadable;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.2
  */
 public interface EntryReadableMatrix extends Matrix {
 
@@ -57,7 +57,7 @@ public interface EntryReadableMatrix extends Matrix {
     public double valueAt(int row, int column);
 
     /**
-     * 成分ごとのノルムの最大ノルムを計算する.
+     * 成分ごとのノルムの最大ノルムを返す.
      *
      * @return 成分ごとのノルムの最大ノルム
      */

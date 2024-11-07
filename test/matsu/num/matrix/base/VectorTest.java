@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Test.None;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
@@ -20,6 +21,82 @@ import matsu.num.matrix.base.common.ArraysUtil;
  */
 @RunWith(Enclosed.class)
 final class VectorTest {
+
+    public static class ビルダに関するテスト {
+
+        private Vector.Builder builder;
+
+        @Before
+        public void before_次元3のビルダ() {
+            builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(3));
+        }
+
+        @Test(expected = IndexOutOfBoundsException.class)
+        public void test_setValue_indexが負でIOOBEx() {
+            builder.setValue(-1, 0d);
+        }
+
+        @Test(expected = IndexOutOfBoundsException.class)
+        public void test_setValue_indexが範囲外でIOOBEx() {
+            builder.setValue(3, 0d);
+        }
+
+        @Test(expected = None.class)
+        public void test_setValue_不正値でも例外をスローしない() {
+            builder.setValue(0, Double.POSITIVE_INFINITY);
+            builder.setValue(0, Double.NEGATIVE_INFINITY);
+            builder.setValue(0, Double.NaN);
+        }
+
+        @Test(expected = IndexOutOfBoundsException.class)
+        public void test_setValueOrElseThrow_indexが負でIOOBEx() {
+            builder.setValueOrElseThrow(-1, 0d, v -> new IllegalArgumentException());
+        }
+
+        @Test(expected = IndexOutOfBoundsException.class)
+        public void test_setValueOrElseThrow_indexが範囲外でIOOBEx() {
+            builder.setValueOrElseThrow(3, 0d, v -> new IllegalArgumentException());
+        }
+
+        @Test(expected = ArithmeticException.class)
+        public void test_setValueOrElseThrow_不正値で例外X() {
+            builder.setValueOrElseThrow(
+                    0, Double.POSITIVE_INFINITY,
+                    v -> new ArithmeticException());
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void test_setEntryValue_サイズ不正でIAEx() {
+            builder.setEntryValue(0d, 0d);
+        }
+
+        @Test(expected = None.class)
+        public void test_setEntryValue_不正値でも例外をスローしない() {
+            builder.setEntryValue(
+                    Double.POSITIVE_INFINITY,
+                    Double.NEGATIVE_INFINITY,
+                    Double.NaN);
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void test_setEntryValueOrElseThrow_サイズ不正でIAEx() {
+            builder.setEntryValueOrElseThrow(v -> new IllegalArgumentException(), 0d, 0d);
+        }
+
+        @Test(expected = ArithmeticException.class)
+        public void test_setEntryValueOrElseThrow_値不正で例外X_1() {
+            builder.setEntryValueOrElseThrow(
+                    v -> new ArithmeticException(),
+                    Double.POSITIVE_INFINITY, 0d, 0d);
+        }
+
+        @Test(expected = ArithmeticException.class)
+        public void test_setEntryValueOrElseThrow_値不正で例外X_2() {
+            builder.setEntryValueOrElseThrow(
+                    v -> new ArithmeticException(),
+                    0d, 0d, Double.NaN);
+        }
+    }
 
     public static class 二項演算に関するテスト {
 

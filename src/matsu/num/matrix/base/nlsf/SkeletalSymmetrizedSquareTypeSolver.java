@@ -47,7 +47,7 @@ abstract non-sealed class SkeletalSymmetrizedSquareTypeSolver<
     /**
      * 唯一のコンストラクタ.
      */
-    protected SkeletalSymmetrizedSquareTypeSolver() {
+    SkeletalSymmetrizedSquareTypeSolver() {
         super();
         this.asymmetricSqrtSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createAsymmetricSqrtSystem());
@@ -61,7 +61,7 @@ abstract non-sealed class SkeletalSymmetrizedSquareTypeSolver<
      */
     @Deprecated
     @Override
-    protected final InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
+    final InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         InversionDeterminantableImplementation<ST, SIT> sqrtMatrixStructure =
                 this.asymmetricSqrtSupplier.get();
         return new InverstibleAndDeterminantStruct<Matrix>(
@@ -86,5 +86,5 @@ abstract non-sealed class SkeletalSymmetrizedSquareTypeSolver<
      * 
      * @return 非対称平方根行列に関する行列分解
      */
-    protected abstract InversionDeterminantableImplementation<ST, SIT> createAsymmetricSqrtSystem();
+    abstract InversionDeterminantableImplementation<ST, SIT> createAsymmetricSqrtSystem();
 }

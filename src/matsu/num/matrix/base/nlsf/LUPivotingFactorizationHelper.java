@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -29,7 +29,7 @@ import matsu.num.matrix.base.PermutationMatrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.2
  */
 final class LUPivotingFactorizationHelper {
 
@@ -47,7 +47,7 @@ final class LUPivotingFactorizationHelper {
      * @param relativeEpsilon
      * @throws ProcessFailedException 行列が特異の場合
      */
-    public LUPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
+    LUPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
             throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
@@ -59,25 +59,25 @@ final class LUPivotingFactorizationHelper {
         this.convertToEachMatrix();
     }
 
-    public static boolean acceptedSize(Matrix matrix) {
+    static boolean acceptedSize(Matrix matrix) {
         final int dimension = matrix.matrixDimension().rowAsIntValue();
         final long long_entrySize = (long) dimension * dimension;
         return long_entrySize <= Integer.MAX_VALUE;
     }
 
-    public DiagonalMatrix getMxD() {
+    DiagonalMatrix getMxD() {
         return this.mxD;
     }
 
-    public LowerUnitriangular getMxL() {
+    LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
-    public LowerUnitriangular getMxUt() {
+    LowerUnitriangular getMxUt() {
         return this.mxUt;
     }
 
-    public PermutationMatrix getMxP() {
+    PermutationMatrix getMxP() {
         return this.mxP;
     }
 

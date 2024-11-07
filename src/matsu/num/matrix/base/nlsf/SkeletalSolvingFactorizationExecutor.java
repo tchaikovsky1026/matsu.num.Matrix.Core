@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -43,7 +43,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.2
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */
@@ -54,7 +54,7 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
     /**
      * 唯一のコンストラクタ.
      */
-    protected SkeletalSolvingFactorizationExecutor() {
+    SkeletalSolvingFactorizationExecutor() {
         super();
     }
 
@@ -65,7 +65,7 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
      * @param matrix 正方行列であることが確定した行列(当然nullでない)
      * @return 判定結果
      */
-    protected abstract MatrixStructureAcceptance acceptsConcretely(MT matrix);
+    abstract MatrixStructureAcceptance acceptsConcretely(MT matrix);
 
     /**
      * 受け入れ可能であることが確定した行列に対して, 行列分解を実際に実行する. <br>
@@ -76,7 +76,7 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
      * @param epsilon 正常(0以上の有限数)であることが確定した相対epsilon
      * @return 行列分解
      */
-    protected abstract Optional<ST> applyConcretely(MT matrix, double epsilon);
+    abstract Optional<ST> applyConcretely(MT matrix, double epsilon);
 
     /**
      * @throws NullPointerException {@inheritDoc }

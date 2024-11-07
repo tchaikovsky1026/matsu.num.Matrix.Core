@@ -34,11 +34,6 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
         super();
     }
 
-    @Override
-    public final T transpose() {
-        return this.self();
-    }
-
     /**
      * {@code this} を返す.
      * 
@@ -49,6 +44,11 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      * @return this
      */
     protected abstract T self();
+
+    @Override
+    public final T transpose() {
+        return this.self();
+    }
 
     /**
      * <p>

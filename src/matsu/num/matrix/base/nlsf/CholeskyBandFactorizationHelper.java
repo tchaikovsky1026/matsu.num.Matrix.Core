@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -28,7 +28,7 @@ import matsu.num.matrix.base.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.2
  */
 final class CholeskyBandFactorizationHelper {
 
@@ -66,11 +66,11 @@ final class CholeskyBandFactorizationHelper {
         return long_entrySize <= Integer.MAX_VALUE;
     }
 
-    public DiagonalMatrix getMxSqrtD() {
+    DiagonalMatrix getMxSqrtD() {
         return this.mxSqrtD;
     }
 
-    public LowerUnitriangular getMxL() {
+    LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
@@ -199,5 +199,4 @@ final class CholeskyBandFactorizationHelper {
             throw new ProcessFailedException("行列が正定値でない");
         }
     }
-
 }

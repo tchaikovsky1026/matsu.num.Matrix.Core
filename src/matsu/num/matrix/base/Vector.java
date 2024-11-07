@@ -5,11 +5,12 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.2
+ * 2024.11.8
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
+import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
@@ -27,7 +28,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.2
  */
 public final class Vector {
 
@@ -467,6 +468,39 @@ public final class Vector {
             this.entry[index] = modified(value);
         }
 
+        /**
+         * ベクトルの要素 <i>i</i> を与えられた値で置き換える. <br>
+         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+         *
+         * @param <X> スローされる例外の型
+         * @param index <i>i</i>, index
+         * @param value 置き換えた後の値
+         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+         * @throws IndexOutOfBoundsException indexが範囲外の場合
+         * @throws X valueが不正な値である場合
+         * @throws IllegalStateException すでにビルドされている場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         * @see Vector#acceptValue(double)
+         */
+        public <X extends Exception> void setValueOrElseThrow(final int index, double value,
+                DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+            Objects.requireNonNull(invalidValueExceptionGetter);
+            if (Objects.isNull(this.entry)) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+            if (!Vector.acceptValue(value)) {
+                throw invalidValueExceptionGetter.apply(value);
+            }
+            if (!this.vectorDimension.isValidIndex(index)) {
+                throw new IndexOutOfBoundsException(
+                        String.format(
+                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
+            }
+
+            this.entry[index] = value;
+        }
+
         private static double modified(double value) {
             if (Vector.acceptValue(value)) {
                 return value;
@@ -511,6 +545,42 @@ public final class Vector {
 
             for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
                 newEntry[j] = modified(newEntry[j]);
+            }
+            this.entry = newEntry;
+        }
+
+        /**
+         * ベクトルの要素を与えられた配列の値で置き換える. <br>
+         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする. <br>
+         * 与える配列の長さはベクトルの次元と一致する必要がある.
+         *
+         * @param <X> スローされる例外の型
+         * @param entry 置き換えた後の値を持つ配列
+         * @param invalidValueExceptionGetter entryの要素が不正な値の場合にスローする例外の生成器
+         * @throws IllegalStateException すでにビルドされている場合
+         * @throws IllegalArgumentException 配列の長さがベクトルの次元と一致しない場合
+         * @throws X valueが不正な値である場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         * @see Vector#acceptValue(double)
+         */
+        public <X extends Exception> void setEntryValueOrElseThrow(
+                DoubleFunction<X> invalidValueExceptionGetter, final double... entry) throws X {
+            if (Objects.isNull(this.entry)) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+
+            double[] newEntry = entry.clone();
+            if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
+                throw new IllegalArgumentException(
+                        String.format(
+                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, newEntry.length));
+            }
+
+            for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
+                double value = newEntry[j];
+                if (!Vector.acceptValue(value)) {
+                    throw invalidValueExceptionGetter.apply(value);
+                }
             }
             this.entry = newEntry;
         }

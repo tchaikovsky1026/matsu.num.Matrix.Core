@@ -1,12 +1,12 @@
 /**
- * ベクトル, 行列, 線形代数に関する基本コンポーネントを扱うモジュール. 
+ * ベクトル, 行列, 線形代数に関する基本コンポーネントを扱うモジュール.
  * 
  * <p>
  * <i>必須モジュール:</i> <br>
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.1
+ * @version 22.2
  */
 module matsu.num.matrix.Base {
     exports matsu.num.matrix.base;

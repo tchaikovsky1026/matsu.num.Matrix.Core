@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.6
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -40,7 +40,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.1
+ * @version 22.2
  */
 public final class CholeskyBand
         extends SkeletalSymmetrizedSquareTypeSolver<BandMatrix, Matrix, Matrix> {
@@ -90,7 +90,7 @@ public final class CholeskyBand
      */
     @Deprecated
     @Override
-    protected final InversionDeterminantableImplementation<Matrix, Matrix> createAsymmetricSqrtSystem() {
+    final InversionDeterminantableImplementation<Matrix, Matrix> createAsymmetricSqrtSystem() {
         return new AsymmetricSqrtSystem(mxSqrtD, mxL);
     }
 
@@ -102,7 +102,7 @@ public final class CholeskyBand
      */
     @Deprecated
     @Override
-    protected String solverName() {
+    String solverName() {
         return super.solverName();
     }
 
@@ -170,7 +170,7 @@ public final class CholeskyBand
          */
         @Deprecated
         @Override
-        protected MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
+        MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
             if (!(matrix instanceof Symmetric)) {
                 return MatrixRejectionInLSF.REJECTED_BY_NOT_SYMMETRIC.get();
             }
@@ -190,7 +190,7 @@ public final class CholeskyBand
          */
         @Deprecated
         @Override
-        protected Optional<CholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {
+        Optional<CholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {
             try {
                 return Optional.of(new CholeskyBand(matrix, epsilon));
             } catch (ProcessFailedException e) {
@@ -230,7 +230,7 @@ public final class CholeskyBand
          */
         @Deprecated
         @Override
-        protected InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
+        InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
             // A = BB^Tとすれば,
             // B^{-1} = D^{-1/2}L^{-1}
             final Matrix asymmInvSqrt = Matrix.multiply(

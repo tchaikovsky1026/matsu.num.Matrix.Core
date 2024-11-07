@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -28,7 +28,7 @@ import matsu.num.matrix.base.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.2
  */
 final class ModifiedCholeskyBandFactorizationHelper {
 
@@ -45,7 +45,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
      * @param relativeEpsilon
      * @throws ProcessFailedException 行列が特異の場合, ピボッティングが必要な場合
      */
-    public ModifiedCholeskyBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon)
+    ModifiedCholeskyBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon)
             throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
@@ -59,7 +59,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
         this.convertToEachMatrix();
     }
 
-    public static boolean acceptedSize(BandMatrix matrix) {
+    static boolean acceptedSize(BandMatrix matrix) {
         BandMatrixDimension bandMatrixDimension = matrix.bandMatrixDimension();
         final int thisDimension = bandMatrixDimension.dimension().rowAsIntValue();
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -68,11 +68,11 @@ final class ModifiedCholeskyBandFactorizationHelper {
         return long_entrySize <= Integer.MAX_VALUE;
     }
 
-    public DiagonalMatrix getMxD() {
+    DiagonalMatrix getMxD() {
         return this.mxD;
     }
 
-    public LowerUnitriangular getMxL() {
+    LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
@@ -199,5 +199,4 @@ final class ModifiedCholeskyBandFactorizationHelper {
             throw new ProcessFailedException("行列が特異あるいはピボッティングが必要");
         }
     }
-
 }

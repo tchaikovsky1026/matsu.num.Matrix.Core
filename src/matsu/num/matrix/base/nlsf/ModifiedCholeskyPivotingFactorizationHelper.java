@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -28,7 +28,7 @@ import matsu.num.matrix.base.PermutationMatrix;
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.2
  */
 final class ModifiedCholeskyPivotingFactorizationHelper {
 
@@ -49,7 +49,7 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
      * @param relativeEpsilon
      * @throws ProcessFailedException 行列が特異の場合
      */
-    public ModifiedCholeskyPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
+    ModifiedCholeskyPivotingFactorizationHelper(final EntryReadableMatrix matrix, double relativeEpsilon)
             throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
@@ -62,22 +62,22 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
         this.convertToEachMatrix();
     }
 
-    public static boolean acceptedSize(Matrix matrix) {
+    static boolean acceptedSize(Matrix matrix) {
         final int dimension = matrix.matrixDimension().rowAsIntValue();
         final long entrySize = ((long) dimension * dimension + dimension) / 2L;
 
         return entrySize <= Integer.MAX_VALUE / 2;
     }
 
-    public Block2OrderSymmetricDiagonalMatrix getMxM() {
+    Block2OrderSymmetricDiagonalMatrix getMxM() {
         return this.mxM;
     }
 
-    public LowerUnitriangular getMxL() {
+    LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
-    public PermutationMatrix getMxP() {
+    PermutationMatrix getMxP() {
         return this.mxP;
     }
 
@@ -301,7 +301,5 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
         final double temp = thisMxLowerEntry[indMinN + indMin];
         thisMxLowerEntry[indMinN + indMin] = thisMxLowerEntry[indMaxN + indMax];
         thisMxLowerEntry[indMaxN + indMax] = temp;
-
     }
-
 }

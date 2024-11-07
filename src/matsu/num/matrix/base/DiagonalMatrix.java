@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.6
+ * 2024.11.7
  */
 package matsu.num.matrix.base;
 
@@ -23,7 +23,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 22.1
+ * @version 22.2
  */
 public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
         Invertible, Determinantable permits DiagonalMatrixSealed, UnitMatrix {
@@ -266,7 +266,8 @@ public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
 
             /**
              * {@link Block2OrderSymmetricDiagonalMatrixImpl} の内部で使う,
-             * 行列式と逆行列の計算を支援する仕組み.
+             * 行列式と逆行列の計算を支援する仕組み. <br>
+             * インスタンスに対して {@link #execute()} は一度しか読んではいけない (使いまわしてはいけない.
              */
             private final class CreateInvAndDetWrapper {
 
@@ -296,8 +297,8 @@ public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
                  * 
                  * @return 逆行列と行列式
                  */
-                public InverstibleAndDeterminantStruct<DiagonalMatrix>
-                        execute() {
+                InverstibleAndDeterminantStruct<DiagonalMatrix> execute() {
+
                     double[] thisDiagonalEntry = DiagonalMatrixImpl.this.diagonalEntry;
                     final int dimension = thisDiagonalEntry.length;
 

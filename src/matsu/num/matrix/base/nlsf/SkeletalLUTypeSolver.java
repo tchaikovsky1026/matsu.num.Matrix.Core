@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -26,7 +26,7 @@ import matsu.num.matrix.base.Matrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.2
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
  */
@@ -36,7 +36,7 @@ abstract non-sealed class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, I
     /**
      * 唯一のコンストラクタ.
      */
-    protected SkeletalLUTypeSolver() {
+    SkeletalLUTypeSolver() {
         super();
     }
 
@@ -56,7 +56,7 @@ abstract non-sealed class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, I
      * @return ソルバーの名前
      * @see #toString()
      */
-    protected String solverName() {
+    String solverName() {
         return this.getClass().getSimpleName();
     }
 

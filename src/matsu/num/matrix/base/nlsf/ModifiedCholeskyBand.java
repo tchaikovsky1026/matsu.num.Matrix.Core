@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.6
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -39,7 +39,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.1
+ * @version 22.2
  */
 public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
 
@@ -90,7 +90,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
      */
     @Deprecated
     @Override
-    protected InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
+    InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         DeterminantValues det =
                 new DeterminantValues(this.mxD.logAbsDeterminant(), this.mxD.signOfDeterminant());
 
@@ -110,7 +110,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
      */
     @Deprecated
     @Override
-    protected String solverName() {
+    String solverName() {
         return super.solverName();
     }
 
@@ -179,7 +179,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
          */
         @Deprecated
         @Override
-        protected MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
+        MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
             if (!(matrix instanceof Symmetric)) {
                 return MatrixRejectionInLSF.REJECTED_BY_NOT_SYMMETRIC.get();
             }
@@ -199,7 +199,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
          */
         @Deprecated
         @Override
-        protected Optional<ModifiedCholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {
+        Optional<ModifiedCholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {
             try {
                 return Optional.of(new ModifiedCholeskyBand(matrix, epsilon));
             } catch (ProcessFailedException e) {

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.7
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -28,7 +28,7 @@ import matsu.num.matrix.base.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 22.2
  */
 final class LUBandFactorizationHelper {
 
@@ -47,7 +47,7 @@ final class LUBandFactorizationHelper {
      * @param relativeEpsilon
      * @throws ProcessFailedException 行列が特異の場合, あるいはピボッティングが必要な場合
      */
-    public LUBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) throws ProcessFailedException {
+    LUBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
             throw new ProcessFailedException("行列が特異(零行列である)");
@@ -60,7 +60,7 @@ final class LUBandFactorizationHelper {
         this.convertToEachMatrix();
     }
 
-    public static boolean acceptedSize(BandMatrix matrix) {
+    static boolean acceptedSize(BandMatrix matrix) {
         BandMatrixDimension bandMatrixDimension = matrix.bandMatrixDimension();
         final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
         final int lowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -70,15 +70,15 @@ final class LUBandFactorizationHelper {
         return larger_entrySize <= Integer.MAX_VALUE;
     }
 
-    public DiagonalMatrix getMxD() {
+    DiagonalMatrix getMxD() {
         return this.mxD;
     }
 
-    public LowerUnitriangular getMxL() {
+    LowerUnitriangular getMxL() {
         return this.mxL;
     }
 
-    public LowerUnitriangular getMxUt() {
+    LowerUnitriangular getMxUt() {
         return this.mxUt;
     }
 
