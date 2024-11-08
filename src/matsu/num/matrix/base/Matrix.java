@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.8
  */
 package matsu.num.matrix.base;
 
@@ -20,8 +20,13 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </p>
  * 
  * <p>
- * このインターフェースを実装した全てのクラスは実質的にイミュータブルであり,
+ * {@link Matrix} インターフェースを実装した全てのクラスは実質的にイミュータブルであり,
  * (このインターフェース以外を含む) 全てのメソッドは関数的かつスレッドセーフである.
+ * </p>
+ * 
+ * <p>
+ * {@link Matrix} は identity に基づく equality を提供する. <br>
+ * すなわち, {@link Object#equals(Object)} メソッドの実装に準じる.
  * </p>
  * 
  * <hr>
@@ -31,6 +36,10 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * <p>
  * 実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
  * 違反した場合は振る舞いが保証されない.
+ * </p>
+ * 
+ * <p>
+ * identity に基づく equality を提供しなければならない.
  * </p>
  * 
  * <p>
@@ -67,7 +76,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </blockquote>
  *
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.3
  */
 public interface Matrix {
 
@@ -128,6 +137,24 @@ public interface Matrix {
      * @return 転置行列
      */
     public abstract Matrix transpose();
+
+    /**
+     * 自身と相手とが等価であるかどうかを判定する. <br>
+     * identity に基づく equality である.
+     * 
+     * @param obj 相手
+     * @return 相手が自信と等しいなら true
+     */
+    @Override
+    public abstract boolean equals(Object obj);
+
+    /**
+     * ハッシュコードを返す.
+     * 
+     * @return ハッシュコード
+     */
+    @Override
+    public int hashCode();
 
     /**
      * 1個以上の行列に対し, それらの行列積を返す.

@@ -23,12 +23,17 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * <p>
+ * {@link Vector} は identity に基づく equality を提供する. <br>
+ * すなわち, {@link Object#equals(Object)} メソッドの実装に準じる.
+ * </p>
+ * 
+ * <p>
  * 所望のベクトルの生成にはビルダ ({@link Builder}) を用いる. <br>
  * 値の検証にはstaticメソッド {@link #acceptValue(double) } を使用する.
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.2
+ * @version 22.3
  */
 public final class Vector {
 
@@ -337,6 +342,28 @@ public final class Vector {
         out.norm2 = value1;
         out.norm2Square = value1;
         return out;
+    }
+
+    /**
+     * 自身と相手とが等価であるかどうかを判定する. <br>
+     * identity に基づく equality である.
+     * 
+     * @param obj 相手
+     * @return 相手が自信と等しいなら true
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    /**
+     * ハッシュコードを返す.
+     * 
+     * @return ハッシュコード
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     /**
