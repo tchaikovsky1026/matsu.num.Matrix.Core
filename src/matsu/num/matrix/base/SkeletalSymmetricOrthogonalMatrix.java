@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
-import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * <p>
@@ -57,15 +56,6 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<
     @Override
     public final Optional<T> inverse() {
         return this.opSelfSupplier.get();
-    }
-
-    /**
-     * @throws MatrixFormatMismatchException {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
-     */
-    @Override
-    public final Vector operateTranspose(Vector operand) {
-        return this.operate(operand);
     }
 
     @Override

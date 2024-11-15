@@ -170,15 +170,6 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
         return builder.build();
     }
 
-    /**
-     * @throws MatrixFormatMismatchException {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
-     */
-    @Override
-    public Vector operateTranspose(Vector operand) {
-        return this.operate(operand);
-    }
-
     @Override
     public double entryNormMax() {
         return this.entryNormMax;

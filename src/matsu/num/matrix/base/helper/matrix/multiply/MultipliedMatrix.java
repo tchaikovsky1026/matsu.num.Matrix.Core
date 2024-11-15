@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.3
+ * 2024.11.11
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
@@ -17,9 +17,9 @@ import matsu.num.matrix.base.Matrix;
  * 行列が行列積として表現されていることを通知可能にするインターフェース.
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.4
  */
-public interface MultipliedMatrix extends Matrix {
+interface MultipliedMatrix extends Matrix {
 
     /**
      * 行列積の表現を{@link Deque}として返す.

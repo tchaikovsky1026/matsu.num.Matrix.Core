@@ -17,10 +17,8 @@ import matsu.num.matrix.base.Invertible;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.SkeletalSymmetricMatrix;
 import matsu.num.matrix.base.Symmetric;
-import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
-import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * 逆行列と行列式が計算可能な行列に対する, 骨格実装.
@@ -79,15 +77,6 @@ public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<
     @Override
     public final int signOfDeterminant() {
         return this.invAndDetStructSupplier.get().determinantValues().sign();
-    }
-
-    /**
-     * @throws MatrixFormatMismatchException {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
-     */
-    @Override
-    public final Vector operateTranspose(Vector operand) {
-        return this.operate(operand);
     }
 
     /**

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.8
+ * 2024.11.10
  */
 package matsu.num.matrix.base;
 
@@ -21,7 +21,8 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * <p>
  * <i> <u>
  * 具象クラスが {@link Symmetric} を付与されるなら,
- * {@link SkeletalSymmetricMatrix} を使用しなければならない.
+ * {@link SkeletalSymmetricMatrix} を使用しなければならない. <br>
+ * (このクラスからの継承は禁止である.)
  * </u> </i>
  * </p>
  * 
@@ -33,7 +34,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.3
+ * @version 22.4
  * @param <TT> 転置行列のタイプ, transposeの戻り値型を具象クラスにゆだねる.
  */
 public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {
@@ -47,6 +48,13 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     protected SkeletalAsymmetricMatrix() {
         super();
         this.transposeSupplier = ImmutableLazyCacheSupplier.of(() -> this.createTranspose());
+        if (this instanceof Symmetric) {
+            throw new AssertionError(
+                    String.format(
+                            "実装規約違反: %s のサブクラスに %s を付与してはいけない",
+                            SkeletalAsymmetricMatrix.class.getSimpleName(),
+                            Symmetric.class.getSimpleName()));
+        }
     }
 
     @Override

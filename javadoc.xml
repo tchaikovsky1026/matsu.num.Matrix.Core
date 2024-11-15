@@ -22,8 +22,9 @@
 
         	additionalparam="--module-path '../dist-num'" 
         	packagenames="matsu.num.matrix.base,
-        	matsu.num.matrix.base.validation,
-        	matsu.num.matrix.base.nlsf,"
+        	matsu.num.matrix.base.block,
+        	matsu.num.matrix.base.nlsf,
+        	matsu.num.matrix.base.validation,"
         />
         
         <!-- 

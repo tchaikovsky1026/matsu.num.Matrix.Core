@@ -440,11 +440,6 @@ public sealed interface DiagonalMatrix extends BandMatrix, Symmetric,
             }
 
             @Override
-            public Vector operateTranspose(Vector operand) {
-                return this.original.operateTranspose(operand);
-            }
-
-            @Override
             public double determinant() {
                 return this.determinantValues.determinant();
             }

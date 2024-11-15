@@ -17,12 +17,12 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 
 /**
- * {@link MatrixMultiplication}クラスのテスト.
+ * {@link MatrixMultiplicationUtil}クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class MatrixMultiplicationTest {
+final class MatrixMultiplicationUtilTest {
 
     public static class 行列積のテスト {
         private Matrix m1;
@@ -57,7 +57,7 @@ final class MatrixMultiplicationTest {
             builder_m4.setValue(3, 5, 0.7);
             m4 = builder_m4.build();
 
-            m1To4 = MatrixMultiplication.instance().apply(
+            m1To4 = MatrixMultiplicationUtil.apply(
                     m1, m2, m3, m4);
         }
 
@@ -92,8 +92,8 @@ final class MatrixMultiplicationTest {
 
         @Test
         public void test_逐次組み合わせのテスト_前() {
-            Matrix multi = MatrixMultiplication.instance().apply(
-                    MatrixMultiplication.instance().apply(m1, m2),
+            Matrix multi = MatrixMultiplicationUtil.apply(
+                    MatrixMultiplicationUtil.apply(m1, m2),
                     m3,
                     m4);
             doubleArrayEqual(
@@ -108,9 +108,9 @@ final class MatrixMultiplicationTest {
 
         @Test
         public void test_逐次組み合わせのテスト_中() {
-            Matrix multi = MatrixMultiplication.instance().apply(
+            Matrix multi = MatrixMultiplicationUtil.apply(
                     m1,
-                    MatrixMultiplication.instance().apply(m2, m3),
+                    MatrixMultiplicationUtil.apply(m2, m3),
                     m4);
             doubleArrayEqual(
                     multi.operate(vec_6).entryAsArray(),
@@ -124,10 +124,10 @@ final class MatrixMultiplicationTest {
 
         @Test
         public void test_逐次組み合わせのテスト_後() {
-            Matrix multi = MatrixMultiplication.instance().apply(
+            Matrix multi = MatrixMultiplicationUtil.apply(
                     m1,
                     m2,
-                    MatrixMultiplication.instance().apply(m3, m4));
+                    MatrixMultiplicationUtil.apply(m3, m4));
             doubleArrayEqual(
                     multi.operate(vec_6).entryAsArray(),
                     m1To4.operate(vec_6).entryAsArray(),
@@ -157,7 +157,7 @@ final class MatrixMultiplicationTest {
             dBuilder.setValue(0, 2.3);
             dBuilder.setValue(1, 0.7);
             mxD = dBuilder.build();
-            symmMulti = MatrixMultiplication.instance().symmetricMultiply(mxD, mxL);
+            symmMulti = MatrixMultiplicationUtil.symmetricMultiply(mxD, mxL);
         }
 
         @Before
@@ -207,20 +207,21 @@ final class MatrixMultiplicationTest {
         @Test
         public void test_toString表示() {
 
-            System.out.println(MatrixMultiplication.class.getName() + ":");
+            System.out.println(MatrixMultiplicationUtil.class.getName() + ":");
             //4積
-            Matrix multi = MatrixMultiplication.instance().apply(m1, m2, m3, m4);
+            Matrix multi = MatrixMultiplicationUtil.apply(m1, m2, m3, m4);
             System.out.println(multi);
             System.out.println(multi.transpose());
 
             //4積(分割)
             Matrix multi2 =
-                    MatrixMultiplication.instance().apply(MatrixMultiplication.instance().apply(m1, m2), m3, m4);
+                    MatrixMultiplicationUtil
+                            .apply(MatrixMultiplicationUtil.apply(m1, m2), m3, m4);
             System.out.println(multi2);
             System.out.println(multi2.transpose());
 
             //対称化積
-            Matrix multiSymm = MatrixMultiplication.instance().symmetricMultiply(symm_2, m1);
+            Matrix multiSymm = MatrixMultiplicationUtil.symmetricMultiply(symm_2, m1);
             System.out.println(multiSymm);
             System.out.println(multiSymm.transpose());
 

@@ -3,27 +3,31 @@ package matsu.num.matrix.base.helper.matrix.multiply;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.OrthogonalMatrix;
 import matsu.num.matrix.base.PermutationMatrix;
+import matsu.num.matrix.base.UnitMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * {@link OrthogonalMatrixMultiplication}クラスのテスト.
+ * {@link OrthogonalMatrixMultiplicationUtil}クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class OrthogonalMatrixMultiplicationTest {
+final class OrthogonalMatrixMultiplicationUtilTest {
 
-    public static final Class<?> TEST_CLASS = OrthogonalMatrixMultiplication.class;
+    public static final Class<?> TEST_CLASS = OrthogonalMatrixMultiplicationUtil.class;
 
     public static class 行列積のテスト {
 
@@ -59,7 +63,7 @@ final class OrthogonalMatrixMultiplicationTest {
             builder_m4.swapRows(0, 1);
             m4 = builder_m4.build();
 
-            m1To4 = OrthogonalMatrixMultiplication.instance().apply(m1, m2, m3, m4);
+            m1To4 = OrthogonalMatrixMultiplicationUtil.apply(m1, m2, m3, m4);
         }
 
         @Before
@@ -89,8 +93,8 @@ final class OrthogonalMatrixMultiplicationTest {
 
         @Test
         public void test_逐次組み合わせのテスト_前() {
-            OrthogonalMatrix multi = OrthogonalMatrixMultiplication.instance().apply(
-                    OrthogonalMatrixMultiplication.instance().apply(m1, m2),
+            OrthogonalMatrix multi = OrthogonalMatrixMultiplicationUtil.apply(
+                    OrthogonalMatrixMultiplicationUtil.apply(m1, m2),
                     m3,
                     m4);
             doubleArrayEqual(
@@ -105,9 +109,9 @@ final class OrthogonalMatrixMultiplicationTest {
 
         @Test
         public void test_逐次組み合わせのテスト_中() {
-            OrthogonalMatrix multi = OrthogonalMatrixMultiplication.instance().apply(
+            OrthogonalMatrix multi = OrthogonalMatrixMultiplicationUtil.apply(
                     m1,
-                    OrthogonalMatrixMultiplication.instance().apply(m2, m3),
+                    OrthogonalMatrixMultiplicationUtil.apply(m2, m3),
                     m4);
             doubleArrayEqual(
                     multi.operate(vec_4).entryAsArray(),
@@ -121,10 +125,10 @@ final class OrthogonalMatrixMultiplicationTest {
 
         @Test
         public void test_逐次組み合わせのテスト_後() {
-            OrthogonalMatrix multi = OrthogonalMatrixMultiplication.instance().apply(
+            OrthogonalMatrix multi = OrthogonalMatrixMultiplicationUtil.apply(
                     m1,
                     m2,
-                    OrthogonalMatrixMultiplication.instance().apply(m3, m4));
+                    OrthogonalMatrixMultiplicationUtil.apply(m3, m4));
             doubleArrayEqual(
                     multi.operate(vec_4).entryAsArray(),
                     m1To4.operate(vec_4).entryAsArray(),
@@ -137,7 +141,7 @@ final class OrthogonalMatrixMultiplicationTest {
 
         @Test(expected = MatrixFormatMismatchException.class)
         public void test_次元が整合しなければMFMEx() {
-            OrthogonalMatrixMultiplication.instance()
+            OrthogonalMatrixMultiplicationUtil
                     .apply(m1, m2, PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(1)).build());
         }
 
@@ -150,6 +154,47 @@ final class OrthogonalMatrixMultiplicationTest {
 
             //逆行列の逆行列は自分自身と同一
             assertThat(m1To4.inverse().get().inverse().get(), is(m1To4));
+        }
+    }
+
+    public static class 対称行列積のテスト {
+        private OrthogonalMatrix mxL;
+        private OrthogonalMatrix mxD;
+        private Matrix symmMulti;
+
+        private Vector vec_4;
+
+        @Before
+        public void before_行列の準備() {
+            PermutationMatrix.Builder lBuilder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(4));
+            lBuilder.swapColumns(0, 1);
+            lBuilder.swapColumns(1, 2);
+            mxL = lBuilder.build();
+
+            mxD = UnitMatrix.matrixOf(MatrixDimension.square(4));
+            symmMulti = OrthogonalMatrixMultiplicationUtil.symmetricMultiply(mxD, mxL);
+        }
+
+        @Before
+        public void before_ベクトルの準備() {
+
+            Vector.Builder builder_4 = Vector.Builder.zeroBuilder(VectorDimension.valueOf(4));
+            builder_4.setEntryValue(new double[] { 0, 1, 2, 3 });
+            vec_4 = builder_4.build();
+        }
+
+        @Test
+        public void test_サイズは4_4() {
+            assertThat(symmMulti.matrixDimension(), is(MatrixDimension.square(4)));
+        }
+
+        @Test
+        public void test_行列積のテスト() {
+            assertThat(
+                    Arrays.equals(
+                            symmMulti.operate(vec_4).entryAsArray(),
+                            vec_4.entryAsArray()),
+                    is(true));
         }
     }
 
@@ -175,14 +220,14 @@ final class OrthogonalMatrixMultiplicationTest {
             System.out.println(TEST_CLASS.getName());
 
             //4積
-            OrthogonalMatrix multi_1 = OrthogonalMatrixMultiplication.instance().apply(m1, m2, m3, m4);
+            OrthogonalMatrix multi_1 = OrthogonalMatrixMultiplicationUtil.apply(m1, m2, m3, m4);
             System.out.println(multi_1);
             System.out.println(multi_1.inverse().get());
 
             //4積,逐次
-            OrthogonalMatrix multi_2 = OrthogonalMatrixMultiplication.instance().apply(
+            OrthogonalMatrix multi_2 = OrthogonalMatrixMultiplicationUtil.apply(
                     m1, m2,
-                    OrthogonalMatrixMultiplication.instance().apply(m3, m4));
+                    OrthogonalMatrixMultiplicationUtil.apply(m3, m4));
             System.out.println(multi_2);
             System.out.println(multi_2.inverse().get());
 

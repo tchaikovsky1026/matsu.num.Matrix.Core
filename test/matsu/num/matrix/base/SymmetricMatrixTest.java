@@ -198,11 +198,6 @@ final class SymmetricMatrixTest {
             }
 
             @Override
-            public Vector operateTranspose(Vector operand) {
-                return mx.operateTranspose(operand);
-            }
-
-            @Override
             protected WrappedMatrix self() {
                 return this;
             }
@@ -259,11 +254,6 @@ final class SymmetricMatrixTest {
             @Override
             public Vector operate(Vector operand) {
                 return mx.operate(operand);
-            }
-
-            @Override
-            public Vector operateTranspose(Vector operand) {
-                return mx.operateTranspose(operand);
             }
 
             @Override

@@ -5,11 +5,10 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.3
+ * 2024.11.11
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
-import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,23 +19,23 @@ import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.OrthogonalMatrix;
 import matsu.num.matrix.base.SkeletalAsymmetricOrthogonalMatrix;
+import matsu.num.matrix.base.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
  * 直交行列の行列積を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.4
  */
-public final class OrthogonalMatrixMultiplication {
+public final class OrthogonalMatrixMultiplicationUtil {
 
-    private static final OrthogonalMatrixMultiplication INSTANCE = new OrthogonalMatrixMultiplication();
-
-    private OrthogonalMatrixMultiplication() {
-        if (Objects.nonNull(INSTANCE)) {
-            throw new AssertionError();
-        }
+    private OrthogonalMatrixMultiplicationUtil() {
+        //インスタンス化不可
+        throw new AssertionError();
     }
 
     /**
@@ -48,7 +47,7 @@ public final class OrthogonalMatrixMultiplication {
      * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public OrthogonalMatrix apply(OrthogonalMatrix first, OrthogonalMatrix... following) {
+    public static OrthogonalMatrix apply(OrthogonalMatrix first, OrthogonalMatrix... following) {
         if (following.length == 0) {
             return Objects.requireNonNull(first);
         }
@@ -56,12 +55,21 @@ public final class OrthogonalMatrixMultiplication {
     }
 
     /**
-     * 直交行列の行列積を行うインスタンスを返す.
+     * 対称な直交行列び行列積を返す. <br>
+     * すなわち, 与えた直交行列 U<sub>L</sub>, U<sub>D</sub> に対して,
+     * U<sub>L</sub>U<sub>D</sub>U<sub>L</sub><sup>T</sup> を返す. <br>
+     * 戻り値には {@link Symmetric} が付与されている. <br>
+     * 与える行列 U<sub>D</sub> には {@link Symmetric} が付与されていなければならない.
      * 
-     * @return インスタンス
+     * @param mid 対称直交行列 U<sub>D</sub>, 中央の行列
+     * @param leftSide 直交行列 U<sub>L</sub>, 左サイドの行列
+     * @return 対称な行列積
+     * @throws MatrixNotSymmetricException 中央の行列 (U<sub>D</sub>) が対称でない場合
+     * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
+     * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public static OrthogonalMatrixMultiplication instance() {
-        return INSTANCE;
+    public static OrthogonalMatrix symmetricMultiply(OrthogonalMatrix mid, OrthogonalMatrix leftSide) {
+        return new SymmetricMultipliedMatrix(mid, leftSide);
     }
 
     /**
@@ -78,51 +86,6 @@ public final class OrthogonalMatrixMultiplication {
             super();
             this.matrixDimension = matrixDimension;
             this.series = series;
-        }
-
-        /**
-         * 引数の行列たちからDequeを作成する. <br>
-         * 要素に行列積が含まれる場合は展開する.
-         * 
-         * @param first 行列積の左端の行列
-         * @param following firstに続く行列, 左から順番
-         * @return 行列積を表す一連の行列のDeque
-         */
-        private static Deque<OrthogonalMatrix> expand(Collection<? extends OrthogonalMatrix> rawSeries) {
-            Deque<OrthogonalMatrix> series = new LinkedList<>();
-            for (OrthogonalMatrix mx : rawSeries) {
-                if (mx instanceof MultipliedOrthogonalMatrix) {
-                    //要素Matrixが行列積を表しているなら展開する
-                    series.addAll(((MultipliedOrthogonalMatrix) mx).toSeries());
-                    continue;
-                }
-                series.add(Objects.requireNonNull(mx));
-
-            }
-            return series;
-        }
-
-        /**
-         * サイズの整合性を検証する.
-         * 
-         * @param series 行列積を表す一連の行列
-         * @return seriesと等価なオプショナル, 整合しない場合は空
-         */
-        private static Optional<Deque<OrthogonalMatrix>> requireFormatMatch(Deque<OrthogonalMatrix> series) {
-
-            //サイズの整合性の検証
-            //直交行列は正方行列なので,行列サイズが一致することを求める
-            OrthogonalMatrix former = null;
-            for (Iterator<OrthogonalMatrix> ite = series.iterator(); ite.hasNext();) {
-                OrthogonalMatrix latter = ite.next();
-                if (Objects.nonNull(former)) {
-                    if (!(former.matrixDimension().equals(latter.matrixDimension()))) {
-                        return Optional.empty();
-                    }
-                }
-                former = latter;
-            }
-            return Optional.of(series);
         }
 
         @Override
@@ -182,13 +145,113 @@ public final class OrthogonalMatrixMultiplication {
                 rawSeries.add(Objects.requireNonNull(mx));
             }
 
-            Deque<OrthogonalMatrix> series = expand(
-                    requireFormatMatch(rawSeries)
-                            .orElseThrow(() -> new MatrixFormatMismatchException("行列積が定義不可な組み合わせ")));
+            return expand(rawSeries);
+        }
+
+        /**
+         * 引数の行列たちからDequeを作成する. <br>
+         * 要素に行列積が含まれる場合は展開する.
+         * 内部で新しくDequeが生成されるので, 呼び出しもとで複製する必要はない.
+         * 
+         * @param first 行列積の左端の行列
+         * @param following firstに続く行列, 左から順番
+         * @return 行列積を表す一連の行列のDeque
+         */
+        private static MultipliedOrthogonalMatrix expand(Deque<? extends OrthogonalMatrix> rawSeries) {
+            assert rawSeries.size() >= 2 : "サイズ2以上でない";
+
+            requireFormatMatch(rawSeries)
+                    .orElseThrow(() -> new MatrixFormatMismatchException("行列積が定義不可な組み合わせ"));
+
+            Deque<OrthogonalMatrix> series = new LinkedList<>();
+            for (OrthogonalMatrix mx : rawSeries) {
+                if (mx instanceof MultipliedOrthogonalMatrix) {
+                    //要素Matrixが行列積を表しているなら展開する
+                    series.addAll(((MultipliedOrthogonalMatrix) mx).toSeries());
+                    continue;
+                }
+                series.add(Objects.requireNonNull(mx));
+
+            }
 
             MatrixDimension matrixDimension = series.getFirst().matrixDimension();
 
             return new MultiplyingSeries(matrixDimension, series);
+        }
+
+        /**
+         * サイズの整合性を検証する.
+         * 
+         * @param series 行列積を表す一連の行列
+         * @return seriesと等価なオプショナル, 整合しない場合は空
+         */
+        private static <T extends OrthogonalMatrix> Optional<Deque<T>> requireFormatMatch(Deque<T> series) {
+
+            //サイズの整合性の検証
+            //直交行列は正方行列なので,行列サイズが一致することを求める
+            OrthogonalMatrix former = null;
+            for (Iterator<T> ite = series.iterator(); ite.hasNext();) {
+                OrthogonalMatrix latter = ite.next();
+                if (Objects.nonNull(former)) {
+                    if (!(former.matrixDimension().equals(latter.matrixDimension()))) {
+                        return Optional.empty();
+                    }
+                }
+                former = latter;
+            }
+            return Optional.of(series);
+        }
+    }
+
+    private static final class SymmetricMultipliedMatrix
+            extends SkeletalSymmetricOrthogonalMatrix<SymmetricMultipliedMatrix>
+            implements MultipliedOrthogonalMatrix {
+
+        private final MultipliedOrthogonalMatrix wrappedSeriesMatrix;
+
+        /**
+         * @throws MatrixNotSymmetricException 中央の行列が対称でない場合
+         * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         */
+        SymmetricMultipliedMatrix(OrthogonalMatrix mid, OrthogonalMatrix leftSide) {
+            if (!(Objects.requireNonNull(mid) instanceof Symmetric)) {
+                throw new MatrixNotSymmetricException("中央の行列がSymmetricでない");
+            }
+            if (leftSide.matrixDimension().columnAsIntValue() != mid.matrixDimension().columnAsIntValue()) {
+                throw new MatrixFormatMismatchException("行列積が定義できない");
+            }
+
+            Deque<OrthogonalMatrix> series = new LinkedList<>();
+            series.add(leftSide);
+            series.add(mid);
+            series.add(leftSide.transpose());
+            this.wrappedSeriesMatrix = MultiplyingSeries.expand(series);
+        }
+
+        @Override
+        public MatrixDimension matrixDimension() {
+            return this.wrappedSeriesMatrix.matrixDimension();
+        }
+
+        @Override
+        public Vector operate(Vector operand) {
+            return this.wrappedSeriesMatrix.operate(operand);
+        }
+
+        @Override
+        public Deque<? extends OrthogonalMatrix> toSeries() {
+            return this.wrappedSeriesMatrix.toSeries();
+        }
+
+        @Override
+        protected SymmetricMultipliedMatrix self() {
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return this.wrappedSeriesMatrix.toString();
         }
     }
 

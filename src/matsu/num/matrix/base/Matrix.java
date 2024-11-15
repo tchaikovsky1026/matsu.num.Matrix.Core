@@ -5,11 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.8
+ * 2024.11.11
  */
 package matsu.num.matrix.base;
 
-import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplication;
+import matsu.num.matrix.base.helper.matrix.multiply.MatrixMultiplicationUtil;
 import matsu.num.matrix.base.helper.matrix.transpose.Transposition;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
@@ -76,7 +76,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </blockquote>
  *
  * @author Matsuura Y.
- * @version 22.3
+ * @version 22.4
  */
 public interface Matrix {
 
@@ -166,7 +166,7 @@ public interface Matrix {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static Matrix multiply(Matrix first, Matrix... following) {
-        return MatrixMultiplication.instance().apply(first, following);
+        return MatrixMultiplicationUtil.apply(first, following);
     }
 
     /**
@@ -179,7 +179,7 @@ public interface Matrix {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static Matrix symmetrizedSquare(Matrix original) {
-        return MatrixMultiplication.instance().symmetrizedSquare(original);
+        return MatrixMultiplicationUtil.symmetrizedSquare(original);
     }
 
     /**
@@ -196,7 +196,7 @@ public interface Matrix {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static Matrix symmetricMultiply(Matrix mid, Matrix leftSide) {
-        return MatrixMultiplication.instance().symmetricMultiply(mid, leftSide);
+        return MatrixMultiplicationUtil.symmetricMultiply(mid, leftSide);
     }
 
     /**

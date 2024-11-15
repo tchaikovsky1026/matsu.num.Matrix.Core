@@ -6,10 +6,11 @@
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.3
+ * @version 22.4
  */
 module matsu.num.matrix.Base {
     exports matsu.num.matrix.base;
-    exports matsu.num.matrix.base.validation;
+    exports matsu.num.matrix.base.block;
     exports matsu.num.matrix.base.nlsf;
+    exports matsu.num.matrix.base.validation;
 }

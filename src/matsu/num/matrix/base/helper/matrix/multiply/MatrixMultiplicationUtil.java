@@ -5,11 +5,10 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.3
+ * 2024.11.11
  */
 package matsu.num.matrix.base.helper.matrix.multiply;
 
-import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,19 +26,16 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
- * 行列積を扱う.
+ * 行列積に実行を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.4
  */
-public final class MatrixMultiplication {
+public final class MatrixMultiplicationUtil {
 
-    private static final MatrixMultiplication INSTANCE = new MatrixMultiplication();
-
-    private MatrixMultiplication() {
-        if (Objects.nonNull(INSTANCE)) {
-            throw new AssertionError();
-        }
+    private MatrixMultiplicationUtil() {
+        //インスタンス化不可
+        throw new AssertionError();
     }
 
     /**
@@ -51,7 +47,7 @@ public final class MatrixMultiplication {
      * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public Matrix apply(Matrix first, Matrix... following) {
+    public static Matrix apply(Matrix first, Matrix... following) {
         return MultiplyingSeries.from(first, following);
     }
 
@@ -64,8 +60,8 @@ public final class MatrixMultiplication {
      * @return 対称化二乗
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public Matrix symmetrizedSquare(Matrix original) {
-        return MatrixMultiplication.instance().symmetricMultiply(
+    public static Matrix symmetrizedSquare(Matrix original) {
+        return MatrixMultiplicationUtil.symmetricMultiply(
                 UnitMatrix.matrixOf(MatrixDimension.square(original.matrixDimension().columnAsIntValue())),
                 original);
     }
@@ -83,17 +79,8 @@ public final class MatrixMultiplication {
      * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public Matrix symmetricMultiply(Matrix mid, Matrix leftSide) {
+    public static Matrix symmetricMultiply(Matrix mid, Matrix leftSide) {
         return new SymmetricMultipliedMatrix(mid, leftSide);
-    }
-
-    /**
-     * 行列積を行うインスタンスを返す.
-     * 
-     * @return インスタンス
-     */
-    public static MatrixMultiplication instance() {
-        return INSTANCE;
     }
 
     /**
@@ -112,47 +99,6 @@ public final class MatrixMultiplication {
             super();
             this.matrixDimension = matrixDimension;
             this.series = series;
-        }
-
-        /**
-         * 引数の行列たちからDequeを作成する. <br>
-         * 要素に行列積が含まれる場合は展開する.
-         * 
-         * @return 行列積を表す一連の行列のDeque
-         */
-        private static Deque<Matrix> expand(Collection<? extends Matrix> rawSeries) {
-            Deque<Matrix> series = new LinkedList<>();
-            for (Matrix mx : rawSeries) {
-                if (mx instanceof MultipliedMatrix) {
-                    //要素Matrixが行列積を表しているなら展開する
-                    series.addAll(((MultipliedMatrix) mx).toSeries());
-                    continue;
-                }
-                series.add(mx);
-            }
-            return series;
-        }
-
-        /**
-         * サイズの整合性を検証する.
-         * 
-         * @param series 行列積を表す一連の行列
-         * @return seriesと等価なオプショナル, 整合しない場合は空
-         */
-        private static Optional<Deque<Matrix>> requireFormatMatch(Deque<Matrix> series) {
-
-            //サイズの整合性の検証
-            Matrix former = null;
-            for (Iterator<Matrix> ite = series.iterator(); ite.hasNext();) {
-                Matrix latter = ite.next();
-                if (Objects.nonNull(former)) {
-                    if (former.matrixDimension().columnAsIntValue() != latter.matrixDimension().rowAsIntValue()) {
-                        return Optional.empty();
-                    }
-                }
-                former = latter;
-            }
-            return Optional.of(series);
         }
 
         @Override
@@ -220,65 +166,30 @@ public final class MatrixMultiplication {
                 rawSeries.add(Objects.requireNonNull(mx));
             }
 
-            Deque<Matrix> series = expand(
-                    requireFormatMatch(rawSeries)
-                            .orElseThrow(
-                                    () -> new MatrixFormatMismatchException(
-                                            "行列積が定義不可な組み合わせ")));
+            return expand(rawSeries);
+        }
+
+        /**
+         * 引数の行列たちを展開して行列積を作成する. <br>
+         * 要素に行列積が含まれる場合は展開する.
+         * nullチェックは行っていない.
+         * おそらくサイズ2以上でなければならない.
+         * 内部で新しくDequeが生成されるので, 呼び出しもとで複製する必要はない.
+         * 
+         * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
+         */
+        static MultipliedMatrix expand(Deque<Matrix> rawSeries) {
+            assert rawSeries.size() >= 2 : "サイズ2以上でない";
+
+            requireFormatMatch(rawSeries)
+                    .orElseThrow(
+                            () -> new MatrixFormatMismatchException(
+                                    "行列積が定義不可な組み合わせ"));
 
             MatrixDimension matrixDimension = MatrixDimension.rectangle(
-                    series.getFirst().matrixDimension().rowAsIntValue(),
-                    series.getLast().matrixDimension().columnAsIntValue());
+                    rawSeries.getFirst().matrixDimension().rowAsIntValue(),
+                    rawSeries.getLast().matrixDimension().columnAsIntValue());
 
-            return new MultiplyingSeries(matrixDimension, series);
-        }
-    }
-
-    /**
-     * 対称な行列積. <br>
-     * LDL^T
-     */
-    private static final class SymmetricMultipliedMatrix
-            extends SkeletalSymmetricMatrix<SymmetricMultipliedMatrix> implements MultipliedMatrix, Symmetric {
-
-        private final MatrixDimension matrixDimension;
-        private final Matrix mxD;
-        private final Matrix mxL;
-
-        private final Deque<Matrix> series;
-
-        /**
-         * @throws MatrixNotSymmetricException 中央の行列が対称でない場合
-         * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
-         * @throws NullPointerException 引数にnullが含まれる場合
-         */
-        SymmetricMultipliedMatrix(Matrix mid, Matrix leftSide) {
-            this.mxD = Objects.requireNonNull(mid);
-            this.mxL = Objects.requireNonNull(leftSide);
-            if (!(this.mxD instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("中央の行列がSymmetricでない");
-            }
-            if (this.mxL.matrixDimension().columnAsIntValue() != this.mxD.matrixDimension().columnAsIntValue()) {
-                throw new MatrixFormatMismatchException("行列積が定義できない");
-            }
-            this.matrixDimension = MatrixDimension.square(this.mxL.matrixDimension().rowAsIntValue());
-
-            Deque<Matrix> rawSeries = new LinkedList<>();
-            rawSeries.add(leftSide);
-            rawSeries.add(mid);
-            rawSeries.add(leftSide.transpose());
-            this.series = expand(rawSeries);
-        }
-
-        /**
-         * 引数の行列たちからDequeを作成する. <br>
-         * 要素に行列積が含まれる場合は展開する.
-         * 
-         * @param first 行列積の左端の行列
-         * @param following firstに続く行列, 左から順番
-         * @return 行列積を表す一連の行列のDeque
-         */
-        private static Deque<Matrix> expand(Collection<? extends Matrix> rawSeries) {
             Deque<Matrix> series = new LinkedList<>();
             for (Matrix mx : rawSeries) {
                 if (mx instanceof MultipliedMatrix) {
@@ -288,12 +199,65 @@ public final class MatrixMultiplication {
                 }
                 series.add(mx);
             }
-            return series;
+
+            return new MultiplyingSeries(matrixDimension, series);
+        }
+
+        /**
+         * サイズの整合性を検証する.
+         * 
+         * @param series 行列積を表す一連の行列
+         * @return seriesと等価なオプショナル, 整合しない場合は空
+         */
+        private static Optional<Deque<Matrix>> requireFormatMatch(Deque<Matrix> series) {
+
+            //サイズの整合性の検証
+            Matrix former = null;
+            for (Iterator<Matrix> ite = series.iterator(); ite.hasNext();) {
+                Matrix latter = ite.next();
+                if (Objects.nonNull(former)) {
+                    if (former.matrixDimension().columnAsIntValue() != latter.matrixDimension().rowAsIntValue()) {
+                        return Optional.empty();
+                    }
+                }
+                former = latter;
+            }
+            return Optional.of(series);
+        }
+    }
+
+    /**
+     * 対称な行列積. <br>
+     * LDL^T
+     */
+    private static final class SymmetricMultipliedMatrix
+            extends SkeletalSymmetricMatrix<SymmetricMultipliedMatrix> implements MultipliedMatrix {
+
+        private final MultipliedMatrix wrappedSeriesMatrix;
+
+        /**
+         * @throws MatrixNotSymmetricException 中央の行列が対称でない場合
+         * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
+         * @throws NullPointerException 引数にnullが含まれる場合
+         */
+        SymmetricMultipliedMatrix(Matrix mid, Matrix leftSide) {
+            if (!(Objects.requireNonNull(mid) instanceof Symmetric)) {
+                throw new MatrixNotSymmetricException("中央の行列がSymmetricでない");
+            }
+            if (leftSide.matrixDimension().columnAsIntValue() != mid.matrixDimension().columnAsIntValue()) {
+                throw new MatrixFormatMismatchException("行列積が定義できない");
+            }
+
+            Deque<Matrix> series = new LinkedList<>();
+            series.add(leftSide);
+            series.add(mid);
+            series.add(leftSide.transpose());
+            this.wrappedSeriesMatrix = MultiplyingSeries.expand(series);
         }
 
         @Override
         public MatrixDimension matrixDimension() {
-            return this.matrixDimension;
+            return this.wrappedSeriesMatrix.matrixDimension();
         }
 
         /**
@@ -311,22 +275,17 @@ public final class MatrixMultiplication {
          */
         @Override
         public Vector operate(Vector operand) {
-            Vector result = Objects.requireNonNull(operand);
-            for (Iterator<Matrix> ite = this.series.descendingIterator(); ite.hasNext();) {
-                Matrix mx = ite.next();
-                result = mx.operate(result);
-            }
-            return result;
-        }
-
-        @Override
-        public Vector operateTranspose(Vector operand) {
-            return this.operate(operand);
+            return this.wrappedSeriesMatrix.operate(operand);
         }
 
         @Override
         public Deque<? extends Matrix> toSeries() {
-            return new LinkedList<>(this.series);
+            return this.wrappedSeriesMatrix.toSeries();
+        }
+
+        @Override
+        public String toString() {
+            return this.wrappedSeriesMatrix.toString();
         }
     }
 

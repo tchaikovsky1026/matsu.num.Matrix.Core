@@ -124,11 +124,6 @@ final class SymmetricBandMatrixTest {
             }
 
             @Override
-            public Vector operateTranspose(Vector operand) {
-                return mx.operateTranspose(operand);
-            }
-
-            @Override
             public BandMatrixDimension bandMatrixDimension() {
                 return mx.bandMatrixDimension();
             }

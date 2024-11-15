@@ -9,6 +9,8 @@
  */
 package matsu.num.matrix.base;
 
+import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+
 /**
  * <p>
  * {@link Symmetric} が付与された {@link Matrix} の骨格実装.
@@ -32,6 +34,15 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      */
     protected SkeletalSymmetricMatrix() {
         super();
+    }
+
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public final Vector operateTranspose(Vector operand) {
+        return this.operate(operand);
     }
 
     /**

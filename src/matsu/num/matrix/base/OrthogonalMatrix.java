@@ -5,15 +5,16 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.11
  */
 package matsu.num.matrix.base;
 
 import java.util.Optional;
 
-import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplication;
+import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplicationUtil;
 import matsu.num.matrix.base.helper.matrix.transpose.TranspositionOrthogonal;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
  * 直交行列であることを表す.
@@ -54,7 +55,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </blockquote>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.4
  */
 public interface OrthogonalMatrix extends Matrix, Invertible {
 
@@ -85,7 +86,25 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static OrthogonalMatrix multiply(OrthogonalMatrix first, OrthogonalMatrix... following) {
-        return OrthogonalMatrixMultiplication.instance().apply(first, following);
+        return OrthogonalMatrixMultiplicationUtil.apply(first, following);
+    }
+
+    /**
+     * 対称な直交行列び行列積を返す. <br>
+     * すなわち, 与えた直交行列 U<sub>L</sub>, U<sub>D</sub> に対して,
+     * U<sub>L</sub>U<sub>D</sub>U<sub>L</sub><sup>T</sup> を返す. <br>
+     * 戻り値には {@link Symmetric} が付与されている. <br>
+     * 与える行列 U<sub>D</sub> には {@link Symmetric} が付与されていなければならない.
+     * 
+     * @param mid 対称直交行列 U<sub>D</sub>, 中央の行列
+     * @param leftSide 直交行列 U<sub>L</sub>, 左サイドの行列
+     * @return 対称な行列積
+     * @throws MatrixNotSymmetricException 中央の行列 (U<sub>D</sub>) が対称でない場合
+     * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
+     * @throws NullPointerException 引数にnullが含まれる場合
+     */
+    public static OrthogonalMatrix symmetricMultiply(OrthogonalMatrix mid, OrthogonalMatrix leftSide) {
+        return OrthogonalMatrixMultiplicationUtil.symmetricMultiply(mid, leftSide);
     }
 
     /**
