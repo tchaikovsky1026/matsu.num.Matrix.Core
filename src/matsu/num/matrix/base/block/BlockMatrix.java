@@ -54,6 +54,17 @@ public final class BlockMatrix
         }
     }
 
+    /**
+     * {@link Matrix} のブロック構造を持つブロック行列を返す.
+     * 
+     * @param structure ブロック構造
+     * @return ブロック行列
+     * @throws NullPointerException 引数がnullの場合
+     */
+    public static BlockMatrix of(BlockMatrixStructure<? extends Matrix> structure) {
+        return new BlockMatrix(structure);
+    }
+
     @Override
     public MatrixDimension matrixDimension() {
         return this.blockStructure.entireMatrixDimension();
@@ -136,16 +147,5 @@ public final class BlockMatrix
     @Override
     protected Matrix createTranspose() {
         return Matrix.createTransposedOf(this);
-    }
-
-    /**
-     * {@link Matrix} のブロック構造を持つブロック行列を返す.
-     * 
-     * @param structure ブロック構造
-     * @return ブロック行列
-     * @throws NullPointerException 引数がnullの場合
-     */
-    public static BlockMatrix of(BlockMatrixStructure<? extends Matrix> structure) {
-        return new BlockMatrix(structure);
     }
 }

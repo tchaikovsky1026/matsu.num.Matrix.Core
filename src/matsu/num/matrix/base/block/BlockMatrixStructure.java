@@ -86,6 +86,18 @@ public final class BlockMatrixStructure<T extends Matrix> {
     }
 
     /**
+     * 指定したブロック構造を持つビルダを生成する.
+     * 
+     * @param <T> 生成されるブロック構造ビルダが扱う行列要素の型
+     * @param structureDimension ブロック構造
+     * @return 新しいビルダ
+     */
+    public static <T extends Matrix> BlockMatrixStructure.Builder<T>
+            builderOf(MatrixDimension structureDimension) {
+        return new Builder<>(Objects.requireNonNull(structureDimension));
+    }
+
+    /**
      * リストの行列構造が正当であるかを検証し, elementDimensionsを埋める. <br>
      * うまくいけばtrueを, 正当でない場合(不能, 不定)はfalseを返す.
      */
@@ -402,18 +414,6 @@ public final class BlockMatrixStructure<T extends Matrix> {
         }
 
         return String.format("(%s:%s)", Arrays.toString(rows), Arrays.toString(columns));
-    }
-
-    /**
-     * 指定したブロック構造を持つビルダを生成する.
-     * 
-     * @param <T> 生成されるブロック構造ビルダが扱う行列要素の型
-     * @param structureDimension ブロック構造
-     * @return 新しいビルダ
-     */
-    public static <T extends Matrix> BlockMatrixStructure.Builder<T>
-            builderOf(MatrixDimension structureDimension) {
-        return new Builder<>(Objects.requireNonNull(structureDimension));
     }
 
     /**
