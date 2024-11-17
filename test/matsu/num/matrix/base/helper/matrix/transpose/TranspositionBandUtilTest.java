@@ -17,12 +17,12 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 
 /**
- * {@link TranspositionBand}クラスのテスト.
+ * {@link TranspositionBandUtil}クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class TranspositionBandTest {
+final class TranspositionBandUtilTest {
 
     public static class 非対称帯行列に関する転置テスト {
 
@@ -58,8 +58,8 @@ final class TranspositionBandTest {
             builder.setValue(3, 3, 15);
             originalMatrix = builder.build();
 
-            transposedMatrix = TranspositionBand.instance().apply(originalMatrix);
-            transposedTransposedMatrix = TranspositionBand.instance().apply(transposedMatrix);
+            transposedMatrix = TranspositionBandUtil.apply(originalMatrix);
+            transposedTransposedMatrix = TranspositionBandUtil.apply(transposedMatrix);
         }
 
         @Test
@@ -136,7 +136,7 @@ final class TranspositionBandTest {
             builder.setValue(3, 2, 14);
             builder.setValue(3, 3, 15);
             originalMatrix = builder.build();
-            transposedMatrix = TranspositionBand.instance().apply(originalMatrix);
+            transposedMatrix = TranspositionBandUtil.apply(originalMatrix);
         }
 
         @Test

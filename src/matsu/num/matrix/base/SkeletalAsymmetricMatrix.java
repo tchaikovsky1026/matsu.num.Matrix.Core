@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.10
+ * 2024.11.16
  */
 package matsu.num.matrix.base;
 
@@ -34,7 +34,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 22.5
  * @param <TT> 転置行列のタイプ, transposeの戻り値型を具象クラスにゆだねる.
  */
 public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {
@@ -70,7 +70,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
      * <p>
      * {@link #transpose()} を遅延初期化するために実装されるメソッドである. <br>
      * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけこのメソッドが呼ばれる. <br>
-     * 公開してはいけない.
+     * 公開は禁止され, サブクラスからもコールしてはならない.
      * </p>
      * 
      * <p>

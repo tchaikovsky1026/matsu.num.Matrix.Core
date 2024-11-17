@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.8
+ * 2024.11.16
  */
 package matsu.num.matrix.base;
 
@@ -23,7 +23,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.3
+ * @version 22.5
  * @param <T> thisの具象型, 再帰的ジェネリクスによりtransposeの戻り値型を具象クラスにゆだねる.
  */
 public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<T>>
@@ -49,7 +49,7 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      * {@code this} を返す.
      * 
      * <p>
-     * このメソッドは公開してはいけない.
+     * このメソッドを公開するのは多くの場合不適切である.
      * </p>
      * 
      * @return this

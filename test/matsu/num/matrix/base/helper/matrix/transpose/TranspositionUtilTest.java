@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.GeneralMatrix;
+import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.SymmetricMatrix;
@@ -17,18 +17,18 @@ import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
 
 /**
- * {@link TranspositionEntryReadable}クラスのテスト.
+ * {@link TranspositionUtil}クラスのテスト.
  * 
  * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
-final class TranspositionEntryReadableTest {
+final class TranspositionUtilTest {
 
     public static class 長方形行列に関する転置テスト {
 
-        private EntryReadableMatrix originalMatrix;
-        private EntryReadableMatrix transposedMatrix;
-        private EntryReadableMatrix transposedTransposedMatrix;
+        private Matrix originalMatrix;
+        private Matrix transposedMatrix;
+        private Matrix transposedTransposedMatrix;
 
         private Vector right3;
         private Vector right4;
@@ -61,19 +61,13 @@ final class TranspositionEntryReadableTest {
                 }
             }
             originalMatrix = builder.build();
-            transposedMatrix = TranspositionEntryReadable.instance().apply(originalMatrix);
-            transposedTransposedMatrix = TranspositionEntryReadable.instance().apply(transposedMatrix);
+            transposedMatrix = TranspositionUtil.apply(originalMatrix);
+            transposedTransposedMatrix = TranspositionUtil.apply(transposedMatrix);
         }
 
         @Test
-        public void test_成分が等しい() {
-            int transposedRow = transposedMatrix.matrixDimension().rowAsIntValue();
-            int transposedColumn = transposedMatrix.matrixDimension().columnAsIntValue();
-            for (int j = 0; j < transposedRow; j++) {
-                for (int k = 0; k < transposedColumn; k++) {
-                    assertThat(transposedMatrix.valueAt(j, k), is(originalMatrix.valueAt(k, j)));
-                }
-            }
+        public void test_次元は4_3() {
+            assertThat(transposedMatrix.matrixDimension(), is(originalMatrix.matrixDimension().transpose()));
         }
 
         @Test
@@ -91,14 +85,14 @@ final class TranspositionEntryReadableTest {
         }
 
         @Test
-        public void test_transposedTrabsposed_operate_は_original_operate_に等しい() {
+        public void test_transposedTransposed_operate_は_original_operate_に等しい() {
             assertThat(
                     transposedTransposedMatrix.operate(right4).entryAsArray(),
                     is(originalMatrix.operate(right4).entryAsArray()));
         }
 
         @Test
-        public void test_transposedTrabsposed_operateTranspose_は_original_operateTranspose_に等しい() {
+        public void test_transposedTransposed_operateTranspose_は_original_operateTranspose_に等しい() {
             assertThat(
                     transposedTransposedMatrix.operateTranspose(right3).entryAsArray(),
                     is(originalMatrix.operateTranspose(right3).entryAsArray()));
@@ -108,8 +102,8 @@ final class TranspositionEntryReadableTest {
 
     public static class 対称行列に関する転置テスト {
 
-        private EntryReadableMatrix originalMatrix;
-        private EntryReadableMatrix transposedMatrix;
+        private Matrix originalMatrix;
+        private Matrix transposedMatrix;
 
         private Vector right;
 
@@ -132,18 +126,12 @@ final class TranspositionEntryReadableTest {
             builder.setValue(2, 1, 10);
             builder.setValue(2, 2, 11);
             originalMatrix = builder.build();
-            transposedMatrix = TranspositionEntryReadable.instance().apply(originalMatrix);
+            transposedMatrix = TranspositionUtil.apply(originalMatrix);
         }
 
         @Test
-        public void test_成分が等しい() {
-            int transposedRow = transposedMatrix.matrixDimension().rowAsIntValue();
-            int transposedColumn = transposedMatrix.matrixDimension().columnAsIntValue();
-            for (int j = 0; j < transposedRow; j++) {
-                for (int k = 0; k < transposedColumn; k++) {
-                    assertThat(transposedMatrix.valueAt(j, k), is(originalMatrix.valueAt(k, j)));
-                }
-            }
+        public void test_次元は3() {
+            assertThat(transposedMatrix.matrixDimension(), is(originalMatrix.matrixDimension().transpose()));
         }
 
         @Test
@@ -164,6 +152,7 @@ final class TranspositionEntryReadableTest {
         public void test_転置しても対称である() {
             assertThat(transposedMatrix instanceof Symmetric, is(true));
         }
+
     }
 
 }

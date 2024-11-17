@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.8
+ * 2024.11.17
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -43,7 +43,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.3
+ * @version 22.5
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */
@@ -59,8 +59,18 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
     }
 
     /**
-     * 正方行列に対して, 受け入れ可能かの詳細を判定する. <br>
-     * 公開してはいけない.
+     * 正方行列に対して, 受け入れ可能かの詳細を判定する.
+     * 
+     * <p>
+     * このメソッドは, {@link #accepts(Matrix)} の具体的処理を実装するための抽象メソッドである. <br>
+     * {@link #accepts(Matrix)} がコールされたときに引数が正方行列であるかどうかが検証され,
+     * 正方行列であることが確定した行列がこの抽象メソッドに渡される. <br>
+     * このメソッドの実装では, 正方行列に対して追加の条件を判定する.
+     * </p>
+     * 
+     * <p>
+     * このメソッドの公開, サブクラスからのコールはほとんど全ての場合に不適切である.
+     * </p>
      * 
      * @param matrix 正方行列であることが確定した行列(当然nullでない)
      * @return 判定結果
@@ -68,9 +78,22 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
     abstract MatrixStructureAcceptance acceptsConcretely(MT matrix);
 
     /**
-     * 受け入れ可能であることが確定した行列に対して, 行列分解を実際に実行する. <br>
-     * 例外をスローしてはいけない. <br>
-     * 公開してはいけない.
+     * 受け入れ可能であることが確定した行列に対して, 行列分解を実際に実行する.
+     * 
+     * <p>
+     * このメソッドは, {@link #apply(Matrix, double)} の具体的処理を実装するための抽象メソッドである. <br>
+     * {@link #apply(Matrix, double)} がコールされたときに {@code matrix} が
+     * {@link #accepts(Matrix)} により検証, {@code epsilon} も検証され,
+     * 不適切の場合は例外をスローする. <br>
+     * 適切であることが確定した {@code matrix} 行列と
+     * {@code epsilon} がこの抽象メソッドに渡される. <br>
+     * このメソッドの実装では, 行列分解を実行し, 行列分解かもしくは空オプショナルを返す. <br>
+     * このメソッドに渡される引数は正当であるため, 例外をスローしてはならない.
+     * </p>
+     * 
+     * <p>
+     * このメソッドの公開, サブクラスからのコールはほとんど全ての場合に不適切である.
+     * </p>
      * 
      * @param matrix 受け入れ可能であることが確定した行列
      * @param epsilon 正常(0以上の有限数)であることが確定した相対epsilon

@@ -5,11 +5,10 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.3
+ * 2024.11.16
  */
 package matsu.num.matrix.base.helper.matrix.transpose;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.MatrixDimension;
@@ -21,16 +20,13 @@ import matsu.num.matrix.base.Vector;
  * {@link OrthogonalMatrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.5
  */
-public final class TranspositionOrthogonal {
+public final class TranspositionOrthogonalUtil {
 
-    private static final TranspositionOrthogonal INSTANCE = new TranspositionOrthogonal();
-
-    private TranspositionOrthogonal() {
-        if (Objects.nonNull(INSTANCE)) {
-            throw new AssertionError();
-        }
+    private TranspositionOrthogonalUtil() {
+        //インスタンス化不可
+        throw new AssertionError();
     }
 
     /**
@@ -41,7 +37,7 @@ public final class TranspositionOrthogonal {
      * @return 転置行列
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public OrthogonalMatrix apply(OrthogonalMatrix original) {
+    public static OrthogonalMatrix apply(OrthogonalMatrix original) {
         if (original instanceof Symmetric) {
             return original;
         }
@@ -51,15 +47,6 @@ public final class TranspositionOrthogonal {
         }
 
         return new TransposedOrthogonal(original);
-    }
-
-    /**
-     * このインスタンスを生成する.
-     * 
-     * @return インスタンス
-     */
-    public static TranspositionOrthogonal instance() {
-        return INSTANCE;
     }
 
     /**

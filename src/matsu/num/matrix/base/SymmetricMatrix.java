@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.6
+ * 2024.11.16
  */
 package matsu.num.matrix.base;
 
@@ -26,7 +26,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.1
+ * @version 22.5
  */
 public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
         implements EntryReadableMatrix, Symmetric {
@@ -76,10 +76,12 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     protected SymmetricMatrix self() {
         return this;

@@ -5,42 +5,40 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.16
  */
 package matsu.num.matrix.base.helper.matrix.transpose;
 
 import java.util.Objects;
 
+import matsu.num.matrix.base.BandMatrix;
+import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.EntryReadableMatrix;
-import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 
 /**
- * {@link EntryReadableMatrix}の転置を扱う.
+ * {@link BandMatrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.5
  */
-public final class TranspositionEntryReadable {
+public final class TranspositionBandUtil {
 
-    private static final TranspositionEntryReadable INSTANCE = new TranspositionEntryReadable();
-
-    private TranspositionEntryReadable() {
-        if (Objects.nonNull(INSTANCE)) {
-            throw new AssertionError();
-        }
+    private TranspositionBandUtil() {
+        //インスタンス化不可
+        throw new AssertionError();
     }
 
     /**
-     * {@link EntryReadableMatrix} の推奨される実装規約に則った転置行列を返す. <br>
+     * {@link BandMatrix} の推奨される実装規約に則った転置行列を返す. <br>
      * {@link Symmetric} が付与されている場合は, 引数をそのまま返す.
      *
      * @param original 元の行列
      * @return 転置行列
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public EntryReadableMatrix apply(EntryReadableMatrix original) {
+    public static BandMatrix apply(BandMatrix original) {
         if (original instanceof Symmetric) {
             return original;
         }
@@ -52,33 +50,19 @@ public final class TranspositionEntryReadable {
         return new Transposed(original);
     }
 
-    /**
-     * このインスタンスを生成する.
-     * 
-     * @return インスタンス
-     */
-    public static TranspositionEntryReadable instance() {
-        return INSTANCE;
-    }
+    private static final class Transposed implements BandMatrix {
 
-    private static final class Transposed implements EntryReadableMatrix {
-
-        private final EntryReadableMatrix original;
-        private final MatrixDimension transposedDimension;
+        private final BandMatrix original;
+        private final BandMatrixDimension transposedDimension;
 
         /**
          * 転置行列を作成する.
          * 
          * @param original オリジナル
          */
-        Transposed(EntryReadableMatrix original) {
+        Transposed(BandMatrix original) {
             this.original = Objects.requireNonNull(original);
-            this.transposedDimension = original.matrixDimension().transpose();
-        }
-
-        @Override
-        public MatrixDimension matrixDimension() {
-            return this.transposedDimension;
+            this.transposedDimension = original.bandMatrixDimension().transpose();
         }
 
         @Override
@@ -102,15 +86,20 @@ public final class TranspositionEntryReadable {
         }
 
         @Override
-        public EntryReadableMatrix transpose() {
+        public BandMatrixDimension bandMatrixDimension() {
+            return this.transposedDimension;
+        }
+
+        @Override
+        public BandMatrix transpose() {
             return this.original;
         }
 
         @Override
         public String toString() {
             return String.format(
-                    "Matrix[dim:%s, %s]",
-                    this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
+                    "Matrix[band:%s, %s]",
+                    this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
         }
     }
 }

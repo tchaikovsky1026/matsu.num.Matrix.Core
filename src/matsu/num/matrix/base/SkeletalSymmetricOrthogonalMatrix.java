@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.3
+ * 2024.11.16
  */
 package matsu.num.matrix.base;
 
@@ -30,7 +30,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.5
  * @param <T> {@code this} のタイプ,
  *            {@link #transpose()},
  *            {@link #inverse()} の戻り値型
@@ -50,7 +50,7 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<
      */
     protected SkeletalSymmetricOrthogonalMatrix() {
         super();
-        this.opSelfSupplier = ImmutableLazyCacheSupplier.of(() -> Optional.of(this.self()));
+        this.opSelfSupplier = ImmutableLazyCacheSupplier.of(() -> Optional.of(this.transpose()));
     }
 
     @Override

@@ -5,11 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.16
  */
 package matsu.num.matrix.base;
 
-import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBand;
+import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBandUtil;
 
 /**
  * 正方形の帯行列を扱う.
@@ -30,7 +30,7 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBand;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.5
  */
 public interface BandMatrix extends EntryReadableMatrix {
 
@@ -67,9 +67,10 @@ public interface BandMatrix extends EntryReadableMatrix {
      * {@link #transpose()} を呼ぶことが推奨される. <br>
      * このメソッドは {@link #transpose()} や
      * {@link SkeletalAsymmetricMatrix#createTranspose()}
-     * の戻り値の生成を補助するために用意されている. <br>
-     * (ただし, {@link #transpose()}
-     * の複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * の実装を補助するために用意されている. <br>
+     * (ただし, {@link #transpose()} の実装に用いる場合,
+     * {@link Matrix} の実装規約の通り,
+     * 複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
      * </i>
      * </p>
      *
@@ -78,6 +79,6 @@ public interface BandMatrix extends EntryReadableMatrix {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static BandMatrix createTransposedOf(BandMatrix original) {
-        return TranspositionBand.instance().apply(original);
+        return TranspositionBandUtil.apply(original);
     }
 }

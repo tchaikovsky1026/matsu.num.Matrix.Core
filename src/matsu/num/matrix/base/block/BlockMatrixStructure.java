@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.15
+ * 2024.11.17
  */
 package matsu.num.matrix.base.block;
 
@@ -48,7 +48,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 22.5
  * @param <T> このブロック構造が扱う行列要素の型
  */
 public final class BlockMatrixStructure<T extends Matrix> {
@@ -444,7 +444,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
      * このビルダはミュータブルであり, 再利用することはできない. <br>
      * {@link #build()} メソッドがコールされブロック構造が生成された場合,
      * そのビルダは使用不能となる. <br>
-     * 必要がある場合は {@link #copy()} メソッドによりビルダのコピーを作成する.
+     * 必要な場合は {@link #copy()} メソッドによりビルダのコピーを作成する.
      * </p>
      * 
      * @param <T> このブロック構造ビルダが扱う行列要素の型

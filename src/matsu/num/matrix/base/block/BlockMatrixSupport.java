@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.12
+ * 2024.11.17
  */
 package matsu.num.matrix.base.block;
 
@@ -17,7 +17,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * ブロック行列の構築に関するユーティリティクラス.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 22.5
  */
 public final class BlockMatrixSupport {
 
@@ -31,7 +31,17 @@ public final class BlockMatrixSupport {
      * 非対角ブロックに零行列を置いた, ブロック対角直交行列を返す.
      * 
      * <p>
-     * より詳しく, ...
+     * ブロック対角直交行列について, 例を挙げて説明する. <br>
+     * 対角ブロックに並ぶ直交行列要素を3個とし,
+     * U<sub>1</sub>, U<sub>2</sub>, U<sub>3</sub>
+     * とする. <br>
+     * これらから生成されるブロック対角直交行列は, <br>
+     * &lceil; U<sub>1</sub> O O &rceil; <br>
+     * &vert; O U<sub>2</sub> O &vert; <br>
+     * &lfloor; O O U<sub>3</sub> &rfloor; <br>
+     * である.
+     * U<sub>1</sub>, U<sub>2</sub>, U<sub>3</sub>
+     * の行列サイズは一致する必要はない.
      * </p>
      * 
      * @param first 左上ブロックの行列
@@ -50,10 +60,21 @@ public final class BlockMatrixSupport {
      * 非対角ブロックに零行列を置いた, 対称ブロック対角直交行列を返す.
      * 
      * <p>
-     * より詳しく, ...
+     * 対称ブロック対角直交行列について, 例を挙げて説明する. <br>
+     * 対角ブロックに並ぶ対称直交行列要素を3個とし,
+     * H<sub>1</sub>, H<sub>2</sub>, H<sub>3</sub>
+     * とする. <br>
+     * これらから生成されるブロック対角直交行列は, <br>
+     * &lceil; H<sub>1</sub> O O &rceil; <br>
+     * &vert; O H<sub>2</sub> O &vert; <br>
+     * &lfloor; O O H<sub>3</sub> &rfloor; <br>
+     * である.
+     * H<sub>1</sub>, H<sub>2</sub>, H<sub>3</sub>
+     * の行列サイズは一致する必要はない.
      * </p>
      * 
      * <p>
+     * 引数に {@link Symmetric} が付与されていなければならない. <br>
      * 戻り値には, {@link Symmetric} が付与されている.
      * </p>
      * 

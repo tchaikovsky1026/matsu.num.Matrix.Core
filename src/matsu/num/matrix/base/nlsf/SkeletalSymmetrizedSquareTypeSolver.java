@@ -56,10 +56,12 @@ abstract non-sealed class SkeletalSymmetrizedSquareTypeSolver<
     /**
      * -
      * 
+     * <p>
+     * (外部からのの呼び出し不可, サブクラスからの呼び出し禁止)
+     * </p>
+     * 
      * @return -
-     * @deprecated (サブクラスを含む, 外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     final InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         InversionDeterminantableImplementation<ST, SIT> sqrtMatrixStructure =

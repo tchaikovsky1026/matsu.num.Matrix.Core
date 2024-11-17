@@ -50,7 +50,7 @@ abstract non-sealed class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, I
      * </p>
      * 
      * <p>
-     * クラス定義に対して固定値でなければならない.
+     * クラス定義に対して固定値であるべきである.
      * </p>
      * 
      * @return ソルバーの名前

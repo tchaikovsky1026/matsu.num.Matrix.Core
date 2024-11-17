@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.11.16
  */
 package matsu.num.matrix.base.helper.matrix.transpose;
 
@@ -24,16 +24,13 @@ import matsu.num.matrix.base.Vector;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 22.5
  */
-public final class Transposition {
+public final class TranspositionUtil {
 
-    private static final Transposition INSTANCE = new Transposition();
-
-    private Transposition() {
-        if (Objects.nonNull(INSTANCE)) {
-            throw new AssertionError();
-        }
+    private TranspositionUtil() {
+        //インスタンス化不可
+        throw new AssertionError();
     }
 
     /**
@@ -44,7 +41,7 @@ public final class Transposition {
      * @return 転置行列
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public Matrix apply(Matrix original) {
+    public static Matrix apply(Matrix original) {
         if (original instanceof Symmetric) {
             return original;
         }
@@ -54,15 +51,6 @@ public final class Transposition {
         }
 
         return new Transposed(original);
-    }
-
-    /**
-     * このインスタンスを生成する.
-     * 
-     * @return インスタンス
-     */
-    public static Transposition instance() {
-        return INSTANCE;
     }
 
     private static final class Transposed implements Matrix {

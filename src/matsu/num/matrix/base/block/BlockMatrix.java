@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.14
+ * 2024.11.16
  */
 package matsu.num.matrix.base.block;
 
@@ -23,7 +23,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * ブロック行列を表す.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 22.5
  */
 public final class BlockMatrix
         extends SkeletalAsymmetricMatrix<Matrix>
@@ -127,10 +127,12 @@ public final class BlockMatrix
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     protected Matrix createTranspose() {
         return Matrix.createTransposedOf(this);

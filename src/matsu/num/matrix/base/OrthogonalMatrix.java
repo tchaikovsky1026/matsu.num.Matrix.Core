@@ -5,14 +5,14 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.11
+ * 2024.11.16
  */
 package matsu.num.matrix.base;
 
 import java.util.Optional;
 
 import matsu.num.matrix.base.helper.matrix.multiply.OrthogonalMatrixMultiplicationUtil;
-import matsu.num.matrix.base.helper.matrix.transpose.TranspositionOrthogonal;
+import matsu.num.matrix.base.helper.matrix.transpose.TranspositionOrthogonalUtil;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
@@ -55,7 +55,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </blockquote>
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 22.5
  */
 public interface OrthogonalMatrix extends Matrix, Invertible {
 
@@ -136,6 +136,13 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * の戻り値の生成を補助するために用意されている. <br>
      * (ただし, {@link #transpose()}, {@link #inverse()}
      * の複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * 
+     * このメソッドは {@link #transpose()} や {@link #inverse()},
+     * {@link SkeletalAsymmetricOrthogonalMatrix#createTranspose()}
+     * の実装を補助するために用意されている. <br>
+     * (ただし, {@link #transpose()}, {@link #inverse()} の実装に用いる場合,
+     * {@link OrthogonalMatrix} の実装規約の通り,
+     * 複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
      * </i>
      * </p>
      *
@@ -144,6 +151,6 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static OrthogonalMatrix createTransposedOf(OrthogonalMatrix original) {
-        return TranspositionOrthogonal.instance().apply(original);
+        return TranspositionOrthogonalUtil.apply(original);
     }
 }

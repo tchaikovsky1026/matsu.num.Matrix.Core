@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.7
+ * 2024.11.17
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -29,7 +29,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.2
+ * @version 22.5
  */
 public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, Matrix> {
 
@@ -78,10 +78,12 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         DeterminantValues det = new DeterminantValues(
@@ -100,10 +102,12 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     String solverName() {
         return super.solverName();
@@ -162,11 +166,12 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
         /**
          * -
          * 
-         * @param matrix -
+         * <p>
+         * (外部からの呼び出し不可)
+         * </p>
+         * 
          * @return -
-         * @deprecated (外部からの呼び出し不可)
          */
-        @Deprecated
         @Override
         final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
             return LUPivotingFactorizationHelper.acceptedSize(matrix)
@@ -177,12 +182,12 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
         /**
          * -
          * 
-         * @param matrix -
-         * @param epsilon -
+         * <p>
+         * (外部からの呼び出し不可)
+         * </p>
+         * 
          * @return -
-         * @deprecated (外部からの呼び出し不可)
          */
-        @Deprecated
         @Override
         final Optional<LUPivoting>
                 applyConcretely(EntryReadableMatrix matrix, double epsilon) {

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.10
+ * 2024.11.16
  */
 package matsu.num.matrix.base;
 
@@ -15,7 +15,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 正方零行列を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 22.5
  */
 public final class SquareZeroMatrix
         extends SkeletalSymmetricMatrix<SquareZeroMatrix>
@@ -102,10 +102,12 @@ public final class SquareZeroMatrix
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     protected SquareZeroMatrix self() {
         return this;

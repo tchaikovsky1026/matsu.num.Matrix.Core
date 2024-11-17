@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.7
+ * 2024.11.17
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -39,7 +39,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.2
+ * @version 22.5
  */
 public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
 
@@ -85,10 +85,12 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
         DeterminantValues det =
@@ -105,10 +107,12 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     String solverName() {
         return super.solverName();
@@ -173,11 +177,12 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
         /**
          * -
          * 
-         * @param matrix -
+         * <p>
+         * (外部からの呼び出し不可)
+         * </p>
+         * 
          * @return -
-         * @deprecated (外部からの呼び出し不可)
          */
-        @Deprecated
         @Override
         MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
             if (!(matrix instanceof Symmetric)) {
@@ -192,12 +197,12 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
         /**
          * -
          * 
-         * @param matrix -
-         * @param epsilon -
+         * <p>
+         * (外部からの呼び出し不可)
+         * </p>
+         * 
          * @return -
-         * @deprecated (外部からの呼び出し不可)
          */
-        @Deprecated
         @Override
         Optional<ModifiedCholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {
             try {
