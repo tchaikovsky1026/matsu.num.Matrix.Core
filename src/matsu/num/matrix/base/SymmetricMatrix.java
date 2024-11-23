@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.23
  */
 package matsu.num.matrix.base;
 
@@ -15,18 +15,18 @@ import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 対称 (密) 行列を扱う.
- * </p>
  * 
  * <p>
  * このクラスのインスタンスはビルダを用いて生成する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
         implements EntryReadableMatrix, Symmetric {
@@ -187,24 +187,20 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          * 初期値は零行列.
          *
          * @param matrixDimension 行列サイズ
-         * @throws MatrixFormatMismatchException 行列サイズが正方サイズでない場合
-         * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * (dim + 1) >
-         *             IntMax)
+         * @throws IllegalArgumentException (サブクラス)受け入れ拒否の場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final MatrixDimension matrixDimension) {
-            if (!matrixDimension.isSquare()) {
-                throw new MatrixFormatMismatchException(
-                        String.format("正方形ではない行列サイズ:%s", matrixDimension));
+            MatrixStructureAcceptance acceptance = accepts(matrixDimension);
+            if (acceptance.isReject()) {
+                throw acceptance.getException(matrixDimension);
             }
+
             this.matrixDimension = matrixDimension;
 
-            final long long_dimension = matrixDimension.rowAsIntValue();
-            final long long_EntrySize = long_dimension * (long_dimension + 1L) / 2L;
-            if (long_EntrySize > Integer.MAX_VALUE / 2) {
-                throw new ElementsTooManyException("サイズが大きすぎます");
-            }
-            this.entry = new double[(int) long_EntrySize];
+            final int dimension = matrixDimension.rowAsIntValue();
+            final int entrySize = dimension * (dimension + 1) / 2;
+            this.entry = new double[entrySize];
         }
 
         /**
@@ -323,6 +319,26 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             SymmetricMatrix out = new SymmetricMatrix(this.matrixDimension, this.entry);
             this.entry = null;
             return out;
+        }
+
+        /**
+         * この行列サイズがビルダ生成に受け入れられるかを判定する.
+         * 
+         * @param matrixDimension 行列サイズ
+         * @return ビルダ生成が受け入れられるならACCEPT
+         * @throws NullPointerException 引数がnullの場合
+         */
+        public static MatrixStructureAcceptance accepts(MatrixDimension matrixDimension) {
+            if (!matrixDimension.isSquare()) {
+                return MatrixRejectionConstant.REJECTED_BY_NOT_SQUARE.get();
+            }
+
+            final long long_dimension = matrixDimension.rowAsIntValue();
+            final long long_EntrySize = long_dimension * (long_dimension + 1L) / 2L;
+            if (long_EntrySize > Integer.MAX_VALUE / 2) {
+                return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+            }
+            return MatrixStructureAcceptance.ACCEPTED;
         }
 
         /**

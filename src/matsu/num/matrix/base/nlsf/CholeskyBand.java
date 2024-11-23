@@ -20,6 +20,7 @@ import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * <p>
@@ -177,12 +178,12 @@ public final class CholeskyBand
         @Override
         MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
             if (!(matrix instanceof Symmetric)) {
-                return MatrixRejectionInLSF.REJECTED_BY_NOT_SYMMETRIC.get();
+                return MatrixRejectionConstant.REJECTED_BY_NOT_SYMMETRIC.get();
             }
 
             return CholeskyBandFactorizationHelper.acceptedSize(matrix)
                     ? MatrixStructureAcceptance.ACCEPTED
-                    : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+                    : MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
         }
 
         /**

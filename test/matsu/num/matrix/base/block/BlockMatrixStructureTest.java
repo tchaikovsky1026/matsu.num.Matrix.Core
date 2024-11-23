@@ -31,7 +31,7 @@ final class BlockMatrixStructureTest {
 
         @Before
         public void before_ビルダ作成() {
-            builder = BlockMatrixStructure.builderOf(MatrixDimension.rectangle(rows, columns));
+            builder = BlockMatrixStructure.Builder.of(MatrixDimension.rectangle(rows, columns));
         }
 
         @Test(expected = None.class)
@@ -63,7 +63,7 @@ final class BlockMatrixStructureTest {
 
         @Before
         public void before_ビルダ作成() {
-            builder = BlockMatrixStructure.builderOf(MatrixDimension.rectangle(rows, columns));
+            builder = BlockMatrixStructure.Builder.of(MatrixDimension.rectangle(rows, columns));
         }
 
         @Test(expected = None.class)
@@ -93,7 +93,7 @@ final class BlockMatrixStructureTest {
 
         @Before
         public void before_3_3のビルダ作成() {
-            builder = BlockMatrixStructure.builderOf(structureDimension);
+            builder = BlockMatrixStructure.Builder.of(structureDimension);
         }
 
         @Test(expected = None.class)
@@ -164,7 +164,7 @@ final class BlockMatrixStructureTest {
 
         @Before
         public void before_1_3_5__2_4の構造作成() {
-            BlockMatrixStructure.Builder<Matrix> builder = BlockMatrixStructure.builderOf(structureDimension);
+            BlockMatrixStructure.Builder<Matrix> builder = BlockMatrixStructure.Builder.of(structureDimension);
             builder.setBlockElement(1, 0, ZeroMatrix.matrixOf(MatrixDimension.rectangle(3, 2)));
             builder.setBlockElement(0, 1, ZeroMatrix.matrixOf(MatrixDimension.rectangle(1, 4)));
             builder.setBlockElement(2, 1, ZeroMatrix.matrixOf(MatrixDimension.rectangle(5, 4)));
@@ -217,7 +217,7 @@ final class BlockMatrixStructureTest {
 
         @Before
         public void before_1_3__2_4_6の構造作成() {
-            BlockMatrixStructure.Builder<Matrix> builder = BlockMatrixStructure.builderOf(structureDimension);
+            BlockMatrixStructure.Builder<Matrix> builder = BlockMatrixStructure.Builder.of(structureDimension);
             builder.setBlockElement(1, 0, ZeroMatrix.matrixOf(MatrixDimension.rectangle(3, 2)));
             builder.setBlockElement(0, 1, ZeroMatrix.matrixOf(MatrixDimension.rectangle(1, 4)));
             builder.setBlockElement(1, 2, ZeroMatrix.matrixOf(MatrixDimension.rectangle(3, 6)));
@@ -271,7 +271,7 @@ final class BlockMatrixStructureTest {
         @Before
         public void before_構造作成() {
             MatrixDimension structureDimension = MatrixDimension.rectangle(3, 2);
-            BlockMatrixStructure.Builder<Matrix> builder = BlockMatrixStructure.builderOf(structureDimension);
+            BlockMatrixStructure.Builder<Matrix> builder = BlockMatrixStructure.Builder.of(structureDimension);
             builder.setBlockElement(1, 0, ZeroMatrix.matrixOf(MatrixDimension.rectangle(3, 2)));
             builder.setBlockElement(0, 1, ZeroMatrix.matrixOf(MatrixDimension.rectangle(1, 4)));
             builder.setBlockElement(2, 1, ZeroMatrix.matrixOf(MatrixDimension.rectangle(5, 4)));

@@ -5,19 +5,20 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2024.11.23
  */
 package matsu.num.matrix.base.block;
 
 import matsu.num.matrix.base.OrthogonalMatrix;
 import matsu.num.matrix.base.Symmetric;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
  * ブロック行列の構築に関するユーティリティクラス.
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class BlockMatrixSupport {
 
@@ -47,6 +48,7 @@ public final class BlockMatrixSupport {
      * @param first 左上ブロックの行列
      * @param following firstに続く行列, 左上から右下に向かって順番
      * @return ブロック対角直交行列
+     * @throws ElementsTooManyException 全体のサイズが大きすぎる場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static OrthogonalMatrix blockDiagonalOrthogonalMatrixOf(
@@ -82,6 +84,7 @@ public final class BlockMatrixSupport {
      * @param following firstに続く行列, 左上から右下に向かって順番
      * @return 対称ブロック対角直交行列
      * @throws MatrixNotSymmetricException 引数の行列が対称でない場合
+     * @throws ElementsTooManyException 全体のサイズが大きすぎる場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static OrthogonalMatrix symmetricBlockDiagonalOrthogonalMatrixOf(

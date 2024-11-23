@@ -60,7 +60,7 @@ final class BlockMatrixEntryReadableTest {
             EntryReadableMatrix m23 = mx23();
 
             BlockMatrixStructure.Builder<EntryReadableMatrix> builder =
-                    BlockMatrixStructure.builderOf(structureDimension);
+                    BlockMatrixStructure.Builder.of(structureDimension);
             builder.setBlockElement(0, 0, m00);
             builder.setBlockElement(0, 1, m01);
             builder.setBlockElement(0, 2, m02);
@@ -202,7 +202,7 @@ final class BlockMatrixEntryReadableTest {
         public void before_構造作成() {
             MatrixDimension structureDimension = MatrixDimension.rectangle(3, 2);
             BlockMatrixStructure.Builder<EntryReadableMatrix> builder =
-                    BlockMatrixStructure.builderOf(structureDimension);
+                    BlockMatrixStructure.Builder.of(structureDimension);
             builder.setBlockElement(1, 0, ZeroMatrix.matrixOf(MatrixDimension.rectangle(3, 2)));
             builder.setBlockElement(0, 1, ZeroMatrix.matrixOf(MatrixDimension.rectangle(1, 4)));
             builder.setBlockElement(2, 1, ZeroMatrix.matrixOf(MatrixDimension.rectangle(5, 4)));

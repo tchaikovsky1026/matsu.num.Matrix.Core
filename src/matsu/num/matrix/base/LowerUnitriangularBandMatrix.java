@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.23
  */
 package matsu.num.matrix.base;
 
@@ -16,6 +16,8 @@ import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * <p>
@@ -27,7 +29,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class LowerUnitriangularBandMatrix
         extends SkeletalAsymmetricMatrix<BandMatrix> implements LowerUnitriangular, BandMatrix {
@@ -330,10 +332,8 @@ public final class LowerUnitriangularBandMatrix
     }
 
     /**
-     * <p>
      * 単位下三角の帯行列を作成するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
-     * </p>
      * 
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -352,24 +352,21 @@ public final class LowerUnitriangularBandMatrix
          * 初期値は単位行列.
          *
          * @param bandMatrixDimension 下三角である帯行列構造
-         * @throws MatrixFormatMismatchException 帯行列構造が下三角構造でない,
-         *             {@link BandMatrixDimension#upperBandWidth} &gt;
-         *             0である場合
-         * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * lb > IntMax)
+         * @throws IllegalArgumentException (サブクラス)受け入れ拒否の場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final BandMatrixDimension bandMatrixDimension) {
-            if (bandMatrixDimension.upperBandWidth() > 0) {
-                throw new MatrixFormatMismatchException(String.format("下三角行列でない:%s", bandMatrixDimension));
+            MatrixStructureAcceptance acceptance = accepts(bandMatrixDimension);
+            if (acceptance.isReject()) {
+                throw acceptance.getException(bandMatrixDimension);
             }
+
             this.bandMatrixDimension = bandMatrixDimension;
 
-            final long long_entrySize = (long) bandMatrixDimension.dimension().rowAsIntValue()
-                    * bandMatrixDimension.lowerBandWidth();
-            if (long_entrySize > Integer.MAX_VALUE) {
-                throw new ElementsTooManyException("サイズが大きすぎる");
-            }
-            this.lowerEntry = new double[(int) long_entrySize];
+            final int entrySize =
+                    bandMatrixDimension.dimension().rowAsIntValue()
+                            * bandMatrixDimension.lowerBandWidth();
+            this.lowerEntry = new double[entrySize];
         }
 
         /**
@@ -439,6 +436,28 @@ public final class LowerUnitriangularBandMatrix
                     this.bandMatrixDimension, this.lowerEntry);
             this.lowerEntry = null;
             return out;
+        }
+
+        /**
+         * 与えた帯行列構造がビルダ生成 ({@link #unit(BandMatrixDimension)} メソッドのコール)
+         * に受け入れられるかを判定する.
+         * 
+         * @param bandMatrixDimension 帯行列構造
+         * @return ビルダ生成が受け入れられるならACCEPT
+         * @throws NullPointerException 引数がnullの場合
+         */
+        public static MatrixStructureAcceptance accepts(BandMatrixDimension bandMatrixDimension) {
+            if (bandMatrixDimension.upperBandWidth() > 0) {
+                return MatrixRejectionConstant.REJECTED_BY_NOT_LOWER_TRIANGULAR.get();
+            }
+
+            final long long_entrySize = (long) bandMatrixDimension.dimension().rowAsIntValue()
+                    * bandMatrixDimension.lowerBandWidth();
+            if (long_entrySize > Integer.MAX_VALUE) {
+                return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+            }
+
+            return MatrixStructureAcceptance.ACCEPTED;
         }
 
         /**

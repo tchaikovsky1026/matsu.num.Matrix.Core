@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.23
  */
 package matsu.num.matrix.base;
 
@@ -15,18 +15,18 @@ import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 非対称な帯行列を扱う.
- * </p>
  * 
  * <p>
  * このクラスのインスタンスはビルダを用いて生成する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix> implements BandMatrix {
 
@@ -271,10 +271,8 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
     }
 
     /**
-     * <p>
      * 正方形の帯行列を生成するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
-     * </p>
      *
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -296,8 +294,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
          * 初期値は零行列.
          *
          * @param bandMatrixDimension 帯行列構造
-         * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * max(lb.ub) >
-         *             IntMax)
+         * @throws IllegalArgumentException (サブクラス)受け入れ拒否の場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final BandMatrixDimension bandMatrixDimension) {
@@ -306,10 +303,11 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
             final int lowerBandWidth = bandMatrixDimension.lowerBandWidth();
             final int upperBandWidth = bandMatrixDimension.upperBandWidth();
 
-            final long long_entrySize = (long) dimension * Math.max(lowerBandWidth, upperBandWidth);
-            if (long_entrySize > Integer.MAX_VALUE) {
-                throw new ElementsTooManyException("サイズが大きすぎる");
+            MatrixStructureAcceptance acceptance = accepts(bandMatrixDimension);
+            if (acceptance.isReject()) {
+                throw acceptance.getException(bandMatrixDimension);
             }
+
             diagonalEntry = new double[dimension];
             lowerEntry = new double[lowerBandWidth * dimension];
             upperEntry = new double[upperBandWidth * dimension];
@@ -400,6 +398,26 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         }
 
         /**
+         * 与えた帯行列構造がビルダ生成に受け入れられるかを判定する.
+         * 
+         * @param bandMatrixDimension 帯行列構造
+         * @return ビルダ生成が受け入れられるならACCEPT
+         * @throws NullPointerException 引数がnullの場合
+         */
+        public static MatrixStructureAcceptance accepts(BandMatrixDimension bandMatrixDimension) {
+            final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
+            final int lowerBandWidth = bandMatrixDimension.lowerBandWidth();
+            final int upperBandWidth = bandMatrixDimension.upperBandWidth();
+
+            final long long_entrySize = (long) dimension * Math.max(lowerBandWidth, upperBandWidth);
+            if (long_entrySize > Integer.MAX_VALUE) {
+                return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+            }
+
+            return MatrixStructureAcceptance.ACCEPTED;
+        }
+
+        /**
          * 与えられた帯構造を持つ, 零行列で初期化された正方帯行列ビルダを生成する.
          *
          * @param bandMatrixDimension 帯行列構造
@@ -449,13 +467,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
 
             //対角成分
             for (int i = 0; i < srcDimension; i++) {
-                double value = src.valueAt(i, i);
-                if (!EntryReadableMatrix.acceptValue(value)) {
-                    throw new AssertionError(
-                            String.format(
-                                    "BandMatrixが適切に実装されていない: entryValue=%s", value));
-                }
-                outBuilder.setValue(i, i, value);
+                outBuilder.setValue(i, i, src.valueAt(i, i));
             }
 
             //下三角成分
@@ -464,13 +476,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
                     int r = j + i + 1;
                     int c = i;
 
-                    double value = src.valueAt(r, c);
-                    if (!EntryReadableMatrix.acceptValue(value)) {
-                        throw new AssertionError(
-                                String.format(
-                                        "BandMatrixが適切に実装されていない: entryValue=%s", value));
-                    }
-                    outBuilder.setValue(r, c, value);
+                    outBuilder.setValue(r, c, src.valueAt(r, c));
                 }
             }
             //上三角成分
@@ -479,12 +485,6 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
                     int r = i;
                     int c = j + i + 1;
 
-                    double value = src.valueAt(r, c);
-                    if (!EntryReadableMatrix.acceptValue(value)) {
-                        throw new AssertionError(
-                                String.format(
-                                        "BandMatrixが適切に実装されていない: entryValue=%s", value));
-                    }
                     outBuilder.setValue(r, c, src.valueAt(r, c));
                 }
             }

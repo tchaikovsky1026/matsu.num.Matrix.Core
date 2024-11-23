@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.12
+ * 2024.11.23
  */
 package matsu.num.matrix.base.block;
 
@@ -17,12 +17,13 @@ import java.util.Objects;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.OrthogonalMatrix;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
 
 /**
  * ブロック対角直交行列に関するUtility.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 23.0
  */
 final class BlockDiagonalOrthogonalUtil {
 
@@ -33,13 +34,20 @@ final class BlockDiagonalOrthogonalUtil {
 
     /**
      * 与えられたリストを対角ブロックに置いた時の全体の行列次元を返す.
+     * 
+     * @throws ElementsTooManyException サイズが大きすぎる場合
      */
     static MatrixDimension calcDimension(Collection<? extends OrthogonalMatrix> blockSeries) {
-        int dim = 0;
+        long dim = 0;
         for (Matrix m : blockSeries) {
             dim += m.matrixDimension().rowAsIntValue();
         }
-        return MatrixDimension.square(dim);
+        if (dim > Integer.MAX_VALUE) {
+            throw new ElementsTooManyException(
+                    String.format(
+                            "全体のサイズが大きすぎる: dim = %s", dim));
+        }
+        return MatrixDimension.square((int) dim);
 
     }
 

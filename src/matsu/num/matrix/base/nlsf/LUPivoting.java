@@ -20,6 +20,7 @@ import matsu.num.matrix.base.PermutationMatrix;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * <p>
@@ -176,7 +177,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
         final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
             return LUPivotingFactorizationHelper.acceptedSize(matrix)
                     ? MatrixStructureAcceptance.ACCEPTED
-                    : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+                    : MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
         }
 
         /**

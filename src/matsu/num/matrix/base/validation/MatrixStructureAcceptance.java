@@ -5,19 +5,12 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.23
  */
 package matsu.num.matrix.base.validation;
 
-import java.util.Objects;
-import java.util.Optional;
-
-import matsu.num.matrix.base.Matrix;
-
 /**
- * <p>
  * 行列が構造的に処理に対応しているかどうかを表すインターフェース.
- * </p>
  * 
  * <p>
  * 行列が対応していることは, シングルトンインスタンス {@link #ACCEPTED}
@@ -26,31 +19,14 @@ import matsu.num.matrix.base.Matrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 23.0
  */
-public abstract class MatrixStructureAcceptance {
+public abstract sealed class MatrixStructureAcceptance permits MatrixAccepted, MatrixRejected {
 
     /**
      * 行列が処理に対応していることを表すシングルトン.
      */
-    public static final MatrixStructureAcceptance ACCEPTED = new MatrixStructureAcceptance() {
-
-        @Override
-        public final Type type() {
-            return Type.ACCEPTED;
-        }
-
-        @Override
-        public final Optional<IllegalArgumentException> getException(Matrix matrix) {
-            Objects.requireNonNull(matrix);
-            return Optional.empty();
-        }
-
-        @Override
-        public final String toString() {
-            return this.type().toString();
-        }
-    };
+    public static final MatrixStructureAcceptance ACCEPTED = new MatrixAccepted();
 
     /**
      * パッケージプライベートのアクセス制限を持つコンストラクタ.
@@ -66,24 +42,40 @@ public abstract class MatrixStructureAcceptance {
      * 
      * @return 属性
      */
-    public abstract Type type();
+    abstract Type type();
 
     /**
-     * <p>
+     * このインスタンスがACCEPTを表現するかを判定する.
+     * 
+     * @return ACCEPTを扱うなら true
+     */
+    public final boolean isAccept() {
+        return this.type() == Type.ACCEPTED;
+    }
+
+    /**
+     * このインスタンスがREJECTを表現するかを判定する.
+     * 
+     * @return REJECTを扱うなら true
+     */
+    public final boolean isReject() {
+        return this.type() == Type.REJECTED;
+    }
+
+    /**
      * このインスタンスの拒絶理由に適した例外インスタンスを取得する. <br>
      * {@link #type()} が {@link Type#ACCEPTED} の場合は空を返す.
-     * </p>
      * 
-     * @param matrix 関連付けられる行列
+     * @param cause 関連付けられる行列
      * @return スローすべき例外, ACCEPTEDの場合は空
-     * @throws NullPointerException 引数がnullの場合
+     * @throws IllegalStateException このインスタンスがACCEPTの場合
      */
-    public abstract Optional<IllegalArgumentException> getException(Matrix matrix);
+    public abstract IllegalArgumentException getException(Object cause);
 
     /**
      * 対応しているかどうかを示す列挙型.
      */
-    public enum Type {
+    enum Type {
 
         /**
          * 対応していることを表す. <br>

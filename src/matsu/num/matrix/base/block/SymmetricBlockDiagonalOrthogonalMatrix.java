@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.12
+ * 2024.11.23
  */
 package matsu.num.matrix.base.block;
 
@@ -21,6 +21,7 @@ import matsu.num.matrix.base.SkeletalSymmetricOrthogonalMatrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
@@ -28,7 +29,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * 対称な {@link BlockDiagonalOrthogonalMatrix} の実装.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 23.0
  */
 final class SymmetricBlockDiagonalOrthogonalMatrix
         extends SkeletalSymmetricOrthogonalMatrix<SymmetricBlockDiagonalOrthogonalMatrix>
@@ -176,6 +177,7 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
      * @param following firstに続く行列, 左上から右下に向かって順番
      * @return 対称ブロック対角直交行列
      * @throws MatrixNotSymmetricException 引数の行列が対称でない場合
+     * @throws ElementsTooManyException 全体のサイズが大きすぎる場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     static OrthogonalMatrix matrixOf(
@@ -197,6 +199,7 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
             rawBlockSeries.add(m);
         }
 
+        //ここで例外が発生する可能性がある
         MatrixDimension dimension = BlockDiagonalOrthogonalUtil.calcDimension(rawBlockSeries);
         Collection<OrthogonalMatrix> blockSeries = BlockDiagonalOrthogonalUtil.expand(rawBlockSeries);
 

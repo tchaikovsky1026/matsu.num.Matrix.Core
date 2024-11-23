@@ -18,6 +18,7 @@ import java.util.Optional;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.PseudoRegularMatrixProcess;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * {@link SolvingFactorizationExecutor} の骨格実装.
@@ -107,7 +108,7 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
     @Override
     public final MatrixStructureAcceptance accepts(MT matrix) {
         if (!matrix.matrixDimension().isSquare()) {
-            return MatrixRejectionInLSF.REJECTED_BY_NOT_SQUARE.get();
+            return MatrixRejectionConstant.REJECTED_BY_NOT_SQUARE.get();
         }
         return this.acceptsConcretely(matrix);
     }
@@ -121,9 +122,10 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
         if (!Double.isFinite(epsilon) || epsilon < 0) {
             throw new IllegalArgumentException(String.format("不正な値:epsilon=%s", epsilon));
         }
-        Optional<IllegalArgumentException> throwException = this.accepts(matrix).getException(matrix);
-        if (throwException.isPresent()) {
-            throw throwException.get();
+
+        MatrixStructureAcceptance acceptance = this.accepts(matrix);
+        if (acceptance.isReject()) {
+            throw acceptance.getException(matrix);
         }
 
         return this.applyConcretely(Objects.requireNonNull(matrix), epsilon);

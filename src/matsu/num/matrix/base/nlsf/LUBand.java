@@ -19,6 +19,7 @@ import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * <p>
@@ -179,7 +180,7 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
         MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
             return LUBandFactorizationHelper.acceptedSize(matrix)
                     ? MatrixStructureAcceptance.ACCEPTED
-                    : MatrixRejectionInLSF.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+                    : MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
         }
 
         /**

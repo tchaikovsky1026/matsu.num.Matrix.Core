@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2024.11.23
  */
 package matsu.num.matrix.base.block;
 
@@ -19,6 +19,7 @@ import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.VectorDimension;
+import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
@@ -43,12 +44,15 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * <p>
- * このインスタンスの生成はビルダ ({@link BlockMatrixStructure.Builder}) を介して行う. <br>
- * ビルダの生成は {@link #builderOf(MatrixDimension)} メソッドでのみ可能.
+ * ブロック行列全体のサイズが {@link MatrixDimension} の扱える範囲を超えるような構造は禁止されている.
+ * </p>
+ * 
+ * <p>
+ * このインスタンスの生成はビルダ ({@link BlockMatrixStructure.Builder}) を介して行う.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  * @param <T> このブロック構造が扱う行列要素の型
  */
 public final class BlockMatrixStructure<T extends Matrix> {
@@ -68,6 +72,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
      * </p>
      * 
      * @throws MatrixFormatMismatchException ブロック構造が不能あるいは不定
+     * @throws ElementsTooManyException 行列全体が大きすぎる場合
      */
     private BlockMatrixStructure(Builder<T> builder) {
         this.structureDimension = builder.structureDimension;
@@ -82,19 +87,8 @@ public final class BlockMatrixStructure<T extends Matrix> {
             throw new MatrixFormatMismatchException("ブロック構造が不能あるいは不定");
         }
 
+        //ここで例外が発生する可能性がある
         this.entireMatrixDimension = this.calcEntireMatrixDimension();
-    }
-
-    /**
-     * 指定したブロック構造を持つビルダを生成する.
-     * 
-     * @param <T> 生成されるブロック構造ビルダが扱う行列要素の型
-     * @param structureDimension ブロック構造
-     * @return 新しいビルダ
-     */
-    public static <T extends Matrix> BlockMatrixStructure.Builder<T>
-            builderOf(MatrixDimension structureDimension) {
-        return new Builder<>(Objects.requireNonNull(structureDimension));
     }
 
     /**
@@ -164,17 +158,24 @@ public final class BlockMatrixStructure<T extends Matrix> {
      */
     private MatrixDimension calcEntireMatrixDimension() {
 
-        int entireColumns = 0;
+        long entireColumns = 0;
         for (MatrixDimension bd : this.elementDimensions[0]) {
             entireColumns += bd.columnAsIntValue();
         }
 
-        int entireRows = 0;
+        long entireRows = 0;
         for (MatrixDimension[] arrBd : this.elementDimensions) {
             entireRows += arrBd[0].rowAsIntValue();
         }
 
-        return MatrixDimension.rectangle(entireRows, entireColumns);
+        if (entireRows > Integer.MAX_VALUE || entireColumns > Integer.MAX_VALUE) {
+            throw new ElementsTooManyException(
+                    String.format(
+                            "全体のサイズが大きすぎる: (r,c) = (%s,%s)",
+                            entireRows, entireColumns));
+        }
+
+        return MatrixDimension.rectangle((int) entireRows, (int) entireColumns);
     }
 
     /**
@@ -422,7 +423,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
      * 
      * <p>
      * このビルダの生成は,
-     * {@link BlockMatrixStructure#builderOf(MatrixDimension)}
+     * {@link BlockMatrixStructure.Builder#of(MatrixDimension)}
      * によって行う.
      * </p>
      * 
@@ -471,6 +472,18 @@ public final class BlockMatrixStructure<T extends Matrix> {
             this.structureDimension = src.structureDimension;
 
             this.matrixList = copyList(src.matrixList);
+        }
+
+        /**
+         * 指定したブロック構造を持つビルダを生成する.
+         * 
+         * @param <T> 生成されるブロック構造ビルダが扱う行列要素の型
+         * @param structureDimension ブロック構造
+         * @return 新しいビルダ
+         */
+        public static <T extends Matrix> BlockMatrixStructure.Builder<T>
+                of(MatrixDimension structureDimension) {
+            return new Builder<>(Objects.requireNonNull(structureDimension));
         }
 
         /**
@@ -551,6 +564,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
          * @return ブロック構造
          * @throws IllegalStateException すでにビルドされている場合
          * @throws MatrixFormatMismatchException ブロック構造が不能あるいは不定
+         * @throws ElementsTooManyException 行列全体が大きすぎる場合
          */
         public BlockMatrixStructure<T> build() {
             if (!this.canBeUsed()) {

@@ -5,13 +5,12 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.23
  */
-package matsu.num.matrix.base.nlsf;
+package matsu.num.matrix.base.validation.constant;
 
 import java.util.function.Function;
 
-import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
@@ -19,32 +18,49 @@ import matsu.num.matrix.base.validation.MatrixRejected;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
- * このパッケージで扱う, reject理由を表す列挙型.
+ * Reject理由を表す列挙型.
+ * 
+ * <p>
+ * {@link MatrixStructureAcceptance} の {@link MatrixRejected}
+ * に関する準備された定数を扱う.
+ * </p>
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 23.0
  */
-enum MatrixRejectionInLSF {
+public enum MatrixRejectionConstant {
 
     /**
      * 正方行列でないために対応していないことを表す.
      */
-    REJECTED_BY_NOT_SQUARE(m -> new MatrixFormatMismatchException(
-            String.format("正方形ではない行列サイズ:%s", m.matrixDimension())), "REJECTED_BY_NOT_SQUARE"),
+    REJECTED_BY_NOT_SQUARE(
+            o -> new MatrixFormatMismatchException(String.format("正方形ではない行列サイズ:%s", o)),
+            "REJECTED_BY_NOT_SQUARE"),
 
     /**
      * 対称行列でないために対応していないことを表す.
      */
-    REJECTED_BY_NOT_SYMMETRIC(m -> new MatrixNotSymmetricException(m.toString()), "REJECTED_BY_NOT_SYMMETRIC"),
+    REJECTED_BY_NOT_SYMMETRIC(
+            o -> new MatrixNotSymmetricException(String.format("対称行列でない:%s", o)),
+            "REJECTED_BY_NOT_SYMMETRIC"),
 
     /**
      * 有効要素数が大きすぎるために対応していないことを表す.
      */
-    REJECTED_BY_TOO_MANY_ELEMENTS(m -> new ElementsTooManyException(m.toString()), "REJECTED_BY_TOO_MANY_ELEMENTS");
+    REJECTED_BY_TOO_MANY_ELEMENTS(
+            o -> new ElementsTooManyException(String.format("有効要素数が大きすぎる:%s", o)),
+            "REJECTED_BY_TOO_MANY_ELEMENTS"),
+
+    /**
+     * 下三角構造でないことを表す.
+     */
+    REJECTED_BY_NOT_LOWER_TRIANGULAR(
+            o -> new MatrixFormatMismatchException(String.format("下三角構造でない:%s", o)),
+            "REJECTED_BY_NOT_LOWER_TRIANGULAR");
 
     private final MatrixStructureAcceptance reject;
 
-    private MatrixRejectionInLSF(Function<Matrix, IllegalArgumentException> exceptionGetter, String explanation) {
+    private MatrixRejectionConstant(Function<Object, IllegalArgumentException> exceptionGetter, String explanation) {
         this.reject = MatrixRejected.by(exceptionGetter, explanation);
     }
 
@@ -54,7 +70,7 @@ enum MatrixRejectionInLSF {
      * 
      * @return rejectインスタンス
      */
-    MatrixStructureAcceptance get() {
+    public MatrixStructureAcceptance get() {
         return this.reject;
     }
 }

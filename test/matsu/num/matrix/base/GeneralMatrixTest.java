@@ -167,29 +167,6 @@ final class GeneralMatrixTest {
         }
     }
 
-    public static class 単位行列の生成 {
-
-        private EntryReadableMatrix gm;
-
-        @Before
-        public void before_サイズ3の単位行列を生成() {
-            gm = GeneralMatrix.Builder.unit(MatrixDimension.square(3)).build();
-        }
-
-        @Test
-        public void test_成分の検証() {
-            double[][] entries = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
-
-            for (int j = 0; j < entries.length; j++) {
-                for (int k = 0; k < entries[j].length; k++) {
-                    assertThat(
-                            String.format("j=%d,k=%d", j, k),
-                            gm.valueAt(j, k), is(entries[j][k]));
-                }
-            }
-        }
-    }
-
     public static class fromMatrixに関する {
 
         private static class WrappedMatrix extends SkeletalAsymmetricMatrix<Matrix> implements Matrix {

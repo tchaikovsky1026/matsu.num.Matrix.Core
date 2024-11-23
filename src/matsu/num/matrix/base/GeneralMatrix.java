@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.23
  */
 package matsu.num.matrix.base;
 
@@ -15,18 +15,18 @@ import java.util.function.DoubleFunction;
 import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 矩形 (長方形) の (密) 行列を扱う.
- * </p>
  * 
  * <p>
  * このクラスのインスタンスはビルダを用いて生成する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
         implements EntryReadableMatrix {
@@ -190,10 +190,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
     }
 
     /**
-     * <p>
      * 矩形 (長方形) の (密) 行列を生成するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
-     * </p>
      * 
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
@@ -213,7 +211,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * 初期値は零行列.
          *
          * @param matrixDimension 行列サイズ
-         * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(r * c > IntMax)
+         * @throws IllegalArgumentException (サブクラス)受け入れ拒否の場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(MatrixDimension matrixDimension) {
@@ -222,11 +220,11 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             final int thisColumnDimension = matrixDimension.columnAsIntValue();
             this.matrixDimension = matrixDimension;
 
-            final long long_entrySize = (long) thisRowDimension * (long) thisColumnDimension;
-            if (long_entrySize > Integer.MAX_VALUE) {
-                throw new ElementsTooManyException("サイズが大きすぎる");
+            MatrixStructureAcceptance acceptance = accepts(matrixDimension);
+            if (acceptance.isReject()) {
+                throw acceptance.getException(matrixDimension);
             }
-            this.entry = new double[(int) long_entrySize];
+            this.entry = new double[thisRowDimension * thisColumnDimension];
         }
 
         /**
@@ -398,8 +396,25 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         }
 
         /**
-         * 与えられた次元(サイズ)を持つ, 零行列で初期化された矩形(長方形)行列ビルダを生成する.
+         * この行列サイズがビルダ生成に受け入れられるかを判定する.
          * 
+         * @param matrixDimension 行列サイズ
+         * @return ビルダ生成が受け入れられるならACCEPT
+         * @throws NullPointerException 引数がnullの場合
+         */
+        public static MatrixStructureAcceptance accepts(MatrixDimension matrixDimension) {
+            final int thisRowDimension = matrixDimension.rowAsIntValue();
+            final int thisColumnDimension = matrixDimension.columnAsIntValue();
+
+            final long long_entrySize = (long) thisRowDimension * (long) thisColumnDimension;
+            if (long_entrySize > Integer.MAX_VALUE) {
+                return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+            }
+            return MatrixStructureAcceptance.ACCEPTED;
+        }
+
+        /**
+         * 与えられた次元(サイズ)を持つ, 零行列で初期化された矩形(長方形)行列ビルダを生成する.
          *
          * @param matrixDimension 行列サイズ
          * @return 零行列で初期化されたビルダ
@@ -411,29 +426,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         }
 
         /**
-         * 与えられた次元(サイズ)を持つ, 単位行列で初期化されたビルダを作成する.
-         *
-         * @param matrixDimension 行列サイズ
-         * @return 単位行列で初期化したビルダ
-         * @throws MatrixFormatMismatchException 行列サイズが正方形でない場合
-         * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
-         * @throws NullPointerException 引数にnullが含まれる場合
-         */
-        public static Builder unit(final MatrixDimension matrixDimension) {
-            if (!matrixDimension.isSquare()) {
-                throw new MatrixFormatMismatchException(
-                        String.format("正方形ではない行列サイズ:%s", matrixDimension));
-            }
-
-            final Builder unitBuilder = new Builder(matrixDimension);
-            for (int i = 0, dimension = matrixDimension.rowAsIntValue(); i < dimension; i++) {
-                unitBuilder.setValue(i, i, 1.0);
-            }
-            return unitBuilder;
-        }
-
-        /**
-         * 与えられたインスタンスの成分で初期化されたビルダを作成する.
+         * 与えられたインスタンスの成分で初期化されたビルダを作成する. <br>
+         * 成分に不正な値がある場合, 正常値に修正される.
          *
          * @param src 元行列
          * @return 元行列と等価なビルダ
@@ -492,13 +486,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             //配列の方向が列方向であるため(速さは不明である)
             for (int j = 0; j < srcRowDimension; j++) {
                 for (int k = 0; k < srcColumnDimension; k++) {
-                    double value = src.valueAt(j, k);
-                    if (!EntryReadableMatrix.acceptValue(value)) {
-                        throw new AssertionError(
-                                String.format(
-                                        "EntryReadableMatrixが適切に実装されていない: entryValue=%s", value));
-                    }
-                    outBuilder.setValue(j, k, value);
+                    outBuilder.setValue(j, k, src.valueAt(j, k));
                 }
             }
             return outBuilder;

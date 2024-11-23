@@ -16,18 +16,18 @@ import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
+import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
+import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 対称帯行列を扱う.
- * </p>
  * 
  * <p>
  * このクラスのインスタンスはビルダを用いて生成する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<SymmetricBandMatrix>
         implements BandMatrix, Symmetric {
@@ -224,26 +224,22 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
          * 初期値は零行列.
          *
          * @param bandMatrixDimension 帯行列構造
-         * @throws MatrixFormatMismatchException 帯行列構造が対称でない場合
-         * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(dim * b > IntMax)
+         * @throws IllegalArgumentException (サブクラス)受け入れ拒否の場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final BandMatrixDimension bandMatrixDimension) {
-            if (!bandMatrixDimension.isSymmetric()) {
-                throw new MatrixFormatMismatchException(
-                        String.format(
-                                "対称でない帯構造:%s", bandMatrixDimension));
+            MatrixStructureAcceptance acceptance = accepts(bandMatrixDimension);
+            if (acceptance.isReject()) {
+                throw acceptance.getException(bandMatrixDimension);
             }
+
             this.bandMatrixDimension = bandMatrixDimension;
             final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
             final int bandWidth = bandMatrixDimension.lowerBandWidth();
 
-            final long long_entrySize = (long) dimension * bandWidth;
-            if (long_entrySize > Integer.MAX_VALUE) {
-                throw new ElementsTooManyException("サイズが大きすぎる");
-            }
+            final int entrySize = dimension * bandWidth;
             diagonalEntry = new double[dimension];
-            bandEntry = new double[(int) long_entrySize];
+            bandEntry = new double[entrySize];
         }
 
         /**
@@ -328,6 +324,31 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
         }
 
         /**
+         * 与えた帯行列構造がビルダ生成 ({@link #zero(BandMatrixDimension)},
+         * {@link #unit(BandMatrixDimension)} メソッドのコール)
+         * に受け入れられるかを判定する.
+         * 
+         * @param bandMatrixDimension 帯行列構造
+         * @return ビルダ生成が受け入れられるならACCEPT
+         * @throws NullPointerException 引数がnullの場合
+         */
+        public static MatrixStructureAcceptance accepts(BandMatrixDimension bandMatrixDimension) {
+            if (!bandMatrixDimension.isSymmetric()) {
+                return MatrixRejectionConstant.REJECTED_BY_NOT_SYMMETRIC.get();
+            }
+
+            final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
+            final int bandWidth = bandMatrixDimension.lowerBandWidth();
+
+            final long long_entrySize = (long) dimension * bandWidth;
+            if (long_entrySize > Integer.MAX_VALUE) {
+                return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
+            }
+
+            return MatrixStructureAcceptance.ACCEPTED;
+        }
+
+        /**
          * 与えられた帯構造を持つ, 零行列で初期化された対称帯行列ビルダを生成する.
          *
          * @param bandMatrixDimension 帯行列構造
@@ -384,13 +405,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
 
             //対角成分
             for (int i = 0; i < srcDimension; i++) {
-                double value = src.valueAt(i, i);
-                if (!EntryReadableMatrix.acceptValue(value)) {
-                    throw new AssertionError(
-                            String.format(
-                                    "BandMatrixが適切に実装されていない: entryValue=%s", value));
-                }
-                outBuilder.setValue(i, i, value);
+                outBuilder.setValue(i, i, src.valueAt(i, i));
             }
 
             //下三角成分
@@ -399,13 +414,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
                     int r = j + i + 1;
                     int c = i;
 
-                    double value = src.valueAt(r, c);
-                    if (!EntryReadableMatrix.acceptValue(value)) {
-                        throw new AssertionError(
-                                String.format(
-                                        "BandMatrixが適切に実装されていない: entryValue=%s", value));
-                    }
-                    outBuilder.setValue(r, c, value);
+                    outBuilder.setValue(r, c, src.valueAt(r, c));
                 }
             }
 

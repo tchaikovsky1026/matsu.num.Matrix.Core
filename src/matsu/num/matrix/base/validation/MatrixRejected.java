@@ -5,25 +5,22 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.23
  */
 package matsu.num.matrix.base.validation;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
-
-import matsu.num.matrix.base.Matrix;
 
 /**
  * 拒絶を表す {@link MatrixStructureAcceptance} を扱う.
  * 
  * @author Matsuura Y.
- * @version 21.0
+ * @version 23.0
  */
 public final class MatrixRejected extends MatrixStructureAcceptance {
 
-    private final Function<Matrix, IllegalArgumentException> exceptionGetter;
+    private final Function<Object, IllegalArgumentException> exceptionGetter;
     private final String explanation;
 
     /**
@@ -33,7 +30,7 @@ public final class MatrixRejected extends MatrixStructureAcceptance {
      * @throws IllegalArgumentException 説明がブランクの場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    private MatrixRejected(Function<Matrix, IllegalArgumentException> exceptionGetter, String explanation) {
+    private MatrixRejected(Function<Object, IllegalArgumentException> exceptionGetter, String explanation) {
         this.exceptionGetter = Objects.requireNonNull(exceptionGetter);
         if (explanation.isBlank()) {
             throw new IllegalArgumentException("説明がブランク");
@@ -45,20 +42,18 @@ public final class MatrixRejected extends MatrixStructureAcceptance {
      * rejectを返す.
      */
     @Override
-    public Type type() {
+    Type type() {
         return Type.REJECTED;
     }
 
     /**
      * このインスタンスの拒絶理由に適した例外インスタンスを取得する.
-     * 空でない.
      * 
-     * @return スローすべき例外, 空でない
-     * @throws NullPointerException {@inheritDoc}
+     * @return スローすべき例外
      */
     @Override
-    public Optional<IllegalArgumentException> getException(Matrix matrix) {
-        return Optional.of(this.exceptionGetter.apply(Objects.requireNonNull(matrix)));
+    public IllegalArgumentException getException(Object cause) {
+        return this.exceptionGetter.apply(cause);
     }
 
     /**
@@ -80,7 +75,8 @@ public final class MatrixRejected extends MatrixStructureAcceptance {
      * @throws IllegalArgumentException 説明がブランクの場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public static MatrixRejected by(Function<Matrix, IllegalArgumentException> exceptionGetter, String explanation) {
+    public static MatrixRejected by(
+            Function<Object, IllegalArgumentException> exceptionGetter, String explanation) {
         return new MatrixRejected(exceptionGetter, explanation);
     }
 
