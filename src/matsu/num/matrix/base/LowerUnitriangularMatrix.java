@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.common.ArraysUtil;
+import matsu.num.matrix.base.common.CalcUtil;
 import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
@@ -94,7 +95,7 @@ public final class LowerUnitriangularMatrix
         if (row == column) {
             return 1;
         } else if (column < row) {
-            return lowerEntry[column + (row * (row - 1)) / 2];
+            return lowerEntry[column + CalcUtil.sumOf1To(row - 1)];
         } else {
             return 0;
         }
@@ -137,7 +138,7 @@ public final class LowerUnitriangularMatrix
         //対角成分
         System.arraycopy(operandEntry, 0, resultEntry, 0, dimension);
         //狭義下三角成分
-        int in = (dimension * (dimension - 1)) / 2;
+        int in = CalcUtil.sumOf1To(dimension - 1);
         for (int i = dimension - 1; i >= 0; i--) {
             in -= i;
             int j;
@@ -297,7 +298,7 @@ public final class LowerUnitriangularMatrix
                 final double[] thisLowerEntry = lowerEntry;
 
                 System.arraycopy(operand.entry(), 0, resultEntry, 0, dimension);
-                int in = (dimension * (dimension - 1)) / 2;
+                int in = CalcUtil.sumOf1To(dimension - 1);
                 for (int i = dimension - 1; i >= 0; i--) {
                     in -= i;
                     final double re_i = resultEntry[i];
@@ -345,7 +346,7 @@ public final class LowerUnitriangularMatrix
             this.matrixDimension = matrixDimension;
 
             final int dimension = matrixDimension.rowAsIntValue();
-            final int entrySize = dimension * (dimension - 1) / 2;
+            final int entrySize = CalcUtil.sumOf1To(dimension - 1);
 
             this.lowerEntry = new double[entrySize];
         }
@@ -382,7 +383,7 @@ public final class LowerUnitriangularMatrix
             value = EntryReadableMatrix.modified(value);
 
             if (column < row) {
-                lowerEntry[column + (row * (row - 1)) / 2] = value;
+                lowerEntry[column + CalcUtil.sumOf1To(row - 1)] = value;
             } else {
                 throw new IndexOutOfBoundsException(
                         String.format(

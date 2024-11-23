@@ -12,6 +12,7 @@ package matsu.num.matrix.base;
 import java.util.Objects;
 
 import matsu.num.matrix.base.common.ArraysUtil;
+import matsu.num.matrix.base.common.CalcUtil;
 import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
@@ -70,7 +71,9 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                             "行列外:matrix:%s, (row, column)=(%s, %s)",
                             matrixDimension, row, column));
         }
-        return entry[row >= column ? column + (row * (row + 1)) / 2 : row + (column * (column + 1)) / 2];
+        return entry[row >= column
+                ? column + CalcUtil.sumOf1To(row)
+                : row + CalcUtil.sumOf1To(column)];
     }
 
     /**
@@ -195,7 +198,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             this.matrixDimension = matrixDimension;
 
             final int dimension = matrixDimension.rowAsIntValue();
-            final int entrySize = dimension * (dimension + 1) / 2;
+            final int entrySize = CalcUtil.sumOf1To(dimension);
             this.entry = new double[entrySize];
         }
 
@@ -241,7 +244,9 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             //値の修正
             value = EntryReadableMatrix.modified(value);
 
-            entry[row >= column ? column + (row * (row + 1)) / 2 : row + (column * (column + 1)) / 2] = value;
+            entry[row >= column
+                    ? column + CalcUtil.sumOf1To(row)
+                    : row + CalcUtil.sumOf1To(column)] = value;
         }
 
         /**
@@ -273,8 +278,8 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             final int indMin = Math.min(index1, index2);
             final int indMax = Math.max(index1, index2);
             //4隅以外
-            final int indMinN = (indMin * (indMin + 1)) / 2;
-            final int indMaxN = (indMax * (indMax + 1)) / 2;
+            final int indMinN = CalcUtil.sumOf1To(indMin);
+            final int indMaxN = CalcUtil.sumOf1To(indMax);
             int j = 0;
             for (; j < indMin; j++) {
                 final double temp;
