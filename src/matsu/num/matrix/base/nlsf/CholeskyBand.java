@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -13,24 +13,23 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.BandMatrix;
+import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 対称帯行列のCholesky分解を表す. <br>
  * これは, 正定値対称帯行列 A の A = LD<sup>1/2</sup>D<sup>1/2</sup>L<sup>T</sup>
  * の形での分解である. <br>
  * ただし,
  * D<sup>1/2</sup>: 正定値対角行列, L: 単位 (対角成分が1の) 下三角帯行列. <br>
  * A = BB<sup>T</sup> の分解として見ると, B = LD<sup>1/2</sup> である.
- * </p>
  * 
  * <p>
  * 行列が正定値であることが, 分解できることの必要十分条件である.
@@ -41,7 +40,7 @@ import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class CholeskyBand
         extends SkeletalSymmetrizedSquareTypeSolver<BandMatrix, Matrix, Matrix> {
@@ -112,9 +111,7 @@ public final class CholeskyBand
     }
 
     /**
-     * <p>
      * 対称帯行列のCholesky分解のエグゼキュータ.
-     * </p>
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
@@ -143,10 +140,9 @@ public final class CholeskyBand
      * <hr>
      * 
      * <p>
-     * 有効要素数が大きすぎるとは, <br>
-     * 行列の行数 (= 列数) を <i>n</i>, 片側帯幅を <i>b</i> として, <br>
-     * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE} <br>
-     * である状態である.
+     * 有効要素数が大きすぎるかどうかは,
+     * {@link BandMatrixDimension#isAccepedForBandMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Executor
@@ -181,7 +177,7 @@ public final class CholeskyBand
                 return MatrixRejectionConstant.REJECTED_BY_NOT_SYMMETRIC.get();
             }
 
-            return CholeskyBandFactorizationHelper.acceptedSize(matrix)
+            return matrix.bandMatrixDimension().isAccepedForBandMatrix()
                     ? MatrixStructureAcceptance.ACCEPTED
                     : MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
         }

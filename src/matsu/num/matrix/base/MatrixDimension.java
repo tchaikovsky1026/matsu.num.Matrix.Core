@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.11.23
  */
 package matsu.num.matrix.base;
 
@@ -19,7 +19,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 23.0
  */
 public final class MatrixDimension {
 
@@ -42,6 +42,7 @@ public final class MatrixDimension {
 
     //評価結果を使いまわすためのフィールド
     private final int hashCode;
+    private final boolean accepedForDenseMatrix;
 
     //循環参照が生じるため, 遅延初期化を行う
     //軽量オブジェクトのためロックを行わず,複数回の初期化を許す
@@ -55,6 +56,7 @@ public final class MatrixDimension {
         this.columnVectorDimension = Objects.requireNonNull(columnDimension);
         this.shape = MatrixShape.shape(rowDimension, columnDimension);
         this.hashCode = this.calcHashCode();
+        this.accepedForDenseMatrix = this.calcAccepedForDenseMatrix();
     }
 
     /**
@@ -118,6 +120,31 @@ public final class MatrixDimension {
      */
     public boolean isVertical() {
         return this.shape == MatrixShape.VERTICAL;
+    }
+
+    /**
+     * 行列サイズが密行列の要素数として受け入れられるかを判定する.
+     * 
+     * <p>
+     * 密行列の要素数は, <br>
+     * {@code rows * columns <= Integer.MAX_VALUE} <br>
+     * を有効とする.
+     * </p>
+     * 
+     * @return 受け入れられるなら {@code true}
+     */
+    public boolean isAccepedForDenseMatrix() {
+        return this.accepedForDenseMatrix;
+    }
+
+    /**
+     * 行列サイズが密行列の要素数として受け入れられるかを計算する.
+     * 
+     * @see #isAccepedForDenseMatrix()
+     */
+    private boolean calcAccepedForDenseMatrix() {
+        final long entrySize = (long) this.rowAsIntValue() * this.columnAsIntValue();
+        return entrySize <= Integer.MAX_VALUE;
     }
 
     /**

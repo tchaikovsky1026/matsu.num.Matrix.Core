@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -16,21 +16,20 @@ import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.Matrix;
+import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 正方行列の部分ピボッティング付きLU分解を表す. <br>
  * これは, 正方行列 A の A = PLDU の形での分解である. <br>
  * ただし, P: 置換行列, L: 単位 (対角成分が1の) 下三角行列, D: 対角行列, U: 単位上三角行列.
- * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, Matrix> {
 
@@ -115,9 +114,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
     }
 
     /**
-     * <p>
      * 正方行列の部分ピボッティング付きLU分解のエグゼキュータ.
-     * </p>
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
@@ -141,10 +138,9 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      * <hr>
      * 
      * <p>
-     * 有効要素数が大きすぎるとは,
-     * 行列の行数 (= 列数) を <i>n</i> として,
-     * <i>n</i> * <i>n</i> &gt; {@link Integer#MAX_VALUE}
-     * である状態である.
+     * 有効要素数が大きすぎるかどうかは,
+     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Executor
@@ -175,7 +171,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
          */
         @Override
         final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
-            return LUPivotingFactorizationHelper.acceptedSize(matrix)
+            return matrix.matrixDimension().isAccepedForDenseMatrix()
                     ? MatrixStructureAcceptance.ACCEPTED
                     : MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
         }

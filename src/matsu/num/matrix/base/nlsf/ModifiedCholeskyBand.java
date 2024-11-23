@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -13,22 +13,21 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.BandMatrix;
+import matsu.num.matrix.base.BandMatrixDimension;
 import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 対称帯行列の修正Cholesky分解を表す. <br>
  * これは, 対称帯行列 A を A = LDL<sup>T</sup> の形での分解である. <br>
  * ただし, D: 対角行列, L:
  * 単位 (対角成分が1の) 下三角帯行列.
- * </p>
  * 
  * <p>
  * この分解は行列が正則であったとしても, 分解できない場合がある. <br>
@@ -40,7 +39,7 @@ import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
 
@@ -120,9 +119,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
     }
 
     /**
-     * <p>
      * 対称帯行列の修正Cholesky分解のエグゼキュータ.
-     * </p>
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
@@ -152,10 +149,9 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
      * <hr>
      * 
      * <p>
-     * 有効要素数が大きすぎるとは,
-     * 行列の行数 (= 列数) を <i>n</i>, 片側帯幅を <i>b</i> として,
-     * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE}
-     * である状態である.
+     * 有効要素数が大きすぎるかどうかは,
+     * {@link BandMatrixDimension#isAccepedForBandMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Executor
@@ -190,7 +186,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
                 return MatrixRejectionConstant.REJECTED_BY_NOT_SYMMETRIC.get();
             }
 
-            return ModifiedCholeskyBandFactorizationHelper.acceptedSize(matrix)
+            return matrix.bandMatrixDimension().isAccepedForBandMatrix()
                     ? MatrixStructureAcceptance.ACCEPTED
                     : MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
         }

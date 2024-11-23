@@ -13,10 +13,10 @@ import java.util.Objects;
 
 import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * 非対称な帯行列を扱う.
@@ -276,10 +276,8 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
      *
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * 有効要素数が大きすぎるとは, <br>
-     * 行列の行数(= 列数)を <i>n</i>, 上側帯幅と下側帯幅の大きい方を <i>b</i> として, <br>
-     * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE} <br>
-     * である状態である.
+     * {@link BandMatrixDimension#isAccepedForBandMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Builder {
@@ -405,12 +403,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
          * @throws NullPointerException 引数がnullの場合
          */
         public static MatrixStructureAcceptance accepts(BandMatrixDimension bandMatrixDimension) {
-            final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
-            final int lowerBandWidth = bandMatrixDimension.lowerBandWidth();
-            final int upperBandWidth = bandMatrixDimension.upperBandWidth();
-
-            final long long_entrySize = (long) dimension * Math.max(lowerBandWidth, upperBandWidth);
-            if (long_entrySize > Integer.MAX_VALUE) {
+            if (!bandMatrixDimension.isAccepedForBandMatrix()) {
                 return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
             }
 

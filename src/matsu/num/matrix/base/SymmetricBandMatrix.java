@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.23
  */
 package matsu.num.matrix.base;
 
@@ -13,11 +13,11 @@ import java.util.Objects;
 
 import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * 対称帯行列を扱う.
@@ -198,17 +198,13 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
     }
 
     /**
-     * <p>
      * 対称帯行列を生成するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
-     * </p>
      * 
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * 有効要素数が大きすぎるとは, <br>
-     * 行列の行数(= 列数)を <i>n</i>, 片側帯幅を <i>b</i> として, <br>
-     * <i>n</i> * <i>b</i> &gt; {@link Integer#MAX_VALUE} <br>
-     * である状態である.
+     * {@link BandMatrixDimension#isAccepedForBandMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Builder {
@@ -337,11 +333,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
                 return MatrixRejectionConstant.REJECTED_BY_NOT_SYMMETRIC.get();
             }
 
-            final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
-            final int bandWidth = bandMatrixDimension.lowerBandWidth();
-
-            final long long_entrySize = (long) dimension * bandWidth;
-            if (long_entrySize > Integer.MAX_VALUE) {
+            if (!bandMatrixDimension.isAccepedForBandMatrix()) {
                 return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
             }
 

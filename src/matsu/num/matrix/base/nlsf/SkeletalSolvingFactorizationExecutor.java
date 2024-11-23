@@ -17,8 +17,8 @@ import java.util.Optional;
 
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.PseudoRegularMatrixProcess;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * {@link SolvingFactorizationExecutor} の骨格実装.

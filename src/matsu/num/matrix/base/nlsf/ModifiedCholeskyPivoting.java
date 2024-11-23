@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -15,27 +15,26 @@ import java.util.Optional;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.Matrix;
+import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
 import matsu.num.matrix.base.Symmetric;
 import matsu.num.matrix.base.helper.value.DeterminantValues;
 import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 対称行列の部分ピボッティング付き修正Cholesky分解を表す. <br>
  * これは, 対称行列 A を A = PLML<sup>T</sup>P<sup>T</sup> の形での分解である. <br>
  * ただし, P: 置換行列, L: 単位 (対角成分が1の) 下三角行列,
  * M: 1*1 あるいは 2*2の対称ブロック要素を持つブロック対角行列.
- * </p>
  * 
  * <p>
  * この行列分解が提供する逆行列には {@link Symmetric} が付与されている.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.0
  */
 public final class ModifiedCholeskyPivoting
         extends SkeletalLUTypeSolver<EntryReadableMatrix, Matrix> {
@@ -120,9 +119,7 @@ public final class ModifiedCholeskyPivoting
     }
 
     /**
-     * <p>
      * 対称行列の部分ピボッティング付き修正Cholesky分解を提供する.
-     * </p>
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
@@ -148,10 +145,9 @@ public final class ModifiedCholeskyPivoting
      * <hr>
      * 
      * <p>
-     * 有効要素数が大きすぎるとは,
-     * 行列の行数 (= 列数) を <i>n</i> として,
-     * <i>n</i> * (<i>n</i> + 1) &gt; {@link Integer#MAX_VALUE}
-     * である状態である.
+     * 有効要素数が大きすぎるかどうかは,
+     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * に従う.
      * </p>
      * 
      */
@@ -189,7 +185,7 @@ public final class ModifiedCholeskyPivoting
                 return MatrixRejectionConstant.REJECTED_BY_NOT_SYMMETRIC.get();
             }
 
-            return ModifiedCholeskyPivotingFactorizationHelper.acceptedSize(matrix)
+            return matrix.matrixDimension().isAccepedForDenseMatrix()
                     ? MatrixStructureAcceptance.ACCEPTED
                     : MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
         }

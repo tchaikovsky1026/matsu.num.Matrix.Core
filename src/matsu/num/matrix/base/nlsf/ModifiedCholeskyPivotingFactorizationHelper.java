@@ -5,22 +5,19 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.7
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.LowerUnitriangularMatrix;
-import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
 
 /**
- * <p>
  * 対称な部分ピボッティング付き修正Cholesky分解のヘルパ. <br>
  * A = PLML<sup>T</sup>P<sup>T</sup>.
- * </p>
  * 
  * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
@@ -28,7 +25,7 @@ import matsu.num.matrix.base.PermutationMatrix;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.2
+ * @version 23.0
  */
 final class ModifiedCholeskyPivotingFactorizationHelper {
 
@@ -60,13 +57,6 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
         this.pivot22 = new boolean[this.matrixDimension.rowAsIntValue() - 1];
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
-    }
-
-    static boolean acceptedSize(Matrix matrix) {
-        final int dimension = matrix.matrixDimension().rowAsIntValue();
-        final long entrySize = ((long) dimension * dimension + dimension) / 2L;
-
-        return entrySize <= Integer.MAX_VALUE / 2;
     }
 
     Block2OrderSymmetricDiagonalMatrix getMxM() {

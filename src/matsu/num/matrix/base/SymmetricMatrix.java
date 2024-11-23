@@ -12,11 +12,11 @@ package matsu.num.matrix.base;
 import java.util.Objects;
 
 import matsu.num.matrix.base.common.ArraysUtil;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * 対称 (密) 行列を扱う.
@@ -164,17 +164,13 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
     }
 
     /**
-     * <p>
      * 対称 (密) 行列を生成するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
-     * </p>
      * 
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * 有効要素数が大きすぎるとは, <br>
-     * 行列の行数(= 列数)を<i>n</i>として, <br>
-     * <i>n</i> * (<i>n</i> + 1) &gt; {@link Integer#MAX_VALUE} <br>
-     * である状態である.
+     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Builder {
@@ -333,11 +329,10 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                 return MatrixRejectionConstant.REJECTED_BY_NOT_SQUARE.get();
             }
 
-            final long long_dimension = matrixDimension.rowAsIntValue();
-            final long long_EntrySize = long_dimension * (long_dimension + 1L) / 2L;
-            if (long_EntrySize > Integer.MAX_VALUE / 2) {
+            if (!matrixDimension.isAccepedForDenseMatrix()) {
                 return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
             }
+
             return MatrixStructureAcceptance.ACCEPTED;
         }
 

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.7
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -17,10 +17,8 @@ import matsu.num.matrix.base.LowerUnitriangularBandMatrix;
 import matsu.num.matrix.base.MatrixDimension;
 
 /**
- * <p>
  * 帯行列の修正Cholesky分解のヘルパ. <br>
  * A = LDL<sup>T</sup>.
- * </p>
  * 
  * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
@@ -28,7 +26,7 @@ import matsu.num.matrix.base.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.2
+ * @version 23.0
  */
 final class ModifiedCholeskyBandFactorizationHelper {
 
@@ -57,15 +55,6 @@ final class ModifiedCholeskyBandFactorizationHelper {
         this.mxLowerEntry = lowerOfMatrixToArray(matrix);
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
-    }
-
-    static boolean acceptedSize(BandMatrix matrix) {
-        BandMatrixDimension bandMatrixDimension = matrix.bandMatrixDimension();
-        final int thisDimension = bandMatrixDimension.dimension().rowAsIntValue();
-        final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
-        final long long_entrySize = (long) thisDimension * thisLowerBandWidth;
-
-        return long_entrySize <= Integer.MAX_VALUE;
     }
 
     DiagonalMatrix getMxD() {

@@ -13,15 +13,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.base.common.ArraysUtil;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
- * <p>
  * 単位下三角の密行列を扱う.
- * </p>
  * 
  * <p>
  * このクラスのインスタンスはビルダを用いて生成する.
@@ -316,17 +314,13 @@ public final class LowerUnitriangularMatrix
     }
 
     /**
-     * <p>
      * 単位下三角の密行列を作成するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
-     * </p>
      * 
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * 有効要素数が大きすぎるとは, <br>
-     * 行列の行数(= 列数)を <i>n</i> として, <br>
-     * <i>n</i> * (<i>n</i> - 1) &gt; {@link Integer#MAX_VALUE} <br>
-     * である状態である.
+     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Builder {
@@ -426,11 +420,10 @@ public final class LowerUnitriangularMatrix
                 return MatrixRejectionConstant.REJECTED_BY_NOT_SQUARE.get();
             }
 
-            final int dimension = matrixDimension.rowAsIntValue();
-            final long long_entrySize = (long) dimension * (long) (dimension - 1) / 2;
-            if (long_entrySize > Integer.MAX_VALUE / 2) {
+            if (!matrixDimension.isAccepedForDenseMatrix()) {
                 return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
             }
+
             return MatrixStructureAcceptance.ACCEPTED;
         }
 

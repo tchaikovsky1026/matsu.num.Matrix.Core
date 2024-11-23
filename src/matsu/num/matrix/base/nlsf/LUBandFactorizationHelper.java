@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.7
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -17,10 +17,8 @@ import matsu.num.matrix.base.LowerUnitriangularBandMatrix;
 import matsu.num.matrix.base.MatrixDimension;
 
 /**
- * <p>
  * 帯行列LU分解のヘルパ. <br>
  * A = LDU.
- * </p>
  * 
  * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
@@ -28,7 +26,7 @@ import matsu.num.matrix.base.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.2
+ * @version 23.0
  */
 final class LUBandFactorizationHelper {
 
@@ -58,16 +56,6 @@ final class LUBandFactorizationHelper {
         this.mxUpperEntry = upperOfMatrixToArray(matrix);
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
-    }
-
-    static boolean acceptedSize(BandMatrix matrix) {
-        BandMatrixDimension bandMatrixDimension = matrix.bandMatrixDimension();
-        final int dimension = bandMatrixDimension.dimension().rowAsIntValue();
-        final int lowerBandWidth = bandMatrixDimension.lowerBandWidth();
-        final int upperBandWidth = bandMatrixDimension.lowerBandWidth();
-        final long larger_entrySize = (long) dimension * Math.max(lowerBandWidth, upperBandWidth);
-
-        return larger_entrySize <= Integer.MAX_VALUE;
     }
 
     DiagonalMatrix getMxD() {

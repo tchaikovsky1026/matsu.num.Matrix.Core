@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.2
+ * 2024.11.23
  */
 package matsu.num.matrix.base;
 
@@ -21,7 +21,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.0
+ * @version 23.0
  */
 public final class BandMatrixDimension {
 
@@ -32,6 +32,7 @@ public final class BandMatrixDimension {
 
     //評価結果を使いまわすためのフィールド
     private final int hashCode;
+    private final boolean accepedForBandMatrix;
 
     //循環参照が生じるため, 遅延初期化される
     //軽量オブジェクトのためロックを行わず,複数回の初期化を許す
@@ -74,6 +75,7 @@ public final class BandMatrixDimension {
         this.triangular = Triangular.triangular(lowerBandWidth, upperBandWidth);
 
         this.hashCode = this.calcHashCode();
+        this.accepedForBandMatrix = this.calcAccepedForBandMatrix();
     }
 
     /**
@@ -137,6 +139,33 @@ public final class BandMatrixDimension {
      */
     public boolean isDiagonal() {
         return triangular == Triangular.DIAGONAL;
+    }
+
+    /**
+     * 帯行列構造が帯行列の要素数として受け入れられるかを判定する.
+     * 
+     * <p>
+     * 帯行列の要素数は, <br>
+     * {@code dimension * (lowerBandWidth + upperBandWidth + 1) <= Integer.MAX_VALUE}
+     * <br>
+     * を有効とする.
+     * </p>
+     * 
+     * @return 受け入れられるなら {@code true}
+     */
+    public boolean isAccepedForBandMatrix() {
+        return this.accepedForBandMatrix;
+    }
+
+    /**
+     * 帯行列構造が要素数として受け入れられるかを計算する.
+     * 
+     * @see #isAccepedForBandMatrix()
+     */
+    private boolean calcAccepedForBandMatrix() {
+        final int dimension = this.dimension().rowAsIntValue();
+        final long entrySize = dimension * ((long) lowerBandWidth + upperBandWidth + 1);
+        return entrySize <= Integer.MAX_VALUE;
     }
 
     /**

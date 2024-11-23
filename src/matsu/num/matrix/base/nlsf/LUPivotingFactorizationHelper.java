@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.7
+ * 2024.11.23
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -13,15 +13,12 @@ import matsu.num.matrix.base.DiagonalMatrix;
 import matsu.num.matrix.base.EntryReadableMatrix;
 import matsu.num.matrix.base.LowerUnitriangular;
 import matsu.num.matrix.base.LowerUnitriangularMatrix;
-import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.PermutationMatrix;
 
 /**
- * <p>
  * ピボッティング付きLU分解のヘルパ. <br>
  * A = PLDU.
- * </p>
  * 
  * <p>
  * 数値安定性を得るため, 与えられた行列Aを最初に定数倍してから分解する. <br>
@@ -29,7 +26,7 @@ import matsu.num.matrix.base.PermutationMatrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.2
+ * @version 23.0
  */
 final class LUPivotingFactorizationHelper {
 
@@ -57,12 +54,6 @@ final class LUPivotingFactorizationHelper {
         this.mxEntry = matrixToArray(matrix);
         this.factorize(relativeEpsilon);
         this.convertToEachMatrix();
-    }
-
-    static boolean acceptedSize(Matrix matrix) {
-        final int dimension = matrix.matrixDimension().rowAsIntValue();
-        final long long_entrySize = (long) dimension * dimension;
-        return long_entrySize <= Integer.MAX_VALUE;
     }
 
     DiagonalMatrix getMxD() {

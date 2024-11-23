@@ -7,7 +7,7 @@
 /*
  * 2024.11.23
  */
-package matsu.num.matrix.base.validation.constant;
+package matsu.num.matrix.base.helper.value;
 
 import java.util.function.Function;
 

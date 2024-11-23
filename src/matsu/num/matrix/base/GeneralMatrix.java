@@ -13,10 +13,10 @@ import java.util.Objects;
 import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.base.common.ArraysUtil;
+import matsu.num.matrix.base.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.base.validation.ElementsTooManyException;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
-import matsu.num.matrix.base.validation.constant.MatrixRejectionConstant;
 
 /**
  * 矩形 (長方形) の (密) 行列を扱う.
@@ -195,10 +195,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
      * 
      * <p>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * 有効要素数が大きすぎるとは, <br>
-     * 行列の行数を <i>r</i>, 列数を <i>c</i> として, <br>
-     * <i>r</i> * <i>c</i> &gt; {@link Integer#MAX_VALUE} <br>
-     * である状態である.
+     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * に従う.
      * </p>
      */
     public static final class Builder {
@@ -211,7 +209,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * 初期値は零行列.
          *
          * @param matrixDimension 行列サイズ
-         * @throws IllegalArgumentException (サブクラス)受け入れ拒否の場合
+         * @throws ElementsTooManyException 行列の有効要素数が大きすぎる場合(クラス説明文)
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(MatrixDimension matrixDimension) {
@@ -224,6 +222,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             if (acceptance.isReject()) {
                 throw acceptance.getException(matrixDimension);
             }
+
             this.entry = new double[thisRowDimension * thisColumnDimension];
         }
 
@@ -403,13 +402,10 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @throws NullPointerException 引数がnullの場合
          */
         public static MatrixStructureAcceptance accepts(MatrixDimension matrixDimension) {
-            final int thisRowDimension = matrixDimension.rowAsIntValue();
-            final int thisColumnDimension = matrixDimension.columnAsIntValue();
-
-            final long long_entrySize = (long) thisRowDimension * (long) thisColumnDimension;
-            if (long_entrySize > Integer.MAX_VALUE) {
+            if (!matrixDimension.isAccepedForDenseMatrix()) {
                 return MatrixRejectionConstant.REJECTED_BY_TOO_MANY_ELEMENTS.get();
             }
+
             return MatrixStructureAcceptance.ACCEPTED;
         }
 
