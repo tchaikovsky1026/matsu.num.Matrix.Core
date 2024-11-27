@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.27
  */
 package matsu.num.matrix.base;
 
@@ -15,11 +15,9 @@ import java.util.function.Supplier;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * <p>
  * 非対称な {@link OrthogonalMatrix} の骨格実装. <br>
  * {@link OrthogonalMatrix#transpose()}, {@link OrthogonalMatrix#inverse()}
  * の実装の提供が主な効果である.
- * </p>
  * 
  * <p>
  * <i> <u>
@@ -38,8 +36,9 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
- * @param <TT> 転置行列のタイプ, transposeの戻り値型を具象クラスにゆだねる.
+ * @version 23.1
+ * @param <TT> 転置行列のタイプ, {@code transpose()}, {@code inverse()}
+ *            の戻り値型を具象クラスにゆだねる.
  */
 public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMatrix>
         implements OrthogonalMatrix {
@@ -49,6 +48,14 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
 
     /**
      * 骨格実装を生成する唯一のコンストラクタ.
+     * 
+     * <p>
+     * このクラスの規約を検証するため,
+     * このコンストラクタで {@link Symmetric} のサブタイプでないかどうかを検証している. <br>
+     * 自身が {@link Symmetric} のサブタイプである場合, エラーをスローする.
+     * </p>
+     * 
+     * @throws AssertionError 自身が {@link Symmetric} のサブタイプである場合
      */
     protected SkeletalAsymmetricOrthogonalMatrix() {
         super();

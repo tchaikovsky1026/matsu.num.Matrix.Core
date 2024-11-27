@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.27
  */
 package matsu.num.matrix.base;
 
@@ -16,11 +16,11 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 単位行列を扱う.
  *
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.1
  */
 public final class UnitMatrix
         extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>
-        implements PermutationMatrix, DiagonalMatrix, LowerUnitriangular {
+        implements SignatureMatrix, PermutationMatrix, LowerUnitriangular {
 
     private final BandMatrixDimension bandMatrixDimension;
 
@@ -114,6 +114,16 @@ public final class UnitMatrix
         return 1;
     }
 
+    /**
+     * {@code true} を返す.
+     * 
+     * <p>
+     * 単位行列は恒等置換であり, 偶置換である. <br>
+     * 対角成分はすべて1なので, Signature matrixとしては-1が偶数個である.
+     * </p>
+     * 
+     * @return {@code true}
+     */
     @Override
     public boolean isEven() {
         return true;

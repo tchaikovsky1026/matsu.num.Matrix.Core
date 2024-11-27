@@ -10,13 +10,13 @@
 package matsu.num.matrix.base;
 
 /**
- * {@link PermutationMatrix} の実装をこのモジュール内に制限するためのヘルパーインターフェース. <br>
- * {@link PermutationMatrix} の実装を不可視なクラスで実現するため,
+ * {@link SignatureMatrix} の実装をこのモジュール内に制限するためのヘルパーインターフェース. <br>
+ * {@link SignatureMatrix} の実装を不可視なクラスで実現するため,
  * パッケージプライベートなシールインターフェースを定義する.
  * 
  * @author Matsuura Y.
  * @version 23.1
  */
-non-sealed interface PermutationMatrixSealed extends PermutationMatrix {
+non-sealed interface SignatureMatrixSealed extends SignatureMatrix{
 
 }

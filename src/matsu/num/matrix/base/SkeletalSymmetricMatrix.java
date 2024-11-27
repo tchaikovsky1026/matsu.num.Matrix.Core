@@ -5,16 +5,14 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.27
  */
 package matsu.num.matrix.base;
 
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * <p>
  * {@link Symmetric} が付与された {@link Matrix} の骨格実装.
- * </p>
  * 
  * <p>
  * このクラスは, {@link #transpose()} の適切な実装を提供する. <br>
@@ -23,8 +21,9 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
- * @param <T> thisの具象型, 再帰的ジェネリクスによりtransposeの戻り値型を具象クラスにゆだねる.
+ * @version 23.1
+ * @param <T> {@code this} の具象型,
+ *            再帰的ジェネリクスにより {@code transpose()} の戻り値型を具象クラスに伝播させる.
  */
 public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<T>>
         implements Matrix, Symmetric {
@@ -72,15 +71,12 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
     }
 
     /**
-     * <p>
      * このインスタンスの文字列説明表現を返す.
-     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:(%dimension)]} <br>
-     * ただし, サブクラスがより良い表現を提供するかもしれない.
+     * {@code Matrix[dim:(%dimension)]}
      * </p>
      * 
      * @return 説明表現

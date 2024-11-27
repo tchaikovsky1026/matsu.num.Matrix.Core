@@ -5,9 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.27
  */
 package matsu.num.matrix.base;
+
+import java.util.Optional;
 
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
@@ -15,14 +17,14 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 正方零行列を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.1
  */
 public final class SquareZeroMatrix
         extends SkeletalSymmetricMatrix<SquareZeroMatrix>
-        implements ZeroMatrix, BandMatrix, Symmetric {
+        implements ZeroMatrix, DiagonalMatrix {
 
     private final BandMatrixDimension bandMatrixDimension;
-    private final Vector operatedVector;
+    private final Vector zeroVector;
 
     /**
      * 唯一のコンストラクタ. <br>
@@ -32,7 +34,7 @@ public final class SquareZeroMatrix
         assert matrixDimension.isSquare();
 
         this.bandMatrixDimension = BandMatrixDimension.symmetric(matrixDimension, 0);
-        this.operatedVector = Vector.Builder
+        this.zeroVector = Vector.Builder
                 .zeroBuilder(matrixDimension.rightOperableVectorDimension())
                 .build();
     }
@@ -89,7 +91,32 @@ public final class SquareZeroMatrix
                             "演算不可:matrix:%s, operand:%s",
                             this.bandMatrixDimension.dimension(), operand.vectorDimension()));
         }
-        return this.operatedVector;
+        return this.zeroVector;
+    }
+
+    @Override
+    public double determinant() {
+        return 0d;
+    }
+
+    @Override
+    public double logAbsDeterminant() {
+        return Double.NEGATIVE_INFINITY;
+    }
+
+    @Override
+    public int signOfDeterminant() {
+        return 0;
+    }
+
+    /**
+     * 零行列に逆行列は存在しないので, 必ず空が返る.
+     * 
+     * @return 空のオプショナル
+     */
+    @Override
+    public Optional<? extends DiagonalMatrix> inverse() {
+        return Optional.empty();
     }
 
     @Override
@@ -112,5 +139,4 @@ public final class SquareZeroMatrix
     protected SquareZeroMatrix self() {
         return this;
     }
-
 }

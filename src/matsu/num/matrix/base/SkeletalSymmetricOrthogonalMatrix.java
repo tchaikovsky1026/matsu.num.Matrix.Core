@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.11.27
  */
 package matsu.num.matrix.base;
 
@@ -15,10 +15,8 @@ import java.util.function.Supplier;
 import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * <p>
  * {@link Symmetric} が付与された
  * {@link OrthogonalMatrix} の骨格実装.
- * </p>
  * 
  * <p>
  * このクラスは, {@link #transpose()}, {@link #inverse()} の適切な実装を提供する. <br>
@@ -30,10 +28,11 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
- * @param <T> {@code this} のタイプ,
- *            {@link #transpose()},
- *            {@link #inverse()} の戻り値型
+ * @version 23.1
+ * @param <T> {@code this} の具象型,
+ *            再帰的ジェネリクスにより
+ *            {@code transpose()}, {@code inverse()}
+ *            の戻り値型を具象クラスに伝播させる.
  */
 public abstract class SkeletalSymmetricOrthogonalMatrix<
         T extends SkeletalSymmetricOrthogonalMatrix<T>>
@@ -58,6 +57,17 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<
         return this.opSelfSupplier.get();
     }
 
+    /**
+     * このオブジェクトの文字列説明表現を返す.
+     * 
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code Matrix[dim:(%dimension), orthogonal]}
+     * </p>
+     * 
+     * @return 説明表現
+     */
     @Override
     public String toString() {
         return String.format(
