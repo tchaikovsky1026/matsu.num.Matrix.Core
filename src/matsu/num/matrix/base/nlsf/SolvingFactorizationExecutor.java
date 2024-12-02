@@ -78,9 +78,9 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * @param <MT> 対応する行列の型パラメータ
  * @param <ST> 出力される行列分解の型パラメータ
  */
-@SuppressWarnings("rawtypes")
 public sealed interface SolvingFactorizationExecutor<
-        MT extends Matrix, ST extends LUTypeSolver> permits SkeletalSolvingFactorizationExecutor {
+        MT extends Matrix, ST extends LUTypeSolver>
+        permits SkeletalSolvingFactorizationExecutor {
 
     /**
      * このインスタンスが与えた行列を受け入れることができるかを判定する. <br>

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.12.2
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -52,11 +52,10 @@ import matsu.num.matrix.base.Symmetric;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 23.2
  */
-@SuppressWarnings("rawtypes")
-public sealed interface SymmetrizedSquareTypeSolver
-        extends LUTypeSolver permits SkeletalSymmetrizedSquareTypeSolver {
+public sealed interface SymmetrizedSquareTypeSolver extends LUTypeSolver
+        permits SkeletalSymmetrizedSquareTypeSolver {
 
     /**
      * {@inheritDoc}

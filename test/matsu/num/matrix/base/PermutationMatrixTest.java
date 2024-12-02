@@ -14,8 +14,6 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * {@link PermutationMatrix}クラスのテスト.
- *
- * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
 final class PermutationMatrixTest {
@@ -54,6 +52,7 @@ final class PermutationMatrixTest {
             PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
             builder.swapRows(0, 1);
             builder.swapRows(1, 2);
+
             pm = builder.build();
         }
 
@@ -109,6 +108,7 @@ final class PermutationMatrixTest {
             PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
             builder.swapColumns(2, 1);
             builder.swapColumns(1, 0);
+
             pm = builder.build();
         }
 
@@ -163,6 +163,7 @@ final class PermutationMatrixTest {
             PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
             builder.swapRows(0, 1);
             builder.swapRows(1, 2);
+
             original = builder.build();
         }
 

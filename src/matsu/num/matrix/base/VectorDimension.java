@@ -5,19 +5,17 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2024.12.1
  */
 package matsu.num.matrix.base;
 
 /**
- * <p>
- * ベクトルの次元を扱う不変クラス. <br>
+ * ベクトルの次元を扱うイミュータブルなクラス. <br>
  * 扱うのは1次元以上である. <br>
  * このクラスのインスタンスは, 次元の値に基づくequality, comparabilityを有する.
- * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
+ * @version 23.2
  */
 public final class VectorDimension implements Comparable<VectorDimension> {
 
@@ -38,6 +36,9 @@ public final class VectorDimension implements Comparable<VectorDimension> {
     //評価結果を使いまわすためのフィールド
     private final int hashCode;
 
+    /**
+     * @throws IllegalArgumentException dimensionが不正の場合
+     */
     private VectorDimension(int dimension) {
         if (dimension < MIN_DIMENSION) {
             throw new IllegalArgumentException(String.format("不正な次元:dimension=%d", dimension));
@@ -67,33 +68,26 @@ public final class VectorDimension implements Comparable<VectorDimension> {
 
     /**
      * 他オブジェクトとの等価性を判定する. <br>
-     * 等価性の基準はクラス説明のとおりである.
+     * equality はクラス説明の通り.
      * 
      * @param obj 比較対象
      * @return 自身とobjが等価の場合はtrue
      */
     @Override
     public boolean equals(Object obj) {
-        //同一性判定
         if (this == obj) {
             return true;
         }
-        //非整合の排除, 同時にnull排除
-        if (!(obj instanceof VectorDimension)) {
+        if (!(obj instanceof VectorDimension target)) {
             return false;
         }
 
-        VectorDimension target = (VectorDimension) obj;
-        return this.dimension == target.dimension;
+        return this.equalsValueOf(target.dimension);
     }
 
     /**
-     * <p>
      * ベクトルディメンジョンを比較する. <br>
-     * 次元の値に関する <br>
-     * {@code Integer.compare(this, target)} <br>
-     * に一致する.
-     * </p>
+     * comparability はクラス説明の通り.
      * 
      * @param target 比較相手
      * @return 比較結果
@@ -124,8 +118,7 @@ public final class VectorDimension implements Comparable<VectorDimension> {
      * @return このインスタンスのハッシュコード
      */
     private int calcHashCode() {
-        int result = Integer.hashCode(this.dimension);
-        return result;
+        return Integer.hashCode(this.dimension);
     }
 
     /**
@@ -139,9 +132,7 @@ public final class VectorDimension implements Comparable<VectorDimension> {
     }
 
     /**
-     * <p>
      * このオブジェクトの文字列説明表現を返す.
-     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
@@ -158,10 +149,14 @@ public final class VectorDimension implements Comparable<VectorDimension> {
 
     /**
      * 与えられた値のベクトル次元を返す.
-     *
+     * 
+     * <p>
+     * 次元は1以上でなければならない.
+     * </p>
+     * 
      * @param dimension <i>n</i> (次元)
      * @return 値が <i>n</i> のベクトル次元
-     * @throws IllegalArgumentException 引数が1未満である場合
+     * @throws IllegalArgumentException 引数が正でない場合
      */
     public static VectorDimension valueOf(int dimension) {
 
@@ -172,5 +167,4 @@ public final class VectorDimension implements Comparable<VectorDimension> {
         //この内部で例外をスローする
         return new VectorDimension(dimension);
     }
-
 }

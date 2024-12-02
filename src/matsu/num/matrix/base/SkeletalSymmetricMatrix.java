@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.27
+ * 2024.12.1
  */
 package matsu.num.matrix.base;
 
@@ -17,13 +17,13 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * <p>
  * このクラスは, {@link #transpose()} の適切な実装を提供する. <br>
  * {@link #transpose()} の戻り値は {@code this} である. <br>
- * ただし, 戻り値型を具象クラスにゆだねるため, ジェネリクスと {@link #self()} メソッドの実装を要求する.
+ * ただし, 戻り値型をサブタイプで扱うため, ジェネリクスと {@link #self()} メソッドの実装を要求する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.1
+ * @version 23.2
  * @param <T> {@code this} の具象型,
- *            再帰的ジェネリクスにより {@code transpose()} の戻り値型を具象クラスに伝播させる.
+ *            再帰的ジェネリクスにより {@code transpose()} の戻り値型をサブタイプで扱う.
  */
 public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<T>>
         implements Matrix, Symmetric {
@@ -48,7 +48,7 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      * {@code this} を返す.
      * 
      * <p>
-     * このメソッドを公開するのは多くの場合不適切である.
+     * このメソッドの公開, サブクラスからのコールはほとんど全ての場合に不適切である.
      * </p>
      * 
      * @return this
@@ -98,5 +98,14 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
     @Override
     protected final Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
+    }
+
+    /**
+     * {@code finalize()} のオーバーライドを禁止する.
+     */
+    @Override
+    @Deprecated
+    protected final void finalize() throws Throwable {
+        super.finalize();
     }
 }

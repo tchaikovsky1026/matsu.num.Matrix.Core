@@ -5,20 +5,18 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.10
+ * 2024.12.1
  */
 package matsu.num.matrix.base;
-
-import matsu.num.matrix.base.ZeroMatrixImpl.TransposeAttachedZeroMatrix;
 
 /**
  * 零行列を表現する.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 23.2
  */
-public sealed interface ZeroMatrix
-        extends EntryReadableMatrix permits SquareZeroMatrix, ZeroMatrixImpl, TransposeAttachedZeroMatrix {
+public sealed interface ZeroMatrix extends EntryReadableMatrix
+        permits ZeroMatrixSealed {
 
     @Override
     public abstract ZeroMatrix transpose();
@@ -31,6 +29,6 @@ public sealed interface ZeroMatrix
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static ZeroMatrix matrixOf(final MatrixDimension matrixDimension) {
-        return new ZeroMatrixImpl(matrixDimension);
+        return new ZeroMatrixSealed.Impl(matrixDimension);
     }
 }

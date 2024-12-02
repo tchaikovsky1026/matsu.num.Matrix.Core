@@ -17,6 +17,6 @@ package matsu.num.matrix.base;
  * @author Matsuura Y.
  * @version 23.1
  */
-non-sealed interface SignatureMatrixSealed extends SignatureMatrix{
+non-sealed interface SignatureMatrixSealed extends SignatureMatrix {
 
 }

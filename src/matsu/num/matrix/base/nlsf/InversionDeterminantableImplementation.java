@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.8
+ * 2024.12.2
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -36,7 +36,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.3
+ * @version 23.2
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
  */
@@ -103,5 +103,14 @@ abstract class InversionDeterminantableImplementation<TT extends Matrix, IT exte
     @Override
     protected final Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
+    }
+
+    /**
+     * {@code finalize()} のオーバーライドを禁止する.
+     */
+    @Override
+    @Deprecated
+    protected final void finalize() throws Throwable {
+        super.finalize();
     }
 }

@@ -96,6 +96,36 @@ final class VectorTest {
                     v -> new ArithmeticException(),
                     0d, 0d, Double.NaN);
         }
+
+        @Test(expected = IllegalStateException.class)
+        public void test_ビルドされている場合はISEx_buildコール() {
+            builder.build();
+            builder.build();
+        }
+
+        @Test(expected = IllegalStateException.class)
+        public void test_ビルドされている場合はISEx_setValue() {
+            builder.build();
+            builder.setValue(0, 0);
+        }
+
+        @Test(expected = IllegalStateException.class)
+        public void test_ビルドされている場合はISEx_setValueOrElseThrow() {
+            builder.build();
+            builder.setValueOrElseThrow(0, 0, d -> new IllegalArgumentException());
+        }
+
+        @Test(expected = IllegalStateException.class)
+        public void test_ビルドされている場合はISEx_setValue_2() {
+            builder.build();
+            builder.setEntryValue(0, 0, 0);
+        }
+
+        @Test(expected = IllegalStateException.class)
+        public void test_ビルドされている場合はISEx_setValueOrElseThrow_2() {
+            builder.build();
+            builder.setEntryValueOrElseThrow(d -> new IllegalArgumentException(), 0, 0, 0);
+        }
     }
 
     public static class 二項演算に関するテスト {

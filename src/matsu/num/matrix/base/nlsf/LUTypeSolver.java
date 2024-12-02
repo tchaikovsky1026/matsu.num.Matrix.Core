@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.12.2
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -38,11 +38,11 @@ import matsu.num.matrix.base.Inversion;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 23.2
  */
-@SuppressWarnings("rawtypes")
 public sealed interface LUTypeSolver
-        extends Inversion, Determinantable permits SkeletalLUTypeSolver, SymmetrizedSquareTypeSolver {
+        extends Inversion, Determinantable
+        permits SkeletalLUTypeSolver, SymmetrizedSquareTypeSolver {
 
     @Override
     public abstract EntryReadableMatrix target();

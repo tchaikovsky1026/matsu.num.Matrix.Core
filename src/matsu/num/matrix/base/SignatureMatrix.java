@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.27
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -24,10 +24,11 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.1
+ * @version 23.2
  */
 public sealed interface SignatureMatrix
-        extends DiagonalMatrix, OrthogonalMatrix permits SignatureMatrixSealed, UnitMatrix {
+        extends DiagonalMatrixSealed, OrthogonalMatrix
+        permits SignatureMatrixSealed {
 
     @Override
     public abstract SignatureMatrix transpose();
@@ -203,21 +204,21 @@ public sealed interface SignatureMatrix
             public double valueAt(int row, int column) {
                 switch (BandDimensionPositionState.positionStateAt(
                         row, column, this.bandMatrixDimension)) {
-                case DIAGONAL:
-                    return this.signature[row] ? -1d : 1d;
-                case LOWER_BAND:
-                    throw new AssertionError("Bug: 到達不能");
-                case UPPER_BAND:
-                    throw new AssertionError("Bug: 到達不能");
-                case OUT_OF_BAND:
-                    return 0d;
-                case OUT_OF_MATRIX:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
-                                    bandMatrixDimension.dimension(), row, column));
-                default:
-                    throw new AssertionError("Bug: 列挙型に想定外の値");
+                    case DIAGONAL:
+                        return this.signature[row] ? -1d : 1d;
+                    case LOWER_BAND:
+                        throw new AssertionError("Bug: 到達不能");
+                    case UPPER_BAND:
+                        throw new AssertionError("Bug: 到達不能");
+                    case OUT_OF_BAND:
+                        return 0d;
+                    case OUT_OF_MATRIX:
+                        throw new IndexOutOfBoundsException(
+                                String.format(
+                                        "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                                        bandMatrixDimension.dimension(), row, column));
+                    default:
+                        throw new AssertionError("Bug: 列挙型に想定外の値");
                 }
             }
 

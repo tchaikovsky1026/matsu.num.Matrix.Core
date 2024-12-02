@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.1
  */
 package matsu.num.matrix.base;
 
@@ -14,16 +14,26 @@ import java.util.Objects;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * <p>
- * 帯行列の構造 (次元(サイズ) + 帯幅) を扱う不変クラス. <br>
+ * 帯行列の構造 (次元(サイズ) + 帯幅) を扱うイミュータブルなクラス. <br>
  * サイズ1以上の正方形であり, 下側, 上側帯幅とも0以上をとる. <br>
- * このクラスのインスタンスは, 行列次元, 上側下側帯幅の値に基づくequalityを有する.
- * </p>
+ * このクラスのインスタンスは, 行列次元, 上側下側帯幅の値に基づく equality を有する.
  *
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.2
  */
 public final class BandMatrixDimension {
+
+    private static final int MIN_DIMENSION = 1;
+    private static final int CACHE_SIZE = 255;
+    private static final BandMatrixDimension[] diagonalCache;
+
+    static {
+        diagonalCache = new BandMatrixDimension[CACHE_SIZE];
+        for (int i = 0; i < CACHE_SIZE; i++) {
+            var dimension = MatrixDimension.square(MIN_DIMENSION + i);
+            diagonalCache[i] = new BandMatrixDimension(dimension, 0, 0);
+        }
+    }
 
     private final MatrixDimension matrixDimension;
     private final int lowerBandWidth;
@@ -39,31 +49,19 @@ public final class BandMatrixDimension {
     private volatile BandMatrixDimension transposedDimension;
 
     /**
+     * 唯一のコンストラクタ.
      * 
-     * @param dimension
-     * @param lowerBandWidth
-     * @param upperBandWidth
-     * @throws IllegalArgumentException 次元が0以下の場合, 帯幅が不正値(負)が含まれる場合
-     * @throws NullPointerException 引数にnullが含まれる場合
-     */
-    private BandMatrixDimension(int dimension, int lowerBandWidth, int upperBandWidth) {
-        this(MatrixDimension.square(dimension), lowerBandWidth, upperBandWidth);
-    }
-
-    /**
+     * <p>
+     * 正方でない行列サイズを与えてはいけない.
+     * </p>
      * 
-     * @param dimension
-     * @param lowerBandWidth
-     * @param upperBandWidth
-     * @throws MatrixFormatMismatchException 正方でない場合
      * @throws IllegalArgumentException 帯幅が不正値(負)が含まれる場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     private BandMatrixDimension(MatrixDimension dimension, int lowerBandWidth, int upperBandWidth) {
-        if (!dimension.isSquare()) {
-            throw new MatrixFormatMismatchException(
-                    String.format("正方形ではない行列サイズ:%s", dimension));
-        }
+
+        assert dimension.isSquare() : "Bug:正方でないサイズが与えられている";
+
         this.matrixDimension = dimension;
         if (lowerBandWidth < 0 || upperBandWidth < 0) {
             throw new IllegalArgumentException(
@@ -76,6 +74,10 @@ public final class BandMatrixDimension {
 
         this.hashCode = this.calcHashCode();
         this.accepedForBandMatrix = this.calcAccepedForBandMatrix();
+
+        if (this.isSymmetric()) {
+            this.transposedDimension = this;
+        }
     }
 
     /**
@@ -169,10 +171,8 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * <p>
      * 他オブジェクトとの等価性を判定する. <br>
-     * 等価性の基準はクラス説明のとおりである.
-     * </p>
+     * equality はクラス説明の通り.
      * 
      * @param obj 比較対象
      * @return 自身とobjが等価の場合はtrue
@@ -182,11 +182,9 @@ public final class BandMatrixDimension {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof BandMatrixDimension)) {
+        if (!(obj instanceof BandMatrixDimension target)) {
             return false;
         }
-
-        BandMatrixDimension target = (BandMatrixDimension) obj;
 
         return this.matrixDimension.equals(target.matrixDimension)
                 && this.lowerBandWidth == target.lowerBandWidth
@@ -216,9 +214,7 @@ public final class BandMatrixDimension {
     }
 
     /**
-     * <p>
      * このオブジェクトの文字列説明表現を返す.
-     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
@@ -241,14 +237,9 @@ public final class BandMatrixDimension {
      * @return thisの転置次元
      */
     public BandMatrixDimension transpose() {
-        BandMatrixDimension out = this.transposedDimension;
+        var out = this.transposedDimension;
         if (Objects.nonNull(out)) {
             return out;
-        }
-
-        if (this.isSymmetric()) {
-            this.transposedDimension = this;
-            return this;
         }
 
         //複数回の初期化を許すため,オブジェクトのロックを行わない
@@ -271,7 +262,12 @@ public final class BandMatrixDimension {
      * @throws IllegalArgumentException 行列サイズが1未満, もしくは帯幅が0未満である場合
      */
     public static BandMatrixDimension of(int dimension, int lowerBandWidth, int upperBandWidth) {
-        return new BandMatrixDimension(dimension, lowerBandWidth, upperBandWidth);
+        if (lowerBandWidth == upperBandWidth) {
+            return BandMatrixDimension.symmetric(dimension, lowerBandWidth);
+        }
+
+        return new BandMatrixDimension(
+                MatrixDimension.square(dimension), lowerBandWidth, upperBandWidth);
     }
 
     /**
@@ -287,6 +283,15 @@ public final class BandMatrixDimension {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static BandMatrixDimension of(MatrixDimension dimension, int lowerBandWidth, int upperBandWidth) {
+        if (!dimension.isSquare()) {
+            throw new MatrixFormatMismatchException(
+                    String.format("正方形ではない行列サイズ:%s", dimension));
+        }
+
+        if (lowerBandWidth == upperBandWidth) {
+            return BandMatrixDimension.symmetric(dimension, lowerBandWidth);
+        }
+
         return new BandMatrixDimension(dimension, lowerBandWidth, upperBandWidth);
     }
 
@@ -300,7 +305,12 @@ public final class BandMatrixDimension {
      * @throws IllegalArgumentException 行列サイズが1未満, もしくは帯幅が0未満である場合
      */
     public static BandMatrixDimension symmetric(int dimension, int bandWidth) {
-        return new BandMatrixDimension(dimension, bandWidth, bandWidth);
+        var out = getSymmetricFromCache(dimension, bandWidth);
+        if (Objects.nonNull(out)) {
+            return out;
+        }
+        return new BandMatrixDimension(
+                MatrixDimension.square(dimension), bandWidth, bandWidth);
     }
 
     /**
@@ -315,7 +325,35 @@ public final class BandMatrixDimension {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static BandMatrixDimension symmetric(MatrixDimension dimension, int bandWidth) {
+        if (!dimension.isSquare()) {
+            throw new MatrixFormatMismatchException(
+                    String.format("正方形ではない行列サイズ:%s", dimension));
+        }
+
+        var out = getSymmetricFromCache(dimension.rowAsIntValue(), bandWidth);
+        if (Objects.nonNull(out)) {
+            return out;
+        }
         return new BandMatrixDimension(dimension, bandWidth, bandWidth);
+    }
+
+    /**
+     * 与えられた次元の値がキャッシュされているかを判定し,
+     * キャッシュされている場合はそのキャッシュオブジェクトを,
+     * キャッシュされていない場合は {@code null} を返す.
+     * 
+     * @param dimension 次元の値
+     * @return キャッシュオブジェクトもしくは {@code null}
+     */
+    private static BandMatrixDimension getSymmetricFromCache(int dimension, int bandWidth) {
+        if (bandWidth != 0) {
+            return null;
+        }
+
+        int cacheIndex = dimension - MIN_DIMENSION;
+        return 0 <= cacheIndex && cacheIndex < CACHE_SIZE
+                ? diagonalCache[cacheIndex]
+                : null;
     }
 
     /**

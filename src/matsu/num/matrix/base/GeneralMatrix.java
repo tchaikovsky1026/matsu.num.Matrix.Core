@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.1
  */
 package matsu.num.matrix.base;
 
@@ -26,7 +26,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.2
  */
 public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
         implements EntryReadableMatrix {
@@ -121,7 +121,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             resultEntry[j] = sumProduct;
         }
 
-        Vector.Builder builder = Vector.Builder.zeroBuilder(this.matrixDimension.leftOperableVectorDimension());
+        var builder = Vector.Builder.zeroBuilder(this.matrixDimension.leftOperableVectorDimension());
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -159,7 +159,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             }
         }
 
-        Vector.Builder builder = Vector.Builder.zeroBuilder(this.matrixDimension.rightOperableVectorDimension());
+        var builder = Vector.Builder.zeroBuilder(this.matrixDimension.rightOperableVectorDimension());
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -218,7 +218,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             final int thisColumnDimension = matrixDimension.columnAsIntValue();
             this.matrixDimension = matrixDimension;
 
-            MatrixStructureAcceptance acceptance = accepts(matrixDimension);
+            var acceptance = accepts(matrixDimension);
             if (acceptance.isReject()) {
                 throw acceptance.getException(matrixDimension);
             }
@@ -389,7 +389,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             if (Objects.isNull(this.entry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            GeneralMatrix out = new GeneralMatrix(this.matrixDimension, this.entry);
+            var out = new GeneralMatrix(this.matrixDimension, this.entry);
             this.entry = null;
             return out;
         }
@@ -437,11 +437,11 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
                 return Builder.from((EntryReadableMatrix) src);
             }
 
-            final MatrixDimension srcMatrixDimension = src.matrixDimension();
+            final var srcMatrixDimension = src.matrixDimension();
             final int srcRowDimension = srcMatrixDimension.rowAsIntValue();
             final int srcColumnDimension = srcMatrixDimension.columnAsIntValue();
 
-            final Builder outBuilder = new Builder(srcMatrixDimension);
+            final var outBuilder = new Builder(srcMatrixDimension);
 
             //転置に対して基本単位ベクトルを乗算する
             //配列の方向が列方向であるため(速さは不明である)
@@ -449,7 +449,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
                 double[] rightArray = new double[srcRowDimension];
                 rightArray[j] = 1;
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension());
+                var builder = Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension());
                 builder.setEntryValue(rightArray);
                 final double[] resultArray = src.operateTranspose(builder.build()).entry();
                 for (int k = 0; k < srcColumnDimension; k++) {
@@ -469,14 +469,14 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          */
         public static Builder from(final EntryReadableMatrix src) {
 
-            final MatrixDimension srcMatrixDimension = src.matrixDimension();
+            final var srcMatrixDimension = src.matrixDimension();
             final int srcRowDimension = srcMatrixDimension.rowAsIntValue();
             final int srcColumnDimension = srcMatrixDimension.columnAsIntValue();
             if (src instanceof GeneralMatrix) {
                 return new Builder((GeneralMatrix) src);
             }
 
-            final Builder outBuilder = new Builder(srcMatrixDimension);
+            final var outBuilder = new Builder(srcMatrixDimension);
 
             //転置に対して基本単位ベクトルを乗算する
             //配列の方向が列方向であるため(速さは不明である)

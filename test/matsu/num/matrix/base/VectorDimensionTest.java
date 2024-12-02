@@ -10,8 +10,6 @@ import org.junit.runner.RunWith;
 
 /**
  * {@link VectorDimension}クラスのテスト.
- *
- * @author Matsuura Y.
  */
 @RunWith(Enclosed.class)
 final class VectorDimensionTest {

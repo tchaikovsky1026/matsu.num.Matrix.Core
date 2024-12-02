@@ -21,7 +21,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * @version 23.1
  */
 public sealed interface PermutationMatrix extends EntryReadableMatrix,
-        OrthogonalMatrix, Determinantable permits PermutationMatrixSealed, UnitMatrix {
+        OrthogonalMatrix, Determinantable permits PermutationMatrixSealed {
 
     /**
      * 行列の偶奇を取得する.
