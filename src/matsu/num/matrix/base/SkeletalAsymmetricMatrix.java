@@ -135,7 +135,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     }
 
     /**
-     * {@code finalize()} のオーバーライドを禁止する.
+     * オーバーライド不可.
      */
     @Override
     @Deprecated

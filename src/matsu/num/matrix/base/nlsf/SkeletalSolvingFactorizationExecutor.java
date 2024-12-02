@@ -178,7 +178,7 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
     }
 
     /**
-     * {@code finalize()} のオーバーライドを禁止する.
+     * オーバーライド不可.
      */
     @Override
     @Deprecated

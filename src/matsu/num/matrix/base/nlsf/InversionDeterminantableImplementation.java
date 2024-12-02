@@ -36,7 +36,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
+ * @version 23.3
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
  */
@@ -106,7 +106,7 @@ abstract class InversionDeterminantableImplementation<TT extends Matrix, IT exte
     }
 
     /**
-     * {@code finalize()} のオーバーライドを禁止する.
+     * オーバーライド不可.
      */
     @Override
     @Deprecated

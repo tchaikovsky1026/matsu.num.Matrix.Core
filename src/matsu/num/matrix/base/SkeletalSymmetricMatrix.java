@@ -101,7 +101,7 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
     }
 
     /**
-     * {@code finalize()} のオーバーライドを禁止する.
+     * オーバーライド不可.
      */
     @Override
     @Deprecated

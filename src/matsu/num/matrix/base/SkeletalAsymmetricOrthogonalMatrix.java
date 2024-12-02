@@ -144,7 +144,7 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
     }
 
     /**
-     * {@code finalize()} のオーバーライドを禁止する.
+     * オーバーライド不可.
      */
     @Override
     @Deprecated
