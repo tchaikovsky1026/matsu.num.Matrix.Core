@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.3
  */
 public final class LowerUnitriangularBandMatrix
         extends SkeletalAsymmetricMatrix<BandMatrix> implements LowerUnitriangular, BandMatrix {
@@ -77,21 +77,21 @@ public final class LowerUnitriangularBandMatrix
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
 
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
-        case DIAGONAL:
-            return 1;
-        case LOWER_BAND:
-            return lowerEntry[column * thisLowerBandWidth + (row - column - 1)];
-        case UPPER_BAND:
-            throw new AssertionError("Bug: 到達不能");
-        case OUT_OF_BAND:
-            return 0;
-        case OUT_OF_MATRIX:
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
-                            bandMatrixDimension.dimension(), row, column));
-        default:
-            throw new AssertionError("Bug: 列挙型に想定外の値");
+            case DIAGONAL:
+                return 1;
+            case LOWER_BAND:
+                return lowerEntry[column * thisLowerBandWidth + (row - column - 1)];
+            case UPPER_BAND:
+                throw new AssertionError("Bug: 到達不能");
+            case OUT_OF_BAND:
+                return 0;
+            case OUT_OF_MATRIX:
+                throw new IndexOutOfBoundsException(
+                        String.format(
+                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                bandMatrixDimension.dimension(), row, column));
+            default:
+                throw new AssertionError("Bug: 列挙型に想定外の値");
         }
     }
 
@@ -115,7 +115,7 @@ public final class LowerUnitriangularBandMatrix
      */
     @Override
     public Vector operate(Vector operand) {
-        final VectorDimension vectorDimension = operand.vectorDimension();
+        final var vectorDimension = operand.vectorDimension();
         if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
@@ -141,7 +141,7 @@ public final class LowerUnitriangularBandMatrix
             }
         }
 
-        Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+        var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -152,7 +152,7 @@ public final class LowerUnitriangularBandMatrix
      */
     @Override
     public Vector operateTranspose(Vector operand) {
-        final VectorDimension vectorDimension = operand.vectorDimension();
+        final var vectorDimension = operand.vectorDimension();
         if (!bandMatrixDimension.dimension().leftOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
@@ -189,7 +189,7 @@ public final class LowerUnitriangularBandMatrix
             resultEntry[i] += sumProduct;
         }
 
-        Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+        var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -256,7 +256,7 @@ public final class LowerUnitriangularBandMatrix
 
             @Override
             public Vector operate(Vector operand) {
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 if (!bandMatrixDimension.dimension().leftOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
@@ -280,14 +280,14 @@ public final class LowerUnitriangularBandMatrix
                     }
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(resultEntry);
                 return builder.build();
             }
 
             @Override
             public Vector operateTranspose(Vector operand) {
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
@@ -321,7 +321,7 @@ public final class LowerUnitriangularBandMatrix
                     resultEntry[i] -= sumProduct;
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(resultEntry);
                 return builder.build();
             }
@@ -352,7 +352,7 @@ public final class LowerUnitriangularBandMatrix
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final BandMatrixDimension bandMatrixDimension) {
-            MatrixStructureAcceptance acceptance = accepts(bandMatrixDimension);
+            var acceptance = accepts(bandMatrixDimension);
             if (acceptance.isReject()) {
                 throw acceptance.getException(bandMatrixDimension);
             }
@@ -366,9 +366,7 @@ public final class LowerUnitriangularBandMatrix
         }
 
         /**
-         * <p>
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
-         * </p>
          * 
          * <p>
          * 値が不正ならば, 正常値に修正される.
@@ -393,28 +391,28 @@ public final class LowerUnitriangularBandMatrix
             value = EntryReadableMatrix.modified(value);
 
             switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
-            case DIAGONAL:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "対角成分は変更不可:matrix:%s, (row, column)=(%s, %s)",
-                                bandMatrixDimension, row, column));
-            case LOWER_BAND:
-                lowerEntry[column * thisLowerBandWidth + (row - column - 1)] = value;
-                return;
-            case UPPER_BAND:
-                throw new AssertionError("Bug: 到達不能");
-            case OUT_OF_BAND:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "帯の外側:matrix:%s, (row, column)=(%d, %d)",
-                                bandMatrixDimension, row, column));
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
-                                bandMatrixDimension.dimension(), row, column));
-            default:
-                throw new AssertionError("Bug: 列挙型に想定外の値");
+                case DIAGONAL:
+                    throw new IndexOutOfBoundsException(
+                            String.format(
+                                    "対角成分は変更不可:matrix:%s, (row, column)=(%s, %s)",
+                                    bandMatrixDimension, row, column));
+                case LOWER_BAND:
+                    lowerEntry[column * thisLowerBandWidth + (row - column - 1)] = value;
+                    return;
+                case UPPER_BAND:
+                    throw new AssertionError("Bug: 到達不能");
+                case OUT_OF_BAND:
+                    throw new IndexOutOfBoundsException(
+                            String.format(
+                                    "帯の外側:matrix:%s, (row, column)=(%d, %d)",
+                                    bandMatrixDimension, row, column));
+                case OUT_OF_MATRIX:
+                    throw new IndexOutOfBoundsException(
+                            String.format(
+                                    "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                    bandMatrixDimension.dimension(), row, column));
+                default:
+                    throw new AssertionError("Bug: 列挙型に想定外の値");
             }
         }
 
@@ -428,7 +426,7 @@ public final class LowerUnitriangularBandMatrix
             if (Objects.isNull(this.lowerEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            LowerUnitriangularBandMatrix out = new LowerUnitriangularBandMatrix(
+            var out = new LowerUnitriangularBandMatrix(
                     this.bandMatrixDimension, this.lowerEntry);
             this.lowerEntry = null;
             return out;
@@ -469,5 +467,4 @@ public final class LowerUnitriangularBandMatrix
             return new Builder(bandMatrixDimension);
         }
     }
-
 }

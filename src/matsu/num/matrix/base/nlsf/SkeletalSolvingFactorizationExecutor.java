@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2024.12.2
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -44,7 +44,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.3
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */
@@ -175,5 +175,14 @@ abstract non-sealed class SkeletalSolvingFactorizationExecutor<
     @Override
     protected final Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
+    }
+
+    /**
+     * {@code finalize()} のオーバーライドを禁止する.
+     */
+    @Override
+    @Deprecated
+    protected final void finalize() throws Throwable {
+        super.finalize();
     }
 }

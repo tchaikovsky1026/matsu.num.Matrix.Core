@@ -24,7 +24,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
+ * @version 23.3
  */
 public sealed interface SignatureMatrix
         extends DiagonalMatrixSealed, OrthogonalMatrix
@@ -46,6 +46,23 @@ public sealed interface SignatureMatrix
     /**
      * {@link SignatureMatrix} を生成するためのビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
+     * 
+     * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #unit(MatrixDimension)}
+     * をコールする.
+     * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link SignatureMatrix} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
+     * </p>
      */
     public static final class Builder {
 
@@ -76,6 +93,16 @@ public sealed interface SignatureMatrix
         }
 
         /**
+         * コピーコンストラクタ.
+         */
+        private Builder(Builder src) {
+            this.matrixDimension = src.matrixDimension;
+            this.signature = src.signature.clone();
+            this.even = src.even;
+            this.unit = src.unit;
+        }
+
+        /**
          * 与えられた次元(サイズ)の符号行列ビルダを生成する. <br>
          * 初期値は単位行列.
          *
@@ -96,9 +123,8 @@ public sealed interface SignatureMatrix
          * @throws IndexOutOfBoundsException (<i>i</i>, <i>i</i>) が行列内部でない場合
          */
         public void setPositiveAt(int index) {
-            if (Objects.isNull(this.signature)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!this.matrixDimension.isValidRowIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
@@ -118,9 +144,8 @@ public sealed interface SignatureMatrix
          * @throws IndexOutOfBoundsException (<i>i</i>, <i>i</i>) が行列内部でない場合
          */
         public void setNegativeAt(int index) {
-            if (Objects.isNull(this.signature)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!this.matrixDimension.isValidRowIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
@@ -140,9 +165,8 @@ public sealed interface SignatureMatrix
          * @throws IndexOutOfBoundsException (<i>i</i>, <i>i</i>) が行列内部でない場合
          */
         public void reverseAt(int index) {
-            if (Objects.isNull(this.signature)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!this.matrixDimension.isValidRowIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
@@ -155,19 +179,56 @@ public sealed interface SignatureMatrix
         }
 
         /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.signature);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.signature = null;
+        }
+
+        /**
          * 符号行列をビルドする.
          *
          * @return 符号行列
          * @throws IllegalStateException すでにビルドされている場合
          */
         public SignatureMatrix build() {
-            if (Objects.isNull(this.signature)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             SignatureMatrix out = this.unit
                     ? UnitMatrix.matrixOf(this.matrixDimension)
                     : new SignatureMatrixImpl(this);
-            this.signature = null;
+            this.disable();
+
             return out;
         }
 
@@ -229,7 +290,7 @@ public sealed interface SignatureMatrix
 
             @Override
             public Vector operate(Vector operand) {
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
@@ -246,7 +307,7 @@ public sealed interface SignatureMatrix
                     }
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(entry);
                 return builder.build();
             }

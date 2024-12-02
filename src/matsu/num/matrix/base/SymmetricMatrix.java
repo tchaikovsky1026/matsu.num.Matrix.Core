@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.3
  */
 public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
         implements EntryReadableMatrix, Symmetric {
@@ -96,7 +96,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
      */
     @Override
     public Vector operate(Vector operand) {
-        final VectorDimension vectorDimension = operand.vectorDimension();
+        final var vectorDimension = operand.vectorDimension();
         final int dimension = vectorDimension.intValue();
         if (!matrixDimension.rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
@@ -136,7 +136,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             }
         }
 
-        Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+        var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -190,7 +190,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final MatrixDimension matrixDimension) {
-            MatrixStructureAcceptance acceptance = accepts(matrixDimension);
+            var acceptance = accepts(matrixDimension);
             if (acceptance.isReject()) {
                 throw acceptance.getException(matrixDimension);
             }
@@ -214,10 +214,8 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
         }
 
         /**
-         * <p>
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
          * 同時に(<i>j</i>, <i>i</i>) の値も置き換わる.
-         * </p>
          * 
          * <p>
          * 値が不正ならば, 正常値に修正される.
@@ -317,7 +315,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             if (Objects.isNull(this.entry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            SymmetricMatrix out = new SymmetricMatrix(this.matrixDimension, this.entry);
+            var out = new SymmetricMatrix(this.matrixDimension, this.entry);
             this.entry = null;
             return out;
         }
@@ -364,7 +362,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         public static Builder unit(final MatrixDimension matrixDimension) {
-            final Builder unitBuilder = new Builder(matrixDimension);
+            final var unitBuilder = new Builder(matrixDimension);
             for (int i = 0, dimension = matrixDimension.rowAsIntValue(); i < dimension; i++) {
                 unitBuilder.setValue(i, i, 1.0);
             }
@@ -392,9 +390,9 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                 throw new MatrixNotSymmetricException("対称行列でない");
             }
 
-            final MatrixDimension srcMatrixDimension = src.matrixDimension();
+            final var srcMatrixDimension = src.matrixDimension();
             final int dimension = srcMatrixDimension.rowAsIntValue();
-            final Builder outBuilder = new Builder(srcMatrixDimension);
+            final var outBuilder = new Builder(srcMatrixDimension);
 
             //転置に対して基本単位ベクトルを乗算する
             //配列の方向が列方向であるため(速さは不明である)
@@ -431,13 +429,13 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                 throw new MatrixNotSymmetricException("対称行列でない");
             }
 
-            final MatrixDimension srcMatrixDimension = src.matrixDimension();
+            final var srcMatrixDimension = src.matrixDimension();
             final int dimension = srcMatrixDimension.rowAsIntValue();
             if (src instanceof SymmetricMatrix) {
                 return new Builder((SymmetricMatrix) src);
             }
 
-            final Builder outBuilder = new Builder(srcMatrixDimension);
+            final var outBuilder = new Builder(srcMatrixDimension);
 
             for (int j = 0; j < dimension; j++) {
                 for (int k = 0; k <= j; k++) {
@@ -451,8 +449,6 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                 }
             }
             return outBuilder;
-
         }
     }
-
 }

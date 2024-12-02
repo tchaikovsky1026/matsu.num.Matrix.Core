@@ -5,18 +5,16 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
 import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadableUtil;
 
 /**
- * <p>
  * 成分に <i>O</i>(1) でアクセス可能な行列を表す. <br>
  * 成分に不正値 (inf, NaN) を含まない
  * (扱うことができる値は {@link #MIN_VALUE}, {@link #MAX_VALUE} で規定される).
- * </p>
  * 
  * <p>
  * インスタンスの構築などで成分として適当かどうかを判断するには {@link #acceptValue(double)} メソッドを使用する. <br>
@@ -32,7 +30,7 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadableU
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.3
  */
 public interface EntryReadableMatrix extends Matrix {
 
@@ -119,7 +117,7 @@ public interface EntryReadableMatrix extends Matrix {
 
         final int maxDisplaySize = 3;
 
-        StringBuilder entryString = new StringBuilder();
+        var entryString = new StringBuilder();
 
         entryString.append('{');
 
@@ -172,8 +170,8 @@ public interface EntryReadableMatrix extends Matrix {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static String allEntryToCSVFormat(EntryReadableMatrix matrix) {
-        String sp = System.lineSeparator();
-        StringBuilder sb = new StringBuilder();
+        var sp = System.lineSeparator();
+        var sb = new StringBuilder();
         for (int i = 0, rs = matrix.matrixDimension().rowAsIntValue(); i < rs; i++) {
             for (int j = 0, cs = matrix.matrixDimension().columnAsIntValue(); j < cs; j++) {
                 if (j != 0) {

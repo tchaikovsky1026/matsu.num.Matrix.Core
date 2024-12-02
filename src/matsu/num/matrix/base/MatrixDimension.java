@@ -5,21 +5,19 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
 import java.util.Objects;
 
 /**
- * <p>
  * 行列の次元(サイズ)を扱う不変クラス. <br>
  * 行サイズ, 列サイズともに1以上の整数値をとる. <br>
  * このクラスのインスタンスは, 行サイズ, 列サイズの値に基づくequalityを有する.
- * </p>
  *
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.3
  */
 public final class MatrixDimension {
 
@@ -57,6 +55,12 @@ public final class MatrixDimension {
         this.shape = MatrixShape.shape(rowDimension, columnDimension);
         this.hashCode = this.calcHashCode();
         this.accepedForDenseMatrix = this.calcAccepedForDenseMatrix();
+
+        if (this.isSquare()) {
+            this.transposedDimension = this;
+            this.leftSquareDimension = this;
+            this.rightSquareDimension = this;
+        }
     }
 
     /**
@@ -210,11 +214,9 @@ public final class MatrixDimension {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof MatrixDimension)) {
+        if (!(obj instanceof MatrixDimension target)) {
             return false;
         }
-
-        MatrixDimension target = (MatrixDimension) obj;
 
         return this.rowVectorDimension.equals(target.rowVectorDimension)
                 && this.columnVectorDimension.equals(target.columnVectorDimension);
@@ -242,9 +244,7 @@ public final class MatrixDimension {
     }
 
     /**
-     * <p>
      * このオブジェクトの文字列説明表現を返す.
-     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
@@ -294,7 +294,7 @@ public final class MatrixDimension {
      * @return 左に適合する正方形ディメンジョン
      */
     public MatrixDimension leftSquareDimension() {
-        MatrixDimension out = this.leftSquareDimension;
+        var out = this.leftSquareDimension;
         if (Objects.nonNull(out)) {
             return out;
         }
@@ -317,7 +317,7 @@ public final class MatrixDimension {
      * @return 右に適合する正方形ディメンジョン
      */
     public MatrixDimension rightSquareDimension() {
-        MatrixDimension out = this.rightSquareDimension;
+        var out = this.rightSquareDimension;
         if (Objects.nonNull(out)) {
             return out;
         }
@@ -343,6 +343,9 @@ public final class MatrixDimension {
      * @throws IllegalArgumentException 引数のどちらかが1未満である場合
      */
     public static MatrixDimension rectangle(int rowDimension, int columnDimension) {
+        if (rowDimension == columnDimension) {
+            return MatrixDimension.square(rowDimension);
+        }
         if (rowDimension < MIN_DIMENSION || columnDimension < MIN_DIMENSION) {
             throw new IllegalArgumentException(
                     String.format(
@@ -364,12 +367,8 @@ public final class MatrixDimension {
      */
     private static MatrixDimension rectangle(VectorDimension rowDimension, VectorDimension columnDimension) {
         if (rowDimension.equals(columnDimension)) {
-            int cacheIndex = rowDimension.intValue() - MIN_DIMENSION;
-            if (0 <= cacheIndex && cacheIndex < CACHE_SIZE) {
-                return squareCache[cacheIndex];
-            }
+            return MatrixDimension.square(rowDimension);
         }
-
         return new MatrixDimension(rowDimension, columnDimension);
     }
 
@@ -381,7 +380,13 @@ public final class MatrixDimension {
      * @throws IllegalArgumentException 引数が1未満である場合
      */
     public static MatrixDimension square(int dimension) {
-        return MatrixDimension.rectangle(dimension, dimension);
+        var out = getFromCache(dimension);
+        if (Objects.nonNull(out)) {
+            return out;
+        }
+
+        var vectorDimension = VectorDimension.valueOf(dimension);
+        return new MatrixDimension(vectorDimension, vectorDimension);
     }
 
     /**
@@ -392,7 +397,25 @@ public final class MatrixDimension {
      * @throws NullPointerException 引数にullが含まれる場合
      */
     public static MatrixDimension square(VectorDimension dimension) {
-        return MatrixDimension.rectangle(dimension, dimension);
+        var out = getFromCache(dimension.intValue());
+        if (Objects.nonNull(out)) {
+            return out;
+        }
+
+        return new MatrixDimension(dimension, dimension);
+    }
+
+    /**
+     * 与えたdimensionに対してキャッシュが存在するならそれを返す. <br>
+     * 存在しないならnull.
+     */
+    private static MatrixDimension getFromCache(int dimension) {
+        int cacheIndex = dimension - MIN_DIMENSION;
+        if (0 <= cacheIndex && cacheIndex < CACHE_SIZE) {
+            return squareCache[cacheIndex];
+        }
+
+        return null;
     }
 
     private enum MatrixShape {

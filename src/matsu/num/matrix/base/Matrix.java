@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -15,9 +15,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 
 /**
- * <p>
  * 矩形(長方形)の行列を扱う.
- * </p>
  * 
  * <p>
  * {@link Matrix} インターフェースを実装した全てのクラスは実質的にイミュータブルであり,
@@ -76,27 +74,23 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </blockquote>
  *
  * @author Matsuura Y.
- * @version 22.5
+ * @version 23.3
  */
 public interface Matrix {
 
     /**
-     * <p>
      * 行列の次元 (サイズ) を取得する.
-     * </p>
      *
      * @return 行列の次元
      */
     public MatrixDimension matrixDimension();
 
     /**
-     * <p>
      * 行列に右からベクトルを作用させる: <b>w</b> = M<b>v</b>.
      * <br>
      * M: 行列({@code this}). <br>
      * <b>v</b>: 右から作用させるベクトル. <br>
      * <b>w</b>: 計算結果の出力変数ベクトル.
-     * </p>
      * 
      * <p>
      * ただし, 演算結果は {@link Vector} が扱うことができる値の範囲を超えないように修正される.
@@ -110,13 +104,11 @@ public interface Matrix {
     public Vector operate(Vector operand);
 
     /**
-     * <p>
      * 行列の転置に右からベクトルを作用させる:
      * <b>w</b> = M<sup>T</sup><b>v</b>. <br>
      * M: {@code this} を転置した行列. <br>
      * <b>v</b>: 右から作用させるベクトル. <br>
      * <b>w</b>: 計算結果の出力変数ベクトル.
-     * </p>
      * 
      * <p>
      * ただし, 演算結果は {@link Vector} が扱うことができる値の範囲を超えないように修正される.
@@ -130,9 +122,7 @@ public interface Matrix {
     public Vector operateTranspose(Vector operand);
 
     /**
-     * <p>
      * この行列の転置行列を返す.
-     * </p>
      * 
      * @return 転置行列
      */

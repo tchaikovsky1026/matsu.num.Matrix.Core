@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.8
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -16,11 +16,9 @@ import matsu.num.matrix.base.common.ArraysUtil;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * <p>
  * 縦ベクトルを扱う. <br>
  * 成分に不正値を含まないことを保証する. <br>
  * インスタンスはイミュータブルであり, メソッドは関数的かつスレッドセーフである.
- * </p>
  * 
  * <p>
  * {@link Vector} は identity に基づく equality を提供する. <br>
@@ -33,7 +31,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.3
+ * @version 23.3
  */
 public final class Vector {
 
@@ -153,7 +151,8 @@ public final class Vector {
 
         double[] result = this.entry.clone();
         ArraysUtil.add(result, reference.entry);
-        return new Builder(this.vectorDimension, result).build();
+        Builder.modify(result);
+        return new Vector(this.vectorDimension, result);
     }
 
     /**
@@ -174,7 +173,8 @@ public final class Vector {
 
         double[] result = this.entry.clone();
         ArraysUtil.subtract(result, reference.entry);
-        return new Builder(this.vectorDimension, result).build();
+        Builder.modify(result);
+        return new Vector(this.vectorDimension, result);
     }
 
     /**
@@ -198,7 +198,8 @@ public final class Vector {
 
         double[] result = this.entry.clone();
         ArraysUtil.addCTimes(result, reference.entry, scalar);
-        return new Builder(this.vectorDimension, result).build();
+        Builder.modify(result);
+        return new Vector(this.vectorDimension, result);
     }
 
     /**
@@ -215,7 +216,8 @@ public final class Vector {
     public Vector times(final double scalar) {
         double[] result = this.entry.clone();
         ArraysUtil.multiply(result, scalar);
-        return new Builder(this.vectorDimension, result).build();
+        Builder.modify(result);
+        return new Vector(this.vectorDimension, result);
     }
 
     /**
@@ -337,7 +339,7 @@ public final class Vector {
             return this;
         }
 
-        Vector out = new Vector(this.vectorDimension, ArraysUtil.normalizeEuclidean(this.entry), true);
+        var out = new Vector(this.vectorDimension, ArraysUtil.normalizeEuclidean(this.entry), true);
         Double value1 = Double.valueOf(1d);
         out.norm2 = value1;
         out.norm2Square = value1;
@@ -381,7 +383,7 @@ public final class Vector {
     public String toString() {
         final int maxDisplaySize = 3;
 
-        StringBuilder entryString = new StringBuilder();
+        var entryString = new StringBuilder();
         final int thisDimension = this.vectorDimension.intValue();
         final int displaySize = Math.min(maxDisplaySize, thisDimension);
         for (int i = 0; i < displaySize; i++) {
@@ -412,6 +414,22 @@ public final class Vector {
     /**
      * {@link Vector} のビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
+     * 
+     * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #zeroBuilder(VectorDimension)} をコールする.
+     * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link Vector} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
+     * </p>
      */
     public static final class Builder {
 
@@ -431,35 +449,6 @@ public final class Vector {
         }
 
         /**
-         * 与えられた次元と成分を持つのビルダを生成する.
-         * 
-         * <p>
-         * 配列は防御的コピーがされていない. <br>
-         * このコンストラクタは公開してはいけない.
-         * </p>
-         *
-         * @param vectorDimension 生成するベクトルの次元
-         * @param entry 成分
-         * @throws IllegalArgumentException 次元が整合しない場合, 不正な値を含む場合
-         * @throws NullPointerException 引数にnullが含まれる場合
-         */
-        private Builder(final VectorDimension vectorDimension, double[] entry) {
-            this.vectorDimension = vectorDimension;
-            this.entry = entry;
-
-            if (!this.vectorDimension.equalsValueOf(this.entry.length)) {
-                throw new IllegalArgumentException(
-                        String.format(
-                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, entry.length));
-            }
-            for (int j = 0, len = this.vectorDimension.intValue(); j < len; j++) {
-                if (!Vector.acceptValue(this.entry[j])) {
-                    throw new IllegalArgumentException("不正な値を含んでいます");
-                }
-            }
-        }
-
-        /**
          * 与えられたソースからビルダを生成する.
          *
          * @param src ソース
@@ -471,61 +460,14 @@ public final class Vector {
         }
 
         /**
-         * <p>
-         * ベクトルの要素 <i>i</i> を与えられた値で置き換える. <br>
-         * ただし, 不正な値を与えた場合, 正常な値に置き換えられる.
-         * </p>
+         * コピーコンストラクタ.
          *
-         * @param index <i>i</i>, index
-         * @param value 置き換えた後の値
-         * @throws IllegalStateException すでにビルドされている場合
-         * @throws IndexOutOfBoundsException indexが範囲外の場合
-         * @see Vector#acceptValue(double)
-         */
-        public void setValue(final int index, final double value) {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            if (!this.vectorDimension.isValidIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
-            }
-
-            this.entry[index] = modified(value);
-        }
-
-        /**
-         * ベクトルの要素 <i>i</i> を与えられた値で置き換える. <br>
-         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
-         *
-         * @param <X> スローされる例外の型
-         * @param index <i>i</i>, index
-         * @param value 置き換えた後の値
-         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
-         * @throws IndexOutOfBoundsException indexが範囲外の場合
-         * @throws X valueが不正な値である場合
-         * @throws IllegalStateException すでにビルドされている場合
+         * @param src ソース
          * @throws NullPointerException 引数にnullが含まれる場合
-         * @see Vector#acceptValue(double)
          */
-        public <X extends Exception> void setValueOrElseThrow(final int index, double value,
-                DoubleFunction<X> invalidValueExceptionGetter) throws X {
-
-            Objects.requireNonNull(invalidValueExceptionGetter);
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            if (!Vector.acceptValue(value)) {
-                throw invalidValueExceptionGetter.apply(value);
-            }
-            if (!this.vectorDimension.isValidIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
-            }
-
-            this.entry[index] = value;
+        private Builder(final Builder src) {
+            this.vectorDimension = src.vectorDimension;
+            this.entry = src.entry.clone();
         }
 
         private static double modified(double value) {
@@ -547,6 +489,67 @@ public final class Vector {
             return 0d;
         }
 
+        private static void modify(double[] values) {
+            for (int i = 0, len = values.length; i < len; i++) {
+                values[i] = modified(values[i]);
+            }
+        }
+
+        /**
+         * <p>
+         * ベクトルの要素 <i>i</i> を与えられた値で置き換える. <br>
+         * ただし, 不正な値を与えた場合, 正常な値に置き換えられる.
+         * </p>
+         *
+         * @param index <i>i</i>, index
+         * @param value 置き換えた後の値
+         * @throws IllegalStateException すでにビルドされている場合
+         * @throws IndexOutOfBoundsException indexが範囲外の場合
+         * @see Vector#acceptValue(double)
+         */
+        public void setValue(final int index, final double value) {
+            this.throwISExIfCannotBeUsed();
+
+            if (!this.vectorDimension.isValidIndex(index)) {
+                throw new IndexOutOfBoundsException(
+                        String.format(
+                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
+            }
+
+            this.entry[index] = modified(value);
+        }
+
+        /**
+         * ベクトルの要素 <i>i</i> を与えられた値で置き換える. <br>
+         * 値が不正の場合は, 与えたファンクションにより例外を生成してスローする.
+         *
+         * @param <X> スローされる例外の型
+         * @param index <i>i</i>, index
+         * @param value 置き換えた後の値
+         * @param invalidValueExceptionGetter valueが不正な値の場合にスローする例外の生成器
+         * @throws IndexOutOfBoundsException indexが範囲外の場合
+         * @throws X valueが不正な値である場合
+         * @throws IllegalStateException すでにビルドされている場合
+         * @throws NullPointerException 例外生成器がnullかつ例外を生成しようとした場合
+         * @see Vector#acceptValue(double)
+         */
+        public <X extends Exception> void setValueOrElseThrow(final int index, double value,
+                DoubleFunction<X> invalidValueExceptionGetter) throws X {
+
+            this.throwISExIfCannotBeUsed();
+
+            if (!Vector.acceptValue(value)) {
+                throw invalidValueExceptionGetter.apply(value);
+            }
+            if (!this.vectorDimension.isValidIndex(index)) {
+                throw new IndexOutOfBoundsException(
+                        String.format(
+                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
+            }
+
+            this.entry[index] = value;
+        }
+
         /**
          * ベクトルの要素を与えられた配列の値で置き換える. <br>
          * ただし, 不正な値を与えた場合, 正常な値に置き換えられる. <br>
@@ -559,9 +562,7 @@ public final class Vector {
          * @see Vector#acceptValue(double)
          */
         public void setEntryValue(final double... entry) {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
 
             double[] newEntry = entry.clone();
             if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
@@ -570,9 +571,8 @@ public final class Vector {
                                 "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, newEntry.length));
             }
 
-            for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
-                newEntry[j] = modified(newEntry[j]);
-            }
+            modify(newEntry);
+
             this.entry = newEntry;
         }
 
@@ -587,14 +587,12 @@ public final class Vector {
          * @throws IllegalStateException すでにビルドされている場合
          * @throws IllegalArgumentException 配列の長さがベクトルの次元と一致しない場合
          * @throws X valueが不正な値である場合
-         * @throws NullPointerException 引数にnullが含まれる場合
+         * @throws NullPointerException 例外生成器がnullかつ例外を生成しようとした場合, 配列がnullの場合
          * @see Vector#acceptValue(double)
          */
         public <X extends Exception> void setEntryValueOrElseThrow(
                 DoubleFunction<X> invalidValueExceptionGetter, final double... entry) throws X {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
 
             double[] newEntry = entry.clone();
             if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
@@ -613,17 +611,54 @@ public final class Vector {
         }
 
         /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.entry);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.entry = null;
+        }
+
+        /**
          * ベクトルをビルドする.
          *
          * @return ベクトル
          * @throws IllegalStateException すでにビルドされている場合
          */
         public Vector build() {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             Vector out = new Vector(this.vectorDimension, this.entry);
-            this.entry = null;
+            this.disable();
+
             return out;
         }
 
@@ -648,6 +683,5 @@ public final class Vector {
         public static Builder from(final Vector src) {
             return new Builder(src);
         }
-
     }
 }

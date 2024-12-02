@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.27
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -18,7 +18,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 置換行列を扱う.
  *
  * @author Matsuura Y.
- * @version 23.1
+ * @version 23.3
  */
 public sealed interface PermutationMatrix extends EntryReadableMatrix,
         OrthogonalMatrix, Determinantable permits PermutationMatrixSealed {
@@ -37,9 +37,24 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
     public abstract Optional<? extends PermutationMatrix> inverse();
 
     /**
-     * <p>
      * 置換行列の実装を提供するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
+     * 
+     * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #unitBuilder(MatrixDimension)}
+     * をコールする.
+     * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link PermutationMatrix} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
      * </p>
      */
     public static final class Builder {
@@ -82,6 +97,17 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
         }
 
         /**
+         * コピーコンストラクタ.
+         */
+        private Builder(Builder src) {
+            this.matrixDimension = src.matrixDimension;
+            this.permutationHorizontal = src.permutationHorizontal.clone();
+            this.permutationVertical = src.permutationVertical.clone();
+            this.even = src.even;
+            this.unit = src.unit;
+        }
+
+        /**
          * 第 <i>i</i> 行と第 <i>j</i> 行を交換した行列を返す.
          *
          * @param row1 i, 行index1
@@ -90,9 +116,8 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
          * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
          */
         public void swapRows(final int row1, final int row2) {
-            if (Objects.isNull(this.permutationHorizontal)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!(matrixDimension.isValidRowIndex(row1)
                     && matrixDimension.isValidRowIndex(row2))) {
                 throw new IndexOutOfBoundsException(
@@ -123,9 +148,8 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
          * @throws IndexOutOfBoundsException i, jが行列の内部でない場合
          */
         public void swapColumns(final int column1, final int column2) {
-            if (Objects.isNull(this.permutationHorizontal)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!(matrixDimension.isValidColumnIndex(column1)
                     && matrixDimension.isValidColumnIndex(column2))) {
                 throw new IndexOutOfBoundsException(
@@ -148,21 +172,57 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
         }
 
         /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.permutationHorizontal);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.permutationHorizontal = null;
+            this.permutationVertical = null;
+        }
+
+        /**
          * 置換行列をビルドする.
          *
          * @return 置換行列
          * @throws IllegalStateException すでにビルドされている場合
          */
         public PermutationMatrix build() {
-            if (Objects.isNull(this.permutationHorizontal)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            PermutationMatrix out = this.unit
+            this.throwISExIfCannotBeUsed();
+
+            var out = this.unit
                     ? UnitMatrix.matrixOf(this.matrixDimension)
-                    : new PermutationMatrixImpl(
-                            this.matrixDimension, this.permutationVertical, this.permutationHorizontal, this.even);
-            this.permutationHorizontal = null;
-            this.permutationVertical = null;
+                    : new PermutationMatrixImpl(this);
+            this.disable();
+
             return out;
         }
 
@@ -189,10 +249,17 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
             private final int[] permutationHorizontal;
             private final boolean even;
 
+            private PermutationMatrixImpl(Builder builder) {
+                this.matrixDimension = builder.matrixDimension;
+                this.even = builder.even;
+                this.permutationVertical = builder.permutationVertical;
+                this.permutationHorizontal = builder.permutationHorizontal;
+            }
+
             /**
-             * 唯一のコンストラクタ.
+             * 内部から呼ばれるコンストラクタ.
              */
-            PermutationMatrixImpl(
+            private PermutationMatrixImpl(
                     final MatrixDimension matrixDimension,
                     final int[] permutationVertical, final int[] permutationHorizontal, final boolean even) {
                 this.matrixDimension = matrixDimension;
@@ -238,7 +305,7 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
 
             @Override
             public Vector operate(Vector operand) {
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 if (!matrixDimension.rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
@@ -255,14 +322,14 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
                     resultEntry[i] = operandEntry[this.permutationHorizontal[i]];
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(resultEntry);
                 return builder.build();
             }
 
             @Override
             public Vector operateTranspose(Vector operand) {
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 if (!matrixDimension.leftOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
@@ -278,7 +345,7 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
                     resultEntry[i] = operandEntry[this.permutationVertical[i]];
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(resultEntry);
                 return builder.build();
             }

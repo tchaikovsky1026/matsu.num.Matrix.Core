@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.27
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -32,8 +32,8 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.1
- * @param <TT> 転置行列のタイプ, {@code transpose()} の戻り値型を具象クラスにゆだねる.
+ * @version 23.3
+ * @param <TT> 転置行列のタイプ, {@code transpose()} の戻り値型を具象クラスで決める.
  */
 public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {
 
@@ -132,5 +132,14 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     @Override
     protected final Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
+    }
+
+    /**
+     * {@code finalize()} のオーバーライドを禁止する.
+     */
+    @Override
+    @Deprecated
+    protected final void finalize() throws Throwable {
+        super.finalize();
     }
 }

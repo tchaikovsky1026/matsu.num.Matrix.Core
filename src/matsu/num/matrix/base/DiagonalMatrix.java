@@ -9,6 +9,7 @@
  */
 package matsu.num.matrix.base;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 23.2
+ * @version 23.3
  */
 public sealed interface DiagonalMatrix
         extends BandMatrix, Symmetric, Invertible, Determinantable
@@ -38,6 +39,24 @@ public sealed interface DiagonalMatrix
     /**
      * 対角行列の実装を提供するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
+     * 
+     * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #zeroBuilder(MatrixDimension)},
+     * {@link #unitBuilder(MatrixDimension)}
+     * をコールする.
+     * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link DiagonalMatrix} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
+     * </p>
      */
     public static final class Builder {
 
@@ -45,16 +64,22 @@ public sealed interface DiagonalMatrix
         private double[] diagonalEntry;
 
         /**
-         * 与えられた次元(サイズ)の対角行列ビルダを生成する. <br>
-         * 初期値は零行列.
-         *
-         * @param matrixDimension 行列サイズ
-         * @throws MatrixFormatMismatchException 行列サイズが正方形でない場合
-         * @throws NullPointerException 引数にnullが含まれる場合
+         * 内部から呼ばれる.
+         * 
+         * <p>
+         * 配列は防御的コピーされていない.
+         * </p>
          */
-        private Builder(final MatrixDimension matrixDimension) {
-            this.bandMatrixDimension = BandMatrixDimension.symmetric(matrixDimension, 0);
-            this.diagonalEntry = new double[matrixDimension.rowAsIntValue()];
+        private Builder(BandMatrixDimension bandMatrixDimension, double[] diagonalEntry) {
+            this.bandMatrixDimension = bandMatrixDimension;
+            this.diagonalEntry = diagonalEntry;
+        }
+
+        /**
+         * コピーコンストラクタ.
+         */
+        private Builder(Builder src) {
+            this(src.bandMatrixDimension, src.diagonalEntry.clone());
         }
 
         /**
@@ -73,10 +98,9 @@ public sealed interface DiagonalMatrix
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public void setValue(final int index, double value) {
-            if (Objects.isNull(this.diagonalEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            MatrixDimension matrixDimension = this.bandMatrixDimension.dimension();
+            this.throwISExIfCannotBeUsed();
+
+            var matrixDimension = this.bandMatrixDimension.dimension();
             if (!matrixDimension.isValidRowIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
@@ -91,17 +115,53 @@ public sealed interface DiagonalMatrix
         }
 
         /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.diagonalEntry);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.diagonalEntry = null;
+        }
+
+        /**
          * 対角行列をビルドする.
          *
          * @return 対角行列
          * @throws IllegalStateException すでにビルドされている場合
          */
         public DiagonalMatrix build() {
-            if (Objects.isNull(this.diagonalEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            DiagonalMatrix out = new DiagonalMatrixImpl(this);
-            this.diagonalEntry = null;
+            this.throwISExIfCannotBeUsed();
+
+            var out = new DiagonalMatrixImpl(this);
+            this.disable();
 
             return out;
         }
@@ -115,7 +175,9 @@ public sealed interface DiagonalMatrix
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         public static Builder zeroBuilder(final MatrixDimension matrixDimension) {
-            return new Builder(matrixDimension);
+            return new Builder(
+                    BandMatrixDimension.symmetric(matrixDimension, 0),
+                    new double[matrixDimension.rowAsIntValue()]);
         }
 
         /**
@@ -127,11 +189,12 @@ public sealed interface DiagonalMatrix
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         public static Builder unitBuilder(final MatrixDimension matrixDimension) {
-            Builder out = new Builder(matrixDimension);
-            for (int i = 0, len = matrixDimension.rowAsIntValue(); i < len; i++) {
-                out.setValue(i, 1.0);
-            }
-            return out;
+
+            var bandMatrixDimension = BandMatrixDimension.symmetric(matrixDimension, 0);
+            double[] diagonalEntry = new double[matrixDimension.rowAsIntValue()];
+            Arrays.fill(diagonalEntry, 1d);
+
+            return new Builder(bandMatrixDimension, diagonalEntry);
         }
 
         /**
@@ -205,7 +268,7 @@ public sealed interface DiagonalMatrix
             @Override
             public Vector operate(Vector operand) {
 
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 final int dimension = vectorDimension.intValue();
                 if (!this.bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
@@ -221,7 +284,7 @@ public sealed interface DiagonalMatrix
                     resultEntry[i] = thisDiagonalEntry[i] * operandEntry[i];
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(resultEntry);
                 return builder.build();
             }
@@ -318,11 +381,11 @@ public sealed interface DiagonalMatrix
                     double logAbsDeterminant = Math.log(absDetResidual)
                             + shifting * LOG_SHIFT_CONSTANT;
 
-                    DeterminantValues thisDet = new DeterminantValues(
+                    var thisDet = new DeterminantValues(
                             logAbsDeterminant,
                             sign ? 1 : -1);
 
-                    DiagonalMatrix invMatrix = new InverseAndDeterminantAttachedDiagonalMatrixImpl(
+                    var invMatrix = new InverseAndDeterminantAttachedDiagonalMatrixImpl(
                             new DiagonalMatrixImpl(
                                     DiagonalMatrixImpl.this.bandMatrixDimension, inverseDiagEntry),
                             thisDet.createInverse(), DiagonalMatrixImpl.this);

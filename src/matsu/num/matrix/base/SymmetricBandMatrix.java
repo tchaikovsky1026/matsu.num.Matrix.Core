@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.3
  */
 public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<SymmetricBandMatrix>
         implements BandMatrix, Symmetric {
@@ -79,21 +79,21 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
         final int thisBandWidth = bandMatrixDimension.lowerBandWidth();
 
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
-        case DIAGONAL:
-            return diagonalEntry[row];
-        case LOWER_BAND:
-            return bandEntry[column * thisBandWidth + (row - column - 1)];
-        case UPPER_BAND:
-            return bandEntry[row * thisBandWidth + (column - row - 1)];
-        case OUT_OF_BAND:
-            return 0;
-        case OUT_OF_MATRIX:
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
-                            bandMatrixDimension.dimension(), row, column));
-        default:
-            throw new AssertionError("Bug: 列挙型に想定外の値");
+            case DIAGONAL:
+                return diagonalEntry[row];
+            case LOWER_BAND:
+                return bandEntry[column * thisBandWidth + (row - column - 1)];
+            case UPPER_BAND:
+                return bandEntry[row * thisBandWidth + (column - row - 1)];
+            case OUT_OF_BAND:
+                return 0;
+            case OUT_OF_MATRIX:
+                throw new IndexOutOfBoundsException(
+                        String.format(
+                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                bandMatrixDimension.dimension(), row, column));
+            default:
+                throw new AssertionError("Bug: 列挙型に想定外の値");
         }
     }
 
@@ -117,7 +117,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
      */
     @Override
     public Vector operate(Vector operand) {
-        final VectorDimension vectorDimension = operand.vectorDimension();
+        final var vectorDimension = operand.vectorDimension();
         if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
@@ -167,7 +167,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
             resultEntry[i] += sumProduct;
         }
 
-        Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+        var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -224,7 +224,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final BandMatrixDimension bandMatrixDimension) {
-            MatrixStructureAcceptance acceptance = accepts(bandMatrixDimension);
+            var acceptance = accepts(bandMatrixDimension);
             if (acceptance.isReject()) {
                 throw acceptance.getException(bandMatrixDimension);
             }
@@ -251,10 +251,8 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
         }
 
         /**
-         * <p>
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
          * 同時に (<i>j</i>, <i>i</i>) の値も置き換わる.
-         * </p>
          * 
          * <p>
          * 値が不正ならば, 正常値に修正される.
@@ -279,27 +277,27 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
             value = EntryReadableMatrix.modified(value);
 
             switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
-            case DIAGONAL:
-                diagonalEntry[row] = value;
-                return;
-            case LOWER_BAND:
-                bandEntry[column * thisBandWidth + (row - column - 1)] = value;
-                return;
-            case UPPER_BAND:
-                bandEntry[row * thisBandWidth + (column - row - 1)] = value;
-                return;
-            case OUT_OF_BAND:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "帯の外側:matrix:%s, (row, column)=(%s, %s)",
-                                bandMatrixDimension, row, column));
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
-                                bandMatrixDimension.dimension(), row, column));
-            default:
-                throw new AssertionError("Bug: 列挙型に想定外の値");
+                case DIAGONAL:
+                    diagonalEntry[row] = value;
+                    return;
+                case LOWER_BAND:
+                    bandEntry[column * thisBandWidth + (row - column - 1)] = value;
+                    return;
+                case UPPER_BAND:
+                    bandEntry[row * thisBandWidth + (column - row - 1)] = value;
+                    return;
+                case OUT_OF_BAND:
+                    throw new IndexOutOfBoundsException(
+                            String.format(
+                                    "帯の外側:matrix:%s, (row, column)=(%s, %s)",
+                                    bandMatrixDimension, row, column));
+                case OUT_OF_MATRIX:
+                    throw new IndexOutOfBoundsException(
+                            String.format(
+                                    "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                    bandMatrixDimension.dimension(), row, column));
+                default:
+                    throw new AssertionError("Bug: 列挙型に想定外の値");
             }
         }
 
@@ -313,7 +311,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
             if (Objects.isNull(this.diagonalEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            SymmetricBandMatrix out = new SymmetricBandMatrix(bandMatrixDimension, diagonalEntry, bandEntry);
+            var out = new SymmetricBandMatrix(bandMatrixDimension, diagonalEntry, bandEntry);
             this.diagonalEntry = null;
             this.bandEntry = null;
             return out;
@@ -385,7 +383,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
                 throw new MatrixNotSymmetricException("対称行列でない");
             }
 
-            final BandMatrixDimension bandMatrixDimension = src.bandMatrixDimension();
+            final var bandMatrixDimension = src.bandMatrixDimension();
             if (src instanceof SymmetricBandMatrix) {
                 return new Builder((SymmetricBandMatrix) src);
             }
@@ -393,7 +391,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
             final int srcDimension = bandMatrixDimension.dimension().rowAsIntValue();
             final int srcBandWidth = bandMatrixDimension.lowerBandWidth();
 
-            final Builder outBuilder = new Builder(bandMatrixDimension);
+            final var outBuilder = new Builder(bandMatrixDimension);
 
             //対角成分
             for (int i = 0; i < srcDimension; i++) {

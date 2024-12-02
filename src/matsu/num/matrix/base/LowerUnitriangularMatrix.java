@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.2
  */
 package matsu.num.matrix.base;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.3
  */
 public final class LowerUnitriangularMatrix
         extends SkeletalAsymmetricMatrix<EntryReadableMatrix> implements LowerUnitriangular {
@@ -121,7 +121,7 @@ public final class LowerUnitriangularMatrix
      */
     @Override
     public Vector operate(Vector operand) {
-        final VectorDimension vectorDimension = operand.vectorDimension();
+        final var vectorDimension = operand.vectorDimension();
         if (!matrixDimension.rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
@@ -156,7 +156,7 @@ public final class LowerUnitriangularMatrix
             }
             resultEntry[i] += sumProduct;
         }
-        Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+        var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -167,7 +167,7 @@ public final class LowerUnitriangularMatrix
      */
     @Override
     public Vector operateTranspose(Vector operand) {
-        final VectorDimension vectorDimension = operand.vectorDimension();
+        final var vectorDimension = operand.vectorDimension();
         if (!matrixDimension.leftOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
@@ -193,7 +193,7 @@ public final class LowerUnitriangularMatrix
             }
         }
 
-        Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+        var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
     }
@@ -246,7 +246,7 @@ public final class LowerUnitriangularMatrix
 
             @Override
             public Vector operate(Vector operand) {
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 if (!matrixDimension.leftOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
@@ -278,14 +278,14 @@ public final class LowerUnitriangularMatrix
                     resultEntry[i] -= sumProduct;
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(resultEntry);
                 return builder.build();
             }
 
             @Override
             public Vector operateTranspose(Vector operand) {
-                final VectorDimension vectorDimension = operand.vectorDimension();
+                final var vectorDimension = operand.vectorDimension();
                 if (!matrixDimension.rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
@@ -307,7 +307,7 @@ public final class LowerUnitriangularMatrix
                     }
                 }
 
-                Vector.Builder builder = Vector.Builder.zeroBuilder(vectorDimension);
+                var builder = Vector.Builder.zeroBuilder(vectorDimension);
                 builder.setEntryValue(resultEntry);
                 return builder.build();
             }
@@ -338,7 +338,7 @@ public final class LowerUnitriangularMatrix
          * @throws NullPointerException 引数にnullが含まれる場合
          */
         private Builder(final MatrixDimension matrixDimension) {
-            MatrixStructureAcceptance acceptance = accepts(matrixDimension);
+            var acceptance = accepts(matrixDimension);
             if (acceptance.isReject()) {
                 throw acceptance.getException(matrixDimension);
             }
@@ -352,9 +352,7 @@ public final class LowerUnitriangularMatrix
         }
 
         /**
-         * <p>
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
-         * </p>
          * 
          * <p>
          * 値が不正ならば, 正常値に修正される.
@@ -402,7 +400,7 @@ public final class LowerUnitriangularMatrix
             if (Objects.isNull(this.lowerEntry)) {
                 throw new IllegalStateException("すでにビルドされています");
             }
-            LowerUnitriangularMatrix out =
+            var out =
                     new LowerUnitriangularMatrix(this.matrixDimension, this.lowerEntry);
             this.lowerEntry = null;
             return out;
