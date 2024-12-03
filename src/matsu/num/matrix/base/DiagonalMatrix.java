@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -24,7 +24,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 対角行列を扱う.
  *
  * @author Matsuura Y.
- * @version 23.3
+ * @version 23.4
  */
 public sealed interface DiagonalMatrix
         extends BandMatrix, Symmetric, Invertible, Determinantable
@@ -60,7 +60,7 @@ public sealed interface DiagonalMatrix
      */
     public static final class Builder {
 
-        private BandMatrixDimension bandMatrixDimension;
+        private final BandMatrixDimension bandMatrixDimension;
         private double[] diagonalEntry;
 
         /**

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -18,7 +18,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * 置換行列を扱う.
  *
  * @author Matsuura Y.
- * @version 23.3
+ * @version 23.4
  */
 public sealed interface PermutationMatrix extends EntryReadableMatrix,
         OrthogonalMatrix, Determinantable permits PermutationMatrixSealed {
@@ -59,7 +59,7 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
      */
     public static final class Builder {
 
-        private MatrixDimension matrixDimension;
+        private final MatrixDimension matrixDimension;
 
         //P=(e_{p_1},...,e_{p_n})で表示したときの, p_1,...,p_n
         private int[] permutationVertical;
@@ -87,9 +87,8 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
             final int thisDimension = matrixDimension.rowAsIntValue();
             permutationVertical = new int[thisDimension];
             permutationHorizontal = new int[thisDimension];
-            final int[] thisPermutationVertical, thisPermutationHorizontal;
-            thisPermutationVertical = permutationVertical;
-            thisPermutationHorizontal = permutationHorizontal;
+            final int[] thisPermutationVertical = permutationVertical;
+            final int[] thisPermutationHorizontal = permutationHorizontal;
             for (int i = 0; i < thisDimension; i++) {
                 thisPermutationVertical[i] = i;
                 thisPermutationHorizontal[i] = i;
@@ -129,12 +128,15 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
             if (row1 == row2) {
                 return;
             }
-            final int column1 = permutationHorizontal[row1];
-            final int column2 = permutationHorizontal[row2];
-            permutationHorizontal[row1] = column2;
-            permutationHorizontal[row2] = column1;
-            permutationVertical[column1] = row2;
-            permutationVertical[column2] = row1;
+
+            final int[] thisPermutationVertical = permutationVertical;
+            final int[] thisPermutationHorizontal = permutationHorizontal;
+            final int column1 = thisPermutationHorizontal[row1];
+            final int column2 = thisPermutationHorizontal[row2];
+            thisPermutationHorizontal[row1] = column2;
+            thisPermutationHorizontal[row2] = column1;
+            thisPermutationVertical[column1] = row2;
+            thisPermutationVertical[column2] = row1;
             this.even = !this.even;
             this.unit = false;
         }
@@ -161,12 +163,14 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
             if (column1 == column2) {
                 return;
             }
-            final int row1 = permutationVertical[column1];
-            final int row2 = permutationVertical[column2];
-            permutationVertical[column1] = row2;
-            permutationVertical[column2] = row1;
-            permutationHorizontal[row1] = column2;
-            permutationHorizontal[row2] = column1;
+            final int[] thisPermutationVertical = permutationVertical;
+            final int[] thisPermutationHorizontal = permutationHorizontal;
+            final int row1 = thisPermutationVertical[column1];
+            final int row2 = thisPermutationVertical[column2];
+            thisPermutationVertical[column1] = row2;
+            thisPermutationVertical[column2] = row1;
+            thisPermutationHorizontal[row1] = column2;
+            thisPermutationHorizontal[row2] = column1;
             this.even = !this.even;
             this.unit = false;
         }
@@ -249,6 +253,9 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
             private final int[] permutationHorizontal;
             private final boolean even;
 
+            /**
+             * ビルダから呼ばれる.
+             */
             private PermutationMatrixImpl(Builder builder) {
                 this.matrixDimension = builder.matrixDimension;
                 this.even = builder.even;

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.1
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -15,13 +15,13 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * {@link Symmetric} が付与された {@link Matrix} の骨格実装.
  * 
  * <p>
- * このクラスは, {@link #transpose()} の適切な実装を提供する. <br>
- * {@link #transpose()} の戻り値は {@code this} である. <br>
- * ただし, 戻り値型をサブタイプで扱うため, ジェネリクスと {@link #self()} メソッドの実装を要求する.
+ * このクラスは, {@link Matrix#transpose()} の適切な実装を提供する. <br>
+ * {@code transpose()} の戻り値は {@code this} である. <br>
+ * ただし, 戻り値型をサブタイプに限定できるようにするため, ジェネリクスと {@code self()} メソッドの実装を要求する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
+ * @version 23.4
  * @param <T> {@code this} の具象型,
  *            再帰的ジェネリクスにより {@code transpose()} の戻り値型をサブタイプで扱う.
  */

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.1
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -26,7 +26,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
+ * @version 23.4
  */
 public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
         implements EntryReadableMatrix {
@@ -43,9 +43,9 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
     /**
      * ビルダから呼ばれる.
      */
-    private GeneralMatrix(final MatrixDimension matrixDimension, final double[] entry) {
-        this.matrixDimension = matrixDimension;
-        this.entry = entry;
+    private GeneralMatrix(Builder builder) {
+        this.matrixDimension = builder.matrixDimension;
+        this.entry = builder.entry;
 
         this.entryNormMax = this.calcEntryNormMax();
     }
@@ -194,14 +194,28 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
      * このビルダはミュータブルであり, スレッドセーフでない.
      * 
      * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #zero(MatrixDimension)}
+     * をコールする. <br>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * そのルールは {@link MatrixDimension#isAccepedForDenseMatrix()}
      * に従う.
+     * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link GeneralMatrix} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
      * </p>
      */
     public static final class Builder {
 
-        private MatrixDimension matrixDimension;
+        private final MatrixDimension matrixDimension;
         private double[] entry;
 
         /**
@@ -238,6 +252,14 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         }
 
         /**
+         * コピーコンストラクタ.
+         */
+        private Builder(final Builder src) {
+            this.matrixDimension = src.matrixDimension;
+            this.entry = src.entry.clone();
+        }
+
+        /**
          * <p>
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
          * </p>
@@ -254,10 +276,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public void setValue(final int row, final int column, double value) {
+            this.throwISExIfCannotBeUsed();
 
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
@@ -283,16 +303,14 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が行列の内部でない場合
          * @throws X valueが不正な値である場合
          * @throws IllegalStateException すでにビルドされている場合
-         * @throws NullPointerException 引数にnullが含まれる場合
+         * @throws NullPointerException 例外生成器がnullでかつ例外を生成しようとした場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public <X extends Exception> void setValueOrElseThrow(final int row, final int column, double value,
                 DoubleFunction<X> invalidValueExceptionGetter) throws X {
 
-            Objects.requireNonNull(invalidValueExceptionGetter);
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!EntryReadableMatrix.acceptValue(value)) {
                 throw invalidValueExceptionGetter.apply(value);
             }
@@ -314,9 +332,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @throws IllegalStateException すでにビルドされている場合
          */
         public void swapRows(final int row1, final int row2) {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!(matrixDimension.isValidRowIndex(row1)
                     && matrixDimension.isValidRowIndex(row2))) {
                 throw new IndexOutOfBoundsException(
@@ -330,14 +347,15 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             }
 
             final int columnDimension = matrixDimension.columnAsIntValue();
+            final double[] thisEntry = this.entry;
             final int rn1 = row1 * columnDimension;
             final int rn2 = row2 * columnDimension;
             for (int columnIndex = 0; columnIndex < columnDimension; columnIndex++) {
                 final int i1 = rn1 + columnIndex;
                 final int i2 = rn2 + columnIndex;
-                final double temp = entry[i1];
-                entry[i1] = entry[i2];
-                entry[i2] = temp;
+                final double temp = thisEntry[i1];
+                thisEntry[i1] = thisEntry[i2];
+                thisEntry[i2] = temp;
             }
         }
 
@@ -350,9 +368,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @throws IllegalStateException すでにビルドされている場合
          */
         public void swapColumns(final int column1, final int column2) {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!(matrixDimension.isValidColumnIndex(column1)
                     && matrixDimension.isValidColumnIndex(column2))) {
                 throw new IndexOutOfBoundsException(
@@ -367,16 +384,54 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
 
             final int rowDimension = matrixDimension.rowAsIntValue();
             final int columnDimension = matrixDimension.columnAsIntValue();
+            final double[] thisEntry = this.entry;
 
             int ri = -columnDimension;
             for (int rowIndex = 0; rowIndex < rowDimension; rowIndex++) {
                 ri += columnDimension;
                 final int i1 = ri + column1;
                 final int i2 = ri + column2;
-                final double temp = entry[i1];
-                entry[i1] = entry[i2];
-                entry[i2] = temp;
+                final double temp = thisEntry[i1];
+                thisEntry[i1] = thisEntry[i2];
+                thisEntry[i2] = temp;
             }
+        }
+
+        /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.entry);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.entry = null;
         }
 
         /**
@@ -386,11 +441,11 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @throws IllegalStateException すでにビルドされている場合
          */
         public GeneralMatrix build() {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            var out = new GeneralMatrix(this.matrixDimension, this.entry);
-            this.entry = null;
+            this.throwISExIfCannotBeUsed();
+
+            var out = new GeneralMatrix(this);
+            this.disable();
+
             return out;
         }
 

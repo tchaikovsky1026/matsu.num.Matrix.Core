@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -31,7 +31,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 23.3
+ * @version 23.4
  */
 public final class Vector {
 
@@ -59,8 +59,8 @@ public final class Vector {
     /**
      * ビルダから呼ばれる.
      */
-    private Vector(final VectorDimension vectorDimension, final double[] entry) {
-        this(vectorDimension, entry, false);
+    private Vector(final Builder builder) {
+        this(builder.vectorDimension, builder.entry, false);
     }
 
     /**
@@ -152,7 +152,7 @@ public final class Vector {
         double[] result = this.entry.clone();
         ArraysUtil.add(result, reference.entry);
         Builder.modify(result);
-        return new Vector(this.vectorDimension, result);
+        return new Vector(this.vectorDimension, result, false);
     }
 
     /**
@@ -174,7 +174,7 @@ public final class Vector {
         double[] result = this.entry.clone();
         ArraysUtil.subtract(result, reference.entry);
         Builder.modify(result);
-        return new Vector(this.vectorDimension, result);
+        return new Vector(this.vectorDimension, result, false);
     }
 
     /**
@@ -199,7 +199,7 @@ public final class Vector {
         double[] result = this.entry.clone();
         ArraysUtil.addCTimes(result, reference.entry, scalar);
         Builder.modify(result);
-        return new Vector(this.vectorDimension, result);
+        return new Vector(this.vectorDimension, result, false);
     }
 
     /**
@@ -217,7 +217,7 @@ public final class Vector {
         double[] result = this.entry.clone();
         ArraysUtil.multiply(result, scalar);
         Builder.modify(result);
-        return new Vector(this.vectorDimension, result);
+        return new Vector(this.vectorDimension, result, false);
     }
 
     /**
@@ -433,7 +433,7 @@ public final class Vector {
      */
     public static final class Builder {
 
-        private VectorDimension vectorDimension;
+        private final VectorDimension vectorDimension;
         private double[] entry;
 
         /**
@@ -489,7 +489,7 @@ public final class Vector {
             return 0d;
         }
 
-        private static void modify(double[] values) {
+        private static void modify(final double[] values) {
             for (int i = 0, len = values.length; i < len; i++) {
                 values[i] = modified(values[i]);
             }
@@ -656,7 +656,7 @@ public final class Vector {
         public Vector build() {
             this.throwISExIfCannotBeUsed();
 
-            Vector out = new Vector(this.vectorDimension, this.entry);
+            Vector out = new Vector(this);
             this.disable();
 
             return out;

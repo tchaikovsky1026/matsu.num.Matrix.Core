@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.3
  */
 package matsu.num.matrix.base.helper.value;
 
@@ -26,7 +26,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.4
  */
 public enum MatrixRejectionConstant {
 
@@ -41,14 +41,14 @@ public enum MatrixRejectionConstant {
      * 対称行列でないために対応していないことを表す.
      */
     REJECTED_BY_NOT_SYMMETRIC(
-            o -> new MatrixNotSymmetricException(String.format("対称行列でない:%s", o)),
+            o -> new MatrixNotSymmetricException(o.toString()),
             "REJECTED_BY_NOT_SYMMETRIC"),
 
     /**
      * 有効要素数が大きすぎるために対応していないことを表す.
      */
     REJECTED_BY_TOO_MANY_ELEMENTS(
-            o -> new ElementsTooManyException(String.format("有効要素数が大きすぎる:%s", o)),
+            o -> new ElementsTooManyException(o.toString()),
             "REJECTED_BY_TOO_MANY_ELEMENTS"),
 
     /**

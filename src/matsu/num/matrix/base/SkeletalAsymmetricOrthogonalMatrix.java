@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -28,7 +28,8 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * <p>
- * このクラスは, {@link #transpose()}, {@link #inverse()}
+ * このクラスは, {@link OrthogonalMatrix#transpose()},
+ * {@link OrthogonalMatrix#inverse()}
  * の適切な実装を提供する. <br>
  * 初めてそれらが呼ばれたときに転置行列を
  * {@link #createTranspose()} によって生成,
@@ -36,9 +37,9 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.3
+ * @version 23.4
  * @param <TT> 転置行列のタイプ, {@code transpose()}, {@code inverse()}
- *            の戻り値型を具象クラスで決める.
+ *            の戻り値型を具象クラスで限定する.
  */
 public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMatrix>
         implements OrthogonalMatrix {

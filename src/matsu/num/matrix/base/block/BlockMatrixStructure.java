@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2024.12.3
  */
 package matsu.num.matrix.base.block;
 
@@ -52,7 +52,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
+ * @version 23.4
  * @param <T> このブロック構造が扱う行列要素の型
  */
 public final class BlockMatrixStructure<T extends Matrix> {
@@ -518,9 +518,8 @@ public final class BlockMatrixStructure<T extends Matrix> {
          * @throws IllegalStateException すでにビルドされている場合
          */
         public void setBlockElement(final int row, final int column, T element) {
-            if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!(structureDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
@@ -529,21 +528,6 @@ public final class BlockMatrixStructure<T extends Matrix> {
             }
 
             this.matrixList.get(row).set(column, Optional.ofNullable(element));
-        }
-
-        /**
-         * 自身ビルダをコピーして (新しいインスタンスとして) 返す. <br>
-         * ビルド後にはコピー不能になるので, ビルド前にコールされる必要がある.
-         * 
-         * @return 自身のコピー
-         * @throws IllegalStateException すでにビルドされている場合
-         */
-        public BlockMatrixStructure.Builder<T> copy() {
-            if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-
-            return new Builder<>(this);
         }
 
         /**
@@ -557,6 +541,35 @@ public final class BlockMatrixStructure<T extends Matrix> {
         }
 
         /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * 自身ビルダをコピーして (新しいインスタンスとして) 返す. <br>
+         * ビルド後にはコピー不能になるので, ビルド前にコールされる必要がある.
+         * 
+         * @return 自身のコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public BlockMatrixStructure.Builder<T> copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder<>(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.matrixList = null;
+        }
+
+        /**
          * ブロック構造をビルドする. <br>
          * ビルドに成功した場合, このビルダは使用不能になる
          * (失敗した場合は使える).
@@ -567,12 +580,11 @@ public final class BlockMatrixStructure<T extends Matrix> {
          * @throws ElementsTooManyException 行列全体が大きすぎる場合
          */
         public BlockMatrixStructure<T> build() {
-            if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
 
             BlockMatrixStructure<T> out = new BlockMatrixStructure<>(this);
-            this.matrixList = null;
+            this.disable();
+
             return out;
         }
 

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.7
+ * 2024.12.3
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -26,9 +26,9 @@ import matsu.num.matrix.base.Matrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.2
- * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
- * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
+ * @version 23.4
+ * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプで限定する.
+ * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプで限定する.
  */
 abstract non-sealed class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends Matrix>
         extends InversionDeterminantableImplementation<TT, IT> implements LUTypeSolver {

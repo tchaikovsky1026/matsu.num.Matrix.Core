@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -24,7 +24,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.3
+ * @version 23.4
  */
 public sealed interface SignatureMatrix
         extends DiagonalMatrixSealed, OrthogonalMatrix
@@ -224,7 +224,7 @@ public sealed interface SignatureMatrix
         public SignatureMatrix build() {
             this.throwISExIfCannotBeUsed();
 
-            SignatureMatrix out = this.unit
+            var out = this.unit
                     ? UnitMatrix.matrixOf(this.matrixDimension)
                     : new SignatureMatrixImpl(this);
             this.disable();

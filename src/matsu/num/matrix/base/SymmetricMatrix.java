@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.3
+ * @version 23.4
  */
 public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
         implements EntryReadableMatrix, Symmetric {
@@ -48,9 +48,9 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
     /**
      * ビルダから呼ばれる.
      */
-    private SymmetricMatrix(final MatrixDimension matrixDimension, final double[] entry) {
-        this.matrixDimension = matrixDimension;
-        this.entry = entry;
+    private SymmetricMatrix(final Builder builder) {
+        this.matrixDimension = builder.matrixDimension;
+        this.entry = builder.entry;
 
         this.entryNormMax = this.calcEntryNormMax();
     }
@@ -171,14 +171,29 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
      * このビルダはミュータブルであり, スレッドセーフでない.
      * 
      * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #zero(MatrixDimension)},
+     * {@link #unit(MatrixDimension)}
+     * をコールする. <br>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * そのルールは {@link MatrixDimension#isAccepedForDenseMatrix()}
      * に従う.
+     * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link SymmetricMatrix} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
      * </p>
      */
     public static final class Builder {
 
-        private MatrixDimension matrixDimension;
+        private final MatrixDimension matrixDimension;
         private double[] entry;
 
         /**
@@ -214,6 +229,14 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
         }
 
         /**
+         * コピーコンストラクタ.
+         */
+        private Builder(final Builder src) {
+            this.matrixDimension = src.matrixDimension;
+            this.entry = src.entry.clone();
+        }
+
+        /**
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える. <br>
          * 同時に(<i>j</i>, <i>i</i>) の値も置き換わる.
          * 
@@ -229,9 +252,8 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public void setValue(final int row, final int column, double value) {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
+
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
@@ -256,9 +278,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          * @throws IndexOutOfBoundsException <i>i</i>, <i>j</i>が行列の内部でない場合
          */
         public void swapRowsAndColumns(final int index1, final int index2) {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
 
             if (!(matrixDimension.isValidRowIndex(index1)
                     && matrixDimension.isValidRowIndex(index2))) {
@@ -273,6 +293,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             }
 
             final int dimension = matrixDimension.rowAsIntValue();
+            final double[] thisEntry = this.entry;
             final int indMin = Math.min(index1, index2);
             final int indMax = Math.max(index1, index2);
             //4隅以外
@@ -281,28 +302,65 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             int j = 0;
             for (; j < indMin; j++) {
                 final double temp;
-                temp = entry[indMinN + j];
-                entry[indMinN + j] = entry[indMaxN + j];
-                entry[indMaxN + j] = temp;
+                temp = thisEntry[indMinN + j];
+                thisEntry[indMinN + j] = thisEntry[indMaxN + j];
+                thisEntry[indMaxN + j] = temp;
             }
             j++;
             for (; j < indMax; j++) {
                 final int jn = (j * (j + 1)) / 2;
-                final double temp = entry[jn + indMin];
-                entry[jn + indMin] = entry[indMaxN + j];
-                entry[indMaxN + j] = temp;
+                final double temp = thisEntry[jn + indMin];
+                thisEntry[jn + indMin] = thisEntry[indMaxN + j];
+                thisEntry[indMaxN + j] = temp;
             }
             j++;
             for (; j < dimension; j++) {
                 final int jn = (j * (j + 1)) / 2;
-                final double temp = entry[jn + indMin];
-                entry[jn + indMin] = entry[jn + indMax];
-                entry[jn + indMax] = temp;
+                final double temp = thisEntry[jn + indMin];
+                thisEntry[jn + indMin] = thisEntry[jn + indMax];
+                thisEntry[jn + indMax] = temp;
             }
             //4隅
-            final double temp = entry[indMinN + indMin];
-            entry[indMinN + indMin] = entry[indMaxN + indMax];
-            entry[indMaxN + indMax] = temp;
+            final double temp = thisEntry[indMinN + indMin];
+            thisEntry[indMinN + indMin] = thisEntry[indMaxN + indMax];
+            thisEntry[indMaxN + indMax] = temp;
+        }
+
+        /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.entry);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.entry = null;
         }
 
         /**
@@ -312,11 +370,12 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          * @throws IllegalStateException すでにビルドされている場合
          */
         public SymmetricMatrix build() {
-            if (Objects.isNull(this.entry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            var out = new SymmetricMatrix(this.matrixDimension, this.entry);
-            this.entry = null;
+            this.throwISExIfCannotBeUsed();
+
+            var out = new SymmetricMatrix(this);
+            this.disable();
+            ;
+
             return out;
         }
 

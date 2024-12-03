@@ -5,10 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.1
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import matsu.num.matrix.base.common.ArraysUtil;
@@ -26,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
+ * @version 23.4
  */
 public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix> implements BandMatrix {
 
@@ -59,12 +60,11 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
     /**
      * ビルダから呼ばれる.
      */
-    private GeneralBandMatrix(final BandMatrixDimension bandMatrixDimension,
-            final double[] diagonalEntry, final double[] lowerEntry, final double[] upperEntry) {
-        this.bandMatrixDimension = bandMatrixDimension;
-        this.diagonalEntry = diagonalEntry;
-        this.lowerEntry = lowerEntry;
-        this.upperEntry = upperEntry;
+    private GeneralBandMatrix(Builder builder) {
+        this.bandMatrixDimension = builder.bandMatrixDimension;
+        this.diagonalEntry = builder.diagonalEntry;
+        this.lowerEntry = builder.lowerEntry;
+        this.upperEntry = builder.upperEntry;
 
         this.entryNormMax = this.calcEntryNormMax();
     }
@@ -273,15 +273,31 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
     /**
      * 正方形の帯行列を生成するビルダ. <br>
      * このビルダはミュータブルであり, スレッドセーフでない.
-     *
+     * 
      * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #zero(BandMatrixDimension)},
+     * {@link #unit(BandMatrixDimension)}
+     * をコールする. <br>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * {@link BandMatrixDimension#isAccepedForBandMatrix()}
+     * そのルールは {@link BandMatrixDimension#isAccepedForBandMatrix()}
      * に従う.
      * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link GeneralBandMatrix} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
+     * </p>
+     *
      */
     public static final class Builder {
-        private BandMatrixDimension bandMatrixDimension;
+        private final BandMatrixDimension bandMatrixDimension;
 
         private double[] diagonalEntry;
         private double[] lowerEntry;
@@ -325,9 +341,17 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         }
 
         /**
-         * <p>
+         * コピーコンストラクタ.
+         */
+        private Builder(final Builder src) {
+            this.bandMatrixDimension = src.bandMatrixDimension;
+            this.diagonalEntry = src.diagonalEntry.clone();
+            this.lowerEntry = src.lowerEntry.clone();
+            this.upperEntry = src.upperEntry.clone();
+        }
+
+        /**
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
-         * </p>
          * 
          * <p>
          * 値が不正ならば, 正常値に修正される.
@@ -341,9 +365,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public void setValue(final int row, final int column, double value) {
-            if (Objects.isNull(this.diagonalEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
 
             final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
             final int thisUpperBandWidth = bandMatrixDimension.upperBandWidth();
@@ -377,21 +399,56 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         }
 
         /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.diagonalEntry);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.diagonalEntry = null;
+            this.lowerEntry = null;
+            this.upperEntry = null;
+        }
+
+        /**
          * 正方帯行列をビルドする.
          *
          * @return 正方帯行列
          * @throws IllegalStateException すでにビルドされている場合
          */
         public GeneralBandMatrix build() {
-            if (Objects.isNull(this.diagonalEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            var out = new GeneralBandMatrix(
-                    bandMatrixDimension,
-                    diagonalEntry, lowerEntry, upperEntry);
-            this.diagonalEntry = null;
-            this.lowerEntry = null;
-            this.upperEntry = null;
+            this.throwISExIfCannotBeUsed();
+
+            var out = new GeneralBandMatrix(this);
+            this.disable();
+
             return out;
         }
 
@@ -432,10 +489,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
          */
         public static Builder unit(final BandMatrixDimension bandMatrixDimension) {
             var outBuilder = new Builder(bandMatrixDimension);
-            for (int i = 0, dimension = bandMatrixDimension.dimension().rowAsIntValue();
-                    i < dimension; i++) {
-                outBuilder.setValue(i, i, 1.0);
-            }
+            Arrays.fill(outBuilder.diagonalEntry, 1d);
             return outBuilder;
         }
 

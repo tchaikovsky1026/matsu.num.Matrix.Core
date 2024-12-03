@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.3
+ * @version 23.4
  */
 public final class LowerUnitriangularBandMatrix
         extends SkeletalAsymmetricMatrix<BandMatrix> implements LowerUnitriangular, BandMatrix {
@@ -55,10 +55,9 @@ public final class LowerUnitriangularBandMatrix
     /**
      * ビルダから呼ばれる.
      */
-    private LowerUnitriangularBandMatrix(final BandMatrixDimension bandMatrixDimension,
-            final double[] lowerEntry) {
-        this.bandMatrixDimension = bandMatrixDimension;
-        this.lowerEntry = lowerEntry;
+    private LowerUnitriangularBandMatrix(final Builder builder) {
+        this.bandMatrixDimension = builder.bandMatrixDimension;
+        this.lowerEntry = builder.lowerEntry;
 
         this.inverse = Optional.of(this.createInverse());
     }
@@ -334,13 +333,27 @@ public final class LowerUnitriangularBandMatrix
      * このビルダはミュータブルであり, スレッドセーフでない.
      * 
      * <p>
+     * このビルダインスタンスを得るには,
+     * {@link #unit(BandMatrixDimension)}
+     * をコールする. <br>
      * ビルダの生成時に有効要素数が大きすぎる場合は例外がスローされる. <br>
-     * {@link BandMatrixDimension#isAccepedForBandMatrix()}
+     * そのルールは {@link BandMatrixDimension#isAccepedForBandMatrix()}
      * に従う.
+     * </p>
+     * 
+     * <p>
+     * ビルド準備ができたビルダに対して {@link #build()} をコールすることで
+     * {@link LowerUnitriangularBandMatrix} をビルドする. <br>
+     * {@link #build()} を実行したビルダは使用不能となる.
+     * </p>
+     * 
+     * <p>
+     * ビルダのコピーが必要な場合, {@link #copy()} をコールする. <br>
+     * ただし, このコピーはビルド前しか実行できないことに注意.
      * </p>
      */
     public static final class Builder {
-        private BandMatrixDimension bandMatrixDimension;
+        private final BandMatrixDimension bandMatrixDimension;
         private double[] lowerEntry;
 
         /**
@@ -366,6 +379,14 @@ public final class LowerUnitriangularBandMatrix
         }
 
         /**
+         * コピーコンストラクタ.
+         */
+        private Builder(final Builder src) {
+            this.bandMatrixDimension = src.bandMatrixDimension;
+            this.lowerEntry = src.lowerEntry.clone();
+        }
+
+        /**
          * (<i>i</i>, <i>j</i>) 要素を指定した値に置き換える.
          * 
          * <p>
@@ -381,9 +402,7 @@ public final class LowerUnitriangularBandMatrix
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public void setValue(final int row, final int column, double value) {
-            if (Objects.isNull(this.lowerEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
+            this.throwISExIfCannotBeUsed();
 
             final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
 
@@ -417,18 +436,54 @@ public final class LowerUnitriangularBandMatrix
         }
 
         /**
+         * このビルダが使用可能か (ビルド前かどうか) を判定する.
+         * 
+         * @return 使用可能なら {@code true}
+         */
+        public boolean canBeUsed() {
+            return Objects.nonNull(this.lowerEntry);
+        }
+
+        /**
+         * ビルド前かを判定し, ビルド後なら例外をスロー.
+         */
+        private void throwISExIfCannotBeUsed() {
+            if (!this.canBeUsed()) {
+                throw new IllegalStateException("すでにビルドされています");
+            }
+        }
+
+        /**
+         * このビルダのコピーを生成して返す.
+         * 
+         * @return このビルダのコピー
+         * @throws IllegalStateException すでにビルドされている場合
+         */
+        public Builder copy() {
+            this.throwISExIfCannotBeUsed();
+
+            return new Builder(this);
+        }
+
+        /**
+         * ビルダを使用不能にする.
+         */
+        private void disable() {
+            this.lowerEntry = null;
+        }
+
+        /**
          * 単位下三角行列をビルドする.
          * 
          * @return 単位下三角行列
          * @throws IllegalStateException すでにビルドされている場合
          */
         public LowerUnitriangularBandMatrix build() {
-            if (Objects.isNull(this.lowerEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
-            }
-            var out = new LowerUnitriangularBandMatrix(
-                    this.bandMatrixDimension, this.lowerEntry);
-            this.lowerEntry = null;
+            this.throwISExIfCannotBeUsed();
+
+            var out = new LowerUnitriangularBandMatrix(this);
+            this.disable();
+
             return out;
         }
 

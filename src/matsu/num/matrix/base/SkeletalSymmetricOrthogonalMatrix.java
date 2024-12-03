@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.27
+ * 2024.12.3
  */
 package matsu.num.matrix.base;
 
@@ -19,20 +19,21 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * {@link OrthogonalMatrix} の骨格実装.
  * 
  * <p>
- * このクラスは, {@link #transpose()}, {@link #inverse()} の適切な実装を提供する. <br>
- * {@link #transpose()} の戻り値は {@code this} である. <br>
- * {@link #inverse()} が最初に呼ばれたときに
+ * このクラスは, {@link OrthogonalMatrix#transpose()},
+ * {@link OrthogonalMatrix#inverse()} の適切な実装を提供する. <br>
+ * {@link OrthogonalMatrix#transpose()} の戻り値は {@code this} である. <br>
+ * {@link OrthogonalMatrix#inverse()} が最初に呼ばれたときに
  * {@code this} の {@link Optional} が生成, キャッシュされ,
  * 以降はそのキャッシュを戻す. <br>
- * ただし, 戻り値型を具象クラスにゆだねるため, ジェネリクスと {@link #self()} メソッドの実装を要求する.
+ * ただし, 戻り値型をサブタイプに限定できるようにするため, ジェネリクスと {@code self()} メソッドの実装を要求する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.1
+ * @version 23.4
  * @param <T> {@code this} の具象型,
  *            再帰的ジェネリクスにより
  *            {@code transpose()}, {@code inverse()}
- *            の戻り値型を具象クラスに伝播させる.
+ *            の戻り値型をサブタイプで扱う.
  */
 public abstract class SkeletalSymmetricOrthogonalMatrix<
         T extends SkeletalSymmetricOrthogonalMatrix<T>>
