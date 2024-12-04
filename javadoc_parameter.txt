@@ -1,0 +1,5 @@
+(Antビルド: javadoc)
+packagenames="matsu.num.matrix.base,
+        	matsu.num.matrix.base.block,
+        	matsu.num.matrix.base.nlsf,
+        	matsu.num.matrix.base.validation,"
