@@ -1,8 +1,8 @@
 #Folder
 /bin/
 /dist/
-/javadoc-file/
 /testout/
+/javadoc-file/
 /local/
 
 # Eclipse
@@ -10,6 +10,17 @@
 .classpath
 .settings
 
+#Java
+*.class
+*.jar
+*.war
+*.ear
+
 # OS
 Thumbs.db
 .DS_Store
+
+# Other
+*.log
+*.swp
+*.bak
