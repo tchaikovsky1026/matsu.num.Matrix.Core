@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2024.12.4
  */
 package matsu.num.matrix.base;
 
@@ -21,7 +21,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.4
+ * @version 24.0
  * @param <T> {@code this} の具象型,
  *            再帰的ジェネリクスにより {@code transpose()} の戻り値型をサブタイプで扱う.
  */
@@ -60,11 +60,17 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
         return this.self();
     }
 
+    /**
+     * {@inheritDoc Matrix}
+     */
     @Override
     public final boolean equals(Object obj) {
         return super.equals(obj);
     }
 
+    /**
+     * {@inheritDoc Matrix}
+     */
     @Override
     public final int hashCode() {
         return super.hashCode();

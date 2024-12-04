@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2024.12.4
  */
 package matsu.num.matrix.base;
 
@@ -32,7 +32,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.4
+ * @version 24.0
  * @param <TT> 転置行列のタイプ, {@code transpose()} の戻り値型を具象クラスで限定する.
  */
 public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {
@@ -91,11 +91,17 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
      */
     protected abstract TT createTranspose();
 
+    /**
+     * {@inheritDoc Matrix}
+     */
     @Override
     public final boolean equals(Object obj) {
         return super.equals(obj);
     }
 
+    /**
+     * {@inheritDoc Matrix}
+     */
     @Override
     public final int hashCode() {
         return super.hashCode();

@@ -74,12 +74,10 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * 
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 24.0
  * @param <MT> 対応する行列の型パラメータ
- * @param <ST> 出力される行列分解の型パラメータ
  */
-public sealed interface SolvingFactorizationExecutor<
-        MT extends Matrix, ST extends LUTypeSolver>
+public sealed interface SolvingFactorizationExecutor<MT extends Matrix>
         permits SkeletalSolvingFactorizationExecutor {
 
     /**
@@ -115,7 +113,7 @@ public sealed interface SolvingFactorizationExecutor<
      *             行列がacceptされない場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public abstract Optional<ST> apply(MT matrix, double epsilon);
+    public abstract Optional<? extends LUTypeSolver> apply(MT matrix, double epsilon);
 
     /**
      * 行列の正則性を判定する相対epsilonにデフォルト値を使用して, 線形連立方程式の解法向けの行列分解を実行する. <br>
@@ -130,5 +128,5 @@ public sealed interface SolvingFactorizationExecutor<
      * @return 行列分解
      * @see PseudoRegularMatrixProcess
      */
-    public abstract Optional<ST> apply(MT matrix);
+    public abstract Optional<? extends LUTypeSolver> apply(MT matrix);
 }
