@@ -61,7 +61,7 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
     }
 
     /**
-     * {@inheritDoc Matrix}
+     * {@inheritDoc}
      */
     @Override
     public final boolean equals(Object obj) {
@@ -69,7 +69,7 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
     }
 
     /**
-     * {@inheritDoc Matrix}
+     * {@inheritDoc}
      */
     @Override
     public final int hashCode() {

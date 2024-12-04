@@ -104,7 +104,7 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
     protected abstract TT createTranspose();
 
     /**
-     * {@inheritDoc Matrix}
+     * {@inheritDoc}
      */
     @Override
     public final boolean equals(Object obj) {
@@ -112,7 +112,7 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
     }
 
     /**
-     * {@inheritDoc Matrix}
+     * {@inheritDoc}
      */
     @Override
     public final int hashCode() {

@@ -92,7 +92,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     protected abstract TT createTranspose();
 
     /**
-     * {@inheritDoc Matrix}
+     * {@inheritDoc}
      */
     @Override
     public final boolean equals(Object obj) {
@@ -100,7 +100,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     }
 
     /**
-     * {@inheritDoc Matrix}
+     * {@inheritDoc}
      */
     @Override
     public final int hashCode() {
