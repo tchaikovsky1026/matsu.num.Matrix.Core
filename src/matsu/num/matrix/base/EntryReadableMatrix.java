@@ -28,19 +28,24 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionEntryReadableU
  * <p>
  * {@link Matrix} の規約に従う.
  * </p>
+ * 
+ * <p>
+ * 行列の成分には, 行列サイズに比例しない定数時間でアクセスできなければならない. <br>
+ * 各成分の値 ({@link #valueAt(int, int)} メソッドにより取得される値)
+ * は扱える範囲でなければならない.
  *
  * @author Matsuura Y.
- * @version 23.3
+ * @version 25.0
  */
 public interface EntryReadableMatrix extends Matrix {
 
     /**
-     * 扱うことができる成分の最小値.
+     * 扱うことができる成分の最大値.
      */
     public static final double MAX_VALUE = Double.MAX_VALUE;
 
     /**
-     * 扱うことができる成分の最大値.
+     * 扱うことができる成分の最小値.
      */
     public static final double MIN_VALUE = -Double.MAX_VALUE;
 

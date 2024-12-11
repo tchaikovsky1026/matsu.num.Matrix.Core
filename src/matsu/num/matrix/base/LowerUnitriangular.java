@@ -5,15 +5,18 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
 import java.util.Optional;
 
 /**
- * 成分にアクセス可能な単位下三角行列を表す. <br>
+ * 成分にアクセス可能な単位下三角行列を表す.
+ * 
+ * <p>
  * 単位下三角行列とは, 対角成分が1の下三角行列である.
+ * </p>
  * 
  * <p>
  * 行列式は1である. <br>
@@ -23,12 +26,13 @@ import java.util.Optional;
  * </p>
  *
  * <p>
- * {@link Matrix} のクラス説明の規約に従う.
+ * 実装においては, {@link EntryReadableMatrix} のクラス説明の規約に従う.
  * </p>
  *
  * @author Matsuura Y.
- * @version 23.3
- * @see Matrix
+ * @version 25.0
+ * @see EntryReadableMatrix
+ * @see Invertible
  */
 public interface LowerUnitriangular
         extends EntryReadableMatrix, Invertible, Determinantable {

@@ -5,15 +5,27 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.1
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
 /**
- * 零行列を表現する.
+ * 一般的な矩形 (長方形) の零行列を表現する.
+ * 
+ * <p>
+ * このインターフェースを実装した具象クラスのインスタンスは,
+ * {@link ZeroMatrix#matrixOf(MatrixDimension)} メソッドにより得られる.
+ * </p>
+ * 
+ * <p>
+ * 正方な零行列の場合, それは対角行列である. <br>
+ * 正方な零行列であることが確信できる場合,
+ * {@link DiagonalMatrix} のサブタイプでもある {@link SquareZeroMatrix} を使用し,
+ * {@link SquareZeroMatrix} 型で扱うべきである.
+ * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
+ * @version 25.0
  */
 public sealed interface ZeroMatrix extends EntryReadableMatrix
         permits ZeroMatrixSealed {
@@ -22,7 +34,7 @@ public sealed interface ZeroMatrix extends EntryReadableMatrix
     public abstract ZeroMatrix transpose();
 
     /**
-     * 与えられた次元(サイズ)の零行列を生成する.
+     * 与えられた次元 (サイズ) の零行列を返す.
      *
      * @param matrixDimension 行列サイズ
      * @return 零行列

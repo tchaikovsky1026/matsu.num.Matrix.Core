@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -14,9 +14,14 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * 単位行列を扱う.
+ * 
+ * <p>
+ * このクラスのインスタンスは,
+ * {@link UnitMatrix#matrixOf(MatrixDimension)} メソッドにより得られる.
+ * </p>
  *
  * @author Matsuura Y.
- * @version 23.2
+ * @version 25.0
  */
 public final class UnitMatrix
         extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>

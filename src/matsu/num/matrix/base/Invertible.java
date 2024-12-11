@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -57,7 +57,7 @@ import java.util.Optional;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
+ * @version 25.0
  */
 public interface Invertible {
 
@@ -65,6 +65,18 @@ public interface Invertible {
      * 逆行列を取得する. <br>
      * 逆行列が存在しない場合は空を返す.
      *
+     * @implSpec インターフェース説明の通り, 次が {@code true} となることが推奨される.
+     *               <blockquote>
+     *               {@code this.inverse() == this.inverse() }
+     *               </blockquote>
+     * 
+     *               自身が {@link Matrix} のサブタイプであり,
+     *               かつ戻り値が {@link Invertible} のサブタイプである場合,
+     *               次が {@code true} となることが推奨される.
+     *               <blockquote>
+     *               {@code ((Invertible) this.inverse().get()).inverse().get() == this }
+     *               </blockquote>
+     * 
      * @return ターゲット行列の逆行列
      */
     public Optional<? extends Matrix> inverse();

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.4
+ * 2024.12.10
  */
 package matsu.num.matrix.base;
 
@@ -36,8 +36,30 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * その {@link Optional} をキャッシュし, 以降はそのキャッシュを戻す.
  * </p>
  * 
+ * 
+ * <hr>
+ * 
+ * <h2>使用上の注意</h2>
+ * 
+ * <p>
+ * このクラスはインターフェースの骨格実装を提供するためのものであり,
+ * 型として扱うべきではない. <br>
+ * 具体的に, 次のような取り扱いは強く非推奨である.
+ * </p>
+ * 
+ * <ul>
+ * <li>このクラスを変数宣言の型として使う.</li>
+ * <li>{@code instanceof} 演算子により, このクラスのサブタイプかを判定する.</li>
+ * <li>インスタンスをこのクラスにキャストして使用する.</li>
+ * </ul>
+ * 
+ * <p>
+ * このクラスは型としての互換性は積極的には維持されず,
+ * このモジュールや関連モジュールの具象クラスが将来的にこのクラスのサブタイプでなくなる場合がある.
+ * </p>
+ * 
  * @author Matsuura Y.
- * @version 24.0
+ * @version 25.0
  * @param <TT> 転置行列のタイプ, {@code transpose()}, {@code inverse()}
  *            の戻り値型を具象クラスで限定する.
  */
@@ -88,16 +110,14 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
      * {@link #transpose()}, {@link #inverse()} を遅延初期化するために実装されるメソッドである. <br>
      * それらのどちらかが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけこのメソッドが呼ばれる. <br>
      * 公開は禁止され, サブクラスからもコールしてはならない.
-     * </p>
      * 
-     * <p>
-     * 実装は, <br>
-     * {@code this.createTranspose().transpose() == this} <br>
-     * {@code this.createTranspose().inverse().get() == this}
-     * <br>
-     * を満たすことが推奨される
-     * ({@link OrthogonalMatrix} の実装規約より).
-     * </p>
+     * @implSpec {@link OrthogonalMatrix} の実装規約より,
+     *               <blockquote>
+     *               {@code this.createTranspose().transpose() == this} <br>
+     *               {@code this.createTranspose().inverse().get() == this}
+     *               </blockquote>
+     *               を満たすことが推奨される. <br>
+     *               アクセス修飾子を {@code public} にしてはいけない.
      * 
      * @return 自身の転置行列
      */

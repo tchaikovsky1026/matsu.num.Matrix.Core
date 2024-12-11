@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.1
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -19,7 +19,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * このクラスのインスタンスは, 行列次元, 上側下側帯幅の値に基づく equality を有する.
  *
  * @author Matsuura Y.
- * @version 23.2
+ * @version 25.0
  */
 public final class BandMatrixDimension {
 
@@ -136,6 +136,14 @@ public final class BandMatrixDimension {
 
     /**
      * 帯構造が対角行列であるか (帯幅が両側とも0かどうか) を判定する.
+     * 
+     * <p>
+     * 振る舞いとして, <br>
+     * {@code isDiagonal() == isLowerTriangular() && isUpperTriangular()} <br>
+     * {@code isDiagonal() == isLowerTriangular() && isSymmetric()} <br>
+     * {@code isDiagonal() == isUpperTriangular() && isSymmetric()} <br>
+     * である.
+     * </p>
      *
      * @return 帯構造が対角行列ならばtrue
      */

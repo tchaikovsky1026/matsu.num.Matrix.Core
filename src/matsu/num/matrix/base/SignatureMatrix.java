@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -23,8 +23,13 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * よって, 対称行列かつ直交行列である.
  * </p>
  * 
+ * <p>
+ * このインターフェースの実装クラスのインスタンスは,
+ * ビルダ ({@link SignatureMatrix.Builder}) を用いて生成する.
+ * </p>
+ * 
  * @author Matsuura Y.
- * @version 23.4
+ * @version 25.0
  */
 public sealed interface SignatureMatrix
         extends DiagonalMatrixSealed, OrthogonalMatrix

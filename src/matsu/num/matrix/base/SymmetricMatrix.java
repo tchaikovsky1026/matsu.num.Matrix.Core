@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -20,14 +20,14 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
 import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
 
 /**
- * 対称 (密) 行列を扱う.
+ * 一般的な対称 (密) 行列を扱う具象クラス.
  * 
  * <p>
- * このクラスのインスタンスはビルダを用いて生成する.
+ * このクラスのインスタンスはビルダ ({@link SymmetricMatrix.Builder}) を用いて生成する.
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.4
+ * @version 25.0
  */
 public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
         implements EntryReadableMatrix, Symmetric {

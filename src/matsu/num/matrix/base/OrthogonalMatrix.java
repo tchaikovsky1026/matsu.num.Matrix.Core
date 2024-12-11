@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -20,8 +20,13 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * 直交行列であることを表す.
  * 
  * <p>
- * 直交行列は転置行列が逆行列に一致する. <br>
- * したがって, 逆行列は必ず取得できる.
+ * 直交行列は正方行列の一種であり,
+ * Q<sup>-1</sup> = Q<sup>T</sup> であるような行列である.
+ * </p>
+ * 
+ * <p>
+ * この直交行列インターフェースは, その逆行列取得性を
+ * {@link Invertible} で表現している.
  * </p>
  * 
  * <hr>
@@ -32,7 +37,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * {@link Matrix}, {@link Invertible} の規約に従う.
  * </p>
  * 
- * <h2>{@link #transpose()} と {@link #inverse()} の整合に関する規約</h2>
+ * <h3>{@link #transpose()} と {@link #inverse()} の整合に関する規約</h3>
  * 
  * <p>
  * {@link #inverse()} メソッドの戻り値の要素と {@link #transpose()}
@@ -55,14 +60,15 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </blockquote>
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 25.0
+ * @see <a href="https://en.wikipedia.org/wiki/Orthogonal_matrix">
+ *          Orthogonal matrix</a>
  */
 public interface OrthogonalMatrix extends Matrix, Invertible {
 
     /**
-     * この行列の転置行列を返す.
-     * 
-     * @return 転置行列
+     * @implSpec {@link Matrix#transpose()} に準じる. <br>
+     *               {@link OrthogonalMatrix#inverse()} の規約も参照.
      */
     @Override
     public abstract OrthogonalMatrix transpose();
@@ -70,6 +76,19 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
     /**
      * 逆行列を取得する. <br>
      * 必ず逆行列が存在するため, 戻り値は空でない.
+     * 
+     * @implSpec インターフェース説明の通り, {@link Symmetric} が付与されている場合は,
+     *               戻り値のオプショナルの要素は {@code this} でなければならない. <br>
+     *               {@link Symmetric} が付与されていない場合,
+     *               {@link Invertible#inverse()} と合わせて,
+     *               次が {@code true} となることが推奨される.
+     *               <blockquote>
+     *               {@code this.inverse() == this.inverse()} <br>
+     *               {@code this.inverse().get() == this.transpose()} <br>
+     *               {@code this.transpose().inverse().get() == this } <br>
+     *               {@code this.inverse().get().transpose() == this } <br>
+     *               {@code this.inverse().get().inverse().get() == this }
+     *               </blockquote>
      * 
      * @return {@inheritDoc }, 空でない
      */
@@ -131,12 +150,6 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * <u>このメソッドの利用について</u> <br>
      * {@link OrthogonalMatrix} およびそのサブタイプから転置行列や逆行列を得るには,
      * {@link #transpose()}, {@link #inverse()} を呼ぶことが推奨される. <br>
-     * このメソッドは {@link #transpose()} や {@link #inverse()},
-     * {@link SkeletalAsymmetricOrthogonalMatrix#createTranspose()}
-     * の戻り値の生成を補助するために用意されている. <br>
-     * (ただし, {@link #transpose()}, {@link #inverse()}
-     * の複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
-     * 
      * このメソッドは {@link #transpose()} や {@link #inverse()},
      * {@link SkeletalAsymmetricOrthogonalMatrix#createTranspose()}
      * の実装を補助するために用意されている. <br>

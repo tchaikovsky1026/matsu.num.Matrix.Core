@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -15,10 +15,32 @@ import java.util.Optional;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * 置換行列を扱う.
+ * 置換行列を表現する.
+ * 
+ * <p>
+ * 置換行列は,
+ * 各行 &middot; 各列にちょうど1個だけ1を持ち,
+ * それ以外が全て0であるような正方行列であり,
+ * 直交行列である. <br>
+ * 置換行列の転置行列もまた置換行列である. <br>
+ * 置換行列を縦ベクトルに左から作用させると,
+ * 成分を並び変えた縦ベクトルが得られる.
+ * </p>
+ * 
+ * <p>
+ * 置換行列の行列式は1または-1である. <br>
+ * 偶置換のときに1であり, 奇置換のときに-1となる.
+ * </p>
+ * 
+ * <p>
+ * このインターフェースの実装クラスのインスタンスは,
+ * ビルダ ({@link PermutationMatrix.Builder}) を用いて生成する.
+ * </p>
  *
  * @author Matsuura Y.
- * @version 23.4
+ * @version 25.0
+ * @see <a href="https://en.wikipedia.org/wiki/Permutation_matrix">
+ *          Permutation matrix</a>
  */
 public sealed interface PermutationMatrix extends EntryReadableMatrix,
         OrthogonalMatrix, Determinantable permits PermutationMatrixSealed {

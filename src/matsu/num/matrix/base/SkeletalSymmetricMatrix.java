@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.4
+ * 2024.12.10
  */
 package matsu.num.matrix.base;
 
@@ -20,8 +20,30 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * ただし, 戻り値型をサブタイプに限定できるようにするため, ジェネリクスと {@code self()} メソッドの実装を要求する.
  * </p>
  * 
+ * 
+ * <hr>
+ * 
+ * <h2>使用上の注意</h2>
+ * 
+ * <p>
+ * このクラスはインターフェースの骨格実装を提供するためのものであり,
+ * 型として扱うべきではない. <br>
+ * 具体的に, 次のような取り扱いは強く非推奨である.
+ * </p>
+ * 
+ * <ul>
+ * <li>このクラスを変数宣言の型として使う.</li>
+ * <li>{@code instanceof} 演算子により, このクラスのサブタイプかを判定する.</li>
+ * <li>インスタンスをこのクラスにキャストして使用する.</li>
+ * </ul>
+ * 
+ * <p>
+ * このクラスは型としての互換性は積極的には維持されず,
+ * このモジュールや関連モジュールの具象クラスが将来的にこのクラスのサブタイプでなくなる場合がある.
+ * </p>
+ * 
  * @author Matsuura Y.
- * @version 24.0
+ * @version 25.0
  * @param <T> {@code this} の具象型,
  *            再帰的ジェネリクスにより {@code transpose()} の戻り値型をサブタイプで扱う.
  */
@@ -50,6 +72,8 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      * <p>
      * このメソッドの公開, サブクラスからのコールはほとんど全ての場合に不適切である.
      * </p>
+     * 
+     * @implSpec アクセス修飾子を {@code public} にしてはいけない.
      * 
      * @return this
      */

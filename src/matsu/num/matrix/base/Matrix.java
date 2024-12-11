@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.10
  */
 package matsu.num.matrix.base;
 
@@ -74,7 +74,7 @@ import matsu.num.matrix.base.validation.MatrixNotSymmetricException;
  * </blockquote>
  *
  * @author Matsuura Y.
- * @version 23.3
+ * @version 25.0
  */
 public interface Matrix {
 
@@ -123,6 +123,15 @@ public interface Matrix {
 
     /**
      * この行列の転置行列を返す.
+     * 
+     * @implSpec インターフェース説明の通り, {@link Symmetric} が付与されている場合は,
+     *               {@code this} を返さなければならない. <br>
+     *               {@link Symmetric} が付与されていない場合,
+     *               次が {@code true} となることが推奨される.
+     *               <blockquote>
+     *               {@code this.transpose() == this.transpose()} <br>
+     *               {@code this.transpose().transpose() == this }
+     *               </blockquote>
      * 
      * @return 転置行列
      */

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -17,7 +17,7 @@ import java.util.Objects;
  * このクラスのインスタンスは, 行サイズ, 列サイズの値に基づくequalityを有する.
  *
  * @author Matsuura Y.
- * @version 23.3
+ * @version 25.0
  */
 public final class MatrixDimension {
 
@@ -100,7 +100,7 @@ public final class MatrixDimension {
     }
 
     /**
-     * 行列サイズが正方形かどうかを判定.
+     * 行列サイズが正方形かどうかを判定する.
      *
      * @return 行列サイズが正方形であれば {@code true}
      */
@@ -109,9 +109,9 @@ public final class MatrixDimension {
     }
 
     /**
-     * 行列サイズが狭義横長かどうかを判定.
+     * 行列サイズが狭義横長かどうかを判定する.
      *
-     * @return 行列サイズが狭義横長であれば{@code true}
+     * @return 行列サイズが狭義横長であれば {@code true}
      */
     public boolean isHorizontal() {
         return this.shape == MatrixShape.HORIZONTAL;
@@ -152,51 +152,51 @@ public final class MatrixDimension {
     }
 
     /**
-     * 与えられた次元のベクトルを左から演算できるかを判定.
+     * 与えられた次元のベクトルを左から演算できるかを判定する.
      *
      * @param referenceDimension 演算可否を考えるベクトルの次元
-     * @return 左から演算できるなら{@code true}
+     * @return 左から演算できるなら {@code true}
      */
     public boolean leftOperable(VectorDimension referenceDimension) {
         return this.rowVectorDimension.equals(referenceDimension);
     }
 
     /**
-     * 与えられた次元のベクトルを右から演算できるかを判定.
+     * 与えられた次元のベクトルを右から演算できるかを判定する.
      *
      * @param referenceDimension 演算可否を考えるベクトルの次元
-     * @return 右から演算できるなら{@code true}
+     * @return 右から演算できるなら {@code true}
      */
     public boolean rightOperable(VectorDimension referenceDimension) {
         return this.columnVectorDimension.equals(referenceDimension);
     }
 
     /**
-     * 与えられた行indexが行列の内部かを判定.
+     * 与えられた行indexが行列の内部かを判定する.
      *
      * @param rowIndex 行index
-     * @return 行indexが行列の内部なら{@code true}
+     * @return 行indexが行列の内部なら {@code true}
      */
     public boolean isValidRowIndex(int rowIndex) {
         return this.rowVectorDimension.isValidIndex(rowIndex);
     }
 
     /**
-     * 与えられた列indexが行列の内部かを判定.
+     * 与えられた列indexが行列の内部かを判定する.
      *
      * @param columnIndex 列index
-     * @return 列indexが行列の内部なら{@code true}
+     * @return 列indexが行列の内部なら {@code true}
      */
     public boolean isValidColumnIndex(int columnIndex) {
         return this.columnVectorDimension.isValidIndex(columnIndex);
     }
 
     /**
-     * 与えられた(行index, 列index)が行列の内部かを判定.
+     * 与えられた(行index, 列index)が行列の内部かを判定する.
      *
      * @param rowIndex 行index
      * @param columnIndex 列index
-     * @return (行index, 列index)が行列の内部なら{@code true}
+     * @return (行index, 列index)が行列の内部なら {@code true}
      */
     public boolean isValidIndexes(int rowIndex, int columnIndex) {
         return this.isValidRowIndex(rowIndex) && this.isValidColumnIndex(columnIndex);
@@ -365,7 +365,8 @@ public final class MatrixDimension {
      * @return 長方形の行列サイズオブジェクト
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    private static MatrixDimension rectangle(VectorDimension rowDimension, VectorDimension columnDimension) {
+    private static MatrixDimension rectangle(
+            VectorDimension rowDimension, VectorDimension columnDimension) {
         if (rowDimension.equals(columnDimension)) {
             return MatrixDimension.square(rowDimension);
         }

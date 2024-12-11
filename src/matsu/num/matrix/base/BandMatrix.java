@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -19,18 +19,18 @@ import matsu.num.matrix.base.helper.matrix.transpose.TranspositionBandUtil;
  * <h2>実装規約</h2>
  * 
  * <p>
- * {@link Matrix} の規約に従う.
+ * {@link Matrix}, {@link EntryReadableMatrix} の規約に従う.
  * </p>
  * 
  * <p>
  * {@link Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
  * すなわち,
- * {@code this.bandMatrixDimension().isSymmetric() == true}
- * でなければならない.
+ * {@code this.bandMatrixDimension().isSymmetric()}
+ * は {@code true} でなければならない.
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.5
+ * @version 25.0
  */
 public interface BandMatrix extends EntryReadableMatrix {
 

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -21,10 +21,27 @@ import matsu.num.matrix.base.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * 対角行列を扱う.
+ * 対角行列を表現する.
+ * 
+ * <p>
+ * 対角行列は,
+ * 対角成分 (行index = 列index であるような成分)
+ * のみが0でないような正方行列である.
+ * </p>
+ * 
+ * <p>
+ * この対角行列インターフェースは,
+ * 帯幅0であるような帯行列 ({@link BandMatrix})
+ * で表現され,
+ * 対角行列特有の性質
+ * ({@link Symmetric}, {@link Invertible}, {@link Determinantable})
+ * が追加されている.
+ * </p>
  *
  * @author Matsuura Y.
- * @version 23.4
+ * @version 25.0
+ * @see <a href="https://en.wikipedia.org/wiki/Diagonal_matrix">
+ *          Diagonal matrix</a>
  */
 public sealed interface DiagonalMatrix
         extends BandMatrix, Symmetric, Invertible, Determinantable

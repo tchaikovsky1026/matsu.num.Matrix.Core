@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.1
+ * 2024.12.11
  */
 package matsu.num.matrix.base;
 
@@ -14,10 +14,15 @@ import java.util.Optional;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
- * 正方零行列を扱う.
+ * 正方な零行列を扱う具象クラス.
+ * 
+ * <p>
+ * このインターフェースを実装した具象クラスのインスタンスは,
+ * {@link SquareZeroMatrix#matrixOf(MatrixDimension)} メソッドにより得られる.
+ * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
+ * @version 25.0
  */
 public final class SquareZeroMatrix
         extends SkeletalSymmetricMatrix<SquareZeroMatrix>
@@ -40,7 +45,7 @@ public final class SquareZeroMatrix
     }
 
     /**
-     * 与えられた次元(サイズ)の正方零行列を生成する.
+     * 与えられた次元 (サイズ) の正方零行列を返す.
      *
      * @param matrixDimension 行列サイズ
      * @return 正方零行列
