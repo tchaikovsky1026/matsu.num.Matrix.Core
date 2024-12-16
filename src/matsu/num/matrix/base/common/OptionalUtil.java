@@ -5,9 +5,9 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.15
+ * 2024.12.16
  */
-package matsu.num.matrix.base.helper.util;
+package matsu.num.matrix.base.common;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * {@link Optional} に関するユーティリティ.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 25.0
  */
 public final class OptionalUtil {
 

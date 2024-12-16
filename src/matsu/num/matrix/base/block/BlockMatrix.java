@@ -16,7 +16,7 @@ import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.SkeletalAsymmetricMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.ZeroMatrix;
-import matsu.num.matrix.base.helper.util.OptionalUtil;
+import matsu.num.matrix.base.common.OptionalUtil;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
