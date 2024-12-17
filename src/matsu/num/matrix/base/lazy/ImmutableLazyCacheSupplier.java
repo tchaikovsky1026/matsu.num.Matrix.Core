@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.16
+ * 2024.12.17
  */
 package matsu.num.matrix.base.lazy;
 
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.1
  * @param <T> 生成されるインスタンスの型
  */
 public final class ImmutableLazyCacheSupplier<T> implements Supplier<T> {

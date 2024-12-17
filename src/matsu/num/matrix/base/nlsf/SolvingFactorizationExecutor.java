@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.5
+ * 2024.12.17
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -72,9 +72,14 @@ import matsu.num.matrix.base.validation.MatrixStructureAcceptance;
  * {@link #accepts(Matrix)} メソッドの戻り値のタイプがacceptedにならない条件を文書化すべきである.
  * </p>
  * 
+ * <p>
+ * <u><i>このインターフェースは実装を隠ぺいして型を公開するためのものである. <br>
+ * モジュール外での実装は不可.
+ * </i></u>
+ * </p>
  * 
  * @author Matsuura Y.
- * @version 24.0
+ * @version 25.1
  * @param <MT> 対応する行列の型パラメータ
  */
 public sealed interface SolvingFactorizationExecutor<MT extends Matrix>

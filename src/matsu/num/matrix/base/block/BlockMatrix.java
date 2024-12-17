@@ -23,7 +23,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * ブロック行列を表す.
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.1
  */
 public final class BlockMatrix
         extends SkeletalAsymmetricMatrix<Matrix>

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.12
+ * 2024.12.17
  */
 package matsu.num.matrix.base.nlsf;
 
@@ -58,7 +58,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.1
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
  */
