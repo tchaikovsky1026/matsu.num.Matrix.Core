@@ -5,25 +5,25 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2024.12.17
  */
 package matsu.num.matrix.base.block;
 
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
 import matsu.num.matrix.base.SkeletalAsymmetricMatrix;
 import matsu.num.matrix.base.Vector;
 import matsu.num.matrix.base.ZeroMatrix;
-import matsu.num.matrix.base.common.OptionalUtil;
 import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
 
 /**
  * ブロック行列を表す.
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 25.0
  */
 public final class BlockMatrix
         extends SkeletalAsymmetricMatrix<Matrix>
@@ -47,9 +47,9 @@ public final class BlockMatrix
             Matrix[] blockMatrix_j = this.blockMatrix[j];
             for (int k = 0; k < blockMatrix_j.length; k++) {
                 MatrixDimension elementDimension_j_k = blockStructure.elementDimensionAt(j, k);
-                blockMatrix_j[k] = OptionalUtil.orElseGet(
-                        blockStructure.matrixAt(j, k),
-                        () -> ZeroMatrix.matrixOf(elementDimension_j_k));
+                blockMatrix_j[k] = blockStructure.matrixAt(j, k)
+                        .<Matrix> map(UnaryOperator.identity())
+                        .orElseGet(() -> ZeroMatrix.matrixOf(elementDimension_j_k));
             }
         }
     }
