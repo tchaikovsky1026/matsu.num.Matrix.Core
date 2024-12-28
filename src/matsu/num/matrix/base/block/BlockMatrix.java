@@ -10,7 +10,7 @@
 package matsu.num.matrix.base.block;
 
 import java.util.Objects;
-import java.util.function.UnaryOperator;
+import java.util.Optional;
 
 import matsu.num.matrix.base.Matrix;
 import matsu.num.matrix.base.MatrixDimension;
@@ -47,8 +47,12 @@ public final class BlockMatrix
             Matrix[] blockMatrix_j = this.blockMatrix[j];
             for (int k = 0; k < blockMatrix_j.length; k++) {
                 MatrixDimension elementDimension_j_k = blockStructure.elementDimensionAt(j, k);
-                blockMatrix_j[k] = blockStructure.matrixAt(j, k)
-                        .<Matrix> map(UnaryOperator.identity())
+
+                // blockStructure.matrixAtで返される型はOptional<? extends Matrix>であるが,
+                // Optionalクラスの性質上, これをOptional<Matrix>として扱っても問題にならない.
+                @SuppressWarnings("unchecked")
+                Optional<Matrix> matrixAt_jk = ((Optional<Matrix>) blockStructure.matrixAt(j, k));
+                blockMatrix_j[k] = matrixAt_jk
                         .orElseGet(() -> ZeroMatrix.matrixOf(elementDimension_j_k));
             }
         }
