@@ -3,10 +3,11 @@
  * 
  * <p>
  * <i>依存モジュール:</i> <br>
+ * (無し)
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.1
+ * @version 25.2
  */
 module matsu.num.matrix.Base {
     exports matsu.num.matrix.base;

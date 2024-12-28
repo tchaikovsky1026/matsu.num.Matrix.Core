@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.10
+ * 2024.12.26
  */
 package matsu.num.matrix.base;
 
@@ -59,7 +59,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.2
  * @param <TT> 転置行列のタイプ, {@code transpose()}, {@code inverse()}
  *            の戻り値型を具象クラスで限定する.
  */
@@ -145,8 +145,15 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:(%dimension), orthogonal]}
+     * {@code Matrix[dim:%dimension, orthogonal]}
      * </p>
+     * 
+     * @implSpec
+     *               継承先においてオーバーライドを許可する. <br>
+     *               ただし, {@code Matrix["param":%param, %orthogonalType]} や
+     *               {@code Matrix["param"=%param, %orthogonalType]}
+     *               の形が適切であると思われる. <br>
+     *               {@code %orthogonalType} は "unit" などの直交行列の性質を表現する.
      * 
      * @return 説明表現
      */

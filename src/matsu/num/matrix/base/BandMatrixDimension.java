@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2024.12.26
  */
 package matsu.num.matrix.base;
 
@@ -19,7 +19,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * このクラスのインスタンスは, 行列次元, 上側下側帯幅の値に基づく equality を有する.
  *
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.2
  */
 public final class BandMatrixDimension {
 
@@ -215,7 +215,8 @@ public final class BandMatrixDimension {
      * @return ハッシュコード
      */
     private int calcHashCode() {
-        int result = Objects.hashCode(this.matrixDimension);
+        int result = 1;
+        result = 31 * result + Objects.hashCode(this.matrixDimension);
         result = 31 * result + Integer.hashCode(this.lowerBandWidth);
         result = 31 * result + Integer.hashCode(this.upperBandWidth);
         return result;

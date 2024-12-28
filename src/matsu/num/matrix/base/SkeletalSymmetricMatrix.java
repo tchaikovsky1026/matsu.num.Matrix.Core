@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.10
+ * 2024.12.26
  */
 package matsu.num.matrix.base;
 
@@ -43,7 +43,7 @@ import matsu.num.matrix.base.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.2
  * @param <T> {@code this} の具象型,
  *            再帰的ジェネリクスにより {@code transpose()} の戻り値型をサブタイプで扱う.
  */
@@ -106,8 +106,13 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:(%dimension)]}
+     * {@code Matrix[dim:%dimension]}
      * </p>
+     * 
+     * @implSpec
+     *               継承先においてオーバーライドを許可する. <br>
+     *               ただし, {@code Matrix["param":%param]} や
+     *               {@code Matrix["param"=%param]} の形が適切であると思われる.
      * 
      * @return 説明表現
      */

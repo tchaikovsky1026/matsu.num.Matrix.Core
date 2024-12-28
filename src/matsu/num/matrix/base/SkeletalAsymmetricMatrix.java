@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.10
+ * 2024.12.26
  */
 package matsu.num.matrix.base;
 
@@ -54,7 +54,7 @@ import matsu.num.matrix.base.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.2
  * @param <TT> 転置行列のタイプ, {@code transpose()} の戻り値型を具象クラスで限定する.
  */
 public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {
@@ -129,15 +129,18 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     }
 
     /**
-     * <p>
      * このインスタンスの文字列説明表現を返す.
-     * </p>
      * 
      * <p>
      * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
      * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:(%dimension)]}
+     * {@code Matrix[dim:%dimension]}
      * </p>
+     * 
+     * @implSpec
+     *               継承先においてオーバーライドを許可する. <br>
+     *               ただし, {@code Matrix["param":%param]} や
+     *               {@code Matrix["param"=%param]} の形が適切であると思われる.
      * 
      * @return 説明表現
      */

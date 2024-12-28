@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2024.12.26
  */
 package matsu.num.matrix.base;
 
@@ -17,7 +17,7 @@ import java.util.Objects;
  * このクラスのインスタンスは, 行サイズ, 列サイズの値に基づくequalityを有する.
  *
  * @author Matsuura Y.
- * @version 25.0
+ * @version 25.2
  */
 public final class MatrixDimension {
 
@@ -238,7 +238,8 @@ public final class MatrixDimension {
      * @return ハッシュコード
      */
     private int calcHashCode() {
-        int result = Objects.hashCode(this.rowVectorDimension);
+        int result = 1;
+        result = 31 * result + Objects.hashCode(this.rowVectorDimension);
         result = 31 * result + Objects.hashCode(this.columnVectorDimension);
         return result;
     }

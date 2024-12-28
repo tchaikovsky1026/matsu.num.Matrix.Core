@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.1
+ * 2024.12.26
  */
 package matsu.num.matrix.base;
 
@@ -15,7 +15,7 @@ package matsu.num.matrix.base;
  * このクラスのインスタンスは, 次元の値に基づくequality, comparabilityを有する.
  *
  * @author Matsuura Y.
- * @version 23.2
+ * @version 25.2
  */
 public final class VectorDimension implements Comparable<VectorDimension> {
 
@@ -118,7 +118,9 @@ public final class VectorDimension implements Comparable<VectorDimension> {
      * @return このインスタンスのハッシュコード
      */
     private int calcHashCode() {
-        return Integer.hashCode(this.dimension);
+        int result = 1;
+        result = 31 * result + Integer.hashCode(this.dimension);
+        return result;
     }
 
     /**
