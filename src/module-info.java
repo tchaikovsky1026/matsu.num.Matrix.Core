@@ -7,7 +7,7 @@
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.2
+ * @version 26.0
  */
 module matsu.num.matrix.Base {
     exports matsu.num.matrix.base;
