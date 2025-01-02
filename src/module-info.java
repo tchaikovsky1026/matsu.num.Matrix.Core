@@ -9,9 +9,9 @@
  * @author Matsuura Y.
  * @version 26.0
  */
-module matsu.num.matrix.Base {
-    exports matsu.num.matrix.base;
-    exports matsu.num.matrix.base.block;
-    exports matsu.num.matrix.base.nlsf;
-    exports matsu.num.matrix.base.validation;
+module matsu.num.Matrix.Core {
+    exports matsu.num.matrix.core;
+    exports matsu.num.matrix.core.block;
+    exports matsu.num.matrix.core.nlsf;
+    exports matsu.num.matrix.core.validation;
 }

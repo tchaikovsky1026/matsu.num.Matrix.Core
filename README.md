@@ -1,5 +1,5 @@
-# matsu.num.matrix.Base
-`matsu.num.matrix.Base` は Java 言語向けの数値計算における, 線形代数の基本コンポーネントを扱うライブラリである.
+# matsu.num.Matrix.Core
+`matsu.num.Matrix.Core` は Java 言語向けの数値計算における, 線形代数の基本コンポーネントを扱うライブラリである.
 
 現在のバージョンは 26.0 であり, Java 17 に準拠する.
 このバージョンにおいて, 次がサポートされている.

@@ -1,4 +1,4 @@
-# matsu.num.matrix.Base, test
+# matsu.num.Matrix.Core, test
 フォルダ `test` はテストクラスを扱い, ディストリビューションには含まれない.
 
 `JUnit4` フレームワークを使用した自動テストがあり,
