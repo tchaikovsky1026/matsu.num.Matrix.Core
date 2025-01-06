@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
 package matsu.num.matrix.core;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -9,7 +15,7 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 /**
- * {@link VectorDimension}クラスのテスト.
+ * {@link VectorDimension} クラスのテスト.
  */
 @RunWith(Enclosed.class)
 final class VectorDimensionTest {

@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
 package matsu.num.matrix.core;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -15,9 +21,7 @@ import org.junit.runner.RunWith;
 import matsu.num.matrix.core.common.ArraysUtil;
 
 /**
- * {@link Vector}クラスのテスト.
- *
- * @author Matsuura Y.
+ * {@link Vector} クラスのテスト.
  */
 @RunWith(Enclosed.class)
 final class VectorTest {

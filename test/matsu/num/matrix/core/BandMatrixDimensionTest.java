@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
 package matsu.num.matrix.core;
 
 import static matsu.num.matrix.core.helper.value.BandDimensionPositionState.*;
@@ -13,9 +19,7 @@ import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
- * {@link BandMatrixDimension}クラスのテスト.
- *
- * @author Matsuura Y.
+ * {@link BandMatrixDimension} クラスのテスト.
  */
 @RunWith(Enclosed.class)
 final class BandMatrixDimensionTest {
@@ -154,7 +158,7 @@ final class BandMatrixDimensionTest {
             assertThat(bandMatrixDimension.transpose().transpose(), is(BandMatrixDimension.symmetric(4, 2)));
         }
     }
-    
+
     public static class toString表示 {
 
         @Test

@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2024 Matsuura Y.
+ * 
+ * This software is released under the MIT License.
+ * http://opensource.org/licenses/mit-license.php
+ */
 package matsu.num.matrix.core;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -11,9 +17,7 @@ import org.junit.runner.RunWith;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
- * {@link OrthogonalMatrix}インターフェースのテスト.
- *
- * @author Matsuura Y.
+ * {@link OrthogonalMatrix} インターフェースのテスト.
  */
 @RunWith(Enclosed.class)
 final class OrthogonalMatrixTest {
