@@ -17,13 +17,14 @@ import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.SkeletalAsymmetricMatrix;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.ZeroMatrix;
+import matsu.num.matrix.core.common.OptionalUtil;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
  * ブロック行列を表す.
  * 
  * @author Matsuura Y.
- * @version 25.1
+ * @version 26.1
  */
 public final class BlockMatrix
         extends SkeletalAsymmetricMatrix<Matrix>
@@ -48,10 +49,8 @@ public final class BlockMatrix
             for (int k = 0; k < blockMatrix_j.length; k++) {
                 MatrixDimension elementDimension_j_k = blockStructure.elementDimensionAt(j, k);
 
-                // blockStructure.matrixAtで返される型はOptional<? extends Matrix>であるが,
-                // Optionalクラスの性質上, これをOptional<Matrix>として扱っても問題にならない.
-                @SuppressWarnings("unchecked")
-                Optional<Matrix> matrixAt_jk = ((Optional<Matrix>) blockStructure.matrixAt(j, k));
+                Optional<Matrix> matrixAt_jk =
+                        OptionalUtil.changeBoundType(blockStructure.matrixAt(j, k));
                 blockMatrix_j[k] = matrixAt_jk
                         .orElseGet(() -> ZeroMatrix.matrixOf(elementDimension_j_k));
             }
