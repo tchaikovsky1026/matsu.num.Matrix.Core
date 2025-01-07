@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.16
+ * 2025.1.7
  */
 package matsu.num.matrix.core.helper.matrix.transpose;
 
@@ -20,7 +20,7 @@ import matsu.num.matrix.core.Vector;
  * {@link OrthogonalMatrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.5
+ * @version 26.1
  */
 public final class TranspositionOrthogonalUtil {
 
@@ -42,8 +42,8 @@ public final class TranspositionOrthogonalUtil {
             return original;
         }
 
-        if (original instanceof TransposedOrthogonal) {
-            return ((TransposedOrthogonal) original).original.get();
+        if (original instanceof TransposedOrthogonal castedOriginal) {
+            return (castedOriginal).original.get();
         }
 
         return new TransposedOrthogonal(original);

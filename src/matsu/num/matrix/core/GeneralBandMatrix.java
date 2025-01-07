@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.7
  */
 package matsu.num.matrix.core;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 26.1
  */
 public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix> implements BandMatrix {
 
@@ -503,8 +503,8 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
          */
         public static Builder from(final BandMatrix src) {
             final var bandMatrixDimension = src.bandMatrixDimension();
-            if (src instanceof GeneralBandMatrix) {
-                return new Builder((GeneralBandMatrix) src);
+            if (src instanceof GeneralBandMatrix castedSrc) {
+                return new Builder(castedSrc);
             }
 
             final int srcDimension = bandMatrixDimension.dimension().rowAsIntValue();

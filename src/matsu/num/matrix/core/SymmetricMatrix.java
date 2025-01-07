@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.7
  */
 package matsu.num.matrix.core;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 26.1
  */
 public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
         implements EntryReadableMatrix, Symmetric {
@@ -441,8 +441,8 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public static Builder from(final Matrix src) {
-            if (src instanceof EntryReadableMatrix) {
-                return Builder.from((EntryReadableMatrix) src);
+            if (src instanceof EntryReadableMatrix castedSrc) {
+                return Builder.from(castedSrc);
             }
 
             if (!(Objects.requireNonNull(src) instanceof Symmetric)) {
@@ -490,8 +490,8 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
 
             final var srcMatrixDimension = src.matrixDimension();
             final int dimension = srcMatrixDimension.rowAsIntValue();
-            if (src instanceof SymmetricMatrix) {
-                return new Builder((SymmetricMatrix) src);
+            if (src instanceof SymmetricMatrix castedSrc) {
+                return new Builder(castedSrc);
             }
 
             final var outBuilder = new Builder(srcMatrixDimension);

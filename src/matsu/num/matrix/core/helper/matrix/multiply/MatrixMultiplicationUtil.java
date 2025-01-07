@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.11
+ * 2025.1.7
  */
 package matsu.num.matrix.core.helper.matrix.multiply;
 
@@ -29,7 +29,7 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * 行列積に実行を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.4
+ * @version 26.1
  */
 public final class MatrixMultiplicationUtil {
 
@@ -192,9 +192,9 @@ public final class MatrixMultiplicationUtil {
 
             Deque<Matrix> series = new LinkedList<>();
             for (Matrix mx : rawSeries) {
-                if (mx instanceof MultipliedMatrix) {
+                if (mx instanceof MultipliedMatrix castedMx) {
                     //要素Matrixが行列積を表しているなら展開する
-                    series.addAll(((MultipliedMatrix) mx).toSeries());
+                    series.addAll((castedMx).toSeries());
                     continue;
                 }
                 series.add(mx);

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.7
  */
 package matsu.num.matrix.core;
 
@@ -26,7 +26,7 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
+ * @version 26.1
  */
 public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
         implements EntryReadableMatrix {
@@ -488,8 +488,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @see EntryReadableMatrix#acceptValue(double)
          */
         public static Builder from(final Matrix src) {
-            if (src instanceof EntryReadableMatrix) {
-                return Builder.from((EntryReadableMatrix) src);
+            if (src instanceof EntryReadableMatrix castedSrc) {
+                return Builder.from(castedSrc);
             }
 
             final var srcMatrixDimension = src.matrixDimension();
@@ -527,8 +527,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             final var srcMatrixDimension = src.matrixDimension();
             final int srcRowDimension = srcMatrixDimension.rowAsIntValue();
             final int srcColumnDimension = srcMatrixDimension.columnAsIntValue();
-            if (src instanceof GeneralMatrix) {
-                return new Builder((GeneralMatrix) src);
+            if (src instanceof GeneralMatrix castedSrc) {
+                return new Builder(castedSrc);
             }
 
             final var outBuilder = new Builder(srcMatrixDimension);
