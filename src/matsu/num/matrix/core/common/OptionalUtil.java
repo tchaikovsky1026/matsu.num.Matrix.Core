@@ -31,6 +31,7 @@ public final class OptionalUtil {
      * @param <T> 緩和された後の型パラメータ
      * @param src src
      * @return 変換後の {@code Optional}
+     * @throws NullPointerException 引数がnullである場合
      */
     public static <T> Optional<T> changeBoundType(Optional<? extends T> src) {
 
