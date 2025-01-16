@@ -17,7 +17,6 @@ import java.util.Objects;
  * このクラスのインスタンスは, 行サイズ, 列サイズの値に基づくequalityを有する.
  *
  * @author Matsuura Y.
- * @version 25.2
  */
 public final class MatrixDimension {
 

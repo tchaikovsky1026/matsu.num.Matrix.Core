@@ -28,7 +28,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * {@link BlockDiagonalOrthogonalMatrix} の実装.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 final class BlockDiagonalOrthogonalMatrixImpl
         extends SkeletalAsymmetricOrthogonalMatrix<BlockDiagonalOrthogonalMatrix>

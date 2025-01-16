@@ -29,7 +29,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
  */
 public sealed interface SignatureMatrix
         extends DiagonalMatrixSealed, OrthogonalMatrix

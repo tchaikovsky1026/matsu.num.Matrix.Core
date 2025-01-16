@@ -13,7 +13,6 @@ package matsu.num.matrix.core.validation;
  * 行列の構造(サイズ等)が規約を満たしていないことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 21.0
  */
 public final class MatrixFormatMismatchException extends IllegalArgumentException {
 

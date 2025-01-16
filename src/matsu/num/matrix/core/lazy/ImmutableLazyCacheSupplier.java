@@ -28,7 +28,6 @@ import java.util.function.Supplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.1
  * @param <T> 生成されるインスタンスの型
  */
 public final class ImmutableLazyCacheSupplier<T> implements Supplier<T> {

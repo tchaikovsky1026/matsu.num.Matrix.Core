@@ -54,7 +54,6 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプで限定する.
  * @param <ST> 非対称平方根行列の型パラメータ, {@link #asymmSqrt()} の戻り値型をサブタイプで限定する.
  * @param <SIT> 非対称平方根の逆行列の型パラメータ, {@link #inverseAsymmSqrt()} の戻り値型をサブタイプで限定する.

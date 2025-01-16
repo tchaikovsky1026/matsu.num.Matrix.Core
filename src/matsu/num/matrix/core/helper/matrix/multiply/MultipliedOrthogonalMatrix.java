@@ -18,7 +18,6 @@ import matsu.num.matrix.core.OrthogonalMatrix;
  * 直交行列が行列積として表現されていることを通知可能にするインターフェース.
  * 
  * @author Matsuura Y.
- * @version 22.4
  */
 interface MultipliedOrthogonalMatrix extends MultipliedMatrix, OrthogonalMatrix {
 

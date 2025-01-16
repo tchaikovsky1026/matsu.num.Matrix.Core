@@ -29,7 +29,6 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * 直交行列の行列積を扱う.
  * 
  * @author Matsuura Y.
- * @version 22.4
  */
 public final class OrthogonalMatrixMultiplicationUtil {
 

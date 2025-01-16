@@ -13,7 +13,6 @@ package matsu.num.matrix.core.validation;
  * 行列オブジェクトが対称行列でないことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 21.0
  */
 public final class MatrixNotSymmetricException extends IllegalArgumentException {
 

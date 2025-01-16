@@ -38,7 +38,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 25.0
  * @see <a href="https://en.wikipedia.org/wiki/Permutation_matrix">
  *          Permutation matrix</a>
  */

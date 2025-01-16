@@ -15,7 +15,6 @@ package matsu.num.matrix.core;
  * このクラスのインスタンスは, 次元の値に基づくequality, comparabilityを有する.
  *
  * @author Matsuura Y.
- * @version 25.2
  */
 public final class VectorDimension implements Comparable<VectorDimension> {
 

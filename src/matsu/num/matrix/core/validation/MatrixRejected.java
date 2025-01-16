@@ -16,7 +16,6 @@ import java.util.function.Function;
  * 拒絶を表す {@link MatrixStructureAcceptance} を扱う.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 public final class MatrixRejected extends MatrixStructureAcceptance {
 

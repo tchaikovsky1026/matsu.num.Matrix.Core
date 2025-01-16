@@ -19,7 +19,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * このクラスのインスタンスは, 行列次元, 上側下側帯幅の値に基づく equality を有する.
  *
  * @author Matsuura Y.
- * @version 25.2
  */
 public final class BandMatrixDimension {
 

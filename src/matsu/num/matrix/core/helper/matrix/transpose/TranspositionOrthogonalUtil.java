@@ -20,7 +20,6 @@ import matsu.num.matrix.core.Vector;
  * {@link OrthogonalMatrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 26.1
  */
 public final class TranspositionOrthogonalUtil {
 

@@ -21,7 +21,6 @@ import matsu.num.matrix.core.Vector;
  * {@link BandMatrix}の転置を扱う.
  * 
  * @author Matsuura Y.
- * @version 26.1
  */
 public final class TranspositionBandUtil {
 

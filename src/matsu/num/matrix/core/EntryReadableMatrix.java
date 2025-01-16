@@ -35,7 +35,6 @@ import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableU
  * は扱える範囲でなければならない.
  *
  * @author Matsuura Y.
- * @version 25.0
  */
 public interface EntryReadableMatrix extends Matrix {
 

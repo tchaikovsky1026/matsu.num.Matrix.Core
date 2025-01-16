@@ -30,7 +30,6 @@ import matsu.num.matrix.core.helper.matrix.transpose.TranspositionBandUtil;
  * </p>
  *
  * @author Matsuura Y.
- * @version 25.0
  */
 public interface BandMatrix extends EntryReadableMatrix {
 

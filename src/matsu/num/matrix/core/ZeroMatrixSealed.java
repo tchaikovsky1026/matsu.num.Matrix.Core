@@ -15,7 +15,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * {@link ZeroMatrix} の実装をこのモジュール内に制限するためのヘルパーインターフェース.
  * 
  * @author Matsuura Y.
- * @version 23.3
  */
 non-sealed interface ZeroMatrixSealed extends ZeroMatrix {
 

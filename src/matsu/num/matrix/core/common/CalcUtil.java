@@ -13,7 +13,6 @@ package matsu.num.matrix.core.common;
  * 計算補助.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 public final class CalcUtil {
 

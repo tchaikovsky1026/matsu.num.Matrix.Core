@@ -52,7 +52,6 @@ import matsu.num.matrix.core.Symmetric;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
  */
 public sealed interface SymmetrizedSquareTypeSolver extends LUTypeSolver
         permits SkeletalSymmetrizedSquareTypeSolver {

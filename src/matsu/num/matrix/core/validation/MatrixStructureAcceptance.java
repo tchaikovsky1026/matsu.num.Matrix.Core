@@ -19,7 +19,6 @@ package matsu.num.matrix.core.validation;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.3
  */
 public abstract sealed class MatrixStructureAcceptance permits MatrixAccepted, MatrixRejected {
 

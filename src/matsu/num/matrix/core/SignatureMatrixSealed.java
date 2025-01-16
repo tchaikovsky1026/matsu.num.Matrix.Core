@@ -15,7 +15,6 @@ package matsu.num.matrix.core;
  * パッケージプライベートなシールインターフェースを定義する.
  * 
  * @author Matsuura Y.
- * @version 23.1
  */
 non-sealed interface SignatureMatrixSealed extends SignatureMatrix {
 

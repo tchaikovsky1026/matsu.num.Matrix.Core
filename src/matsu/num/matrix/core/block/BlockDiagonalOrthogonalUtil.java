@@ -23,7 +23,6 @@ import matsu.num.matrix.core.validation.ElementsTooManyException;
  * ブロック対角直交行列に関するUtility.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 final class BlockDiagonalOrthogonalUtil {
 

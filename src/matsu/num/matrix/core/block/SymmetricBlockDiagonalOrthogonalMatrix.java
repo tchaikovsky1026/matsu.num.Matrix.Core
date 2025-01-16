@@ -29,7 +29,6 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * 対称な {@link BlockDiagonalOrthogonalMatrix} の実装.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 final class SymmetricBlockDiagonalOrthogonalMatrix
         extends SkeletalSymmetricOrthogonalMatrix<SymmetricBlockDiagonalOrthogonalMatrix>

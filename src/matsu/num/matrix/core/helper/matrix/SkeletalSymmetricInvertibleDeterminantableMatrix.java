@@ -36,7 +36,6 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.0
  * @param <MT> thisのタイプ, 再帰的ジェネリクスによりtransposeの戻り値型を具象クラスにゆだねる.
  * @param <IT> inverseのタイプ
  */

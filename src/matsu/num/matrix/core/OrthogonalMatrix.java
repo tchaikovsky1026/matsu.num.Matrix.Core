@@ -60,7 +60,6 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * </blockquote>
  * 
  * @author Matsuura Y.
- * @version 25.0
  * @see <a href="https://en.wikipedia.org/wiki/Orthogonal_matrix">
  *          Orthogonal matrix</a>
  */

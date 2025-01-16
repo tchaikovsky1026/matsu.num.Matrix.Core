@@ -52,7 +52,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.4
  * @param <T> このブロック構造が扱う行列要素の型
  */
 public final class BlockMatrixStructure<T extends Matrix> {

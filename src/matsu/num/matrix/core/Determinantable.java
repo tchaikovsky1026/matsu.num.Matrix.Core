@@ -34,7 +34,6 @@ package matsu.num.matrix.core;
  * </p>
  *
  * @author Matsuura Y.
- * @version 22.0
  * @see Invertible
  * @see Inversion
  */

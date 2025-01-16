@@ -21,7 +21,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  *
  * @author Matsuura Y.
- * @version 25.2
  */
 public final class UnitMatrix
         extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>

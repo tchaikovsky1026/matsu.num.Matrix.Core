@@ -29,7 +29,6 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * 行列積に実行を扱う.
  * 
  * @author Matsuura Y.
- * @version 26.1
  */
 public final class MatrixMultiplicationUtil {
 

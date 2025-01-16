@@ -14,7 +14,6 @@ package matsu.num.matrix.core;
  * 対称行列仕様であることを示すマーカインターフェース.
  *
  * @author Matsuura Y.
- * @version 21.0
  */
 public interface Symmetric {
 

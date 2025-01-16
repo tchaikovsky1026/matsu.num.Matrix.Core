@@ -25,7 +25,6 @@ package matsu.num.matrix.core;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
  */
 public sealed interface ZeroMatrix extends EntryReadableMatrix
         permits ZeroMatrixSealed {

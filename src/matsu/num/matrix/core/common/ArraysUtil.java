@@ -15,7 +15,6 @@ package matsu.num.matrix.core.common;
  * </p>
  *
  * @author Matsuura Y.
- * @version 21.0
  */
 public final class ArraysUtil {
 

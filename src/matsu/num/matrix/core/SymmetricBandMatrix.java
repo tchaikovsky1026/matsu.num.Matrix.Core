@@ -28,7 +28,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 26.1
  */
 public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<SymmetricBandMatrix>
         implements BandMatrix, Symmetric {

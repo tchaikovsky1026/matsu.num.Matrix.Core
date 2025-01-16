@@ -23,7 +23,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 成分にアクセス可能なブロック行列を表す.
  * 
  * @author Matsuura Y.
- * @version 22.6
  */
 public final class BlockMatrixEntryReadable
         extends SkeletalAsymmetricMatrix<EntryReadableMatrix>

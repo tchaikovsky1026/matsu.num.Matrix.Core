@@ -58,7 +58,6 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.1
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプにゆだねる.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプにゆだねる.
  */

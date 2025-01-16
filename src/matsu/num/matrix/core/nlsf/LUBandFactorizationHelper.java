@@ -26,7 +26,6 @@ import matsu.num.matrix.core.MatrixDimension;
  * </p>
  *
  * @author Matsuura Y.
- * @version 23.0
  */
 final class LUBandFactorizationHelper {
 

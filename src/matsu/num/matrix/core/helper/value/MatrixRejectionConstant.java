@@ -26,7 +26,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.4
  */
 public enum MatrixRejectionConstant {
 

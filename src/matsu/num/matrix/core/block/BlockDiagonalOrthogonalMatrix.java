@@ -31,7 +31,6 @@ import matsu.num.matrix.core.OrthogonalMatrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 22.4
  */
 interface BlockDiagonalOrthogonalMatrix extends OrthogonalMatrix {
 

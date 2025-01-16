@@ -13,7 +13,6 @@ package matsu.num.matrix.core.validation;
  * 有効要素数が多すぎて対応できないことを報告する例外.
  * 
  * @author Matsuura Y.
- * @version 21.0
  */
 public class ElementsTooManyException extends IllegalArgumentException {
 

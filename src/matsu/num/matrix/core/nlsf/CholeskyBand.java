@@ -40,7 +40,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 public final class CholeskyBand
         extends SkeletalSymmetrizedSquareTypeSolver<BandMatrix, Matrix, Matrix> {

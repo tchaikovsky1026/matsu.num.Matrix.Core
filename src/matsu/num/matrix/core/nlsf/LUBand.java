@@ -34,7 +34,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
 

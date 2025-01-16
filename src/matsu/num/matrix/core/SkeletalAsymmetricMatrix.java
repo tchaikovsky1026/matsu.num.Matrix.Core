@@ -54,7 +54,6 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.2
  * @param <TT> 転置行列のタイプ, {@code transpose()} の戻り値型を具象クラスで限定する.
  */
 public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {

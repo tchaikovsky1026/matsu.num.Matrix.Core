@@ -74,7 +74,6 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * </blockquote>
  *
  * @author Matsuura Y.
- * @version 25.0
  */
 public interface Matrix {
 

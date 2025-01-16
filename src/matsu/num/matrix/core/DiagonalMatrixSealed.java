@@ -13,7 +13,6 @@ package matsu.num.matrix.core;
  * {@link DiagonalMatrix} の実装をこのモジュール内に制限するためのヘルパーインターフェース.
  * 
  * @author Matsuura Y.
- * @version 22.0
  */
 non-sealed interface DiagonalMatrixSealed extends DiagonalMatrix {
 

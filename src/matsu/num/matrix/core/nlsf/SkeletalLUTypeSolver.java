@@ -48,7 +48,6 @@ import matsu.num.matrix.core.Matrix;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプで限定する.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプで限定する.
  */

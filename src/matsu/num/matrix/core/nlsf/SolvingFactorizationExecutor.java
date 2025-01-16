@@ -79,7 +79,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.1
  * @param <MT> 対応する行列の型パラメータ
  */
 public sealed interface SolvingFactorizationExecutor<MT extends Matrix>

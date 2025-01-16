@@ -29,7 +29,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * ただし, P: 置換行列, L: 単位 (対角成分が1の) 下三角行列, D: 対角行列, U: 単位上三角行列.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, Matrix> {
 

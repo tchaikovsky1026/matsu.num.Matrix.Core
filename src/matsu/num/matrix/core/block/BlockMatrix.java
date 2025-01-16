@@ -24,7 +24,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * ブロック行列を表す.
  * 
  * @author Matsuura Y.
- * @version 26.1
  */
 public final class BlockMatrix
         extends SkeletalAsymmetricMatrix<Matrix>

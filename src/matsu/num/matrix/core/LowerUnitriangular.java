@@ -30,7 +30,6 @@ import java.util.Optional;
  * </p>
  *
  * @author Matsuura Y.
- * @version 25.0
  * @see EntryReadableMatrix
  * @see Invertible
  */

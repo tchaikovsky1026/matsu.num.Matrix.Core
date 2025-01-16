@@ -14,7 +14,6 @@ package matsu.num.matrix.core.validation;
  * シングルトンを強制するため, このクラスを公開してはならない.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 final class MatrixAccepted extends MatrixStructureAcceptance {
 

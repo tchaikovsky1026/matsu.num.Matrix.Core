@@ -24,7 +24,6 @@ import matsu.num.matrix.core.Vector;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 26.1
  */
 public final class TranspositionUtil {
 

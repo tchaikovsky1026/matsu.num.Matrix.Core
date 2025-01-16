@@ -16,7 +16,6 @@ import java.util.Optional;
  * {@link Optional} インスタンスの操作を扱うユーティリティクラス.
  * 
  * @author Matsuura Y.
- * @version 26.1
  */
 public final class OptionalUtil {
 

@@ -66,7 +66,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */

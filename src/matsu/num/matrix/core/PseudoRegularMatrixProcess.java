@@ -13,7 +13,6 @@ package matsu.num.matrix.core;
  * 正則な(もしくはそれに準ずる)行列の処理に関する基本定数に関する.
  * 
  * @author Matsuura Y.
- * @version 21.0
  */
 public final class PseudoRegularMatrixProcess {
 

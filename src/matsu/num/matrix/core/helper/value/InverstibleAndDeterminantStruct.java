@@ -18,7 +18,6 @@ import matsu.num.matrix.core.Matrix;
  * 逆行列と行列式がセットになった概念を扱う.
  * 
  * @author Matsuura Y.
- * @version 21.0
  * @param <T> 逆行列の型パラメータ
  */
 public final class InverstibleAndDeterminantStruct<T extends Matrix> {

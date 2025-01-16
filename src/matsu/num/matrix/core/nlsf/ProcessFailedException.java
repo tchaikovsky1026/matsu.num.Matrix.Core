@@ -13,7 +13,6 @@ package matsu.num.matrix.core.nlsf;
  * 行列に対する処理が正常に行われなかったことを報告する例外.
  *
  * @author Matsuura Y.
- * @version 22.2
  */
 final class ProcessFailedException extends Exception {
 

@@ -18,7 +18,6 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * ブロック行列の構築に関するユーティリティクラス.
  * 
  * @author Matsuura Y.
- * @version 23.0
  */
 public final class BlockMatrixSupport {
 

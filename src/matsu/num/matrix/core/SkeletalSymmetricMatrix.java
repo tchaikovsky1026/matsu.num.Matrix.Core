@@ -43,7 +43,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.2
  * @param <T> {@code this} の具象型,
  *            再帰的ジェネリクスにより {@code transpose()} の戻り値型をサブタイプで扱う.
  */

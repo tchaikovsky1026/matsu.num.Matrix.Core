@@ -38,7 +38,6 @@ import matsu.num.matrix.core.Inversion;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 23.2
  */
 public sealed interface LUTypeSolver
         extends Inversion, Determinantable

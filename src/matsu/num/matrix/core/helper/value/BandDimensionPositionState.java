@@ -15,7 +15,6 @@ import matsu.num.matrix.core.BandMatrixDimension;
  * 帯行列上での位置属性(対角位置, 下側帯内, 上側帯内, 帯外, 行列外)を表す列挙型.
  * 
  * @author Matsuura Y.
- * @version 21.0
  */
 public enum BandDimensionPositionState {
     /**

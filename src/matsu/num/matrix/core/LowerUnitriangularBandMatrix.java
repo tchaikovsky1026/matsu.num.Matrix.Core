@@ -27,7 +27,6 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * @author Matsuura Y.
- * @version 25.0
  */
 public final class LowerUnitriangularBandMatrix
         extends SkeletalAsymmetricMatrix<BandMatrix> implements LowerUnitriangular, BandMatrix {
