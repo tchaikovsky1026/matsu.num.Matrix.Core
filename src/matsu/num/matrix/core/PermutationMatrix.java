@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.17
  */
 package matsu.num.matrix.core;
 
@@ -29,7 +29,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * <p>
  * 置換行列の行列式は1または-1である. <br>
- * 偶置換のときに1であり, 奇置換のときに-1となる.
+ * 偶置換のときに1であり, 奇置換のときに-1となる. <br>
+ * 偶奇は {@link #isEven()} により判定可能である.
  * </p>
  * 
  * <p>
@@ -45,7 +46,7 @@ public sealed interface PermutationMatrix extends EntryReadableMatrix,
         OrthogonalMatrix, Determinantable permits PermutationMatrixSealed {
 
     /**
-     * 行列の偶奇を取得する.
+     * 置換の偶奇を取得する.
      *
      * @return 偶置換のときtrue
      */
