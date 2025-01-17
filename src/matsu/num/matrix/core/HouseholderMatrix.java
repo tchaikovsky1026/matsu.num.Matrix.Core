@@ -6,11 +6,9 @@
  */
 
 /*
- * 2025.1.16
+ * 2025.1.17
  */
 package matsu.num.matrix.core;
-
-import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
  * Householder 行列を扱う.
@@ -29,40 +27,14 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * @author Matsuura Y.
  */
-public final class HouseholderMatrix
-        extends SkeletalSymmetricOrthogonalMatrix<HouseholderMatrix>
-        implements OrthogonalMatrix, Determinantable, Symmetric {
-
-    private final MatrixDimension matrixDimension;
-    private final Vector reflectionVector;
-
-    /**
-     * 唯一の非公開のコンストラクタ. <br>
-     * 鏡映ベクトルを与えてHouseholder行列を構築する.
-     * 
-     * @param reflectionVector 鏡映ベクトル
-     * @throws IllegalArgumentException 鏡映ベクトルのノルムが0の場合
-     * @throws NullPointerException 引数にnullが含まれる場合
-     */
-    private HouseholderMatrix(Vector reflectionVector) {
-
-        this.reflectionVector = reflectionVector.normalizedEuclidean();
-        if (this.reflectionVector.normMax() == 0d) {
-            throw new IllegalArgumentException("大きさが0");
-        }
-        this.matrixDimension = MatrixDimension.square(reflectionVector.vectorDimension());
-    }
-
-    @Override
-    public MatrixDimension matrixDimension() {
-        return this.matrixDimension;
-    }
+public interface HouseholderMatrix
+        extends OrthogonalMatrix, Determinantable, Symmetric {
 
     /**
      * @return {@code -1d}
      */
     @Override
-    public double determinant() {
+    public default double determinant() {
         return -1d;
     }
 
@@ -70,7 +42,7 @@ public final class HouseholderMatrix
      * @return {@code 0d}
      */
     @Override
-    public double logAbsDeterminant() {
+    public default double logAbsDeterminant() {
         return 0d;
     }
 
@@ -78,50 +50,8 @@ public final class HouseholderMatrix
      * @return {@code -1}
      */
     @Override
-    public int signOfDeterminant() {
+    public default int signOfDeterminant() {
         return -1;
-    }
-
-    /**
-     * @throws MatrixFormatMismatchException {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
-     */
-    @Override
-    public Vector operate(final Vector operand) {
-        double ip = this.reflectionVector.dot(operand);
-        return operand.plusCTimes(reflectionVector, -2 * ip);
-    }
-
-    /**
-     * このオブジェクトの文字列説明表現を返す.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:(%dimension), householder]}
-     * </p>
-     * 
-     * @return 説明表現
-     */
-    @Override
-    public String toString() {
-        return String.format(
-                "Matrix[dim:%s, householder]",
-                this.matrixDimension());
-    }
-
-    /**
-     * -
-     * 
-     * <p>
-     * (外部からの呼び出し不可)
-     * </p>
-     * 
-     * @return -
-     */
-    @Override
-    protected HouseholderMatrix self() {
-        return this;
     }
 
     /**
@@ -141,6 +71,6 @@ public final class HouseholderMatrix
      * @throws NullPointerException 引数に null が含まれる場合
      */
     public static HouseholderMatrix from(Vector reflection) {
-        return new HouseholderMatrix(reflection);
+        return HouseholderMatrixImplementationHelper.from(reflection);
     }
 }
