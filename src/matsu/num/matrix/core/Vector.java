@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2025.1.17
  */
 package matsu.num.matrix.core;
 
