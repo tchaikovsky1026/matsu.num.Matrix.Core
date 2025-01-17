@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.26
+ * 2025.1.17
  */
 package matsu.num.matrix.core;
 
@@ -112,6 +112,17 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<
 
     /**
      * {@inheritDoc}
+     * 
+     * <p>
+     * <i>
+     * <u>
+     * この振る舞いは {@link Object#equals(Object)}
+     * の振る舞いと同一であるので本来は override する必要がないが,
+     * {@code final} 修飾するために override した.
+     * </u>
+     * </i>
+     * </p>
+     * 
      */
     @Override
     public final boolean equals(Object obj) {
@@ -120,6 +131,18 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<
 
     /**
      * {@inheritDoc}
+     * 
+     * <p>
+     * <i>
+     * <u>
+     * この振る舞いは {@link Object#hashCode()}
+     * の振る舞いと同一であるので本来は override する必要がないが,
+     * {@link Object#equals(Object)} を override しているため
+     * {@link #hashCode()} も override した.
+     * </u>
+     * </i>
+     * </p>
+     * 
      */
     @Override
     public final int hashCode() {
