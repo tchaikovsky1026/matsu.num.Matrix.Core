@@ -349,6 +349,16 @@ public final class Vector {
      * 自身と相手とが等価であるかどうかを判定する. <br>
      * identity に基づく equality である.
      * 
+     * <p>
+     * <i>
+     * <u>
+     * この振る舞いは {@link Object#equals(Object)}
+     * の振る舞いと同一であるので本来は override する必要がないが,
+     * {@link Vector} の equality のルールを明示するために override した.
+     * </u>
+     * </i>
+     * </p>
+     * 
      * @param obj 相手
      * @return 相手が自信と等しいなら true
      */
@@ -359,6 +369,17 @@ public final class Vector {
 
     /**
      * ハッシュコードを返す.
+     * 
+     * <p>
+     * <i>
+     * <u>
+     * この振る舞いは {@link Object#hashCode()}
+     * の振る舞いと同一であるので本来は override する必要がないが,
+     * {@link Object#equals(Object)} を override しているため
+     * {@link #hashCode()} も override した.
+     * </u>
+     * </i>
+     * </p>
      * 
      * @return ハッシュコード
      */
