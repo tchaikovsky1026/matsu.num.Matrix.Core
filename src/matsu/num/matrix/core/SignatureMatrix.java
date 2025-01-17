@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.17
  */
 package matsu.num.matrix.core;
 
@@ -20,7 +20,10 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * <p>
  * Signature matrix とは, 対角成分が1または-1の対角行列である. <br>
- * よって, 対称行列かつ直交行列である.
+ * よって, 対称行列かつ直交行列である. <br>
+ * 対角成分の-1の個数が奇数のときは行列式は-1であり, 
+ * 対角成分の-1の個数が偶数のときは行列式は1である. <br>
+ * 対角成分の-1の個数の偶奇は {@link #isEven()} により判定可能である.
  * </p>
  * 
  * <p>
@@ -41,9 +44,9 @@ public sealed interface SignatureMatrix
     public abstract Optional<? extends SignatureMatrix> inverse();
 
     /**
-     * Signature matrix の対角成分に並ぶ-1の数の偶奇を取得する.
+     * Signature matrix の対角成分に並ぶ-1の個数の偶奇を取得する.
      *
-     * @return -1が偶数個のときtrue
+     * @return 偶数個のときtrue
      */
     public abstract boolean isEven();
 
