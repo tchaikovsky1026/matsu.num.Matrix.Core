@@ -65,6 +65,10 @@ public final class Vector {
     /**
      * 内部から呼ばれる.
      * 必要なパラメータが渡される.
+     * 
+     * <p>
+     * entry配列はコピーされないので, 参照が漏洩していないものを渡さなければならない.
+     * </p>
      */
     private Vector(final VectorDimension vectorDimension, final double[] entry, boolean normalized) {
         this.vectorDimension = vectorDimension;
@@ -342,6 +346,19 @@ public final class Vector {
         Double value1 = Double.valueOf(1d);
         out.norm2 = value1;
         out.norm2Square = value1;
+        return out;
+    }
+
+    /**
+     * 自身の加法逆元 (-1倍) を返す.
+     * 
+     * @return 加法逆元
+     */
+    public Vector negated() {
+        var out = new Vector(this.vectorDimension, ArraysUtil.negated(this.entry), this.normalized);
+        out.norm1 = this.norm1;
+        out.norm2 = this.norm2;
+        out.norm2Square = this.norm2Square;
         return out;
     }
 

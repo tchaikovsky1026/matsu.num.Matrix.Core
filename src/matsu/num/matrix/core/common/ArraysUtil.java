@@ -380,4 +380,23 @@ public final class ArraysUtil {
         ArraysUtil.multiply(canoVector, 1 / canoNorm2);
         return canoVector;
     }
+
+    /**
+     * <p>
+     * 引数のベクトルの加法逆元を計算する. <br>
+     * 不正値を含む場合, 同サイズの配列が返るが結果は不定である.
+     * </p>
+     * 
+     * @param vector ベクトル
+     * @return 引数の加法逆元
+     * @throws NullPointerException 引数にnullが含まれる場合
+     */
+    public static final double[] negated(double[] vector) {
+        double[] copyVector = vector.clone();
+        for (int i = 0; i < copyVector.length; i++) {
+            copyVector[i] = -copyVector[i];
+        }
+
+        return copyVector;
+    }
 }

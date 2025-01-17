@@ -204,6 +204,47 @@ final class VectorTest {
         }
 
         @Test
+        public void test_Vectorのnegatedはm1_m2_3() {
+            Vector resultVector = vector.negated();
+
+            assertThat(resultVector.entry(), is(new double[] { -1, -2, 3 }));
+        }
+
+        @Test
+        public void test_Vectorのnegatedのノルムの値を確認する() {
+            //arrange: 元となるベクトルのノルム計算を呼び出しておく
+            vector.norm1();
+            vector.norm2();
+            vector.norm2Square();
+            vector.normMax();
+
+            //act
+            Vector resultVector = vector.negated();
+
+            //assert
+            assertThat(resultVector.norm1(), is(6d));
+            assertThat(resultVector.norm2(), is(closeTo(Math.sqrt(14.0), 1E-12)));
+            assertThat(resultVector.norm2Square(), is(14d));
+            assertThat(resultVector.normMax(), is(3d));
+        }
+
+        @Test
+        public void test_Vectorのnegatedの正規化のノルムを確かめる() {
+            //arrange: 元となるベクトルのノルム計算を呼び出しておく
+            vector.norm1();
+            vector.norm2();
+            vector.norm2Square();
+            vector.normMax();
+
+            //act
+            Vector resultVector = vector.negated().normalizedEuclidean();
+
+            //assert
+            assertThat(resultVector.norm2(), is(1d));
+            assertThat(resultVector.norm2Square(), is(1d));
+        }
+
+        @Test
         public void test_Vectorの1ノルムは6() {
             assertThat(vector.norm1(), is(6.0));
         }
