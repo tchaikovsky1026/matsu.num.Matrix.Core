@@ -20,23 +20,23 @@ import matsu.num.matrix.core.VectorDimension;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
- * {@link HouseholderMatrixImplementationHelper} クラスのテスト.
+ * {@link HouseholderMatrixFactory} クラスのテスト.
  */
 @RunWith(Enclosed.class)
-final class HouseholderMatrixImplementationHelperTest {
+final class HouseholderMatrixFactoryTest {
 
-    public static final Class<?> TEST_CLASS = HouseholderMatrixImplementationHelper.class;
+    public static final Class<?> TEST_CLASS = HouseholderMatrixFactory.class;
 
     public static class 生成に関する例外テスト {
 
         @Test(expected = IllegalArgumentException.class)
         public void test_零ベクトルはIAEx_次元1() {
-            HouseholderMatrixImplementationHelper.from(Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).build());
+            HouseholderMatrixFactory.from(Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).build());
         }
 
         @Test(expected = IllegalArgumentException.class)
         public void test_零ベクトルはIAEx_次元2() {
-            HouseholderMatrixImplementationHelper.from(Vector.Builder.zeroBuilder(VectorDimension.valueOf(2)).build());
+            HouseholderMatrixFactory.from(Vector.Builder.zeroBuilder(VectorDimension.valueOf(2)).build());
         }
     }
 
@@ -50,7 +50,7 @@ final class HouseholderMatrixImplementationHelperTest {
             builder.setEntryValue(1, 1, 1, 1, 1);
             Vector reflection = builder.build();
 
-            mxH = HouseholderMatrixImplementationHelper.from(reflection);
+            mxH = HouseholderMatrixFactory.from(reflection);
         }
 
         @Test
@@ -84,7 +84,7 @@ final class HouseholderMatrixImplementationHelperTest {
             builder.setValue(0, -2d);
             var reflection = builder.build();
 
-            mxH = HouseholderMatrixImplementationHelper.from(reflection);
+            mxH = HouseholderMatrixFactory.from(reflection);
         }
 
         @Test(expected = MatrixFormatMismatchException.class)
@@ -116,7 +116,7 @@ final class HouseholderMatrixImplementationHelperTest {
             builder.setValue(0, 1);
 
             System.out.println(TEST_CLASS.getName());
-            System.out.println(HouseholderMatrixImplementationHelper.from(builder.build()));
+            System.out.println(HouseholderMatrixFactory.from(builder.build()));
             System.out.println();
         }
     }

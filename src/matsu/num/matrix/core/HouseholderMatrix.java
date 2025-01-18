@@ -10,7 +10,7 @@
  */
 package matsu.num.matrix.core;
 
-import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixImplementationHelper;
+import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixFactory;
 
 /**
  * Householder 行列を扱う.
@@ -73,6 +73,6 @@ public interface HouseholderMatrix
      * @throws NullPointerException 引数に null が含まれる場合
      */
     public static HouseholderMatrix from(Vector reflection) {
-        return HouseholderMatrixImplementationHelper.from(reflection);
+        return HouseholderMatrixFactory.from(reflection);
     }
 }

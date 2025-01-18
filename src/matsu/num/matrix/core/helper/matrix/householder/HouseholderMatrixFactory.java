@@ -22,9 +22,9 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * @author Matsuura Y.
  */
-public final class HouseholderMatrixImplementationHelper {
+public final class HouseholderMatrixFactory {
 
-    private HouseholderMatrixImplementationHelper() {
+    private HouseholderMatrixFactory() {
         //インスタンス化不可
         throw new AssertionError();
     }
