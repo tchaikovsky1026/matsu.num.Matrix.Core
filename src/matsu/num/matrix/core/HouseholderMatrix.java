@@ -6,11 +6,12 @@
  */
 
 /*
- * 2025.1.17
+ * 2025.1.18
  */
 package matsu.num.matrix.core;
 
 import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixFactory;
+import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixSealed;
 
 /**
  * Householder 行列を扱う.
@@ -29,8 +30,9 @@ import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixFactory;
  * 
  * @author Matsuura Y.
  */
-public interface HouseholderMatrix
-        extends OrthogonalMatrix, Determinantable, Symmetric {
+public sealed interface HouseholderMatrix
+        extends OrthogonalMatrix, Determinantable, Symmetric
+        permits HouseholderMatrixSealed {
 
     /**
      * @return {@code -1d}

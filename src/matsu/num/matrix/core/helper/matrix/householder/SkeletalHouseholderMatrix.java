@@ -23,7 +23,7 @@ import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
  * @author Matsuura Y.
  */
 abstract class SkeletalHouseholderMatrix<T extends SkeletalHouseholderMatrix<T>>
-        extends SkeletalSymmetricOrthogonalMatrix<T> implements HouseholderMatrix {
+        extends SkeletalSymmetricOrthogonalMatrix<T> implements HouseholderMatrixSealed {
 
     /**
      * 唯一のコンストラクタ.
