@@ -8,7 +8,7 @@
 /*
  * 2025.1.18
  */
-package matsu.num.matrix.core.helper.matrix.householder;
+package matsu.num.matrix.core.sealed;
 
 import matsu.num.matrix.core.HouseholderMatrix;
 

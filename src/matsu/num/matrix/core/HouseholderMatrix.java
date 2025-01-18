@@ -11,7 +11,7 @@
 package matsu.num.matrix.core;
 
 import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixFactory;
-import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixSealed;
+import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
 
 /**
  * Householder 行列を扱う.

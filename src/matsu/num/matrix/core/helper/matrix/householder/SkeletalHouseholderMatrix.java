@@ -12,6 +12,7 @@ package matsu.num.matrix.core.helper.matrix.householder;
 
 import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
 
 /**
  * {@link HouseholderMatrix} の骨格実装を扱う.
