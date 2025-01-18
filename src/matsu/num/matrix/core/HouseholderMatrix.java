@@ -73,6 +73,6 @@ public interface HouseholderMatrix
      * @throws NullPointerException 引数に null が含まれる場合
      */
     public static HouseholderMatrix from(Vector reflection) {
-        return HouseholderMatrixFactory.from(reflection);
+        return HouseholderMatrixFactory.createFrom(reflection);
     }
 }

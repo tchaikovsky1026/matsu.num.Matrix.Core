@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
-import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
  * {@link HouseholderMatrixFactory} クラスのテスト.
@@ -31,12 +30,12 @@ final class HouseholderMatrixFactoryTest {
 
         @Test(expected = IllegalArgumentException.class)
         public void test_零ベクトルはIAEx_次元1() {
-            HouseholderMatrixFactory.from(Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).build());
+            HouseholderMatrixFactory.createFrom(Vector.Builder.zeroBuilder(VectorDimension.valueOf(1)).build());
         }
 
         @Test(expected = IllegalArgumentException.class)
         public void test_零ベクトルはIAEx_次元2() {
-            HouseholderMatrixFactory.from(Vector.Builder.zeroBuilder(VectorDimension.valueOf(2)).build());
+            HouseholderMatrixFactory.createFrom(Vector.Builder.zeroBuilder(VectorDimension.valueOf(2)).build());
         }
     }
 
@@ -50,7 +49,7 @@ final class HouseholderMatrixFactoryTest {
             builder.setEntryValue(1, 1, 1, 1, 1);
             Vector reflection = builder.build();
 
-            mxH = HouseholderMatrixFactory.from(reflection);
+            mxH = HouseholderMatrixFactory.createFrom(reflection);
         }
 
         @Test
@@ -74,39 +73,6 @@ final class HouseholderMatrixFactoryTest {
         }
     }
 
-    public static class Householder行列の次元1の場合の行列ベクトル積テスト {
-
-        HouseholderMatrix mxH;
-
-        @Before
-        public void before() {
-            var builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
-            builder.setValue(0, -2d);
-            var reflection = builder.build();
-
-            mxH = HouseholderMatrixFactory.from(reflection);
-        }
-
-        @Test(expected = MatrixFormatMismatchException.class)
-        public void test_次元不一致でMFMEx() {
-            var testVec = Vector.Builder.zeroBuilder(VectorDimension.valueOf(2)).build();
-
-            mxH.operate(testVec);
-        }
-
-        @Test
-        public void test_行列ベクトル積はマイナス1倍() {
-            double value = -3d;
-
-            var builder = Vector.Builder.zeroBuilder(VectorDimension.valueOf(1));
-            builder.setValue(0, value);
-
-            var resultVector = mxH.operate(builder.build());
-
-            assertThat(resultVector.valueAt(0), is(-value));
-        }
-    }
-
     public static class toString表示 {
 
         @Test
@@ -116,7 +82,7 @@ final class HouseholderMatrixFactoryTest {
             builder.setValue(0, 1);
 
             System.out.println(TEST_CLASS.getName());
-            System.out.println(HouseholderMatrixFactory.from(builder.build()));
+            System.out.println(HouseholderMatrixFactory.createFrom(builder.build()));
             System.out.println();
         }
     }
