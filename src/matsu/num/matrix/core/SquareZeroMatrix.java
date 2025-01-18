@@ -5,12 +5,14 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.18
  */
 package matsu.num.matrix.core;
 
 import java.util.Optional;
 
+import matsu.num.matrix.core.sealed.DiagonalMatrixSealed;
+import matsu.num.matrix.core.sealed.ZeroMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**

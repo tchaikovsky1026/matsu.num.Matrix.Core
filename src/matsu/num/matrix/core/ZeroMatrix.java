@@ -9,6 +9,8 @@
  */
 package matsu.num.matrix.core;
 
+import matsu.num.matrix.core.sealed.ZeroMatrixSealed;
+
 /**
  * 一般的な矩形 (長方形) の零行列を表現する.
  * 
@@ -40,6 +42,6 @@ public sealed interface ZeroMatrix extends EntryReadableMatrix
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static ZeroMatrix matrixOf(final MatrixDimension matrixDimension) {
-        return new ZeroMatrixSealed.Impl(matrixDimension);
+        return new ZeroMatrixImpl(matrixDimension);
     }
 }

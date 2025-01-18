@@ -12,6 +12,7 @@ package matsu.num.matrix.core;
 import java.util.Objects;
 import java.util.Optional;
 
+import matsu.num.matrix.core.sealed.PermutationMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
