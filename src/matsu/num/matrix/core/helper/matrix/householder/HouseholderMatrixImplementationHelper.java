@@ -6,10 +6,15 @@
  */
 
 /*
- * 2025.1.17
+ * 2025.1.18
  */
-package matsu.num.matrix.core;
+package matsu.num.matrix.core.helper.matrix.householder;
 
+import matsu.num.matrix.core.HouseholderMatrix;
+import matsu.num.matrix.core.MatrixDimension;
+import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.Vector;
+import matsu.num.matrix.core.VectorDimension;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -17,7 +22,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * @author Matsuura Y.
  */
-final class HouseholderMatrixImplementationHelper {
+public final class HouseholderMatrixImplementationHelper {
 
     private HouseholderMatrixImplementationHelper() {
         //インスタンス化不可
@@ -32,7 +37,7 @@ final class HouseholderMatrixImplementationHelper {
      * @throws IllegalArgumentException 鏡映ベクトルのノルムが0の場合
      * @throws NullPointerException 引数に null が含まれる場合
      */
-    static HouseholderMatrix from(Vector reflection) {
+    public static HouseholderMatrix from(Vector reflection) {
         //ベクトルの規格化と零ベクトル検証を行う.
         var normalizedReflectionVector = reflection.normalizedEuclidean();
         if (normalizedReflectionVector.normMax() == 0d) {

@@ -10,6 +10,8 @@
  */
 package matsu.num.matrix.core;
 
+import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixImplementationHelper;
+
 /**
  * Householder 行列を扱う.
  * 

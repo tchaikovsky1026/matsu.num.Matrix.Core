@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
-package matsu.num.matrix.core;
+package matsu.num.matrix.core.helper.matrix.householder;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -14,6 +14,9 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.core.HouseholderMatrix;
+import matsu.num.matrix.core.Vector;
+import matsu.num.matrix.core.VectorDimension;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
