@@ -5,9 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.27
+ * 2025.1.18
  */
-package matsu.num.matrix.core;
+package matsu.num.matrix.core.sealed;
+
+import matsu.num.matrix.core.SignatureMatrix;
 
 /**
  * {@link SignatureMatrix} の実装をこのモジュール内に制限するためのヘルパーインターフェース. <br>
@@ -16,6 +18,6 @@ package matsu.num.matrix.core;
  * 
  * @author Matsuura Y.
  */
-non-sealed interface SignatureMatrixSealed extends SignatureMatrix {
+public non-sealed interface SignatureMatrixSealed extends SignatureMatrix {
 
 }

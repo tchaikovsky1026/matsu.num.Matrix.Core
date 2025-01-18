@@ -5,9 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.27
+ * 2025.1.18
  */
-package matsu.num.matrix.core;
+package matsu.num.matrix.core.sealed;
+
+import matsu.num.matrix.core.PermutationMatrix;
 
 /**
  * {@link PermutationMatrix} の実装をこのモジュール内に制限するためのヘルパーインターフェース. <br>
@@ -16,6 +18,6 @@ package matsu.num.matrix.core;
  * 
  * @author Matsuura Y.
  */
-non-sealed interface PermutationMatrixSealed extends PermutationMatrix {
+public non-sealed interface PermutationMatrixSealed extends PermutationMatrix {
 
 }

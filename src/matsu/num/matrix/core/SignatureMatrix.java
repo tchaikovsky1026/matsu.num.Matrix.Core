@@ -13,6 +13,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.core.sealed.DiagonalMatrixSealed;
+import matsu.num.matrix.core.sealed.SignatureMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**

@@ -5,15 +5,17 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2025.1.18
  */
-package matsu.num.matrix.core;
+package matsu.num.matrix.core.sealed;
+
+import matsu.num.matrix.core.DiagonalMatrix;
 
 /**
  * {@link DiagonalMatrix} の実装をこのモジュール内に制限するためのヘルパーインターフェース.
  * 
  * @author Matsuura Y.
  */
-non-sealed interface DiagonalMatrixSealed extends DiagonalMatrix {
+public non-sealed interface DiagonalMatrixSealed extends DiagonalMatrix {
 
 }

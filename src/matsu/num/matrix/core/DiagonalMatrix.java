@@ -18,6 +18,7 @@ import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricInvertibleDeterminan
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.DeterminantValues;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
+import matsu.num.matrix.core.sealed.DiagonalMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**

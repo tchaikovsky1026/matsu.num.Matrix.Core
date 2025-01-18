@@ -11,6 +11,7 @@ package matsu.num.matrix.core;
 
 import java.util.Optional;
 
+import matsu.num.matrix.core.sealed.DiagonalMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
