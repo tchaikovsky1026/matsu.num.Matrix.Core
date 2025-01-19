@@ -132,6 +132,24 @@ final class VectorTest {
         }
     }
 
+    public static class 標準基底ベクトルの生成に関するテスト {
+
+        @Test(expected = IndexOutOfBoundsException.class)
+        public void test_indexが範囲外の場合はIOOBEx() {
+            Vector.standardBasis(VectorDimension.valueOf(2), 2);
+        }
+
+        @Test
+        public void test_成分の検証() {
+            // arrange
+            // [0,1,0]の標準基底ベクトル
+            var vec = Vector.standardBasis(VectorDimension.valueOf(3), 1);
+
+            double[] expected = { 0d, 1d, 0d };
+            assertThat(vec.entryAsArray(), is(expected));
+        }
+    }
+
     public static class 二項演算に関するテスト {
 
         private final VectorDimension dimension = VectorDimension.valueOf(3);

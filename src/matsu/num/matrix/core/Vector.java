@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.1.19
  */
 package matsu.num.matrix.core;
 
@@ -28,6 +28,11 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * <p>
  * 所望のベクトルの生成にはビルダ ({@link Builder}) を用いる. <br>
  * 値の検証にはstaticメソッド {@link #acceptValue(double) } を使用する.
+ * </p>
+ * 
+ * <p>
+ * 標準基底ベクトル (ある成分のみが1で他が0のベクトル) を得るための,
+ * {@link #standardBasis(VectorDimension, int)} が用意されている.
  * </p>
  *
  * @author Matsuura Y.
@@ -446,6 +451,38 @@ public final class Vector {
      */
     public static boolean acceptValue(double value) {
         return MIN_VALUE <= value && value <= MAX_VALUE;
+    }
+
+    /**
+     * 与えられた次元の <i>i</i> 番目の標準基底ベクトルを返す.
+     * 
+     * <p>
+     * <i>i</i> 番目の標準基底ベクトルとは,
+     * 第 <i>i</i> 成分が1でその他の成分が0のベクトルである.
+     * </p>
+     *
+     * @param vectorDimension 生成するベクトルの次元
+     * @param index <i>i</i>
+     * @return <i>i</i> 番目の標準基底ベクトル
+     * @throws IndexOutOfBoundsException indexが範囲外の場合
+     * @throws NullPointerException 引数にnullが含まれる場合
+     * 
+     */
+    public static Vector standardBasis(VectorDimension vectorDimension, int index) {
+        if (!vectorDimension.isValidIndex(index)) {
+            throw new IndexOutOfBoundsException(
+                    String.format(
+                            "indexが有効でない: vactor:%s, index=%s", vectorDimension, index));
+        }
+
+        double[] entry = new double[vectorDimension.intValue()];
+        entry[index] = 1d;
+
+        var out = new Vector(vectorDimension, entry, true);
+        out.norm1 = 1d;
+        out.norm2 = 1d;
+        out.norm2Square = 1d;
+        return out;
     }
 
     /**
