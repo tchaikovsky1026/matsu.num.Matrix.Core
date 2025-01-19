@@ -28,17 +28,28 @@ public final class HouseholderMatrixFactory {
     }
 
     /**
+     * 引数がHouseholder行列の生成に使用できるかを判定する.
+     * 
+     * @param vector 判定対象
+     * @return 使用できる場合は true
+     * @throws NullPointerException 引数がnullの場合
+     */
+    public static boolean accepts(Vector vector) {
+        return vector.normMax() > 0d;
+    }
+
+    /**
      * {@link HouseholderMatrix#from(Vector)} の呼び出し先である.
      * 
      * @param reflection 鏡映ベクトル
      * @return 鏡映ベクトルに対応した Householder 行列
-     * @throws IllegalArgumentException 鏡映ベクトルのノルムが0の場合
+     * @throws IllegalArgumentException ベクトルが accept されない場合
      * @throws NullPointerException 引数に null が含まれる場合
      */
     public static HouseholderMatrix createFrom(Vector reflection) {
         //ベクトルの規格化と零ベクトル検証を行う.
         var normalizedReflectionVector = reflection.normalizedEuclidean();
-        if (normalizedReflectionVector.normMax() == 0d) {
+        if (!accepts(normalizedReflectionVector)) {
             throw new IllegalArgumentException("大きさが0");
         }
 
@@ -48,6 +59,58 @@ public final class HouseholderMatrixFactory {
         }
 
         return new HouseholderMatrixImpl(normalizedReflectionVector);
+    }
+
+    /**
+     * {@link HouseholderMatrix#from(Vector, Vector)} の呼び出し先である.
+     * 
+     * @param source source
+     * @param target target
+     * @return source を target に移す Householder 行列
+     * @throws MatrixFormatMismatchException 引数の次元が整合しない場合
+     * @throws IllegalArgumentException ベクトルが accept されない場合
+     * @throws NullPointerException 引数に null が含まれる場合
+     */
+    public static HouseholderMatrix createFrom(Vector source, Vector target) {
+
+        //ベクトルの規格化と零ベクトル検証を行う.
+        source = source.normalizedEuclidean();
+        target = target.normalizedEuclidean();
+        if (!source.equalDimensionTo(target)) {
+            throw new MatrixFormatMismatchException(
+                    String.format(
+                            "次元が整合しない, from:%s, to:%s",
+                            source, target));
+        }
+        if (!accepts(source)) {
+            throw new IllegalArgumentException("source: 大きさが0");
+        }
+        if (!accepts(target)) {
+            throw new IllegalArgumentException("source: 大きさが0");
+        }
+
+        var dimension = source.vectorDimension();
+
+        //1次元の場合はホルダーを呼び出す
+        if (dimension.equals(OneDimensionHouseholderHolder.DIMENSION)) {
+            return OneDimensionHouseholderHolder.INSTANCE;
+        }
+
+        /*
+         * 2次元以上の場合は3回の対称Householder変換を計算し, 合成する.
+         * p1=from, p2=to とする.
+         * 
+         * H1 H2 H1で合成, H1は (p2 -> e).
+         * p3 = H1(p1) とすると, H2は (p3 -> e).
+         */
+        var h1Reflection = HouseholderUtil.computeReflectionVectorToStandardBasis(target);
+        var p3 = HouseholderMatrixFactory.createFrom(h1Reflection).operate(source);
+        var h2Reflection = HouseholderUtil.computeReflectionVectorToStandardBasis(p3);
+
+        var hReflection = h2Reflection.plusCTimes(
+                h1Reflection, -2 * h1Reflection.dot(h2Reflection));
+
+        return HouseholderMatrixFactory.createFrom(hReflection);
     }
 
     /**

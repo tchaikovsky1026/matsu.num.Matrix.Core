@@ -6,12 +6,13 @@
  */
 
 /*
- * 2025.1.18
+ * 2025.1.19
  */
 package matsu.num.matrix.core;
 
 import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixFactory;
 import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
+import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
  * Householder 行列を扱う.
@@ -26,6 +27,13 @@ import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
  * <p>
  * このクラスのインスタンスは,
  * {@link HouseholderMatrix#from(Vector)} メソッドにより得られる.
+ * </p>
+ * 
+ * 
+ * <p>
+ * Householder 行列の生成方法において,
+ * 大きさが厳密に0のベクトルは生成のソースとして与えることができない. <br>
+ * その判定を助ける {@link #accepts(Vector)} メソッドを提供している.
  * </p>
  * 
  * @author Matsuura Y.
@@ -59,22 +67,54 @@ public sealed interface HouseholderMatrix
     }
 
     /**
+     * 引数がHouseholder行列の生成に使用できるかを判定する.
+     * 
+     * @param vector 判定対象
+     * @return 使用できる場合は true
+     * @throws NullPointerException 引数がnullの場合
+     */
+    public static boolean accepts(Vector vector) {
+        return HouseholderMatrixFactory.accepts(vector);
+    }
+
+    /**
      * 鏡映変換の法線ベクトル (以下, 鏡映ベクトルと表記)
      * を指定して, Householder 行列を構築する.
      * 
      * <p>
+     * 与えたベクトルが受け入れ可能かどうかは {@link #accepts(Vector)}
+     * によって判定される. <br>
      * 内部で鏡映ベクトルの規格化を行うため,
-     * 与える鏡映ベクトルは大きさが1である必要はない. <br>
-     * ただし, 大きさが厳密に0,
-     * すなわち全成分が厳密に {@code 0d}, {@code -0d} であってはならず, その場合は例外がスローされる.
+     * 与える鏡映ベクトルは大きさが1である必要はない.
      * </p>
      * 
      * @param reflection 鏡映ベクトル
      * @return 鏡映ベクトルに対応した Householder 行列
-     * @throws IllegalArgumentException 鏡映ベクトルのノルムが0の場合
+     * @throws IllegalArgumentException ベクトルが accept されない場合
      * @throws NullPointerException 引数に null が含まれる場合
      */
     public static HouseholderMatrix from(Vector reflection) {
         return HouseholderMatrixFactory.createFrom(reflection);
+    }
+
+    /**
+     * 与えられた source を target の定数倍に移すような Householder 変換行列を得る.
+     * 
+     * <p>
+     * 与えたベクトルが受け入れ可能かどうかは {@link #accepts(Vector)}
+     * によって判定される. <br>
+     * 内部で鏡映ベクトルの規格化を行うため,
+     * 与える鏡映ベクトルは大きさが1である必要はない.
+     * </p>
+     * 
+     * @param source source
+     * @param target target
+     * @return source を target に移す Householder 行列
+     * @throws MatrixFormatMismatchException 引数の次元が整合しない場合
+     * @throws IllegalArgumentException それぞれのベクトルが accept されない場合
+     * @throws NullPointerException 引数に null が含まれる場合
+     */
+    public static HouseholderMatrix from(Vector source, Vector target) {
+        return HouseholderMatrixFactory.createFrom(source, target);
     }
 }

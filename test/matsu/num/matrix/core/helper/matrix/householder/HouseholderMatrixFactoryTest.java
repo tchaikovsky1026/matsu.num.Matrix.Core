@@ -9,9 +9,16 @@ package matsu.num.matrix.core.helper.matrix.householder;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 import matsu.num.matrix.core.HouseholderMatrix;
@@ -70,6 +77,61 @@ final class HouseholderMatrixFactoryTest {
             for (int i = 0; i < result.length; i++) {
                 assertThat(result[i], is(closeTo(expected[i], 1E-12)));
             }
+        }
+    }
+
+    @RunWith(Theories.class)
+    public static class ソースをターゲットに変換する鏡映変換の生成のテスト {
+
+        /**
+         * [source, target] のペア, 規格化済み
+         */
+        @DataPoints
+        public static Vector[][] NORMALIZED_SOURCE_AND_TARGET;
+
+        @BeforeClass
+        public static void before_ソースの用意() {
+            VectorDimension dimension = VectorDimension.valueOf(3);
+
+            double[][][] arr_srcs = {
+                    { { 2d, 1d, -1d }, { -1d, 1d, 3d } },
+                    { { 2d, 1d, -1d }, { 2d - 1E-14d, 1d + 1E-12d, -1d + 3E-13d } },
+                    { { 2d, -1d, -1d }, { 2d, -1d, -1d } },
+            };
+
+            List<Vector[]> list = new ArrayList<>();
+            for (double[][] arr_src : arr_srcs) {
+                Vector[] pair = new Vector[2];
+
+                //source
+                {
+                    var builder = Vector.Builder.zeroBuilder(dimension);
+                    builder.setEntryValue(arr_src[0]);
+                    pair[0] = builder.build().normalizedEuclidean();
+                }
+
+                //target
+                {
+                    var builder = Vector.Builder.zeroBuilder(dimension);
+                    builder.setEntryValue(arr_src[1]);
+                    pair[1] = builder.build().normalizedEuclidean();
+                }
+
+                list.add(pair);
+            }
+
+            NORMALIZED_SOURCE_AND_TARGET = list.toArray(new Vector[0][0]);
+        }
+
+        @Theory
+        public void test_ソースを変換した結果がターゲットに一致するかを確かめる(Vector[] pair) {
+            var source = pair[0];
+            var target = pair[1];
+
+            HouseholderMatrix mxH = HouseholderMatrixFactory.createFrom(source, target);
+            Vector residual = mxH.operate(source).minus(target);
+
+            assertThat(residual.norm2(), is(lessThan(1E-14)));
         }
     }
 
