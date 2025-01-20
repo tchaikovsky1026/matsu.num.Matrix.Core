@@ -158,6 +158,15 @@ final class SignatureMatrixTest {
                         result[i], is(expected[i]));
             }
         }
+
+        @Test
+        public void test_右辺ベクトルが変更されないことを確認する() {
+
+            double[] rightEntryClone = right.entryAsArray();
+            m.operate(right);
+
+            assertThat(right.entryAsArray(), is(rightEntryClone));
+        }
     }
 
     public static class toString表示 {
