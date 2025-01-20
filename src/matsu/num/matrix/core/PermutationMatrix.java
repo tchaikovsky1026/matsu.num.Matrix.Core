@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -38,13 +38,21 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * このインターフェースの実装クラスのインスタンスは,
  * ビルダ ({@link PermutationMatrix.Builder}) を用いて生成する.
  * </p>
+ * 
+ * <p>
+ * <u><i>
+ * このインターフェースは主に, 戻り値型を公開するために用意されており,
+ * モジュール外での実装は想定されていない.
+ * </i></u>
+ * </p>
  *
  * @author Matsuura Y.
  * @see <a href="https://en.wikipedia.org/wiki/Permutation_matrix">
  *          Permutation matrix</a>
  */
-public sealed interface PermutationMatrix extends EntryReadableMatrix,
-        OrthogonalMatrix, Determinantable permits PermutationMatrixSealed {
+public sealed interface PermutationMatrix
+        extends EntryReadableMatrix, OrthogonalMatrix, Determinantable
+        permits PermutationMatrixSealed, UnitMatrix {
 
     /**
      * 置換の偶奇を取得する.

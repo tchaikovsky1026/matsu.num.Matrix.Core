@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -26,7 +26,10 @@ import java.util.Optional;
  * </p>
  *
  * <p>
- * 実装においては, {@link EntryReadableMatrix} のクラス説明の規約に従う.
+ * <u><i>
+ * このインターフェースは主に, 戻り値型を公開するために用意されており,
+ * モジュール外での実装は想定されていない.
+ * </i></u>
  * </p>
  *
  * @author Matsuura Y.

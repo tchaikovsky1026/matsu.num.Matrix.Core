@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2025.1.20
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -49,6 +49,13 @@ import matsu.num.matrix.core.Symmetric;
  * {@link #target()} によって返される行列 A,
  * {@link #inverse()} によって返される行列 A<sup>-1</sup> には,
  * {@link Symmetric} が付与されていなければならない.
+ * </p>
+ * 
+ * <p>
+ * <u><i>
+ * このインターフェースは主に, 戻り値型を公開するために用意されており,
+ * モジュール外での実装は想定されていない.
+ * </i></u>
  * </p>
  * 
  * @author Matsuura Y.

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -38,6 +38,13 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * ({@link Symmetric}, {@link Invertible}, {@link Determinantable})
  * が追加されている.
  * </p>
+ * 
+ * <p>
+ * <u><i>
+ * このインターフェースは主に, 戻り値型を公開するために用意されており,
+ * モジュール外での実装は想定されていない.
+ * </i></u>
+ * </p>
  *
  * @author Matsuura Y.
  * @see <a href="https://en.wikipedia.org/wiki/Diagonal_matrix">
@@ -45,7 +52,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  */
 public sealed interface DiagonalMatrix
         extends BandMatrix, Symmetric, Invertible, Determinantable
-        permits DiagonalMatrixSealed {
+        permits DiagonalMatrixSealed, SignatureMatrix, SquareZeroMatrix {
 
     @Override
     public abstract Optional<? extends DiagonalMatrix> inverse();
