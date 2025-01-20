@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
-import matsu.num.matrix.core.sealed.DiagonalMatrixSealed;
 import matsu.num.matrix.core.sealed.SignatureMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
@@ -36,8 +35,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 public sealed interface SignatureMatrix
-        extends DiagonalMatrixSealed, OrthogonalMatrix
-        permits SignatureMatrixSealed {
+        extends DiagonalMatrix, OrthogonalMatrix
+        permits SignatureMatrixSealed, UnitMatrix {
 
     @Override
     public abstract SignatureMatrix transpose();

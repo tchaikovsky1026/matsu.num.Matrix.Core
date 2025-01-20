@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -43,8 +43,9 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @see <a href="https://en.wikipedia.org/wiki/Permutation_matrix">
  *          Permutation matrix</a>
  */
-public sealed interface PermutationMatrix extends EntryReadableMatrix,
-        OrthogonalMatrix, Determinantable permits PermutationMatrixSealed {
+public sealed interface PermutationMatrix
+        extends EntryReadableMatrix, OrthogonalMatrix, Determinantable
+        permits PermutationMatrixSealed, UnitMatrix {
 
     /**
      * 置換の偶奇を取得する.

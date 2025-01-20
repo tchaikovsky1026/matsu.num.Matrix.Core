@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -29,7 +29,7 @@ import matsu.num.matrix.core.sealed.ZeroMatrixSealed;
  * @author Matsuura Y.
  */
 public sealed interface ZeroMatrix extends EntryReadableMatrix
-        permits ZeroMatrixSealed {
+        permits SquareZeroMatrix, ZeroMatrixImpl, ZeroMatrixSealed {
 
     @Override
     public abstract ZeroMatrix transpose();
