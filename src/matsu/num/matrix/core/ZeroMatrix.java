@@ -26,6 +26,13 @@ import matsu.num.matrix.core.sealed.ZeroMatrixSealed;
  * {@link SquareZeroMatrix} 型で扱うべきである.
  * </p>
  * 
+ * <p>
+ * <u><i>
+ * このインターフェースは主に, 戻り値型を公開するために用意されており,
+ * モジュール外での実装は想定されていない.
+ * </i></u>
+ * </p>
+ * 
  * @author Matsuura Y.
  */
 public sealed interface ZeroMatrix extends EntryReadableMatrix

@@ -38,6 +38,13 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * このインターフェースの実装クラスのインスタンスは,
  * ビルダ ({@link PermutationMatrix.Builder}) を用いて生成する.
  * </p>
+ * 
+ * <p>
+ * <u><i>
+ * このインターフェースは主に, 戻り値型を公開するために用意されており,
+ * モジュール外での実装は想定されていない.
+ * </i></u>
+ * </p>
  *
  * @author Matsuura Y.
  * @see <a href="https://en.wikipedia.org/wiki/Permutation_matrix">

@@ -22,7 +22,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * <p>
  * Signature matrix とは, 対角成分が1または-1の対角行列である. <br>
  * よって, 対称行列かつ直交行列である. <br>
- * 対角成分の-1の個数が奇数のときは行列式は-1であり, 
+ * 対角成分の-1の個数が奇数のときは行列式は-1であり,
  * 対角成分の-1の個数が偶数のときは行列式は1である. <br>
  * 対角成分の-1の個数の偶奇は {@link #isEven()} により判定可能である.
  * </p>
@@ -30,6 +30,13 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * <p>
  * このインターフェースの実装クラスのインスタンスは,
  * ビルダ ({@link SignatureMatrix.Builder}) を用いて生成する.
+ * </p>
+ * 
+ * <p>
+ * <u><i>
+ * このインターフェースは主に, 戻り値型を公開するために用意されており,
+ * モジュール外での実装は想定されていない.
+ * </i></u>
  * </p>
  * 
  * @author Matsuura Y.
