@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -99,7 +99,10 @@ public final class Vector {
      * </p>
      *
      * @return ベクトルの要素配列への参照
+     * @deprecated Vectorのインターフェース化のため, 非推奨とする.
+     *                 パッケージ内の参照がなくなった時点で削除する.
      */
+    @Deprecated
     double[] entry() {
         return entry;
     }
