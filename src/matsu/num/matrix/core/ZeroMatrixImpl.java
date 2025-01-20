@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.18
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -17,8 +17,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * @author Matsuura Y.
  */
-final class ZeroMatrixImpl extends SkeletalAsymmetricMatrix<ZeroMatrix>
-        implements ZeroMatrixSealed {
+final class ZeroMatrixImpl
+        extends SkeletalAsymmetricMatrix<ZeroMatrix> implements ZeroMatrix {
 
     private final MatrixDimension matrixDimension;
     private final Vector operatedVector;

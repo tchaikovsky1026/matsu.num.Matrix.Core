@@ -5,14 +5,12 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.18
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
 import java.util.Optional;
 
-import matsu.num.matrix.core.sealed.DiagonalMatrixSealed;
-import matsu.num.matrix.core.sealed.ZeroMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -27,7 +25,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  */
 public final class SquareZeroMatrix
         extends SkeletalSymmetricMatrix<SquareZeroMatrix>
-        implements ZeroMatrixSealed, DiagonalMatrixSealed {
+        implements ZeroMatrix, DiagonalMatrix {
 
     private final BandMatrixDimension bandMatrixDimension;
     private final Vector zeroVector;

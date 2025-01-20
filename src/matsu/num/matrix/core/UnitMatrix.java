@@ -5,13 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.26
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
-import matsu.num.matrix.core.sealed.PermutationMatrixSealed;
-import matsu.num.matrix.core.sealed.SignatureMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -26,7 +24,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  */
 public final class UnitMatrix
         extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>
-        implements SignatureMatrixSealed, PermutationMatrixSealed, LowerUnitriangular {
+        implements SignatureMatrix, PermutationMatrix, LowerUnitriangular {
 
     private final BandMatrixDimension bandMatrixDimension;
 
