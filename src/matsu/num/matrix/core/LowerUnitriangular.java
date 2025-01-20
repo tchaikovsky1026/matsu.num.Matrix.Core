@@ -11,6 +11,8 @@ package matsu.num.matrix.core;
 
 import java.util.Optional;
 
+import matsu.num.matrix.core.sealed.LowerUnitriangularSealed;
+
 /**
  * 成分にアクセス可能な単位下三角行列を表す.
  * 
@@ -36,8 +38,9 @@ import java.util.Optional;
  * @see EntryReadableMatrix
  * @see Invertible
  */
-public interface LowerUnitriangular
-        extends EntryReadableMatrix, Invertible, Determinantable {
+public sealed interface LowerUnitriangular
+        extends EntryReadableMatrix, Invertible, Determinantable
+        permits LowerUnitriangularMatrix, LowerUnitriangularBandMatrix, UnitMatrix, LowerUnitriangularSealed {
 
     /**
      * 逆行列を取得する. <br>
