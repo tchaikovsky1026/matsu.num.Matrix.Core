@@ -313,7 +313,7 @@ public sealed interface SignatureMatrix
                                     bandMatrixDimension, vectorDimension));
                 }
 
-                final double[] entry = operand.entry();
+                final double[] entry = operand.entryAsArray();
 
                 final int dimension = vectorDimension.intValue();
                 for (int i = 0; i < dimension; i++) {
