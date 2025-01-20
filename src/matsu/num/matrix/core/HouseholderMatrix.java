@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.1.19
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -25,13 +25,14 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * <p>
- * このクラスのインスタンスは,
- * {@link HouseholderMatrix#from(Vector)} メソッドにより得られる.
+ * 法線ベクトルを直接指定する形でのインスタンスは,
+ * {@link HouseholderMatrix#from(Vector)} メソッドにより得られる. <br>
+ * <b>x</b>, <b>y</b> を指定して <b>x</b> を <b>y</b> に移すような Householder 行列を得るには,
+ * {@link #from(Vector, Vector)} メソッドを使用する.
  * </p>
  * 
- * 
  * <p>
- * Householder 行列の生成方法において,
+ * {@link #from(Vector)}, {@link #from(Vector, Vector)} メソッドにおいては,
  * 大きさが厳密に0のベクトルは生成のソースとして与えることができない. <br>
  * その判定を助ける {@link #accepts(Vector)} メソッドを提供している.
  * </p>
@@ -67,7 +68,16 @@ public sealed interface HouseholderMatrix
     }
 
     /**
-     * 引数がHouseholder行列の生成に使用できるかを判定する.
+     * <p>
+     * 引数が Householder 行列の生成に使用できるかを判定する. <br>
+     * 使用できるための条件は, 次をすべて満たすことである.
+     * </p>
+     * 
+     * <ul>
+     * <li>ベクトルのノルム (大きさ) が厳密に正である. <br>
+     * すなわち, 成分のいずれかが {@code 0d}, {@code -0d} でない.
+     * </li>
+     * </ul>
      * 
      * @param vector 判定対象
      * @return 使用できる場合は true
@@ -78,14 +88,13 @@ public sealed interface HouseholderMatrix
     }
 
     /**
-     * 鏡映変換の法線ベクトル (以下, 鏡映ベクトルと表記)
-     * を指定して, Householder 行列を構築する.
+     * 鏡映変換の法線ベクトルを指定して, Householder 行列を構築する.
+     * (以下, このベクトルを鏡映ベクトルと表記する.)
      * 
      * <p>
      * 与えたベクトルが受け入れ可能かどうかは {@link #accepts(Vector)}
      * によって判定される. <br>
-     * 内部で鏡映ベクトルの規格化を行うため,
-     * 与える鏡映ベクトルは大きさが1である必要はない.
+     * 大きさが1である必要はない.
      * </p>
      * 
      * @param reflection 鏡映ベクトル
@@ -98,13 +107,20 @@ public sealed interface HouseholderMatrix
     }
 
     /**
-     * 与えられた source を target の定数倍に移すような Householder 変換行列を得る.
+     * 与えられた source を target の定数倍に移すような Householder 行列を得る.
      * 
      * <p>
-     * 与えたベクトルが受け入れ可能かどうかは {@link #accepts(Vector)}
+     * source を <b>x</b>, target を <b>y</b> とする. <br>
+     * <b>x</b>, <b>y</b> が1次元である場合を除き,
+     * 返される Householder 行列 H には,
+     * <b>y</b> = <i>c</i>H<b>x</b> を満たす <i>c</i> が正数となるようなものが選ばれる.
+     * </p>
+     * 
+     * <p>
+     * 与える2個のベクトルの次元は等しくなければならない. <br>
+     * それぞれのベクトルが受け入れ可能かどうかは {@link #accepts(Vector)}
      * によって判定される. <br>
-     * 内部で鏡映ベクトルの規格化を行うため,
-     * 与える鏡映ベクトルは大きさが1である必要はない.
+     * 大きさが1である必要はない.
      * </p>
      * 
      * @param source source
