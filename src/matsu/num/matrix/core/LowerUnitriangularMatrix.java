@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -127,12 +127,11 @@ public final class LowerUnitriangularMatrix
 
         final int dimension = vectorDimension.intValue();
 
-        final double[] operandEntry = operand.entry();
-        final double[] resultEntry = new double[dimension];
+        final double[] operandEntry = operand.entryAsArray();
         final double[] thisLowerEntry = this.lowerEntry;
 
-        //対角成分
-        System.arraycopy(operandEntry, 0, resultEntry, 0, dimension);
+        //対角成分の影響: 全て1なのでコピー
+        final double[] resultEntry = operand.entryAsArray();
         //狭義下三角成分
         int in = CalcUtil.sumOf1To(dimension - 1);
         for (int i = dimension - 1; i >= 0; i--) {
@@ -173,16 +172,14 @@ public final class LowerUnitriangularMatrix
 
         final int dimension = vectorDimension.intValue();
 
-        final double[] operandEntry = operand.entry();
-        final double[] resultEntry = new double[dimension];
         final double[] thisLowerEntry = this.lowerEntry;
 
-        //対角成分
-        System.arraycopy(operandEntry, 0, resultEntry, 0, dimension);
+        //対角成分の影響: 全て1なのでコピー
+        final double[] resultEntry = operand.entryAsArray();
         //狭義下三角成分
         int in = 1;
         for (int i = 0; i < dimension; i++) {
-            final double oe_i = operandEntry[i];
+            final double oe_i = operand.valueAt(i);
             in += i - 1;
             for (int j = 0; j < i; j++) {
                 resultEntry[j] += thisLowerEntry[in + j] * oe_i;
@@ -251,10 +248,10 @@ public final class LowerUnitriangularMatrix
                 }
 
                 final int dimension = vectorDimension.intValue();
-                final double[] resultEntry = new double[dimension];
                 final double[] thisLowerEntry = lowerEntry;
 
-                System.arraycopy(operand.entry(), 0, resultEntry, 0, dimension);
+                final double[] resultEntry = operand.entryAsArray();
+
                 int in = 1;
                 for (int i = 0; i < dimension; i++) {
                     in += i - 1;
@@ -290,10 +287,10 @@ public final class LowerUnitriangularMatrix
                 }
 
                 final int dimension = vectorDimension.intValue();
-                final double[] resultEntry = new double[dimension];
                 final double[] thisLowerEntry = lowerEntry;
 
-                System.arraycopy(operand.entry(), 0, resultEntry, 0, dimension);
+                final double[] resultEntry = operand.entryAsArray();
+
                 int in = CalcUtil.sumOf1To(dimension - 1);
                 for (int i = dimension - 1; i >= 0; i--) {
                     in -= i;

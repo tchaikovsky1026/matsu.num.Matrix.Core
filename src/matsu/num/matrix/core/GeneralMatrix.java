@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.7
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -97,7 +97,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
 
         final int rowDimension = matrixDimension.rowAsIntValue();
         final int columnDimension = matrixDimension.columnAsIntValue();
-        final double[] operandEntry = operand.entry();
+        final double[] operandEntry = operand.entryAsArray();
 
         final double[] resultEntry = new double[rowDimension];
         final double[] matrixEntry = this.entry;
@@ -141,7 +141,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         final int rowDimension = matrixDimension.rowAsIntValue();
         final int columnDimension = matrixDimension.columnAsIntValue();
 
-        final double[] operandEntry = operand.entry();
+        final double[] operandEntry = operand.entryAsArray();
 
         final double[] resultEntry = new double[columnDimension];
         final double[] matrixEntry = this.entry;
@@ -505,9 +505,9 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
 
                 var builder = Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension());
                 builder.setEntryValue(rightArray);
-                final double[] resultArray = src.operateTranspose(builder.build()).entry();
+                final var result = src.operateTranspose(builder.build());
                 for (int k = 0; k < srcColumnDimension; k++) {
-                    outBuilder.setValue(j, k, resultArray[k]);
+                    outBuilder.setValue(j, k, result.valueAt(k));
                 }
             }
             return outBuilder;

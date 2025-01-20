@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -88,20 +88,6 @@ public final class Vector {
                             "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
         }
         return this.entry[index];
-    }
-
-    /**
-     * ベクトルの要素を扱う配列への参照を返す.
-     * 
-     * <p>
-     * このメソッドは内部の配列への参照を公開するため, 決してpublicにしてはいけない. <br>
-     * また, 使い方には十分注意する.
-     * </p>
-     *
-     * @return ベクトルの要素配列への参照
-     */
-    double[] entry() {
-        return entry;
     }
 
     /**

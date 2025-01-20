@@ -301,11 +301,10 @@ public sealed interface DiagonalMatrix
                                     this.bandMatrixDimension.dimension(), vectorDimension));
                 }
 
-                final double[] operandEntry = operand.entry();
-                final double[] resultEntry = new double[dimension];
+                final double[] resultEntry = operand.entryAsArray();
                 final double[] thisDiagonalEntry = this.diagonalEntry;
                 for (int i = 0; i < dimension; i++) {
-                    resultEntry[i] = thisDiagonalEntry[i] * operandEntry[i];
+                    resultEntry[i] *= thisDiagonalEntry[i];
                 }
 
                 var builder = Vector.Builder.zeroBuilder(vectorDimension);

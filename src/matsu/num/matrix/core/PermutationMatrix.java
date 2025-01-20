@@ -351,13 +351,10 @@ public sealed interface PermutationMatrix
                                     matrixDimension, vectorDimension));
                 }
 
-                final double[] operandEntry;
-                operandEntry = operand.entry();
-
                 final int dimension = vectorDimension.intValue();
                 final double[] resultEntry = new double[dimension];
                 for (int i = 0; i < dimension; i++) {
-                    resultEntry[i] = operandEntry[this.permutationHorizontal[i]];
+                    resultEntry[i] = operand.valueAt(this.permutationHorizontal[i]);
                 }
 
                 var builder = Vector.Builder.zeroBuilder(vectorDimension);
@@ -374,13 +371,11 @@ public sealed interface PermutationMatrix
                                     "左から演算不可:matrix:%s, operand:%s",
                                     matrixDimension, vectorDimension));
                 }
-                final double[] operandEntry;
-                operandEntry = operand.entry();
 
                 final int dimension = vectorDimension.intValue();
                 final double[] resultEntry = new double[dimension];
                 for (int i = 0; i < dimension; i++) {
-                    resultEntry[i] = operandEntry[this.permutationVertical[i]];
+                    resultEntry[i] = operand.valueAt(this.permutationVertical[i]);
                 }
 
                 var builder = Vector.Builder.zeroBuilder(vectorDimension);
