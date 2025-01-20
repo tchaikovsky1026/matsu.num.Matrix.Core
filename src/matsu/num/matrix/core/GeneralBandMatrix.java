@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.7
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -132,7 +132,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
         final int thisUpperBandWidth = bandMatrixDimension.upperBandWidth();
 
-        final double[] operandEntry = operand.entry();
+        final double[] operandEntry = operand.entryAsArray();
         final double[] resultEntry = new double[dimension];
 
         final double[] thisDiagonalEntry = this.diagonalEntry;
@@ -195,7 +195,7 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
         final int thisUpperBandWidth = bandMatrixDimension.upperBandWidth();
 
-        final double[] operandEntry = operand.entry();
+        final double[] operandEntry = operand.entryAsArray();
         final double[] resultEntry = new double[dimension];
 
         final double[] thisDiagonalEntry = this.diagonalEntry;

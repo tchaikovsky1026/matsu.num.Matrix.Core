@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.7
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -104,7 +104,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                             matrixDimension, vectorDimension));
         }
 
-        final double[] operandEntry = operand.entry();
+        final double[] operandEntry = operand.entryAsArray();
         final double[] resultEntry = new double[dimension];
 
         final double[] matrixEntry = entry;
@@ -463,10 +463,10 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                 //Matrixインターフェースは成分に関する情報を持たないため
                 Vector.Builder builder = Vector.Builder.zeroBuilder(srcMatrixDimension.leftOperableVectorDimension());
                 builder.setEntryValue(rightArray);
-                final double[] resultArray = src.operateTranspose(builder.build()).entry();
+                final var result = src.operateTranspose(builder.build());
 
                 for (int k = 0; k <= j; k++) {
-                    outBuilder.setValue(j, k, resultArray[k]);
+                    outBuilder.setValue(j, k, result.valueAt(k));
                 }
             }
             return outBuilder;

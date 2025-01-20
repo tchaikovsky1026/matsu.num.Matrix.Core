@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -123,16 +123,15 @@ public final class LowerUnitriangularBandMatrix
         final int dimension = vectorDimension.intValue();
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
 
-        final double[] operandEntry = operand.entry();
-        final double[] resultEntry = new double[dimension];
+        final double[] resultEntry;
         final double[] thisLowerEntry = this.lowerEntry;
 
-        //対角成分
-        System.arraycopy(operandEntry, 0, resultEntry, 0, dimension);
+        //対角成分の影響: 全て1なのでコピー
+        resultEntry = operand.entryAsArray();
         //狭義下三角成分
         int in = dimension * thisLowerBandWidth;
         for (int i = dimension - 1; i >= 0; i--) {
-            final double oe_i = operandEntry[i];
+            final double oe_i = operand.valueAt(i);
             in -= thisLowerBandWidth;
             for (int j = Math.min(thisLowerBandWidth, dimension - i - 1) - 1; j >= 0; j--) {
                 resultEntry[i + j + 1] += thisLowerEntry[in + j] * oe_i;
@@ -161,12 +160,12 @@ public final class LowerUnitriangularBandMatrix
         final int dimension = vectorDimension.intValue();
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
 
-        final double[] operandEntry = operand.entry();
-        final double[] resultEntry = new double[dimension];
+        final double[] operandEntry = operand.entryAsArray();
+        final double[] resultEntry;
         final double[] thisLowerEntry = this.lowerEntry;
 
-        //対角成分
-        System.arraycopy(operandEntry, 0, resultEntry, 0, dimension);
+        //対角成分の影響: 全て1なのでコピー
+        resultEntry = operand.entryAsArray();
         //狭義下三角成分
         int in = -thisLowerBandWidth;
         for (int i = 0; i < dimension; i++) {
@@ -264,11 +263,10 @@ public final class LowerUnitriangularBandMatrix
 
                 final int dimension = vectorDimension.intValue();
                 final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
-                final double[] resultEntry = new double[dimension];
 
+                final double[] resultEntry = operand.entryAsArray();
                 final double[] thisLowerEntry = lowerEntry;
 
-                System.arraycopy(operand.entry(), 0, resultEntry, 0, dimension);
                 int in = -thisLowerBandWidth;
                 for (int i = 0; i < dimension; i++) {
                     final double re_i = resultEntry[i];
@@ -295,11 +293,10 @@ public final class LowerUnitriangularBandMatrix
 
                 final int dimension = vectorDimension.intValue();
                 final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
-                final double[] resultEntry = new double[dimension];
 
+                final double[] resultEntry = operand.entryAsArray();
                 final double[] thisLowerEntry = lowerEntry;
 
-                System.arraycopy(operand.entry(), 0, resultEntry, 0, dimension);
                 int in = dimension * thisLowerBandWidth;
                 for (int i = dimension - 1; i >= 0; i--) {
                     double sumProduct = 0;

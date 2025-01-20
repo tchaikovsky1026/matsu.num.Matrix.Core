@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.7
+ * 2025.1.20
  */
 package matsu.num.matrix.core;
 
@@ -126,7 +126,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
         final int dimension = vectorDimension.intValue();
         final int thisBandWidth = bandMatrixDimension.lowerBandWidth();
 
-        final double[] operandEntry = operand.entry();
+        final double[] operandEntry = operand.entryAsArray();
 
         final double[] resultEntry = new double[dimension];
 

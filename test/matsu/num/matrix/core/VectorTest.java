@@ -175,7 +175,7 @@ final class VectorTest {
             Vector resultVector = vector1.plus(vector2);
 
             double[] expectedEntry = { 4, 4, -2 };
-            assertThat(resultVector.entry(), is(expectedEntry));
+            assertThat(resultVector.entryAsArray(), is(expectedEntry));
         }
 
         @Test
@@ -183,7 +183,7 @@ final class VectorTest {
             Vector resultVector = vector1.minus(vector2);
 
             double[] expectedEntry = { -2, 0, -4 };
-            assertThat(resultVector.entry(), is(expectedEntry));
+            assertThat(resultVector.entryAsArray(), is(expectedEntry));
         }
 
         @Test
@@ -191,7 +191,7 @@ final class VectorTest {
             Vector resultVector = vector1.plusCTimes(vector2, 2.0);
 
             double[] expectedEntry = { 7, 6, -1 };
-            assertThat(resultVector.entry(), is(expectedEntry));
+            assertThat(resultVector.entryAsArray(), is(expectedEntry));
         }
 
         @Test
@@ -218,14 +218,14 @@ final class VectorTest {
             Vector resultVector = vector.times(2.0);
 
             double[] expectedEntry = { 2, 4, -6 };
-            assertThat(resultVector.entry(), is(expectedEntry));
+            assertThat(resultVector.entryAsArray(), is(expectedEntry));
         }
 
         @Test
         public void test_Vectorのnegatedはm1_m2_3() {
             Vector resultVector = vector.negated();
 
-            assertThat(resultVector.entry(), is(new double[] { -1, -2, 3 }));
+            assertThat(resultVector.entryAsArray(), is(new double[] { -1, -2, 3 }));
         }
 
         @Test
