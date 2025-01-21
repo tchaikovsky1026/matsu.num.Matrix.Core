@@ -44,7 +44,6 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * 
- * 
  * <h3>モジュール外での実装</h3>
  * 
  * <p>
@@ -61,11 +60,10 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 将来的に緩和される可能性がある.
  * </p>
  * 
- * 
- * 
  * @author Matsuura Y.
  */
-public interface SparseVector {
+public sealed interface SparseVector
+        permits SparseVectorSealed, LocalSparseVector {
 
     /**
      * ベクトルの次元を取得する.
