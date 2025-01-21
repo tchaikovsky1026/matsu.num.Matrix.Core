@@ -140,7 +140,7 @@ public interface SparseVector {
      * を計算する.
      * 
      * <p>
-     * 演算の結果, その成分が {@link Vector} で扱えない場合は,
+     * 演算の結果, その成分が {@link SparseVector} で扱えない場合は,
      * 正常値に置き換えられる.
      * </p>
      * 
