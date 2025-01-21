@@ -19,7 +19,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * スパースな縦ベクトル (成分のほとんどが0であるようなベクトル) を表す. <br>
  * 各成分は有限の倍精度浮動小数点数であり
  * (see: {@link #valueAt(int)}),
- * 不正値 (inf, NaN) を含まないことを保証する. <br>
+ * 不正値を含まないことを保証する. <br>
+ * これは, {@link Vector} に準拠している. <br>
  * インスタンスはイミュータブルであり, メソッドは関数的かつスレッドセーフである.
  * </p>
  * 
