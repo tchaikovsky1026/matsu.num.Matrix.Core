@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.21
+ * 2025.1.25
  */
 package matsu.num.matrix.core.sparse;
 
@@ -31,6 +31,11 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * を除いて0であるようなベクトルを表現する
  * (<i>n</i> は次元). <br>
  * &ell; &ge; 1 である.
+ * </p>
+ * 
+ * <p>
+ * この具象クラスはコンストラクタが公開されていない. <br>
+ * インスタンスは, {@link #of(VectorDimension, int, double[])} メソッドにより取得できる.
  * </p>
  * 
  * @author Matsuura Y.
@@ -233,45 +238,6 @@ public final class LocalSparseVector implements SparseVector {
         out.norm2 = this.norm2;
 
         return out;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * <p>
-     * <i>
-     * <u>
-     * この振る舞いは {@link Object#equals(Object)}
-     * の振る舞いと同一であるので本来は override する必要がないが,
-     * {@code final} 修飾するために override した.
-     * </u>
-     * </i>
-     * </p>
-     * 
-     */
-    @Override
-    public final boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * <p>
-     * <i>
-     * <u>
-     * この振る舞いは {@link Object#hashCode()}
-     * の振る舞いと同一であるので本来は override する必要がないが,
-     * {@link Object#equals(Object)} を override しているため
-     * {@link #hashCode()} も override した.
-     * </u>
-     * </i>
-     * </p>
-     * 
-     */
-    @Override
-    public final int hashCode() {
-        return super.hashCode();
     }
 
     /**
