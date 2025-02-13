@@ -1,3 +1,7 @@
+28.0.0:
+Semantic versioning.
+
+---------------------------
 27.0:
 Householder行列の整備.
 Vectorに機能追加.
