@@ -17,7 +17,7 @@ import matsu.num.matrix.core.VectorDimension;
  * 
  * @author Matsuura Y.
  */
-final class SimpleSparseVector implements SparseVectorSealed {
+final class SimpleSparseVector implements SparseVector {
 
     private final Vector vec;
 

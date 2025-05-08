@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.5.9
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -69,7 +69,7 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * @param <MT> 対応する行列の型
  * @param <ST> 出力される行列分解の型
  */
-abstract non-sealed class SkeletalSolvingFactorizationExecutor<
+abstract class SkeletalSolvingFactorizationExecutor<
         MT extends Matrix, ST extends LUTypeSolver>
         implements SolvingFactorizationExecutor<MT> {
 

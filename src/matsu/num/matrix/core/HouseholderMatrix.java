@@ -6,12 +6,11 @@
  */
 
 /*
- * 2025.1.20
+ * 2025.5.9
  */
 package matsu.num.matrix.core;
 
 import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixFactory;
-import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -37,11 +36,15 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * その判定を助ける {@link #accepts(Vector)} メソッドを提供している.
  * </p>
  * 
+ * @implSpec
+ *               このインターフェースは主に, 戻り値型を公開するために用意されており,
+ *               モジュール外での実装は想定されていない. <br>
+ *               モジュール外で実装する場合, 互換性が失われる場合がある.
+ * 
  * @author Matsuura Y.
  */
-public sealed interface HouseholderMatrix
-        extends OrthogonalMatrix, Determinantable, Symmetric
-        permits HouseholderMatrixSealed {
+public interface HouseholderMatrix
+        extends OrthogonalMatrix, Determinantable, Symmetric {
 
     /**
      * @return {@code -1d}
