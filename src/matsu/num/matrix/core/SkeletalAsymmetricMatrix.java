@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -99,11 +99,18 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
      * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけこのメソッドが呼ばれる. <br>
      * 公開は禁止され, サブクラスからもコールしてはならない.
      * </p>
+     *
+     * @implSpec
      * 
-     * @implSpec {@link Matrix} の実装規約より,
+     *               {@link Matrix} の実装規約より,
+     * 
      *               <blockquote>
-     *               {@code this.createTranspose().transpose() == this}
+     * 
+     *               <pre>
+     * this.createTranspose().transpose() == this</pre>
+     * 
      *               </blockquote>
+     * 
      *               を満たすことが推奨される. <br>
      *               アクセス修飾子を {@code public} にしてはいけない.
      * 
@@ -161,10 +168,8 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
      * 
      * @implSpec
      *               継承先においてオーバーライドを許可する. <br>
-     *               ただし, {@code Matrix["param":%param]} や
+     *               {@code Matrix["param":%param]} や
      *               {@code Matrix["param"=%param]} の形が適切であると思われる.
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {

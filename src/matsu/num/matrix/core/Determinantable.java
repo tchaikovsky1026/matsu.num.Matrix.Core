@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -17,21 +17,18 @@ package matsu.num.matrix.core;
  * (このインターフェース以外を含む) 全てのメソッドは関数的かつスレッドセーフである.
  * </p>
  * 
+ * @implSpec
  * 
- * <hr>
+ *               <p>
+ *               実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
+ *               違反した場合は振る舞いが保証されない.
+ *               </p>
  * 
- * <h2>実装規約</h2>
- * 
- * <p>
- * 実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
- * 違反した場合は振る舞いが保証されない.
- * </p>
- * 
- * <p>
- * このインターフェースを実装するクラスが {@link Invertible} や {@link Inversion}
- * のような逆行列を扱うインターフェースも実装する場合,
- * 符号 {@link #signOfDeterminant()} が0でないことと逆行列が存在することとは等価である.
- * </p>
+ *               <p>
+ *               このインターフェースを実装するクラスが {@link Invertible} や {@link Inversion}
+ *               のような逆行列を扱うインターフェースも実装する場合,
+ *               符号 {@link #signOfDeterminant()} が0でないことと逆行列が存在することとは等価である.
+ *               </p>
  *
  * @author Matsuura Y.
  * @see Invertible

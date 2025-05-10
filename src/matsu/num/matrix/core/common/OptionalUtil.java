@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.7
+ * 2025.5.10
  */
 package matsu.num.matrix.core.common;
 
@@ -25,20 +25,25 @@ public final class OptionalUtil {
     }
 
     /**
-     * {@code Optional} のバインドされた型パラメータをスーパータイプに変更 (緩和) する.
+     * {@code Optional} のバインドされた型パラメータをスーパータイプに安全にキャストする.
+     * 
+     * <p>
+     * 引数が {@code null} の場合は空が返る.
+     * </p>
      * 
      * @param <T> 緩和された後の型パラメータ
      * @param src src
      * @return 変換後の {@code Optional}
-     * @throws NullPointerException 引数がnullである場合
      */
-    public static <T> Optional<T> changeBoundType(Optional<? extends T> src) {
+    public static <T> Optional<T> castSafe(Optional<? extends T> src) {
 
         // Optionalクラスの実装の性質上, 
         // Optional<? extends T> を 
         // Optional<Matrix>として扱っても問題にならない.
         @SuppressWarnings("unchecked")
         Optional<T> out = (Optional<T>) Objects.requireNonNull(src);
-        return out;
+        return Objects.isNull(out)
+                ? Optional.empty()
+                : out;
     }
 }

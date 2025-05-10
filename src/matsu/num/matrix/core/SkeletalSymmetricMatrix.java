@@ -133,10 +133,8 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      * 
      * @implSpec
      *               継承先においてオーバーライドを許可する. <br>
-     *               ただし, {@code Matrix["param":%param]} や
+     *               {@code Matrix["param":%param]} や
      *               {@code Matrix["param"=%param]} の形が適切であると思われる.
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {

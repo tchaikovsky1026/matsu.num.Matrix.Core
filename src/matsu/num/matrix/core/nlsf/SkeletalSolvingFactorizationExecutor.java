@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.5.10
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -159,8 +159,6 @@ abstract class SkeletalSolvingFactorizationExecutor<
 
     /**
      * このインスタンスの文字列表現を返す.
-     * 
-     * @return 文字列表現
      */
     @Override
     public String toString() {

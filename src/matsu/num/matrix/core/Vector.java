@@ -405,8 +405,6 @@ public final class Vector {
      * おそらくは次のような表現であろう. <br>
      * {@code Vector[dim(%dimension), {*,*,*, ...}]}
      * </p>
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {

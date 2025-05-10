@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.26
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -204,9 +204,6 @@ public final class MatrixDimension {
     /**
      * 他オブジェクトとの等価性を判定する. <br>
      * 等価性の基準はクラス説明のとおりである.
-     * 
-     * @param obj 比較対象
-     * @return 自身とobjが等価の場合はtrue
      */
     @Override
     public boolean equals(Object obj) {
@@ -223,8 +220,6 @@ public final class MatrixDimension {
 
     /**
      * ハッシュコードを返す.
-     * 
-     * @return ハッシュコード
      */
     @Override
     public int hashCode() {
@@ -233,8 +228,6 @@ public final class MatrixDimension {
 
     /**
      * ハッシュコードを計算する.
-     * 
-     * @return ハッシュコード
      */
     private int calcHashCode() {
         int result = 1;
@@ -251,8 +244,6 @@ public final class MatrixDimension {
      * おそらくは次のような表現であろう. <br>
      * {@code (%r, %c)}
      * </p>
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {
