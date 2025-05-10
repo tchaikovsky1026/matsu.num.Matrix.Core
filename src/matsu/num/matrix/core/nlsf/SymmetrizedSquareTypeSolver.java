@@ -37,8 +37,7 @@ import matsu.num.matrix.core.Symmetric;
  *               <pre>
  * // 推奨: 次がtrue (複数回の呼び出しで同一のインスタンスを指す)
  * this.asymmSqrt() == this.asymmSqrt()
- * this.inverseAsymmSqrt() == this.inverseAsymmSqrt()
- *               </pre>
+ * this.inverseAsymmSqrt() == this.inverseAsymmSqrt()</pre>
  * 
  *               </blockquote>
  * 

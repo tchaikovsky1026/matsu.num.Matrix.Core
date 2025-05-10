@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -14,20 +14,19 @@ import matsu.num.matrix.core.helper.matrix.transpose.TranspositionBandUtil;
 /**
  * 正方形の帯行列を扱う.
  * 
- * <hr>
+ *
+ * @implSpec
  * 
- * <h2>実装規約</h2>
+ *               <p>
+ *               {@link Matrix}, {@link EntryReadableMatrix} の規約に従う.
+ *               </p>
  * 
- * <p>
- * {@link Matrix}, {@link EntryReadableMatrix} の規約に従う.
- * </p>
- * 
- * <p>
- * {@link Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
- * すなわち,
- * {@code this.bandMatrixDimension().isSymmetric()}
- * は {@code true} でなければならない.
- * </p>
+ *               <p>
+ *               {@link Symmetric} インターフェースが付与される場合, 必ず対称帯構造でなければならない. <br>
+ *               すなわち,
+ *               {@code this.bandMatrixDimension().isSymmetric()}
+ *               は {@code true} でなければならない.
+ *               </p>
  *
  * @author Matsuura Y.
  */

@@ -160,12 +160,10 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<
      * 
      * @implSpec
      *               継承先においてオーバーライドを許可する. <br>
-     *               ただし, {@code Matrix["param":%param, %orthogonalType]} や
+     *               {@code Matrix["param":%param, %orthogonalType]} や
      *               {@code Matrix["param"=%param, %orthogonalType]}
      *               の形が適切であると思われる. <br>
      *               {@code %orthogonalType} は "unit" などの直交行列の性質を表現する.
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {

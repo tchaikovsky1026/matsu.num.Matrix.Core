@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.5.10
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -89,8 +89,6 @@ abstract class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends M
      * おそらくは次のような表現であろう. <br>
      * {@code %solverName[target:%matrix]}
      * </p>
-     * 
-     * @return 文字列表現
      */
     @Override
     public String toString() {
