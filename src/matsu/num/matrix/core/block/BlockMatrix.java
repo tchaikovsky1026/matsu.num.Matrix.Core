@@ -49,7 +49,7 @@ public final class BlockMatrix
                 MatrixDimension elementDimension_j_k = blockStructure.elementDimensionAt(j, k);
 
                 Optional<Matrix> matrixAt_jk =
-                        OptionalUtil.changeBoundType(blockStructure.matrixAt(j, k));
+                        OptionalUtil.castSafe(blockStructure.matrixAt(j, k));
                 blockMatrix_j[k] = matrixAt_jk
                         .orElseGet(() -> ZeroMatrix.matrixOf(elementDimension_j_k));
             }
