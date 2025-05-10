@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.5.9
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -59,31 +59,27 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </p>
  * 
  * 
- * <hr>
+ * @implSpec
+ *               <p>
+ *               実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
+ *               違反した場合は振る舞いが保証されない.
+ *               </p>
  * 
- * <h2>実装規約</h2>
+ *               <p>
+ *               {@link #accepts(Matrix)}
+ *               メソッドの戻り値のタイプがacceptedにならない条件を文書化すべきである.
+ *               </p>
  * 
- * <p>
- * 実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
- * 違反した場合は振る舞いが保証されない.
- * </p>
- * 
- * <p>
- * {@link #accepts(Matrix)} メソッドの戻り値のタイプがacceptedにならない条件を文書化すべきである.
- * </p>
- * 
- * <p>
- * <u><i>
- * このインターフェースは主に, 戻り値型を公開するために用意されており,
- * モジュール外での実装は想定されていない.
- * </i></u>
- * </p>
+ *               <p>
+ *               このインターフェースは主に, 戻り値型を公開するために用意されており,
+ *               モジュール外での実装は想定されていない. <br>
+ *               モジュール外で実装する場合, 互換性が失われる場合がある.
+ *               </p>
  * 
  * @author Matsuura Y.
  * @param <MT> 対応する行列の型パラメータ
  */
-public sealed interface SolvingFactorizationExecutor<MT extends Matrix>
-        permits SkeletalSolvingFactorizationExecutor {
+public interface SolvingFactorizationExecutor<MT extends Matrix> {
 
     /**
      * このインスタンスが与えた行列を受け入れることができるかを判定する. <br>

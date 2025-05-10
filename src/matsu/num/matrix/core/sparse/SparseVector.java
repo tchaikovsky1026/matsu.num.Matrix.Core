@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.1.21
+ * 2025.5.9
  */
 package matsu.num.matrix.core.sparse;
 
@@ -62,8 +62,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * @author Matsuura Y.
  */
-public sealed interface SparseVector
-        permits SparseVectorSealed, LocalSparseVector {
+public interface SparseVector {
 
     /**
      * ベクトルの次元を取得する.

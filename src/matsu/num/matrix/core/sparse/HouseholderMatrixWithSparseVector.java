@@ -5,14 +5,14 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.21
+ * 2025.5.9
  */
 package matsu.num.matrix.core.sparse;
 
+import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.Vector;
-import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
 
 /**
  * 鏡映ベクトルとして {@link SparseVector} を指定する形で構築される,
@@ -22,7 +22,7 @@ import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
  */
 final class HouseholderMatrixWithSparseVector
         extends SkeletalSymmetricOrthogonalMatrix<HouseholderMatrixWithSparseVector>
-        implements HouseholderMatrixSealed {
+        implements HouseholderMatrix {
 
     private final MatrixDimension matrixDimension;
     private final SparseVector reflectionVector;

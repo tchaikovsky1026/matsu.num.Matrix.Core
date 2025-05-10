@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.5.9
  */
 package matsu.num.matrix.core;
 
@@ -18,7 +18,6 @@ import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricInvertibleDeterminan
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.DeterminantValues;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
-import matsu.num.matrix.core.sealed.DiagonalMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -39,20 +38,18 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * が追加されている.
  * </p>
  * 
- * <p>
- * <u><i>
- * このインターフェースは主に, 戻り値型を公開するために用意されており,
- * モジュール外での実装は想定されていない.
- * </i></u>
- * </p>
+ * 
+ * @implSpec
+ *               このインターフェースは主に, 戻り値型を公開するために用意されており,
+ *               モジュール外での実装は想定されていない. <br>
+ *               モジュール外で実装する場合, 互換性が失われる場合がある.
  *
  * @author Matsuura Y.
  * @see <a href="https://en.wikipedia.org/wiki/Diagonal_matrix">
  *          Diagonal matrix</a>
  */
-public sealed interface DiagonalMatrix
-        extends BandMatrix, Symmetric, Invertible, Determinantable
-        permits DiagonalMatrixSealed, SignatureMatrix, SquareZeroMatrix {
+public interface DiagonalMatrix
+        extends BandMatrix, Symmetric, Invertible, Determinantable {
 
     @Override
     public abstract Optional<? extends DiagonalMatrix> inverse();
@@ -227,7 +224,7 @@ public sealed interface DiagonalMatrix
         private static final class DiagonalMatrixImpl
                 extends SkeletalSymmetricInvertibleDeterminantableMatrix<
                         DiagonalMatrixImpl, DiagonalMatrix>
-                implements DiagonalMatrixSealed {
+                implements DiagonalMatrix {
 
             private final BandMatrixDimension bandMatrixDimension;
             private final double[] diagonalEntry;
@@ -477,7 +474,7 @@ public sealed interface DiagonalMatrix
          */
         private static final class InverseAndDeterminantAttachedDiagonalMatrixImpl
                 extends SkeletalSymmetricMatrix<InverseAndDeterminantAttachedDiagonalMatrixImpl>
-                implements DiagonalMatrixSealed {
+                implements DiagonalMatrix {
 
             private final DiagonalMatrix original;
             private final DeterminantValues determinantValues;

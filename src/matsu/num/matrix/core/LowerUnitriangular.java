@@ -5,13 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.5.9
  */
 package matsu.num.matrix.core;
 
 import java.util.Optional;
-
-import matsu.num.matrix.core.sealed.LowerUnitriangularSealed;
 
 /**
  * 成分にアクセス可能な単位下三角行列を表す.
@@ -27,20 +25,17 @@ import matsu.num.matrix.core.sealed.LowerUnitriangularSealed;
  * このインターフェースは {@link Invertible} を継承する.
  * </p>
  *
- * <p>
- * <u><i>
- * このインターフェースは主に, 戻り値型を公開するために用意されており,
- * モジュール外での実装は想定されていない.
- * </i></u>
- * </p>
+ * @implSpec
+ *               このインターフェースは主に, 戻り値型を公開するために用意されており,
+ *               モジュール外での実装は想定されていない. <br>
+ *               モジュール外で実装する場合, 互換性が失われる場合がある.
  *
  * @author Matsuura Y.
  * @see EntryReadableMatrix
  * @see Invertible
  */
-public sealed interface LowerUnitriangular
-        extends EntryReadableMatrix, Invertible, Determinantable
-        permits LowerUnitriangularMatrix, LowerUnitriangularBandMatrix, UnitMatrix, LowerUnitriangularSealed {
+public interface LowerUnitriangular
+        extends EntryReadableMatrix, Invertible, Determinantable {
 
     /**
      * 逆行列を取得する. <br>

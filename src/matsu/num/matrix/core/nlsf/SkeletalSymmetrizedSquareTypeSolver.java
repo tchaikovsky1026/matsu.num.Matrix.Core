@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.5.9
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -58,7 +58,7 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * @param <ST> 非対称平方根行列の型パラメータ, {@link #asymmSqrt()} の戻り値型をサブタイプで限定する.
  * @param <SIT> 非対称平方根の逆行列の型パラメータ, {@link #inverseAsymmSqrt()} の戻り値型をサブタイプで限定する.
  */
-abstract non-sealed class SkeletalSymmetrizedSquareTypeSolver<
+abstract class SkeletalSymmetrizedSquareTypeSolver<
         TT extends EntryReadableMatrix, ST extends Matrix, SIT extends Matrix>
         extends SkeletalLUTypeSolver<TT, Matrix> implements SymmetrizedSquareTypeSolver {
 
