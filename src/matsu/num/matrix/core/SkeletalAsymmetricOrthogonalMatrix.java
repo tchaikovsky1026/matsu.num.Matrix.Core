@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.17
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -109,12 +109,19 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
      * {@link #transpose()}, {@link #inverse()} を遅延初期化するために実装されるメソッドである. <br>
      * それらのどちらかが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけこのメソッドが呼ばれる. <br>
      * 公開は禁止され, サブクラスからもコールしてはならない.
+     *
+     * @implSpec
      * 
-     * @implSpec {@link OrthogonalMatrix} の実装規約より,
+     *               {@link OrthogonalMatrix} の実装規約より,
+     * 
      *               <blockquote>
-     *               {@code this.createTranspose().transpose() == this} <br>
-     *               {@code this.createTranspose().inverse().get() == this}
+     * 
+     *               <pre>
+     * this.createTranspose().transpose() == this
+     * this.createTranspose().inverse().get() == this</pre>
+     * 
      *               </blockquote>
+     * 
      *               を満たすことが推奨される. <br>
      *               アクセス修飾子を {@code public} にしてはいけない.
      * 
@@ -172,12 +179,10 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
      * 
      * @implSpec
      *               継承先においてオーバーライドを許可する. <br>
-     *               ただし, {@code Matrix["param":%param, %orthogonalType]} や
+     *               {@code Matrix["param":%param, %orthogonalType]} や
      *               {@code Matrix["param"=%param, %orthogonalType]}
      *               の形が適切であると思われる. <br>
      *               {@code %orthogonalType} は "unit" などの直交行列の性質を表現する.
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {

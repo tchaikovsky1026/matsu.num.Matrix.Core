@@ -12,7 +12,6 @@ package matsu.num.matrix.core;
 import java.util.Objects;
 import java.util.Optional;
 
-import matsu.num.matrix.core.sealed.PermutationMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -39,20 +38,17 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * ビルダ ({@link PermutationMatrix.Builder}) を用いて生成する.
  * </p>
  * 
- * <p>
- * <u><i>
- * このインターフェースは主に, 戻り値型を公開するために用意されており,
- * モジュール外での実装は想定されていない.
- * </i></u>
- * </p>
+ * @implSpec
+ *               このインターフェースは主に, 戻り値型を公開するために用意されており,
+ *               モジュール外での実装は想定されていない. <br>
+ *               モジュール外で実装する場合, 互換性が失われる場合がある.
  *
  * @author Matsuura Y.
  * @see <a href="https://en.wikipedia.org/wiki/Permutation_matrix">
  *          Permutation matrix</a>
  */
-public sealed interface PermutationMatrix
-        extends EntryReadableMatrix, OrthogonalMatrix, Determinantable
-        permits PermutationMatrixSealed, UnitMatrix {
+public interface PermutationMatrix
+        extends EntryReadableMatrix, OrthogonalMatrix, Determinantable {
 
     /**
      * 置換の偶奇を取得する.
@@ -274,7 +270,7 @@ public sealed interface PermutationMatrix
         }
 
         private static final class PermutationMatrixImpl
-                extends SkeletalAsymmetricOrthogonalMatrix<PermutationMatrix> implements PermutationMatrixSealed {
+                extends SkeletalAsymmetricOrthogonalMatrix<PermutationMatrix> implements PermutationMatrix {
 
             private final MatrixDimension matrixDimension;
 
@@ -427,7 +423,7 @@ public sealed interface PermutationMatrix
          * originalをラップし, 逆行列関連のメソッドを隠ぺいする.
          */
         private static final class InverseAndDeterminantAttachedPermutationMatrixImpl
-                implements PermutationMatrixSealed {
+                implements PermutationMatrix {
 
             private final PermutationMatrix original;
             private final Optional<PermutationMatrix> opInverse;

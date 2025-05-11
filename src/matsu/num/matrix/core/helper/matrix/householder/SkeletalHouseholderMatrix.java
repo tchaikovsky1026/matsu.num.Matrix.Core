@@ -6,13 +6,12 @@
  */
 
 /*
- * 2025.1.18
+ * 2025.5.9
  */
 package matsu.num.matrix.core.helper.matrix.householder;
 
 import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
-import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
 
 /**
  * {@link HouseholderMatrix} の骨格実装を扱う.
@@ -24,7 +23,7 @@ import matsu.num.matrix.core.sealed.HouseholderMatrixSealed;
  * @author Matsuura Y.
  */
 abstract class SkeletalHouseholderMatrix<T extends SkeletalHouseholderMatrix<T>>
-        extends SkeletalSymmetricOrthogonalMatrix<T> implements HouseholderMatrixSealed {
+        extends SkeletalSymmetricOrthogonalMatrix<T> implements HouseholderMatrix {
 
     /**
      * 唯一のコンストラクタ.

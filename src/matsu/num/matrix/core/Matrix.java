@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.10
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -26,52 +26,52 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * {@link Matrix} は identity に基づく equality を提供する. <br>
  * すなわち, {@link Object#equals(Object)} メソッドの実装に準じる.
  * </p>
+ *
+ * @implSpec
  * 
- * <hr>
+ *               <p>
+ *               実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
+ *               違反した場合は振る舞いが保証されない.
+ *               </p>
  * 
- * <h2>実装規約</h2>
+ *               <p>
+ *               identity に基づく equality を提供しなければならない.
+ *               </p>
  * 
- * <p>
- * 実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
- * 違反した場合は振る舞いが保証されない.
- * </p>
+ *               <p>
+ *               {@link Symmetric} インターフェースが付与される場合, 必ず正方形次元 (サイズ) でなければならない.
+ *               <br>
+ *               すなわち,
+ *               {@code this.matrixDimension().isSquare() == true}
+ *               でなければならない.
+ *               </p>
  * 
- * <p>
- * identity に基づく equality を提供しなければならない.
- * </p>
+ *               <p>
+ *               <u><b> {@link #transpose()} に関する規約 </b></u>
+ *               </p>
  * 
- * <p>
- * {@link Symmetric} インターフェースが付与される場合, 必ず正方形次元 (サイズ) でなければならない. <br>
- * すなわち,
- * {@code this.matrixDimension().isSquare() == true}
- * でなければならない.
- * </p>
+ *               <p>
+ *               自身の転置行列を返す {@link #transpose()} メソッドの戻り値は,
+ *               このメソッドの複数回の呼び出しにおいて同一のインスタンスを返すべきである. <br>
+ *               また, その転置行列の {@link #transpose()} メソッドの戻り値は自身となることが望ましい. <br>
+ *               {@link Symmetric} インターフェースが付与されている場合,
+ *               自身の {@link #transpose()} メソッドの戻り値は自身としなければならない.
+ *               </p>
  * 
- * <h3>{@link #transpose()} に関する規約</h3>
+ *               <blockquote>
  * 
- * <p>
- * 自身の転置行列を返す {@link #transpose()} メソッドの戻り値は,
- * このメソッドの複数回の呼び出しにおいて同一のインスタンスを返すべきである. <br>
- * また, その転置行列の {@link #transpose()} メソッドの戻り値は自身となることが望ましい. <br>
- * {@link Symmetric} インターフェースが付与されている場合,
- * 自身の {@link #transpose()} メソッドの戻り値は自身としなければならない.
- * </p>
- * 
- * <blockquote>
- * 
- * <pre>
+ *               <pre>
  * // 推奨: 次がtrue (複数回の呼び出しで同一のインスタンスを返す)
  * this.transpose() == this.transpose()
  * 
  * // 推奨: 次がtrue (転置の転置は自身)
- * this.transpose().transpose() == this 
+ * this.transpose().transpose() == this
  * 
  * // this instanceof Symmetric がtrueのときに
  * // 必須: 次がtrue (対称行列の転置は自身)
- * this.transpose() == this
- * </pre>
+ * this.transpose() == this</pre>
  * 
- * </blockquote>
+ *               </blockquote>
  *
  * @author Matsuura Y.
  */
@@ -139,17 +139,12 @@ public interface Matrix {
     /**
      * 自身と相手とが等価であるかどうかを判定する. <br>
      * identity に基づく equality である.
-     * 
-     * @param obj 相手
-     * @return 相手が自信と等しいなら true
      */
     @Override
     public abstract boolean equals(Object obj);
 
     /**
      * ハッシュコードを返す.
-     * 
-     * @return ハッシュコード
      */
     @Override
     public int hashCode();

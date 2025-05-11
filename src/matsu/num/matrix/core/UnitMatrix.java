@@ -133,17 +133,6 @@ public final class UnitMatrix
         return true;
     }
 
-    /**
-     * このオブジェクトの文字列説明表現を返す.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:%dimension, unit]}
-     * </p>
-     * 
-     * @return 説明表現
-     */
     @Override
     public String toString() {
         return String.format(

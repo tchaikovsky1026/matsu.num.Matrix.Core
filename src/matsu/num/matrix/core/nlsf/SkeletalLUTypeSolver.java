@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.5.10
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -51,7 +51,7 @@ import matsu.num.matrix.core.Matrix;
  * @param <TT> ターゲット行列の型パラメータ, {@link #target()} の戻り値型をサブタイプで限定する.
  * @param <IT> 逆行列の型パラメータ, {@link #inverse()} の戻り値型をサブタイプで限定する.
  */
-abstract non-sealed class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends Matrix>
+abstract class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends Matrix>
         extends InversionDeterminantableImplementation<TT, IT> implements LUTypeSolver {
 
     /**
@@ -89,8 +89,6 @@ abstract non-sealed class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, I
      * おそらくは次のような表現であろう. <br>
      * {@code %solverName[target:%matrix]}
      * </p>
-     * 
-     * @return 文字列表現
      */
     @Override
     public String toString() {

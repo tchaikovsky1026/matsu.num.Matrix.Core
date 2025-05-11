@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -216,9 +216,6 @@ public final class LowerUnitriangularBandMatrix
         return this.inverse;
     }
 
-    /**
-     * このインスタンスの文字列説明表現を返す.
-     */
     @Override
     public String toString() {
         return String.format(

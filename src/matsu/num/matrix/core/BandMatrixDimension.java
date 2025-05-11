@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.26
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -180,9 +180,6 @@ public final class BandMatrixDimension {
     /**
      * 他オブジェクトとの等価性を判定する. <br>
      * equality はクラス説明の通り.
-     * 
-     * @param obj 比較対象
-     * @return 自身とobjが等価の場合はtrue
      */
     @Override
     public boolean equals(Object obj) {
@@ -200,8 +197,6 @@ public final class BandMatrixDimension {
 
     /**
      * ハッシュコードを返す.
-     * 
-     * @return ハッシュコード
      */
     @Override
     public int hashCode() {
@@ -210,8 +205,6 @@ public final class BandMatrixDimension {
 
     /**
      * ハッシュコードを計算する.
-     * 
-     * @return ハッシュコード
      */
     private int calcHashCode() {
         int result = 1;
@@ -229,8 +222,6 @@ public final class BandMatrixDimension {
      * おそらくは次のような表現であろう. <br>
      * {@code (dim:(%dimension), bandwidth(%l, %u))}
      * </p>
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {

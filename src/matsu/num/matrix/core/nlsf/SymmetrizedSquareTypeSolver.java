@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.5.9
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -22,46 +22,40 @@ import matsu.num.matrix.core.Symmetric;
  * B に関する線形連立方程式解法の機能も提供する. <br>
  * 主に, Cholesky分解の抽象化である.
  * 
- * <hr>
+ * @implSpec
+ *               <p>
+ *               {@link Inversion}, {@link Determinantable} の規約に従う.
+ *               </p>
  * 
- * <h2>実装規約</h2>
+ *               <p>
+ *               {@link #asymmSqrt()}, {@link #inverseAsymmSqrt()} メソッドの戻り値は,
+ *               複数回の呼び出しにおいて同一のインスタンスであるべきである.
+ *               </p>
  * 
- * <p>
- * {@link Inversion}, {@link Determinantable} の規約に従う.
- * </p>
+ *               <blockquote>
  * 
- * <p>
- * {@link #asymmSqrt()}, {@link #inverseAsymmSqrt()} メソッドの戻り値は,
- * 複数回の呼び出しにおいて同一のインスタンスであるべきである.
- * </p>
- * 
- * <blockquote>
- * 
- * <pre>
+ *               <pre>
  * // 推奨: 次がtrue (複数回の呼び出しで同一のインスタンスを指す)
  * this.asymmSqrt() == this.asymmSqrt()
- * this.inverseAsymmSqrt() == this.inverseAsymmSqrt()
- * </pre>
+ * this.inverseAsymmSqrt() == this.inverseAsymmSqrt()</pre>
  * 
- * </blockquote>
+ *               </blockquote>
  * 
- * <p>
- * {@link #target()} によって返される行列 A,
- * {@link #inverse()} によって返される行列 A<sup>-1</sup> には,
- * {@link Symmetric} が付与されていなければならない.
- * </p>
+ *               <p>
+ *               {@link #target()} によって返される行列 A,
+ *               {@link #inverse()} によって返される行列 A<sup>-1</sup> には,
+ *               {@link Symmetric} が付与されていなければならない.
+ *               </p>
  * 
- * <p>
- * <u><i>
- * このインターフェースは主に, 戻り値型を公開するために用意されており,
- * モジュール外での実装は想定されていない.
- * </i></u>
- * </p>
+ *               <p>
+ *               このインターフェースは主に, 戻り値型を公開するために用意されており,
+ *               モジュール外での実装は想定されていない. <br>
+ *               モジュール外で実装する場合, 互換性が失われる場合がある.
+ *               </p>
  * 
  * @author Matsuura Y.
  */
-public sealed interface SymmetrizedSquareTypeSolver extends LUTypeSolver
-        permits SkeletalSymmetrizedSquareTypeSolver {
+public interface SymmetrizedSquareTypeSolver extends LUTypeSolver {
 
     /**
      * {@inheritDoc}

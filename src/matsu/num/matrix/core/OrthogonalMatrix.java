@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.11
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -29,35 +29,34 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * {@link Invertible} で表現している.
  * </p>
  * 
- * <hr>
+ * @implSpec
  * 
- * <h2>実装規約</h2>
+ *               <p>
+ *               {@link Matrix}, {@link Invertible} の規約に従う.
+ *               </p>
  * 
- * <p>
- * {@link Matrix}, {@link Invertible} の規約に従う.
- * </p>
+ *               <u><b>
+ *               {@link #transpose()} と {@link #inverse()} の整合に関する規約
+ *               </b></u>
  * 
- * <h3>{@link #transpose()} と {@link #inverse()} の整合に関する規約</h3>
+ *               <p>
+ *               {@link #inverse()} メソッドの戻り値の要素と {@link #transpose()}
+ *               の戻り値は同一のインスタンスを返すべきである. <br>
+ *               {@link Symmetric} インターフェースが付与されている場合,
+ *               {@link #inverse()} メソッドの戻り値の要素は自身としなければならない.
+ *               </p>
  * 
- * <p>
- * {@link #inverse()} メソッドの戻り値の要素と {@link #transpose()}
- * の戻り値は同一のインスタンスを返すべきである. <br>
- * {@link Symmetric} インターフェースが付与されている場合,
- * {@link #inverse()} メソッドの戻り値の要素は自身としなければならない.
- * </p>
+ *               <blockquote>
  * 
- * <blockquote>
- * 
- * <pre>
+ *               <pre>
  * // 推奨: 次がtrue (転置行列と逆行列は同一)
  * this.inverse().get() == this.transpose()
  * 
  * // this instanceof Symmetric がtrueのときに
  * // 必須: 次がtrue (対称直交行列の逆行列は自身)
- * this.inverse().get() == this
- * </pre>
+ * this.inverse().get() == this</pre>
  * 
- * </blockquote>
+ *               </blockquote>
  * 
  * @author Matsuura Y.
  * @see <a href="https://en.wikipedia.org/wiki/Orthogonal_matrix">

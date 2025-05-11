@@ -5,11 +5,10 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.5.9
  */
 package matsu.num.matrix.core;
 
-import matsu.num.matrix.core.sealed.ZeroMatrixSealed;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -102,7 +101,7 @@ final class ZeroMatrixImpl
      * 転置行列を直接結びつける零行列. <br>
      * オリジナルのtranspose()が呼ばれなくなる.
      */
-    private static final class TransposeAttachedZeroMatrix implements ZeroMatrixSealed {
+    private static final class TransposeAttachedZeroMatrix implements ZeroMatrix {
 
         private final ZeroMatrix original;
         private final ZeroMatrix transpose;

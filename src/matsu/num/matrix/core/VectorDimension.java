@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.26
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -68,9 +68,6 @@ public final class VectorDimension implements Comparable<VectorDimension> {
     /**
      * 他オブジェクトとの等価性を判定する. <br>
      * equality はクラス説明の通り.
-     * 
-     * @param obj 比較対象
-     * @return 自身とobjが等価の場合はtrue
      */
     @Override
     public boolean equals(Object obj) {
@@ -87,10 +84,6 @@ public final class VectorDimension implements Comparable<VectorDimension> {
     /**
      * ベクトルディメンジョンを比較する. <br>
      * comparability はクラス説明の通り.
-     * 
-     * @param target 比較相手
-     * @return 比較結果
-     * @throws NullPointerException 引数にnullが含まれる場合
      */
     @Override
     public int compareTo(VectorDimension target) {
@@ -99,8 +92,6 @@ public final class VectorDimension implements Comparable<VectorDimension> {
 
     /**
      * ハッシュコードを返す.
-     * 
-     * @return ハッシュコード
      */
     @Override
     public int hashCode() {
@@ -113,8 +104,6 @@ public final class VectorDimension implements Comparable<VectorDimension> {
      * <p>
      * 一度だけ呼ばれる.
      * </p>
-     * 
-     * @return このインスタンスのハッシュコード
      */
     private int calcHashCode() {
         int result = 1;
@@ -140,8 +129,6 @@ public final class VectorDimension implements Comparable<VectorDimension> {
      * おそらくは次のような表現であろう. <br>
      * {@code %value}
      * </p>
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {

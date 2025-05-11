@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -21,18 +21,16 @@ import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableU
  * もし値の修正を行うならば {@link #modified(double)} メソッドを使用する.
  * </p>
  * 
- * <hr>
+ * @implSpec
  * 
- * <h2>実装規約</h2>
+ *               <p>
+ *               {@link Matrix} の規約に従う.
+ *               </p>
  * 
- * <p>
- * {@link Matrix} の規約に従う.
- * </p>
- * 
- * <p>
- * 行列の成分には, 行列サイズに比例しない定数時間でアクセスできなければならない. <br>
- * 各成分の値 ({@link #valueAt(int, int)} メソッドにより取得される値)
- * は扱える範囲でなければならない.
+ *               <p>
+ *               行列の成分には, 行列サイズに比例しない定数時間でアクセスできなければならない. <br>
+ *               各成分の値 ({@link #valueAt(int, int)} メソッドにより取得される値)
+ *               は扱える範囲でなければならない.
  *
  * @author Matsuura Y.
  */
@@ -70,6 +68,15 @@ public interface EntryReadableMatrix extends Matrix {
 
     /**
      * {@link EntryReadableMatrix} の成分として有効な値であるかを判定する.
+     * 
+     * <p>
+     * <i>
+     * <u>このメソッドの利用について</u> <br>
+     * このメソッドを呼ぶ必要があるのは,
+     * 行列演算のコアな計算のライブラリ作成の状況であろう. <br>
+     * ライブラリを使うユーザーが呼ぶことは, おそらく非推奨である.
+     * </i>
+     * </p>
      *
      * @param value 検証する値
      * @return 有効である場合はtrue
@@ -79,8 +86,19 @@ public interface EntryReadableMatrix extends Matrix {
     }
 
     /**
+     * <p>
      * 与えられた値を成分として使用できるように修正する. <br>
      * 正常値を与えた場合はそのまま, 不正な値を与えた場合は正常な値に修正して返す.
+     * </p>
+     * 
+     * <p>
+     * <i>
+     * <u>このメソッドの利用について</u> <br>
+     * このメソッドを呼ぶ必要があるのは,
+     * 行列演算のコアな計算のライブラリ作成の状況であろう. <br>
+     * ライブラリを使うユーザーが呼ぶことは, おそらく非推奨である.
+     * </i>
+     * </p>
      * 
      * @param value 元の値
      * @return 修正された値

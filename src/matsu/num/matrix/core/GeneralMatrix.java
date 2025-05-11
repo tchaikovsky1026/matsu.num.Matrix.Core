@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.5.10
  */
 package matsu.num.matrix.core;
 
@@ -178,9 +178,6 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         return ArraysUtil.normMax(entry);
     }
 
-    /**
-     * このインスタンスの文字列表現を返す.
-     */
     @Override
     public String toString() {
         return String.format(
