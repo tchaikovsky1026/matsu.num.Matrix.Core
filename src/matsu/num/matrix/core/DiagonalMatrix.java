@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -51,9 +51,17 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 public interface DiagonalMatrix
         extends BandMatrix, Symmetric, Invertible, Determinantable {
 
+    /**
+     * @implSpec
+     *               {@link Invertible#inverse()} に従う.
+     */
     @Override
     public abstract Optional<? extends DiagonalMatrix> inverse();
 
+    /**
+     * @implSpec
+     *               {@link Matrix#transpose()} に従う.
+     */
     @Override
     public abstract DiagonalMatrix transpose();
 

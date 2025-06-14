@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -33,6 +33,10 @@ package matsu.num.matrix.core;
  */
 public interface ZeroMatrix extends EntryReadableMatrix {
 
+    /**
+     * @implSpec
+     *               {@link Matrix#transpose()} に従う.
+     */
     @Override
     public abstract ZeroMatrix transpose();
 

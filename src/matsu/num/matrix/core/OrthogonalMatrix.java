@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -30,7 +30,6 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * </p>
  * 
  * @implSpec
- * 
  *               <p>
  *               {@link Matrix}, {@link Invertible} の規約に従う.
  *               </p>
@@ -65,8 +64,9 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 public interface OrthogonalMatrix extends Matrix, Invertible {
 
     /**
-     * @implSpec {@link Matrix#transpose()} に準じる. <br>
-     *               {@link OrthogonalMatrix#inverse()} の規約も参照.
+     * @implSpec
+     *               可能な場合は, 戻り値型をより具象なものに変更すべきである. <br>
+     *               その他は, インターフェース説明の通り.
      */
     @Override
     public abstract OrthogonalMatrix transpose();
@@ -75,18 +75,9 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * 逆行列を取得する. <br>
      * 必ず逆行列が存在するため, 戻り値は空でない.
      * 
-     * @implSpec インターフェース説明の通り, {@link Symmetric} が付与されている場合は,
-     *               戻り値のオプショナルの要素は {@code this} でなければならない. <br>
-     *               {@link Symmetric} が付与されていない場合,
-     *               {@link Invertible#inverse()} と合わせて,
-     *               次が {@code true} となることが推奨される.
-     *               <blockquote>
-     *               {@code this.inverse() == this.inverse()} <br>
-     *               {@code this.inverse().get() == this.transpose()} <br>
-     *               {@code this.transpose().inverse().get() == this } <br>
-     *               {@code this.inverse().get().transpose() == this } <br>
-     *               {@code this.inverse().get().inverse().get() == this }
-     *               </blockquote>
+     * @implSpec
+     *               可能な場合は, 戻り値型をより具象なものに変更すべきである. <br>
+     *               その他は, インターフェース説明の通り.
      * 
      * @return {@inheritDoc }, 空でない
      */
@@ -144,17 +135,16 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * </p>
      * 
      * <p>
+     * <u>
      * <i>
-     * <u>このメソッドの利用について</u> <br>
-     * {@link OrthogonalMatrix} およびそのサブタイプから転置行列や逆行列を得るには,
-     * {@link #transpose()}, {@link #inverse()} を呼ぶことが推奨される. <br>
      * このメソッドは {@link #transpose()} や {@link #inverse()},
      * {@link SkeletalAsymmetricOrthogonalMatrix#createTranspose()}
      * の実装を補助するために用意されている. <br>
-     * (ただし, {@link #transpose()}, {@link #inverse()} の実装に用いる場合,
-     * {@link OrthogonalMatrix} の実装規約の通り,
-     * 複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * {@link OrthogonalMatrix} およびそのサブタイプのインスタンスの転置行列, 逆行列を得る場合は,
+     * このメソッドではなくインスタンスメソッドである {@link #transpose()}, {@link #inverse()}
+     * を呼ばなければならない.
      * </i>
+     * </u>
      * </p>
      *
      * @param original 元の行列

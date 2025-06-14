@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -16,7 +16,6 @@ import matsu.num.matrix.core.helper.matrix.transpose.TranspositionBandUtil;
  * 
  *
  * @implSpec
- * 
  *               <p>
  *               {@link Matrix}, {@link EntryReadableMatrix} の規約に従う.
  *               </p>
@@ -44,6 +43,10 @@ public interface BandMatrix extends EntryReadableMatrix {
         return this.bandMatrixDimension().dimension();
     }
 
+    /**
+     * @implSpec
+     *               {@link Matrix#transpose()} に従う.
+     */
     @Override
     public abstract BandMatrix transpose();
 
@@ -59,17 +62,15 @@ public interface BandMatrix extends EntryReadableMatrix {
      * </p>
      * 
      * <p>
+     * <u>
      * <i>
-     * <u>このメソッドの利用について</u> <br>
-     * {@link EntryReadableMatrix} およびそのサブタイプから転置行列を得るには,
-     * {@link #transpose()} を呼ぶことが推奨される. <br>
      * このメソッドは {@link #transpose()} や
      * {@link SkeletalAsymmetricMatrix#createTranspose()}
      * の実装を補助するために用意されている. <br>
-     * (ただし, {@link #transpose()} の実装に用いる場合,
-     * {@link Matrix} の実装規約の通り,
-     * 複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * {@link Matrix} およびそのサブタイプのインスタンスの転置行列を得る場合は,
+     * このメソッドではなく, インスタンスメソッドである {@link #transpose()} を呼ばなければならない.
      * </i>
+     * </u>
      * </p>
      *
      * @param original 元の行列

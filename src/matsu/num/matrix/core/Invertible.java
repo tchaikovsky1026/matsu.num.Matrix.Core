@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -20,10 +20,13 @@ import java.util.Optional;
  * </p>
  * 
  * @implSpec
- * 
  *               <p>
  *               実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
  *               違反した場合は振る舞いが保証されない.
+ *               </p>
+ * 
+ *               <p>
+ *               <u><b> {@link #inverse()} に関する規約 </b></u>
  *               </p>
  * 
  *               <p>
@@ -61,17 +64,9 @@ public interface Invertible {
      * 逆行列を取得する. <br>
      * 逆行列が存在しない場合は空を返す.
      *
-     * @implSpec インターフェース説明の通り, 次が {@code true} となることが推奨される.
-     *               <blockquote>
-     *               {@code this.inverse() == this.inverse() }
-     *               </blockquote>
-     * 
-     *               自身が {@link Matrix} のサブタイプであり,
-     *               かつ戻り値が {@link Invertible} のサブタイプである場合,
-     *               次が {@code true} となることが推奨される.
-     *               <blockquote>
-     *               {@code ((Invertible) this.inverse().get()).inverse().get() == this }
-     *               </blockquote>
+     * @implSpec
+     *               可能な場合は, 戻り値型をより具象なものに変更すべきである. <br>
+     *               その他は, インターフェース説明 ({@link #inverse()} に関する規約) の通り.
      * 
      * @return ターゲット行列の逆行列
      */

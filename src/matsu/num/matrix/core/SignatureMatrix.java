@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -41,9 +41,17 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 public interface SignatureMatrix
         extends DiagonalMatrix, OrthogonalMatrix {
 
+    /**
+     * @implSpec
+     *               {@link OrthogonalMatrix#transpose()} に従う.
+     */
     @Override
     public abstract SignatureMatrix transpose();
 
+    /**
+     * @implSpec
+     *               {@link OrthogonalMatrix#inverse()} に従う.
+     */
     @Override
     public abstract Optional<? extends SignatureMatrix> inverse();
 

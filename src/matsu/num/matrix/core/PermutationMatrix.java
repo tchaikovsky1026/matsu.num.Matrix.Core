@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -57,9 +57,17 @@ public interface PermutationMatrix
      */
     public abstract boolean isEven();
 
+    /**
+     * @implSpec
+     *               {@link OrthogonalMatrix#transpose()} に従う.
+     */
     @Override
     public abstract PermutationMatrix transpose();
 
+    /**
+     * @implSpec
+     *               {@link OrthogonalMatrix#inverse()} に従う.
+     */
     @Override
     public abstract Optional<? extends PermutationMatrix> inverse();
 

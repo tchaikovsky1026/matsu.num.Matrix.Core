@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -17,12 +17,14 @@ import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableU
  * (扱うことができる値は {@link #MIN_VALUE}, {@link #MAX_VALUE} で規定される).
  * 
  * <p>
- * インスタンスの構築などで成分として適当かどうかを判断するには {@link #acceptValue(double)} メソッドを使用する. <br>
- * もし値の修正を行うならば {@link #modified(double)} メソッドを使用する.
+ * <i>
+ * ライブラリ開発向けに,
+ * 成分として適当かどうかを判断する {@link #acceptValue(double)} メソッド,
+ * 値の修正を行う {@link #modified(double)} メソッドが用意されている.
+ * </i>
  * </p>
  * 
  * @implSpec
- * 
  *               <p>
  *               {@link Matrix} の規約に従う.
  *               </p>
@@ -31,6 +33,7 @@ import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableU
  *               行列の成分には, 行列サイズに比例しない定数時間でアクセスできなければならない. <br>
  *               各成分の値 ({@link #valueAt(int, int)} メソッドにより取得される値)
  *               は扱える範囲でなければならない.
+ *               </p>
  *
  * @author Matsuura Y.
  */
@@ -63,6 +66,10 @@ public interface EntryReadableMatrix extends Matrix {
      */
     public double entryNormMax();
 
+    /**
+     * @implSpec
+     *               {@link Matrix#transpose()} に従う.
+     */
     @Override
     public abstract EntryReadableMatrix transpose();
 
@@ -70,12 +77,13 @@ public interface EntryReadableMatrix extends Matrix {
      * {@link EntryReadableMatrix} の成分として有効な値であるかを判定する.
      * 
      * <p>
+     * <u>
      * <i>
-     * <u>このメソッドの利用について</u> <br>
      * このメソッドを呼ぶ必要があるのは,
      * 行列演算のコアな計算のライブラリ作成の状況であろう. <br>
      * ライブラリを使うユーザーが呼ぶことは, おそらく非推奨である.
      * </i>
+     * </u>
      * </p>
      *
      * @param value 検証する値
@@ -92,12 +100,13 @@ public interface EntryReadableMatrix extends Matrix {
      * </p>
      * 
      * <p>
+     * <u>
      * <i>
-     * <u>このメソッドの利用について</u> <br>
      * このメソッドを呼ぶ必要があるのは,
      * 行列演算のコアな計算のライブラリ作成の状況であろう. <br>
      * ライブラリを使うユーザーが呼ぶことは, おそらく非推奨である.
      * </i>
+     * </u>
      * </p>
      * 
      * @param value 元の値
@@ -219,17 +228,15 @@ public interface EntryReadableMatrix extends Matrix {
      * </p>
      * 
      * <p>
+     * <u>
      * <i>
-     * <u>このメソッドの利用について</u> <br>
-     * {@link EntryReadableMatrix} およびそのサブタイプから転置行列を得るには,
-     * {@link #transpose()} を呼ぶことが推奨される. <br>
      * このメソッドは {@link #transpose()} や
      * {@link SkeletalAsymmetricMatrix#createTranspose()}
      * の実装を補助するために用意されている. <br>
-     * (ただし, {@link #transpose()} の実装に用いる場合,
-     * {@link Matrix} の実装規約の通り,
-     * 複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * {@link Matrix} およびそのサブタイプのインスタンスの転置行列を得る場合は,
+     * このメソッドではなく, インスタンスメソッドである {@link #transpose()} を呼ばなければならない.
      * </i>
+     * </u>
      * </p>
      *
      * @param original 元の行列
