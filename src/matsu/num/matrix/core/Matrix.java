@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -21,21 +21,17 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * {@link Matrix} インターフェースを実装した全てのクラスは実質的にイミュータブルであり,
  * (このインターフェース以外を含む) 全てのメソッドは関数的かつスレッドセーフである.
  * </p>
- * 
- * <p>
- * {@link Matrix} は identity に基づく equality を提供する. <br>
- * すなわち, {@link Object#equals(Object)} メソッドの実装に準じる.
- * </p>
  *
  * @implSpec
- * 
  *               <p>
  *               実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
  *               違反した場合は振る舞いが保証されない.
  *               </p>
  * 
  *               <p>
- *               identity に基づく equality を提供しなければならない.
+ *               インスタンスの equality は提供すべきではない. <br>
+ *               ({@link Object#equals(Object)},
+ *               {@link Object#hashCode()} をオーバーライドすべきではない.)
  *               </p>
  * 
  *               <p>
@@ -123,31 +119,13 @@ public interface Matrix {
     /**
      * この行列の転置行列を返す.
      * 
-     * @implSpec インターフェース説明の通り, {@link Symmetric} が付与されている場合は,
-     *               {@code this} を返さなければならない. <br>
-     *               {@link Symmetric} が付与されていない場合,
-     *               次が {@code true} となることが推奨される.
-     *               <blockquote>
-     *               {@code this.transpose() == this.transpose()} <br>
-     *               {@code this.transpose().transpose() == this }
-     *               </blockquote>
+     * @implSpec
+     *               可能な場合は, 戻り値型をより具象なものに変更すべきである. <br>
+     *               その他は, インターフェース説明 ({@link #transpose()} に関する規約) の通り.
      * 
      * @return 転置行列
      */
     public abstract Matrix transpose();
-
-    /**
-     * 自身と相手とが等価であるかどうかを判定する. <br>
-     * identity に基づく equality である.
-     */
-    @Override
-    public abstract boolean equals(Object obj);
-
-    /**
-     * ハッシュコードを返す.
-     */
-    @Override
-    public int hashCode();
 
     /**
      * 1個以上の行列に対し, それらの行列積を返す.
@@ -204,17 +182,15 @@ public interface Matrix {
      * </p>
      * 
      * <p>
+     * <u>
      * <i>
-     * <u>このメソッドの利用について</u> <br>
-     * {@link Matrix} およびそのサブタイプから転置行列を得るには,
-     * {@link #transpose()} を呼ぶことが推奨される. <br>
      * このメソッドは {@link #transpose()} や
      * {@link SkeletalAsymmetricMatrix#createTranspose()}
      * の実装を補助するために用意されている. <br>
-     * (ただし, {@link #transpose()} の実装に用いる場合,
-     * {@link Matrix} の実装規約の通り,
-     * 複数回の呼び出しで同一のインスタンスを返すようにキャッシュすることが推奨される.)
+     * {@link Matrix} およびそのサブタイプのインスタンスの転置行列を得る場合は,
+     * このメソッドではなく {@link #transpose()} を呼ばなければならない.
      * </i>
+     * </u>
      * </p>
      * 
      * @param original 元の行列
