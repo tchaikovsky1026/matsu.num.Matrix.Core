@@ -87,8 +87,6 @@ public final class CholeskyBand
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     final InversionDeterminantableImplementation<Matrix, Matrix> createAsymmetricSqrtSystem() {
@@ -101,8 +99,6 @@ public final class CholeskyBand
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     String solverName() {
@@ -167,8 +163,6 @@ public final class CholeskyBand
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
@@ -187,8 +181,6 @@ public final class CholeskyBand
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         Optional<CholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {
@@ -229,8 +221,6 @@ public final class CholeskyBand
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {

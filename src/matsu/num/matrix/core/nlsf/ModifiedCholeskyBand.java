@@ -87,8 +87,6 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
@@ -109,8 +107,6 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     String solverName() {
@@ -176,8 +172,6 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
@@ -196,8 +190,6 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         Optional<ModifiedCholeskyBand> applyConcretely(BandMatrix matrix, double epsilon) {

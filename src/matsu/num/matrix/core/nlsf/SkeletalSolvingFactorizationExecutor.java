@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.15
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -61,7 +61,7 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * </ul>
  * 
  * <p>
- * このクラスは, 型としての互換性は積極的には維持されず,
+ * この骨格実装クラスの継承関係は積極的には維持されず,
  * このモジュールや関連モジュールの具象クラスが将来的にこのクラスのサブタイプでなくなる場合がある.
  * </p>
  * 
@@ -181,27 +181,5 @@ abstract class SkeletalSolvingFactorizationExecutor<
         }
 
         return sb.toString();
-    }
-
-    /**
-     * -
-     * 
-     * @return -
-     * @throws CloneNotSupportedException 常に
-     * @deprecated Clone不可
-     */
-    @Deprecated
-    @Override
-    protected final Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
-    }
-
-    /**
-     * オーバーライド不可.
-     */
-    @Override
-    @Deprecated
-    protected final void finalize() throws Throwable {
-        super.finalize();
     }
 }
