@@ -85,8 +85,6 @@ public final class ModifiedCholeskyPivoting
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
@@ -109,8 +107,6 @@ public final class ModifiedCholeskyPivoting
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     String solverName() {
@@ -175,8 +171,6 @@ public final class ModifiedCholeskyPivoting
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
@@ -195,8 +189,6 @@ public final class ModifiedCholeskyPivoting
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         final Optional<ModifiedCholeskyPivoting> applyConcretely(EntryReadableMatrix matrix,

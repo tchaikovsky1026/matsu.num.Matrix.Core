@@ -49,7 +49,7 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </ul>
  * 
  * <p>
- * このクラスは, 型としての互換性は積極的には維持されず,
+ * この骨格実装クラスの継承関係は積極的には維持されず,
  * このモジュールや関連モジュールの具象クラスが将来的にこのクラスのサブタイプでなくなる場合がある.
  * </p>
  * 
@@ -80,8 +80,6 @@ abstract class SkeletalSymmetrizedSquareTypeSolver<
      * <p>
      * (外部からのの呼び出し不可, サブクラスからの呼び出し禁止)
      * </p>
-     * 
-     * @return -
      */
     @Override
     final InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {

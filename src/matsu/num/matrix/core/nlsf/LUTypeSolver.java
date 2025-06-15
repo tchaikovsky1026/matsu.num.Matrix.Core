@@ -45,6 +45,10 @@ import matsu.num.matrix.core.Inversion;
 public interface LUTypeSolver
         extends Inversion, Determinantable {
 
+    /**
+     * @implSpec
+     *               {@link Inversion#target()} に従う.
+     */
     @Override
     public abstract EntryReadableMatrix target();
 }

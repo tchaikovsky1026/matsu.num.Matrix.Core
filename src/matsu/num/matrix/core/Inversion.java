@@ -62,6 +62,8 @@ public interface Inversion {
      * このインターフェースが紐づく行列を返す.
      * </p>
      * 
+     * @implSpec
+     *               可能な場合は, 戻り値型をより具象なものに変更すべきである.
      * @return このインターフェースが紐づく行列
      */
     public abstract Matrix target();
@@ -69,7 +71,10 @@ public interface Inversion {
     /**
      * ターゲット行列の逆行列を取得する.
      *
+     * @implSpec
+     *               可能な場合は, 戻り値型をより具象なものに変更すべきである. <br>
+     *               その他は, インターフェース説明の通り.
      * @return ターゲット行列の逆行列
      */
-    public Matrix inverse();
+    public abstract Matrix inverse();
 }

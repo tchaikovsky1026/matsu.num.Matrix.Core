@@ -81,8 +81,6 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
@@ -102,8 +100,6 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     String solverName() {
@@ -168,8 +164,6 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         MatrixStructureAcceptance acceptsConcretely(BandMatrix matrix) {
@@ -184,8 +178,6 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         final Optional<LUBand> applyConcretely(BandMatrix matrix, double epsilon) {
