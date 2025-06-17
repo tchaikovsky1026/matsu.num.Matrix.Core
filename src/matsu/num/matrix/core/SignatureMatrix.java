@@ -25,8 +25,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * <p>
- * このインターフェースの実装クラスのインスタンスは,
- * ビルダ ({@link SignatureMatrix.Builder}) を用いて生成する.
+ * 対角成分を直接指定、あるいは逐次的に符号を反転しての符号行列の生成には,
+ * ビルダ ({@link SignatureMatrix.Builder}) を用いて行う.
  * </p>
  * 
  * @implSpec
