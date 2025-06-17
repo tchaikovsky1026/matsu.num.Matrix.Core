@@ -16,6 +16,7 @@ import matsu.num.matrix.core.DiagonalMatrix;
 import matsu.num.matrix.core.EntryReadableMatrix;
 import matsu.num.matrix.core.LowerUnitriangular;
 import matsu.num.matrix.core.Matrix;
+import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.OrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
@@ -101,6 +102,37 @@ public final class HouseholderQR
         return Executor.INSTANCE;
     }
 
+    /**
+     * Householder変換によるQR分解のエグゼキュータ.
+     * 
+     * <p>
+     * {@code accepts} メソッドでrejectされる条件は,
+     * {@link QRTypeSolver.Executor} に加えて次のとおりである.
+     * </p>
+     * 
+     * <ul>
+     * <li>行列の有効要素数が大きすぎる場合(後述)</li>
+     * </ul>
+     * 
+     * <p>
+     * {@code apply} メソッドで空が返る条件は,
+     * {@link QRTypeSolver.Executor} に加わる追加条件はない.
+     * </p>
+     * 
+     * <p>
+     * このクラスのインスタンスは, {@link HouseholderQR#executor()} メソッドにより得ることができる.
+     * <br>
+     * 実質的にシングルトンである.
+     * </p>
+     * 
+     * <hr>
+     * 
+     * <p>
+     * 有効要素数が大きすぎるかどうかは,
+     * {@link MatrixDimension#isAccepedForDenseMatrix()}
+     * に従う.
+     * </p>
+     */
     public static final class Executor
             extends SkeletalQRTypeSolver.Executor<EntryReadableMatrix, HouseholderQR> {
 

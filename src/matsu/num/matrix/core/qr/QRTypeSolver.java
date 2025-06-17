@@ -34,6 +34,14 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * R: 正則な上三角行列.
  * </p>
  * 
+ * <p>
+ * フルランクの正方行列は正則行列であり,
+ * 一般化逆行列は逆行列に一致する. <br>
+ * したがって, {@link QRTypeSolver} は連立方程式の求解にも使用することができる. <br>
+ * (フルランクでない場合は {@code Executor.apply} メソッドが空を返すので,
+ * 必ず逆行列を得ることになる.)
+ * </p>
+ * 
  * 
  * @implSpec
  *               <p>

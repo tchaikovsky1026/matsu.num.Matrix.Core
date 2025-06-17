@@ -223,6 +223,9 @@ abstract class SkeletalQRTypeSolver<TT extends EntryReadableMatrix, IT extends M
             return this.apply(matrix, PseudoRegularMatrixProcess.DEFAULT_EPSILON);
         }
 
+        /**
+         * このインスタンスの文字列表現を返す.
+         */
         @Override
         public String toString() {
             Deque<Class<?>> enclosingClassLevels = new LinkedList<>();
