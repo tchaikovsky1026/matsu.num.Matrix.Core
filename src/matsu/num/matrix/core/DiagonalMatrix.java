@@ -31,6 +31,10 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * が追加されている.
  * </p>
  * 
+ * <p>
+ * 対角成分を直接指定しての対角行列の生成は,
+ * ビルダ ({@link matsu.num.matrix.core.DiagonalMatrix.Builder}) を経由して行う.
+ * </p>
  * 
  * @implSpec
  *               このインターフェースは主に, 戻り値型を公開するために用意されており,

@@ -576,7 +576,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
          * @return ブロック構造
          * @throws IllegalStateException すでにビルドされている場合
          * @throws MatrixFormatMismatchException ブロック構造が不能あるいは不定
-         * @throws ElementsTooManyException 行列全体が大きすぎる場合
+         * @throws ElementsTooManyException 行列全体が大きすぎる場合 (パッケージ説明文を参照)
          */
         public BlockMatrixStructure<T> build() {
             this.throwISExIfCannotBeUsed();
