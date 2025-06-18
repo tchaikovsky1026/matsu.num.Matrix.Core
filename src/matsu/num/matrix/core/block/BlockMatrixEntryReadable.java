@@ -169,8 +169,6 @@ public final class BlockMatrixEntryReadable
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     protected EntryReadableMatrix createTranspose() {

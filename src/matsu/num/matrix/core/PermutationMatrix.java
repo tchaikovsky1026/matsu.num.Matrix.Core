@@ -33,8 +33,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * </p>
  * 
  * <p>
- * このインターフェースの実装クラスのインスタンスは,
- * ビルダ ({@link PermutationMatrix.Builder}) を用いて生成する.
+ * 互換を組み合わせての置換行列の生成には,
+ * ビルダ ({@link PermutationMatrix.Builder}) を用いて行う.
  * </p>
  * 
  * @implSpec

@@ -143,8 +143,6 @@ public final class BlockMatrix
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     protected Matrix createTranspose() {
