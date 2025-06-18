@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
 
@@ -32,8 +32,6 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * 
- * <hr>
- * 
  * <h2>使用上の注意</h2>
  * 
  * <p>
@@ -49,12 +47,14 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </ul>
  * 
  * <p>
- * このクラスは型としての互換性は積極的には維持されず,
+ * この骨格実装クラスの継承関係は積極的には維持されず,
  * このモジュールや関連モジュールの具象クラスが将来的にこのクラスのサブタイプでなくなる場合がある.
  * </p>
  * 
  * @author Matsuura Y.
- * @param <TT> 転置行列のタイプ, {@code transpose()} の戻り値型を具象クラスで限定する.
+ * @param <TT>
+ *            転置行列の型を表す. <br>
+ *            サブクラスで型をバインドすることで, {@code transpose()} の戻り値型を共変で扱うために用意されている.
  */
 public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {
 
@@ -62,7 +62,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     private final Supplier<TT> transposeSupplier;
 
     /**
-     * 骨格実装を生成する.
+     * 唯一のコンストラクタ.
      * 
      * <p>
      * このクラスの規約を検証するため,
@@ -97,7 +97,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
      * <p>
      * {@link #transpose()} を遅延初期化するために実装されるメソッドである. <br>
      * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけこのメソッドが呼ばれる. <br>
-     * 公開は禁止され, サブクラスからもコールしてはならない.
+     * 公開は禁止されており, サブクラスからもコールしてはならない.
      * </p>
      *
      * @implSpec
@@ -119,45 +119,6 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     protected abstract TT createTranspose();
 
     /**
-     * {@inheritDoc}
-     * 
-     * <p>
-     * <i>
-     * <u>
-     * この振る舞いは {@link Object#equals(Object)}
-     * の振る舞いと同一であるので本来は override する必要がないが,
-     * {@code final} 修飾するために override した.
-     * </u>
-     * </i>
-     * </p>
-     * 
-     */
-    @Override
-    public final boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * <p>
-     * <i>
-     * <u>
-     * この振る舞いは {@link Object#hashCode()}
-     * の振る舞いと同一であるので本来は override する必要がないが,
-     * {@link Object#equals(Object)} を override しているため
-     * {@link #hashCode()} も override した.
-     * </u>
-     * </i>
-     * </p>
-     * 
-     */
-    @Override
-    public final int hashCode() {
-        return super.hashCode();
-    }
-
-    /**
      * このインスタンスの文字列説明表現を返す.
      * 
      * <p>
@@ -176,27 +137,5 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
         return String.format(
                 "Matrix[dim:%s]",
                 this.matrixDimension());
-    }
-
-    /**
-     * -
-     * 
-     * @return -
-     * @throws CloneNotSupportedException 常に
-     * @deprecated Clone不可
-     */
-    @Deprecated
-    @Override
-    protected final Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
-    }
-
-    /**
-     * オーバーライド不可.
-     */
-    @Override
-    @Deprecated
-    protected final void finalize() throws Throwable {
-        super.finalize();
     }
 }

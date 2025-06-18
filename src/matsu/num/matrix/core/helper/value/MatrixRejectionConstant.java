@@ -55,7 +55,15 @@ public enum MatrixRejectionConstant {
      */
     REJECTED_BY_NOT_LOWER_TRIANGULAR(
             o -> new MatrixFormatMismatchException(String.format("下三角構造でない:%s", o)),
-            "REJECTED_BY_NOT_LOWER_TRIANGULAR");
+            "REJECTED_BY_NOT_LOWER_TRIANGULAR"),
+
+    /**
+     * 横長行列であるために対応していないことを表す.
+     */
+    REJECTED_BY_HORIZONTAL(
+            m -> new MatrixFormatMismatchException(
+                    String.format("横長の行列サイズ:%s", m)),
+            "REJECTED_BY_HORIZONTAL");
 
     private final MatrixStructureAcceptance reject;
 

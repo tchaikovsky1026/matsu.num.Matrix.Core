@@ -80,8 +80,6 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     InverstibleAndDeterminantStruct<Matrix> createInverseDeterminantStruct() {
@@ -104,8 +102,6 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      * <p>
      * (外部からの呼び出し不可)
      * </p>
-     * 
-     * @return -
      */
     @Override
     String solverName() {
@@ -165,8 +161,6 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         final MatrixStructureAcceptance acceptsConcretely(EntryReadableMatrix matrix) {
@@ -181,8 +175,6 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
          * <p>
          * (外部からの呼び出し不可)
          * </p>
-         * 
-         * @return -
          */
         @Override
         final Optional<LUPivoting>

@@ -6,9 +6,11 @@
  */
 
 /*
- * 2025.5.9
+ * 2025.6.14
  */
 package matsu.num.matrix.core;
+
+import java.util.Optional;
 
 import matsu.num.matrix.core.helper.matrix.householder.HouseholderMatrixFactory;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
@@ -45,6 +47,20 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  */
 public interface HouseholderMatrix
         extends OrthogonalMatrix, Determinantable, Symmetric {
+
+    /**
+     * @implSpec
+     *               {@link OrthogonalMatrix#transpose()} に従う.
+     */
+    @Override
+    public abstract HouseholderMatrix transpose();
+
+    /**
+     * @implSpec
+     *               {@link OrthogonalMatrix#inverse()} に従う.
+     */
+    @Override
+    public abstract Optional<? extends HouseholderMatrix> inverse();
 
     /**
      * @return {@code -1d}

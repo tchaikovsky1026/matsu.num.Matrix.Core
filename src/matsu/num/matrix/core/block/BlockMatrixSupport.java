@@ -47,7 +47,7 @@ public final class BlockMatrixSupport {
      * @param first 左上ブロックの行列
      * @param following firstに続く行列, 左上から右下に向かって順番
      * @return ブロック対角直交行列
-     * @throws ElementsTooManyException 全体のサイズが大きすぎる場合
+     * @throws ElementsTooManyException 全体のサイズが大きすぎる場合 (パッケージ説明文を参照)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static OrthogonalMatrix blockDiagonalOrthogonalMatrixOf(
@@ -83,7 +83,7 @@ public final class BlockMatrixSupport {
      * @param following firstに続く行列, 左上から右下に向かって順番
      * @return 対称ブロック対角直交行列
      * @throws MatrixNotSymmetricException 引数の行列が対称でない場合
-     * @throws ElementsTooManyException 全体のサイズが大きすぎる場合
+     * @throws ElementsTooManyException 全体のサイズが大きすぎる場合 (パッケージ説明文を参照)
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static OrthogonalMatrix symmetricBlockDiagonalOrthogonalMatrixOf(
