@@ -55,11 +55,6 @@ public final class MatrixRejected extends MatrixStructureAcceptance {
         return this.exceptionGetter.apply(cause);
     }
 
-    /**
-     * このインスタンスの文字列表現
-     * 
-     * @return 文字列表現
-     */
     @Override
     public String toString() {
         return this.explanation;

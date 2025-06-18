@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.2
+ * 2025.6.18
  */
 package matsu.num.matrix.core.validation;
 
@@ -72,26 +72,10 @@ public abstract sealed class MatrixStructureAcceptance permits MatrixAccepted, M
     public abstract IllegalArgumentException getException(Object cause);
 
     /**
-     * -
-     * 
-     * @return -
-     * @throws CloneNotSupportedException 常に
-     * @deprecated Clone不可
-     */
-    @Deprecated
-    @Override
-    protected final Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
-    }
-
-    /**
-     * オーバーライド不可.
+     * このインスタンスの文字列表現を返す.
      */
     @Override
-    @Deprecated
-    protected final void finalize() throws Throwable {
-        super.finalize();
-    }
+    public abstract String toString();
 
     /**
      * 対応しているかどうかを示す列挙型.
