@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+	<!-- Javadoc の Ant ビルドファイル　-->
+
+
+	<!--
+	local.properties: ローカルなパラメータを記述する.
+	local.properties.example を参照のこと.
+	-->
+	<property file="./local.properties" />
+
+	<target name="init">
+		<!--
+		public.package.txt: Javadoc を出力するパッケージを, カンマ区切りで記載する.
+		通常, module-info.java の exports と一致.
+		-->
+		<loadfile property="public.packages" srcFile="./public.package.txt" />
+	</target>
+
+	<target name="javadoc" depends="init">
+		<!--
+        author, version: javadocにauthorとversionを含むかどうか
+        sourcepath: ソースファイルのルート(testフォルダを含んではいけない), セミコロン区切り
+        packagenames: javadocに含めるパッケージ名, カンマ区切り
+        modulepath: モジュールパス, セミコロン区切り
+        -->
+		<javadoc access="protected"
+		         encoding="UTF-8"
+		         charset="UTF-8"
+		         destdir="./javadoc-file"
+		         nodeprecated="false"
+		         nodeprecatedlist="false"
+		         noindex="false"
+		         nonavbar="false"
+		         notree="false"
+		         splitindex="true"
+		         use="true"
+		         source="17"
+		         author="true"
+		         version="true"
+		         sourcepath="./src"
+		         link="https://docs.oracle.com/javase/jp/17/docs/api/"
+		         modulepath="${module.path}"
+		         additionalparam="-tag 'implSpec:a:実装要件:' --no-fonts --show-module-contents api"
+		         packagenames="${public.packages}"
+		/>
+	</target>
+</project>

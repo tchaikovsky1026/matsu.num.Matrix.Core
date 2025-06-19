@@ -16,6 +16,9 @@
 *.war
 *.ear
 
+#Local File
+local.properties
+
 # OS
 Thumbs.db
 .DS_Store

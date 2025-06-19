@@ -1,0 +1,7 @@
+# example
+# local-parameter (gitignore).
+# filename: "local.properties" in the root directory
+
+# modulepath
+# separated by semicolons
+module.path=./lib;./lib2
