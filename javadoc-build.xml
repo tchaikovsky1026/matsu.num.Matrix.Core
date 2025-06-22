@@ -2,12 +2,14 @@
 <project default="javadoc">
 	<!-- Javadoc の Ant ビルドファイル　-->
 
-
 	<!--
 	local.properties: ローカルなパラメータを記述する.
 	local.properties.example を参照のこと.
 	-->
 	<property file="./local.properties" />
+
+	<!-- プロパティ定義 -->
+	<property name="dest.dir" location="./javadoc-file" />
 
 	<target name="init">
 		<!--
@@ -17,7 +19,12 @@
 		<loadfile property="public.packages" srcFile="./public.package.txt" />
 	</target>
 
-	<target name="javadoc" depends="init">
+	<target name="clean">
+		<!-- Javadoc コンパイル前に生成物の消去 -->
+		<delete dir="${dest.dir}" />
+	</target>
+
+	<target name="javadoc" depends="init,clean">
 		<!--
         author, version: javadocにauthorとversionを含むかどうか
         sourcepath: ソースファイルのルート(testフォルダを含んではいけない), セミコロン区切り
@@ -27,7 +34,7 @@
 		<javadoc access="protected"
 		         encoding="UTF-8"
 		         charset="UTF-8"
-		         destdir="./javadoc-file"
+		         destdir="${dest.dir}"
 		         nodeprecated="false"
 		         nodeprecatedlist="false"
 		         noindex="false"
