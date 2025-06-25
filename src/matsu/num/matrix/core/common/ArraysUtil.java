@@ -223,10 +223,29 @@ public final class ArraysUtil {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static final double norm2(double[] vector) {
-        //オーバー,アンダーフロー対策でスケールする
         double normMax = normMax(vector);
+        return norm2(vector, normMax);
+    }
 
-        //PInf, NInf, NaN, 0d, -0d をはじく
+    /**
+     * <p>
+     * ベクトルの最大値ノルムを与えて,
+     * ベクトルの2-ノルムを返す:
+     * ||<b>v</b>||<sub>2</sub>.
+     * </p>
+     * 
+     * <p>
+     * <b>v</b> のサイズが0の場合, 0が返る.
+     * </p>
+     *
+     * @param vector ベクトル <b>v</b>
+     * @param normMax vectorの最大値ノルム, {@code normMax(vector)} に一致しなければならない.
+     * @return 2-ノルム ||<b>v</b>||<sub>2</sub>
+     * @throws NullPointerException 引数にnullが含まれる場合
+     */
+    public static final double norm2(double[] vector, double normMax) {
+
+        //PInf, NaN, 0d をはじく
         if (!(Double.isFinite(normMax) && normMax > 0d)) {
             return normMax;
         }
@@ -386,8 +405,25 @@ public final class ArraysUtil {
      */
     public static final void normalizeEuclidean(double[] operand) {
         double normMax = normMax(operand);
+        normalizeEuclidean(operand, normMax);
+    }
 
-        if (normMax == 0d) {
+    /**
+     * <p>
+     * ベクトルの最大値ノルムを与えて,
+     * 引数のベクトルをEuclidノルムにより規格化する:
+     * <b>v</b> / ||<b>v</b>||<sub>2</sub>. <br>
+     * ノルムが0の場合は何もしない. <br>
+     * 不正値を含む場合, 結果は不定である.
+     * </p>
+     * 
+     * @param operand 作用ベクトル
+     * @param normMax operandの最大値ノルム, {@code normMax(operand)} に一致しなければならない.
+     * @throws NullPointerException 引数にnullが含まれる場合
+     */
+    public static final void normalizeEuclidean(double[] operand, double normMax) {
+
+        if (!(Double.isFinite(normMax) && normMax > 0d)) {
             return;
         }
 

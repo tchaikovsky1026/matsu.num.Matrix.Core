@@ -299,7 +299,7 @@ public final class Vector {
         }
 
         //シングルチェックイディオム
-        out = ArraysUtil.norm2(this.entry);
+        out = ArraysUtil.norm2(this.entry, this.normMax);
         this.norm2 = out;
         return out.doubleValue();
     }
@@ -335,7 +335,7 @@ public final class Vector {
         }
 
         double[] normalizedEntry = this.entry.clone();
-        ArraysUtil.normalizeEuclidean(normalizedEntry);
+        ArraysUtil.normalizeEuclidean(normalizedEntry, this.normMax);
         var out = new Vector(this.vectorDimension, normalizedEntry, true);
         Double value1 = Double.valueOf(1d);
         out.norm2 = value1;
