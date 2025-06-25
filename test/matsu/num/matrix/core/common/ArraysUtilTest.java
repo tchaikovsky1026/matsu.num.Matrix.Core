@@ -188,7 +188,7 @@ final class ArraysUtilTest {
             v = Arrays.copyOf(v, dimension);
 
             double[] result = v.clone();
-            result = ArraysUtil.negated(result);
+            ArraysUtil.negate(result);
 
             double[] expected = new double[v.length];
             for (int i = 0; i < expected.length; i++) {

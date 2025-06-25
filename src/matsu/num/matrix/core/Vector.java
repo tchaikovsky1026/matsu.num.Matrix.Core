@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.1.20
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -347,7 +347,10 @@ public final class Vector {
      * @return 加法逆元
      */
     public Vector negated() {
-        var out = new Vector(this.vectorDimension, ArraysUtil.negated(this.entry), this.normalized);
+        double[] negatedEntry = this.entry.clone();
+        ArraysUtil.negate(negatedEntry);
+
+        var out = new Vector(this.vectorDimension, negatedEntry, this.normalized);
         out.norm1 = this.norm1;
         out.norm2 = this.norm2;
         out.norm2Square = this.norm2Square;

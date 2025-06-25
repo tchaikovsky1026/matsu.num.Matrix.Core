@@ -407,20 +407,16 @@ public final class ArraysUtil {
 
     /**
      * <p>
-     * 引数のベクトルの加法逆元を計算する. <br>
+     * 引数のベクトルの加法逆元をとる (-1倍する). <br>
      * 不正値を含む場合, 同サイズの配列が返るが結果は不定である.
      * </p>
      * 
-     * @param vector ベクトル
-     * @return 引数の加法逆元
+     * @param operand ベクトル
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public static final double[] negated(double[] vector) {
-        double[] copyVector = vector.clone();
-        for (int i = 0, len = copyVector.length; i < len; i++) {
-            copyVector[i] = -copyVector[i];
+    public static final void negate(double[] operand) {
+        for (int i = 0, len = operand.length; i < len; i++) {
+            operand[i] = -operand[i];
         }
-
-        return copyVector;
     }
 }
