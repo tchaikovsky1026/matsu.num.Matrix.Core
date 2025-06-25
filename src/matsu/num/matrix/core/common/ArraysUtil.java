@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.4.4
+ * 2025.6.25
  */
 package matsu.num.matrix.core.common;
 
@@ -150,22 +150,25 @@ public final class ArraysUtil {
             throw new IllegalArgumentException("ベクトルサイズが一致しない");
         }
 
-        double outputValue = 0.0;
+        /*
+         * 主要ループで4成分の計算を同時に行う.
+         * 影響する変数を分けることで, 並列実行できる可能性がある.
+         */
+        double v0 = 0.0;
+        double v1 = 0.0;
+        double v2 = 0.0;
+        double v3 = 0.0;
         int index;
         for (index = dimension - 1; index >= 3; index -= 4) {
-            double v0, v1, v2, v3;
-            v0 = vector1[index] * vector2[index];
-            v1 = vector1[index - 1] * vector2[index - 1];
-            v2 = vector1[index - 2] * vector2[index - 2];
-            v3 = vector1[index - 3] * vector2[index - 3];
-            outputValue += (v0 + v1) + (v2 + v3);
+            v0 += vector1[index] * vector2[index];
+            v1 += vector1[index - 1] * vector2[index - 1];
+            v2 += vector1[index - 2] * vector2[index - 2];
+            v3 += vector1[index - 3] * vector2[index - 3];
         }
         for (; index >= 0; index--) {
-            double v0;
-            v0 = vector1[index] * vector2[index];
-            outputValue += v0;
+            v0 += vector1[index] * vector2[index];
         }
-        return outputValue;
+        return (v0 + v1) + (v2 + v3);
     }
 
     /**
@@ -183,20 +186,26 @@ public final class ArraysUtil {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static final double norm1(double[] vector) {
-        double outputValue = 0.0;
+
+        /*
+         * 主要ループで4成分の計算を同時に行う.
+         * 影響する変数を分けることで, 並列実行できる可能性がある.
+         */
+        double v0 = 0.0;
+        double v1 = 0.0;
+        double v2 = 0.0;
+        double v3 = 0.0;
         int index;
         for (index = vector.length - 1; index >= 3; index -= 4) {
-            double v0 = Math.abs(vector[index]);
-            double v1 = Math.abs(vector[index - 1]);
-            double v2 = Math.abs(vector[index - 2]);
-            double v3 = Math.abs(vector[index - 3]);
-            outputValue += (v0 + v1) + (v2 + v3);
+            v0 += Math.abs(vector[index]);
+            v1 += Math.abs(vector[index - 1]);
+            v2 += Math.abs(vector[index - 2]);
+            v3 += Math.abs(vector[index - 3]);
         }
         for (; index >= 0; index--) {
-            double v0 = Math.abs(vector[index]);
-            outputValue += v0;
+            v0 += Math.abs(vector[index]);
         }
-        return outputValue;
+        return (v0 + v1) + (v2 + v3);
     }
 
     /**
@@ -216,66 +225,73 @@ public final class ArraysUtil {
     public static final double norm2(double[] vector) {
         //オーバー,アンダーフロー対策でスケールする
         double normMax = normMax(vector);
+
+        //PInf, NInf, NaN, 0d, -0d をはじく
         if (!(Double.isFinite(normMax) && normMax > 0d)) {
-            //特殊値の場合は別処理
             return normMax;
         }
+
         double invNormMax = 1d / normMax;
+        //逆数が特殊値の場合は別処理
         if (!(Double.isFinite(invNormMax) && invNormMax > 0d)) {
-            //逆数が特殊値の場合は別処理
-            return norm2Abnormal(vector);
+            return norm2Abnormal(vector, normMax);
         }
 
-        double outputValue = 0.0;
+        /*
+         * 主要ループで4成分の計算を同時に行う.
+         * 影響する変数を分けることで, 並列実行できる可能性がある.
+         */
         int index;
+        double v0 = 0.0;
+        double v1 = 0.0;
+        double v2 = 0.0;
+        double v3 = 0.0;
         for (index = vector.length - 1; index >= 3; index -= 4) {
-            double v0, v1, v2, v3;
-            v0 = vector[index] * invNormMax;
-            v1 = vector[index - 1] * invNormMax;
-            v2 = vector[index - 2] * invNormMax;
-            v3 = vector[index - 3] * invNormMax;
-            v0 = v0 * v0;
-            v1 = v1 * v1;
-            v2 = v2 * v2;
-            v3 = v3 * v3;
-            outputValue += (v0 + v1) + (v2 + v3);
+            double e0 = vector[index] * invNormMax;
+            double e1 = vector[index - 1] * invNormMax;
+            double e2 = vector[index - 2] * invNormMax;
+            double e3 = vector[index - 3] * invNormMax;
+            v0 += e0 * e0;
+            v1 += e1 * e1;
+            v2 += e2 * e2;
+            v3 += e3 * e3;
         }
         for (; index >= 0; index--) {
-            double v0;
-            v0 = vector[index] * invNormMax;
-            v0 = v0 * v0;
-            outputValue += v0;
+            double e0 = vector[index] * invNormMax;
+            v0 += e0 * e0;
         }
-        return normMax * Math.sqrt(outputValue);
+        return normMax * Math.sqrt((v0 + v1) + (v2 + v3));
     }
 
     /**
      * 最大ノルムが非常に小さいベクトルに関する, 2-ノルムを計算する.
      */
-    private static final double norm2Abnormal(double[] vector) {
-        double normMax = normMax(vector);
+    private static final double norm2Abnormal(double[] vector, double normMax) {
 
-        double outputValue = 0.0;
+        /*
+         * 主要ループで4成分の計算を同時に行う.
+         * 影響する変数を分けることで, 並列実行できる可能性がある.
+         */
         int index;
+        double v0 = 0.0;
+        double v1 = 0.0;
+        double v2 = 0.0;
+        double v3 = 0.0;
         for (index = vector.length - 1; index >= 3; index -= 4) {
-            double v0, v1, v2, v3;
-            v0 = vector[index] / normMax;
-            v1 = vector[index - 1] / normMax;
-            v2 = vector[index - 2] / normMax;
-            v3 = vector[index - 3] / normMax;
-            v0 = v0 * v0;
-            v1 = v1 * v1;
-            v2 = v2 * v2;
-            v3 = v3 * v3;
-            outputValue += (v0 + v1) + (v2 + v3);
+            double e0 = vector[index] / normMax;
+            double e1 = vector[index - 1] / normMax;
+            double e2 = vector[index - 2] / normMax;
+            double e3 = vector[index - 3] / normMax;
+            v0 += e0 * e0;
+            v1 += e1 * e1;
+            v2 += e2 * e2;
+            v3 += e3 * e3;
         }
         for (; index >= 0; index--) {
-            double v0;
-            v0 = vector[index] / normMax;
-            v0 = v0 * v0;
-            outputValue += v0;
+            double e0 = vector[index] / normMax;
+            v0 += e0 * e0;
         }
-        return normMax * Math.sqrt(outputValue);
+        return normMax * Math.sqrt((v0 + v1) + (v2 + v3));
     }
 
     /**
@@ -293,27 +309,31 @@ public final class ArraysUtil {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static final double norm2Square(double[] vector) {
-        double outputValue = 0.0;
+
+        /*
+         * 主要ループで4成分の計算を同時に行う.
+         * 影響する変数を分けることで, 並列実行できる可能性がある.
+         */
         int index;
+        double v0 = 0.0;
+        double v1 = 0.0;
+        double v2 = 0.0;
+        double v3 = 0.0;
         for (index = vector.length - 1; index >= 3; index -= 4) {
-            double v0, v1, v2, v3;
-            v0 = vector[index];
-            v1 = vector[index - 1];
-            v2 = vector[index - 2];
-            v3 = vector[index - 3];
-            v0 = v0 * v0;
-            v1 = v1 * v1;
-            v2 = v2 * v2;
-            v3 = v3 * v3;
-            outputValue += (v0 + v1) + (v2 + v3);
+            double e0 = vector[index];
+            double e1 = vector[index - 1];
+            double e2 = vector[index - 2];
+            double e3 = vector[index - 3];
+            v0 += e0 * e0;
+            v1 += e1 * e1;
+            v2 += e2 * e2;
+            v3 += e3 * e3;
         }
         for (; index >= 0; index--) {
-            double v0;
-            v0 = vector[index];
-            v0 = v0 * v0;
-            outputValue += v0;
+            double e0 = vector[index];
+            v0 += e0 * e0;
         }
-        return outputValue;
+        return (v0 + v1) + (v2 + v3);
     }
 
     /**
@@ -331,22 +351,26 @@ public final class ArraysUtil {
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static final double normMax(double[] vector) {
-        double outputValue = 0.0;
+
+        /*
+         * 主要ループで4成分の計算を同時に行う.
+         * 影響する変数を分けることで, 並列実行できる可能性がある.
+         */
         int index;
+        double v0 = 0.0;
+        double v1 = 0.0;
+        double v2 = 0.0;
+        double v3 = 0.0;
         for (index = vector.length - 1; index >= 3; index -= 4) {
-            double v0 = Math.abs(vector[index]);
-            double v1 = Math.abs(vector[index - 1]);
-            double v2 = Math.abs(vector[index - 2]);
-            double v3 = Math.abs(vector[index - 3]);
-            double v01 = Math.max(v0, v1);
-            double v23 = Math.max(v2, v3);
-            outputValue = Math.max(outputValue, Math.max(v01, v23));
+            v0 = Math.max(v0, Math.abs(vector[index]));
+            v1 = Math.max(v1, Math.abs(vector[index - 1]));
+            v2 = Math.max(v2, Math.abs(vector[index - 2]));
+            v3 = Math.max(v3, Math.abs(vector[index - 3]));
         }
         for (; index >= 0; index--) {
-            double v0 = Math.abs(vector[index]);
-            outputValue = Math.max(outputValue, v0);
+            v0 = Math.max(v0, Math.abs(vector[index]));
         }
-        return outputValue;
+        return Math.max(Math.max(v0, v1), Math.max(v2, v3));
     }
 
     /**
@@ -393,7 +417,7 @@ public final class ArraysUtil {
      */
     public static final double[] negated(double[] vector) {
         double[] copyVector = vector.clone();
-        for (int i = 0; i < copyVector.length; i++) {
+        for (int i = 0, len = copyVector.length; i < len; i++) {
             copyVector[i] = -copyVector[i];
         }
 
