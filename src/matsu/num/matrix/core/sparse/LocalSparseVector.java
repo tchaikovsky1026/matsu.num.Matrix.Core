@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.25
+ * 2025.6.26
  */
 package matsu.num.matrix.core.sparse;
 
@@ -168,7 +168,8 @@ public final class LocalSparseVector implements SparseVector {
             return this;
         }
 
-        double[] normalizedEntry = ArraysUtil.normalizeEuclidean(entry);
+        double[] normalizedEntry = this.entry.clone();
+        ArraysUtil.normalizeEuclidean(normalizedEntry);
 
         LocalSparseVector out = new LocalSparseVector(vectorDimension, pos, normalizedEntry, true);
         Double value1 = Double.valueOf(1d);

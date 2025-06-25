@@ -334,7 +334,9 @@ public final class Vector {
             return this;
         }
 
-        var out = new Vector(this.vectorDimension, ArraysUtil.normalizeEuclidean(this.entry), true);
+        double[] normalizedEntry = this.entry.clone();
+        ArraysUtil.normalizeEuclidean(normalizedEntry);
+        var out = new Vector(this.vectorDimension, normalizedEntry, true);
         Double value1 = Double.valueOf(1d);
         out.norm2 = value1;
         out.norm2Square = value1;

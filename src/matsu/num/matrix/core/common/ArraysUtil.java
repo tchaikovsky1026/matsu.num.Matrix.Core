@@ -375,43 +375,40 @@ public final class ArraysUtil {
 
     /**
      * <p>
-     * 引数のベクトルをEuclidノルムにより規格化したベクトルを計算する:
+     * 引数のベクトルをEuclidノルムにより規格化する:
      * <b>v</b> / ||<b>v</b>||<sub>2</sub>. <br>
-     * ノルムが0の場合は0ベクトルを返す. <br>
-     * 不正値を含む場合, 同サイズの配列が返るが結果は不定である.
+     * ノルムが0の場合は何もしない. <br>
+     * 不正値を含む場合, 結果は不定である.
      * </p>
      * 
-     * @param vector ベクトル
-     * @return Euclid規格化されたベクトル, 引数のノルムが0の場合
+     * @param operand 作用ベクトル
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public static final double[] normalizeEuclidean(double[] vector) {
-        double normMax = normMax(vector);
+    public static final void normalizeEuclidean(double[] operand) {
+        double normMax = normMax(operand);
 
         if (normMax == 0d) {
-            return vector.clone();
+            return;
         }
 
-        double[] canoVector = vector.clone();
         if (normMax < 1E-280) {
-            ArraysUtil.multiply(canoVector, 1E200);
+            ArraysUtil.multiply(operand, 1E200);
         }
         if (normMax > 1E280) {
-            ArraysUtil.multiply(canoVector, 1E-200);
+            ArraysUtil.multiply(operand, 1E-200);
         }
 
-        double canoNorm2 = ArraysUtil.norm2(canoVector);
-        ArraysUtil.multiply(canoVector, 1 / canoNorm2);
-        return canoVector;
+        double canoNorm2 = ArraysUtil.norm2(operand);
+        ArraysUtil.multiply(operand, 1 / canoNorm2);
     }
 
     /**
      * <p>
      * 引数のベクトルの加法逆元をとる (-1倍する). <br>
-     * 不正値を含む場合, 同サイズの配列が返るが結果は不定である.
+     * 不正値を含む場合, 結果は不定である.
      * </p>
      * 
-     * @param operand ベクトル
+     * @param operand 作用ベクトル
      * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static final void negate(double[] operand) {

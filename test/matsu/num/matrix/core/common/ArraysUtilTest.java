@@ -206,7 +206,7 @@ final class ArraysUtilTest {
             v = Arrays.copyOf(v, dimension);
 
             double[] result = v.clone();
-            result = ArraysUtil.normalizeEuclidean(result);
+            ArraysUtil.normalizeEuclidean(result);
 
             double[] expected = new double[v.length];
             double norm2 = 0d;
