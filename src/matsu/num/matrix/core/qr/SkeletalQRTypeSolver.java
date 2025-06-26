@@ -22,7 +22,6 @@ import matsu.num.matrix.core.Matrix;
 import matsu.num.matrix.core.PseudoRegularMatrixProcess;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
-import matsu.num.matrix.core.nlsf.SolvingFactorizationExecutor;
 import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
 
 /**
@@ -104,26 +103,30 @@ abstract class SkeletalQRTypeSolver<TT extends EntryReadableMatrix, IT extends M
     }
 
     /**
-     * {@link SolvingFactorizationExecutor} の骨格実装.
+     * {@link QRTypeSolver.Executor} の骨格実装.
      * 
      * <p>
      * このクラスでは,
-     * {@link #accepts(Matrix)}, {@link #apply(Matrix)},
-     * {@link #apply(Matrix, double)}
+     * {@link #accepts(EntryReadableMatrix)},
+     * {@link #apply(EntryReadableMatrix)},
+     * {@link #apply(EntryReadableMatrix, double)}
      * メソッドの適切な実装を提供する.
      * </p>
      * 
      * <p>
-     * {@link #accepts(Matrix)} の実装では,
-     * 正方行列でない場合は無条件にrejectされる. <br>
-     * さらに, 正方行列に対して抽象メソッド {@link #acceptsConcretely(Matrix)}
+     * {@link #accepts(EntryReadableMatrix)} の実装では,
+     * 正方 or 縦長行列でない場合は無条件にrejectされる. <br>
+     * さらに, 正方 or 縦長行列に対して抽象メソッド {@link #acceptsConcretely(EntryReadableMatrix)}
      * により検証される.
      * </p>
      * 
      * <p>
-     * {@link #apply(Matrix)}, {@link #apply(Matrix, double)} の実装では,
-     * ({@code epsilon} の検証と) {@link #accepts(Matrix)} による行列の正当性の検証が行われ, <br>
-     * 正当な行列に対して {@link #applyConcretely(Matrix, double)} によって行列分解が実行される.
+     * {@link #apply(EntryReadableMatrix)},
+     * {@link #apply(EntryReadableMatrix, double)} の実装では,
+     * ({@code epsilon} の検証と) {@link #accepts(EntryReadableMatrix)}
+     * による行列の正当性の検証が行われ, <br>
+     * 正当な行列に対して {@link #applyConcretely(EntryReadableMatrix, double)}
+     * によって行列分解が実行される.
      * </p>
      * 
      * @param <MT> 対応する行列の型パラメータ
