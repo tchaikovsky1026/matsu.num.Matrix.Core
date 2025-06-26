@@ -62,7 +62,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         if (!(matrixDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%s, %s)",
+                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                             matrixDimension, row, column));
         }
         return entry[row * matrixDimension.columnAsIntValue() + column];
@@ -91,7 +91,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         if (!matrixDimension.rightOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, operand.vectorDimension()));
         }
 
@@ -134,7 +134,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         if (!matrixDimension.leftOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "左から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, operand.vectorDimension()));
         }
 
@@ -181,7 +181,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, %s]",
+                "Matrix[dim: %s, %s]",
                 this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
@@ -277,7 +277,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row, column)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                 matrixDimension, row, column));
             }
 
@@ -313,7 +313,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row, column)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                 matrixDimension, row, column));
             }
             entry[row * matrixDimension.columnAsIntValue() + column] = value;
@@ -334,7 +334,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
                     && matrixDimension.isValidRowIndex(row2))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row1, row2)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row1, row2) = (%s, %s)",
                                 matrixDimension, row1, row2));
             }
 
@@ -370,7 +370,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
                     && matrixDimension.isValidColumnIndex(column2))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (column1, column2)=(%s, %s)",
+                                "out of matrix: matrix: %s, (column1, column2) = (%s, %s)",
                                 matrixDimension, column1, column2));
             }
 
@@ -407,7 +407,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 

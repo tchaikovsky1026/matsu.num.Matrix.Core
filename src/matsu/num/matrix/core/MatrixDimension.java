@@ -340,7 +340,7 @@ public final class MatrixDimension {
         if (rowDimension < MIN_DIMENSION || columnDimension < MIN_DIMENSION) {
             throw new IllegalArgumentException(
                     String.format(
-                            "不正なサイズ:dimension:(row, column)=(%d, %d)",
+                            "illegal: dimension: (row, column) = (%d, %d)",
                             rowDimension, columnDimension));
         }
         return MatrixDimension.rectangle(

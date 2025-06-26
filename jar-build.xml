@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="JarExport" default="build-jar" basedir=".">
+
+	<!--
+	local.properties: ローカルなパラメータを記述する.
+	local.properties.example を参照のこと.
+	-->
+	<property file="./local.properties" />
+
+	<!-- ========== Jarビルド用プロパティファイル ========== -->
+	<property file="./build.properties" />
+
+	<!-- ========== パスの定義 ========== -->
+	<property name="src.dir" value="src" />
+	<property name="bin.dir" value="bin" />
+	<property name="res.dir" value="." />
+
+	<!-- ========== 初期化（ビルドディレクトリ作成） ========== -->
+	<target name="init">
+		<mkdir dir="${bin.dir}" />
+		<mkdir dir="${jardist.dir}" />
+	</target>
+
+	<!-- ========== Javaファイルのコンパイル ========== -->
+	<target name="compile" depends="clean, init">
+		<javac srcdir="${src.dir}"
+		       destdir="${bin.dir}"
+		       includeantruntime="false"
+		       modulepath="${module.path}"
+		>
+			<compilerarg value="-Xlint:-removal" />
+		</javac>
+	</target>
+
+	<!-- ========== JARファイルの生成 ========== -->
+	<target name="build-jar" depends="compile">
+		<jar destfile="${jardist.dir}/${jar.name}" compress="true">
+			<!-- コンパイル済みクラス -->
+			<fileset dir="${bin.dir}" includes="**/*.class" />
+
+			<!-- ソースファイル -->
+			<fileset dir="${src.dir}" includes="**/*.java" />
+
+			<!-- プロパティファイルから読み込んだリソース -->
+			<fileset dir="${res.dir}" includes="${other.resources}" />
+
+			<!-- マニフェスト自動生成 -->
+			<manifest>
+				<attribute name="Manifest-Version" value="1.0" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- ========== クリーンターゲット ========== -->
+	<target name="clean">
+		<delete dir="${bin.dir}" />
+		<delete file="${jardist.dir}/${jar.name}" />
+	</target>
+
+</project>

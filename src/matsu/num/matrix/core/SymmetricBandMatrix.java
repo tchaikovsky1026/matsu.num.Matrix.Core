@@ -89,10 +89,10 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
             case OUT_OF_MATRIX:
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                 bandMatrixDimension.dimension(), row, column));
             default:
-                throw new AssertionError("Bug: 列挙型に想定外の値");
+                throw new AssertionError("Bug");
         }
     }
 
@@ -120,7 +120,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
         if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可,matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             bandMatrixDimension.dimension(), vectorDimension));
         }
         final int dimension = vectorDimension.intValue();
@@ -192,7 +192,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
     @Override
     public String toString() {
         return String.format(
-                "Matrix[band:%s, %s]",
+                "Matrix[band: %s, %s]",
                 this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
@@ -309,15 +309,15 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
                 case OUT_OF_BAND:
                     throw new IndexOutOfBoundsException(
                             String.format(
-                                    "帯の外側:matrix:%s, (row, column)=(%s, %s)",
+                                    "out of band: matrix: %s, (row, column) = (%s, %s)",
                                     bandMatrixDimension, row, column));
                 case OUT_OF_MATRIX:
                     throw new IndexOutOfBoundsException(
                             String.format(
-                                    "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                    "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                     bandMatrixDimension.dimension(), row, column));
                 default:
-                    throw new AssertionError("Bug: 列挙型に想定外の値");
+                    throw new AssertionError("Bug");
             }
         }
 
@@ -335,7 +335,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 
@@ -436,7 +436,7 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
          */
         public static Builder from(final BandMatrix src) {
             if (!(Objects.requireNonNull(src) instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("対称行列でない");
+                throw new MatrixNotSymmetricException();
             }
 
             final var bandMatrixDimension = src.bandMatrixDimension();

@@ -66,7 +66,7 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
         if (!matrixDimension.rightOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, operand.vectorDimension()));
         }
 
@@ -126,14 +126,14 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
             double[] arrElementVec = elementVec.entryAsArray();
             int blockSize = arrElementVec.length;
 
-            assert startIndex + blockSize <= mergedArray.length : "はみ出している";
+            assert startIndex + blockSize <= mergedArray.length;
 
             System.arraycopy(arrElementVec, 0, mergedArray, startIndex, blockSize);
 
             startIndex += blockSize;
         }
 
-        assert startIndex == mergedArray.length : "合計サイズが一致しない";
+        assert startIndex == mergedArray.length;
 
         Vector.Builder vBuilder = Vector.Builder.zeroBuilder(entireDimension);
         vBuilder.setEntryValue(mergedArray);
@@ -160,7 +160,7 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, orthogonal]",
+                "Matrix[dim: %s, orthogonal]",
                 this.matrixDimension());
     }
 
@@ -183,7 +183,7 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
             OrthogonalMatrix first, OrthogonalMatrix... following) {
 
         if (!(Objects.requireNonNull(first) instanceof Symmetric)) {
-            throw new MatrixNotSymmetricException("Symmetricでない行列が含まれる");
+            throw new MatrixNotSymmetricException("include asymmetric");
         }
         if (following.length == 0) {
             return first;
@@ -193,7 +193,7 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
         rawBlockSeries.add(first);
         for (OrthogonalMatrix m : following) {
             if (!(Objects.requireNonNull(m) instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("Symmetricでない行列が含まれる");
+                throw new MatrixNotSymmetricException("include asymmetric");
             }
             rawBlockSeries.add(m);
         }

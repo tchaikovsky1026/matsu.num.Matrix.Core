@@ -45,7 +45,7 @@ final class CholeskyBandFactorizationHelper {
     CholeskyBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
-            throw new ProcessFailedException("正定値でない(零行列である)");
+            throw new ProcessFailedException("zero matrix");
         }
 
         this.bandMatrixDimension = matrix.bandMatrixDimension();
@@ -118,7 +118,7 @@ final class CholeskyBandFactorizationHelper {
             //正則性チェック
             final double d = thisMxDEntry[i];
             if (d <= threshold) {
-                throw new ProcessFailedException("行列が正定値でない");
+                throw new ProcessFailedException("not positive definite");
             }
             //Dの計算
             final double invD = 1 / d;
@@ -185,7 +185,7 @@ final class CholeskyBandFactorizationHelper {
 
         //スケールの関係で特異になるかもしれないので, 正則判定
         if (this.mxSqrtD.signOfDeterminant() == 0) {
-            throw new ProcessFailedException("行列が正定値でない");
+            throw new ProcessFailedException("not positive definite");
         }
     }
 }

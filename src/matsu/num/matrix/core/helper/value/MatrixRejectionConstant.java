@@ -33,7 +33,7 @@ public enum MatrixRejectionConstant {
      * 正方行列でないために対応していないことを表す.
      */
     REJECTED_BY_NOT_SQUARE(
-            o -> new MatrixFormatMismatchException(String.format("正方形ではない行列サイズ:%s", o)),
+            o -> new MatrixFormatMismatchException(String.format("not square: %s", o)),
             "REJECTED_BY_NOT_SQUARE"),
 
     /**
@@ -54,7 +54,7 @@ public enum MatrixRejectionConstant {
      * 下三角構造でないことを表す.
      */
     REJECTED_BY_NOT_LOWER_TRIANGULAR(
-            o -> new MatrixFormatMismatchException(String.format("下三角構造でない:%s", o)),
+            o -> new MatrixFormatMismatchException(String.format("not lower triangular: %s", o)),
             "REJECTED_BY_NOT_LOWER_TRIANGULAR"),
 
     /**
@@ -62,7 +62,7 @@ public enum MatrixRejectionConstant {
      */
     REJECTED_BY_HORIZONTAL(
             m -> new MatrixFormatMismatchException(
-                    String.format("横長の行列サイズ:%s", m)),
+                    String.format("horizontal matrix: %s", m)),
             "REJECTED_BY_HORIZONTAL");
 
     private final MatrixStructureAcceptance reject;

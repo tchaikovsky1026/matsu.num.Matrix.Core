@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.26
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -110,7 +110,7 @@ public final class CholeskyBand
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
-     * {@link SolvingFactorizationExecutor} に加えて次のとおりである.
+     * {@link LUTypeSolver.Executor} に加えて次のとおりである.
      * </p>
      * 
      * <ul>
@@ -120,7 +120,7 @@ public final class CholeskyBand
      * 
      * <p>
      * {@code apply} メソッドで空が返る条件は,
-     * {@link SolvingFactorizationExecutor} に加えて次のとおりである.
+     * {@link LUTypeSolver.Executor} に加えて次のとおりである.
      * </p>
      * 
      * <ul>
@@ -141,7 +141,7 @@ public final class CholeskyBand
      * </p>
      */
     public static final class Executor
-            extends SkeletalSolvingFactorizationExecutor<BandMatrix, CholeskyBand> {
+            extends SkeletalLUTypeSolver.Executor<BandMatrix, CholeskyBand> {
 
         /**
          * 唯一のインスタンス
@@ -152,8 +152,11 @@ public final class CholeskyBand
          * 非公開コンストラクタ.
          */
         private Executor() {
+            super();
+
+            //シングルトン強制
             if (Objects.nonNull(INSTANCE)) {
-                throw new AssertionError("シングルトンを強制");
+                throw new AssertionError();
             }
         }
 

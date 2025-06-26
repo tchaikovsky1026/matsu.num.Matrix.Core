@@ -36,7 +36,7 @@ final class HouseholderMatrixWithSparseVector
      */
     HouseholderMatrixWithSparseVector(SparseVector reflectionVector) {
         if (!accepts(reflectionVector)) {
-            throw new IllegalArgumentException("ノルムが0");
+            throw new IllegalArgumentException("norm 0");
         }
 
         this.matrixDimension = MatrixDimension.square(reflectionVector.vectorDimension());
@@ -99,7 +99,7 @@ final class HouseholderMatrixWithSparseVector
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, householder]",
+                "Matrix[dim: %s, householder]",
                 this.matrixDimension());
     }
 }

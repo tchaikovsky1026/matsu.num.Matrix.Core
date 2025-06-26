@@ -32,7 +32,7 @@ public final class MatrixRejected extends MatrixStructureAcceptance {
     private MatrixRejected(Function<Object, IllegalArgumentException> exceptionGetter, String explanation) {
         this.exceptionGetter = Objects.requireNonNull(exceptionGetter);
         if (explanation.isBlank()) {
-            throw new IllegalArgumentException("説明がブランク");
+            throw new IllegalArgumentException("explanation is blank");
         }
         this.explanation = explanation;
     }
@@ -82,7 +82,7 @@ public final class MatrixRejected extends MatrixStructureAcceptance {
     public static MatrixRejected instance() {
         return new MatrixRejected(
                 m -> new IllegalArgumentException(
-                        String.format("拒絶:%s", m)),
+                        String.format("reject: %s", m)),
                 "REJECTED");
     }
 

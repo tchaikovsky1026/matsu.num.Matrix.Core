@@ -82,7 +82,7 @@ public final class DeterminantValues {
      */
     public DeterminantValues createInverse() {
         if (this.sign == 0) {
-            throw new IllegalStateException("符号が0");
+            throw new IllegalStateException("sign 0");
         }
         return new DeterminantValues(
                 -this.logAbsDeterminant, this.sign);

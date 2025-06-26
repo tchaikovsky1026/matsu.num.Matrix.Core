@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.6.26
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -18,67 +18,13 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
 /**
  * 線形連立方程式の解法向けの, 正方行列の行列分解の実行(行列分解を生成する行為)を扱う.
  * 
- * <p>
- * 行列分解は, {@link #apply(Matrix)},
- * {@link #apply(Matrix, double)} メソッドにより実行される. <br>
- * 対応できる行列の型は型パラメータにより制限されるが,
- * 分解が成功するかどうかは具象クラスにゆだねられる. <br>
- * 行列に構造上の問題がある場合は {@link IllegalArgumentException} のサブクラスの例外をスローし,
- * 構造に問題はないが行列分解に失敗する場合は空のオプショナルを返す.
- * </p>
- * 
- * <p>
- * 行列に構造上の問題があるかどうかは, {@link #accepts(Matrix)} メソッドにより検証される. <br>
- * 戻り値のタイプ ({@link MatrixStructureAcceptance#type()}) がacceptedならば,
- * {@link #apply(Matrix)}, {@link #apply(Matrix, double)} メソッドの実行時に例外はスローされない.
- * </p>
- * 
- * <p>
- * acceptedにならない条件とは例えば次のようなものが挙げられる.
- * </p>
- * 
- * <ul>
- * <li>例: 正方でない行列が与えられる (仕様上, 必ず).</li>
- * <li>例: 行列の有効要素数が大きすぎて, アルゴリズムが対応できない.</li>
- * <li>例: 対称行列のみに対応するアルゴリズムに対して, 非対称行列が与えられる.</li>
- * </ul>
- * 
- * <p>
- * 行列分解に失敗する条件, すなわち空のオプショナルが返る条件とは例えば次のようなものが挙げられる.
- * </p>
- * 
- * <ul>
- * <li>例: 特異行列が与えられる.</li>
- * <li>例: 正定値行列のみに対応するアルゴリズムに対して, 不適当な行列が与えられる (例えばCholesky分解).</li>
- * <li>例: ピボッティングが必要な行列だが, アルゴリズムが対応していない (例えばLU分解).</li>
- * </ul>
- * 
- * <p>
- * このインターフェースを実装した全てのクラスは実質的にイミュータブルであり,
- * (このインターフェース以外を含む) 全てのメソッドは関数的かつスレッドセーフである.
- * </p>
- * 
- * 
- * @implSpec
- *               <p>
- *               実質的にイミュータブルかつ全てのメソッドは関数的かつスレッドセーフになるようにクラスが設計されなければならず,
- *               違反した場合は振る舞いが保証されない.
- *               </p>
- * 
- *               <p>
- *               {@link #accepts(Matrix)}
- *               メソッドの戻り値のタイプがacceptedにならない条件を文書化すべきである.
- *               </p>
- * 
- *               <p>
- *               このインターフェースは主に, 戻り値型を公開するために用意されており,
- *               モジュール外での実装は想定されていない. <br>
- *               モジュール外で実装する場合, 互換性が失われる場合がある.
- *               </p>
- * 
  * @author Matsuura Y.
  * @param <MT> 対応する行列の型パラメータ
+ * @deprecated
+ *                 このインターフェースは version 29 以降に削除される.
+ *                 {@link LUTypeSolver.Executor} は, このインターフェースの完全な代替である.
  */
+@Deprecated(forRemoval = true)
 public interface SolvingFactorizationExecutor<MT extends Matrix> {
 
     /**

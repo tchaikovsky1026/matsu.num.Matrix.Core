@@ -46,7 +46,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
             throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
-            throw new ProcessFailedException("行列が特異(零行列である)");
+            throw new ProcessFailedException("zero matrix");
         }
 
         this.bandMatrixDimension = matrix.bandMatrixDimension();
@@ -120,7 +120,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
             //正則性チェック
             final double d = thisMxDEntry[i];
             if (Math.abs(d) <= threshold) {
-                throw new ProcessFailedException("行列が特異あるいはピボッティングが必要");
+                throw new ProcessFailedException("singular or pivoting required");
             }
             //Dの計算
             final double invD = 1 / d;
@@ -184,7 +184,7 @@ final class ModifiedCholeskyBandFactorizationHelper {
 
         //スケールの関係で特異になるかもしれないので, 正則判定
         if (this.mxD.signOfDeterminant() == 0) {
-            throw new ProcessFailedException("行列が特異あるいはピボッティングが必要");
+            throw new ProcessFailedException("singular or pivoting required");
         }
     }
 }

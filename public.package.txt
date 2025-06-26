@@ -1,0 +1,6 @@
+matsu.num.matrix.core,
+matsu.num.matrix.core.block,
+matsu.num.matrix.core.nlsf,
+matsu.num.matrix.core.qr,
+matsu.num.matrix.core.sparse,
+matsu.num.matrix.core.validation,

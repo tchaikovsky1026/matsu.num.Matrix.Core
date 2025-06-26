@@ -157,10 +157,10 @@ public final class OrthogonalMatrixMultiplicationUtil {
          * @return 行列積を表す一連の行列のDeque
          */
         private static MultipliedOrthogonalMatrix expand(Deque<? extends OrthogonalMatrix> rawSeries) {
-            assert rawSeries.size() >= 2 : "サイズ2以上でない";
+            assert rawSeries.size() >= 2;
 
             requireFormatMatch(rawSeries)
-                    .orElseThrow(() -> new MatrixFormatMismatchException("行列積が定義不可な組み合わせ"));
+                    .orElseThrow(() -> new MatrixFormatMismatchException("undefined operation"));
 
             Deque<OrthogonalMatrix> series = new LinkedList<>();
             for (OrthogonalMatrix mx : rawSeries) {
@@ -215,10 +215,10 @@ public final class OrthogonalMatrixMultiplicationUtil {
          */
         SymmetricMultipliedMatrix(OrthogonalMatrix mid, OrthogonalMatrix leftSide) {
             if (!(Objects.requireNonNull(mid) instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("中央の行列がSymmetricでない");
+                throw new MatrixNotSymmetricException("mid is not symmetric");
             }
             if (leftSide.matrixDimension().columnAsIntValue() != mid.matrixDimension().columnAsIntValue()) {
-                throw new MatrixFormatMismatchException("行列積が定義できない");
+                throw new MatrixFormatMismatchException("undefined operation");
             }
 
             Deque<OrthogonalMatrix> series = new LinkedList<>();
@@ -309,7 +309,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
         @Override
         public String toString() {
             return String.format(
-                    "Matrix[dim:%s, orthogonal]",
+                    "Matrix[dim: %s, orthogonal]",
                     this.matrixDimension());
         }
     }

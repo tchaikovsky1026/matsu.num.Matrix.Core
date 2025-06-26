@@ -44,7 +44,7 @@ final class ZeroMatrixImpl
         if (!this.matrixDimension.isValidIndexes(row, column)) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%s, %s)",
+                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                             this.matrixDimension, row, column));
         }
 
@@ -66,7 +66,7 @@ final class ZeroMatrixImpl
         if (!this.matrixDimension.rightOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右からの演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             this.matrixDimension, operand.vectorDimension()));
         }
         return this.operatedVector;
@@ -77,7 +77,7 @@ final class ZeroMatrixImpl
         if (!this.matrixDimension.leftOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "左からの演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             this.matrixDimension, operand.vectorDimension()));
         }
         return this.transposeOperatedVector;
@@ -93,7 +93,7 @@ final class ZeroMatrixImpl
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, zero]",
+                "Matrix[dim: %s, zero]",
                 this.matrixDimension());
     }
 

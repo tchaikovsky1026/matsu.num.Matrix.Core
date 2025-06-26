@@ -4,13 +4,11 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
-package matsu.num.matrix.core.validation.constant;
+package matsu.num.matrix.core.helper.value;
 
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
-
-import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 
 /**
  * {@link MatrixRejectionConstant} クラスのテスト.

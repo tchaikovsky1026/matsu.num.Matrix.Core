@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.26
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -118,7 +118,7 @@ public final class ModifiedCholeskyPivoting
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
-     * {@link SolvingFactorizationExecutor} に加えて次のとおりである.
+     * {@link LUTypeSolver.Executor} に加えて次のとおりである.
      * </p>
      * 
      * <ul>
@@ -128,7 +128,7 @@ public final class ModifiedCholeskyPivoting
      * 
      * <p>
      * {@code apply} メソッドで空が返る条件は,
-     * {@link SolvingFactorizationExecutor} に加わる追加条件は無い.
+     * {@link LUTypeSolver.Executor} に加わる追加条件は無い.
      * </p>
      * 
      * <p>
@@ -147,7 +147,7 @@ public final class ModifiedCholeskyPivoting
      * 
      */
     public static final class Executor
-            extends SkeletalSolvingFactorizationExecutor<
+            extends SkeletalLUTypeSolver.Executor<
                     EntryReadableMatrix, ModifiedCholeskyPivoting> {
 
         private static final Executor INSTANCE =

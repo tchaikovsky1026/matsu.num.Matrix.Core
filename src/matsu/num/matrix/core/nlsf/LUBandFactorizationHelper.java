@@ -47,7 +47,7 @@ final class LUBandFactorizationHelper {
     LUBandFactorizationHelper(final BandMatrix matrix, double relativeEpsilon) throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
-            throw new ProcessFailedException("行列が特異(零行列である)");
+            throw new ProcessFailedException("zero matrix");
         }
         this.bandMatrixDimension = matrix.bandMatrixDimension();
         this.mxDiagonalEntry = diagonalOfMatrixToArray(matrix);
@@ -151,7 +151,7 @@ final class LUBandFactorizationHelper {
             //正則性チェック
             final double d = thisDiagonalEntry[i];
             if (Math.abs(d) <= threshold) {
-                throw new ProcessFailedException("行列が特異,あるいはピボッティングが必要");
+                throw new ProcessFailedException("singular or pivoting required");
             }
             //Dの計算
             final double invD = 1 / d;
@@ -243,7 +243,7 @@ final class LUBandFactorizationHelper {
 
         //スケールの関係で特異になるかもしれないので, 正則判定
         if (this.mxD.signOfDeterminant() == 0) {
-            throw new ProcessFailedException("行列が特異,あるいはピボッティングが必要");
+            throw new ProcessFailedException("singular or pivoting required");
         }
     }
 }
