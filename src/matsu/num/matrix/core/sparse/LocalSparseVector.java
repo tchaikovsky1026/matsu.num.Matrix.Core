@@ -110,7 +110,7 @@ public final class LocalSparseVector implements SparseVector {
     @Override
     public double valueAt(int index) {
         if (!(0 <= index && index < this.vectorDimension.intValue())) {
-            throw new IndexOutOfBoundsException("indexが範囲外");
+            throw new IndexOutOfBoundsException();
         }
         int relative = index - this.pos;
         if (0 <= relative && relative < this.entry.length) {
@@ -139,7 +139,7 @@ public final class LocalSparseVector implements SparseVector {
     @Override
     public double dot(Vector reference) {
         if (!this.vectorDimension.equals(reference.vectorDimension())) {
-            throw new MatrixFormatMismatchException("次元が整合しない");
+            throw new MatrixFormatMismatchException();
         }
 
         double dot = 0;
@@ -214,7 +214,7 @@ public final class LocalSparseVector implements SparseVector {
     @Override
     public Vector plus(Vector reference) {
         if (!this.vectorDimension.equals(reference.vectorDimension())) {
-            throw new MatrixFormatMismatchException("次元が整合しない");
+            throw new MatrixFormatMismatchException();
         }
 
         double[] result = reference.entryAsArray();
@@ -270,7 +270,7 @@ public final class LocalSparseVector implements SparseVector {
         }
 
         return String.format(
-                "SparseVector[dim:%s, {%s}]",
+                "SparseVector[dim: %s, {%s}]",
                 this.vectorDimension, entryString.toString());
     }
 
@@ -309,12 +309,12 @@ public final class LocalSparseVector implements SparseVector {
     public static LocalSparseVector of(
             final VectorDimension vectorDimension, int pos, double[] entry) {
         if (entry.length == 0) {
-            throw new IllegalArgumentException("entryのサイズが0");
+            throw new IllegalArgumentException("entry size 0");
         }
         if (pos < 0 || entry.length == 0 || pos + entry.length > vectorDimension.intValue()) {
             throw new IllegalArgumentException(
                     String.format(
-                            "entryが範囲外: 次元: %s, 局所位置: [%s,%s)",
+                            "entry is out of vector: dim: %s, localPosition: [%s, %s)",
                             vectorDimension, pos, pos + entry.length));
         }
 

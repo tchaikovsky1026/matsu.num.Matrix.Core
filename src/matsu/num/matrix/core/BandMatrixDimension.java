@@ -59,13 +59,13 @@ public final class BandMatrixDimension {
      */
     private BandMatrixDimension(MatrixDimension dimension, int lowerBandWidth, int upperBandWidth) {
 
-        assert dimension.isSquare() : "Bug:正方でないサイズが与えられている";
+        assert dimension.isSquare();
 
         this.matrixDimension = dimension;
         if (lowerBandWidth < 0 || upperBandWidth < 0) {
             throw new IllegalArgumentException(
                     String.format(
-                            "不正な帯幅:(lower, upper)=(%d, %d)", lowerBandWidth, upperBandWidth));
+                            "illegal: (lower, upper) = (%d, %d)", lowerBandWidth, upperBandWidth));
         }
         this.lowerBandWidth = lowerBandWidth;
         this.upperBandWidth = upperBandWidth;
@@ -226,7 +226,7 @@ public final class BandMatrixDimension {
     @Override
     public String toString() {
         return String.format(
-                "[dim:%s, bandwidth:(%s, %s)]",
+                "[dim: %s, bandwidth: (%s, %s)]",
                 this.matrixDimension, this.lowerBandWidth, this.upperBandWidth);
     }
 
@@ -284,7 +284,7 @@ public final class BandMatrixDimension {
     public static BandMatrixDimension of(MatrixDimension dimension, int lowerBandWidth, int upperBandWidth) {
         if (!dimension.isSquare()) {
             throw new MatrixFormatMismatchException(
-                    String.format("正方形ではない行列サイズ:%s", dimension));
+                    String.format("not square: %s", dimension));
         }
 
         if (lowerBandWidth == upperBandWidth) {
@@ -326,7 +326,7 @@ public final class BandMatrixDimension {
     public static BandMatrixDimension symmetric(MatrixDimension dimension, int bandWidth) {
         if (!dimension.isSquare()) {
             throw new MatrixFormatMismatchException(
-                    String.format("正方形ではない行列サイズ:%s", dimension));
+                    String.format("not square: %s", dimension));
         }
 
         var out = getSymmetricFromCache(dimension.rowAsIntValue(), bandWidth);

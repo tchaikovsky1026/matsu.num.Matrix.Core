@@ -72,7 +72,7 @@ interface Block2OrderSymmetricDiagonalMatrix
         private Builder(final MatrixDimension matrixDimension) {
             if (!matrixDimension.isSquare()) {
                 throw new MatrixFormatMismatchException(
-                        String.format("正方形ではない行列サイズ:%s", matrixDimension));
+                        String.format("not square: %s", matrixDimension));
             }
             this.bandMatrixDimension = BandMatrixDimension.symmetric(matrixDimension, 1);
 
@@ -98,10 +98,11 @@ interface Block2OrderSymmetricDiagonalMatrix
          */
         public void setDiagonal(final int index, double value) {
             if (Objects.isNull(this.diagonalEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
             if (!(0 <= index && index < this.bandMatrixDimension.dimension().rowAsIntValue())) {
-                throw new IndexOutOfBoundsException(String.format("行列内部でない:(%s, %s)", index, index));
+                throw new IndexOutOfBoundsException(
+                        String.format("out of matrix: (%s, %s)", index, index));
             }
 
             //値を修正する
@@ -130,21 +131,22 @@ interface Block2OrderSymmetricDiagonalMatrix
         public void setSubDiagonal(final int index, double value) {
 
             if (Objects.isNull(this.diagonalEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
             if (!(0 <= index && index < this.bandMatrixDimension.dimension().rowAsIntValue() - 1)) {
-                throw new IndexOutOfBoundsException(String.format("行列内部でない:(%s, %s)", index + 1, index));
+                throw new IndexOutOfBoundsException(
+                        String.format("out of matrix: (%s, %s)", index + 1, index));
             }
             //0以外が代入される場合にはその両側を確認する
             if (Double.compare(value, 0.0) != 0) {
                 if (index >= 1 && Double.compare(this.subdiagonalEntry[index - 1], 0.0) != 0) {
                     throw new IllegalArgumentException(
-                            String.format("この代入によりブロック対角行列でなくなる:(%s, %s)", index + 1, index));
+                            String.format("cannot substitute: (%s, %s)", index + 1, index));
                 }
                 if (index < this.bandMatrixDimension.dimension().rowAsIntValue() - 2
                         && Double.compare(this.subdiagonalEntry[index + 1], 0.0) != 0) {
                     throw new IllegalArgumentException(
-                            String.format("この代入によりブロック対角行列でなくなる:(%s, %s)", index + 1, index));
+                            String.format("cannot substitute: (%s, %s)", index + 1, index));
                 }
             }
 
@@ -174,7 +176,7 @@ interface Block2OrderSymmetricDiagonalMatrix
          */
         Block2OrderSymmetricDiagonalMatrix build() {
             if (Objects.isNull(this.diagonalEntry)) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
             Block2OrderSymmetricDiagonalMatrix out = new Block2OrderSymmetricDiagonalMatrixImpl(
                     bandMatrixDimension, diagonalEntry, subdiagonalEntry);
@@ -269,21 +271,21 @@ interface Block2OrderSymmetricDiagonalMatrix
             public double valueAt(final int row, final int column) {
 
                 switch (BandDimensionPositionState.positionStateAt(row, column, bandMatrixDimension)) {
-                case DIAGONAL:
-                    return diagonalEntry[row];
-                case LOWER_BAND:
-                    return subdiagonalEntry[row - 1];
-                case UPPER_BAND:
-                    return subdiagonalEntry[column - 1];
-                case OUT_OF_BAND:
-                    return 0;
-                case OUT_OF_MATRIX:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
-                                    bandMatrixDimension.dimension(), row, column));
-                default:
-                    throw new AssertionError("Bug: 列挙型に想定外の値");
+                    case DIAGONAL:
+                        return diagonalEntry[row];
+                    case LOWER_BAND:
+                        return subdiagonalEntry[row - 1];
+                    case UPPER_BAND:
+                        return subdiagonalEntry[column - 1];
+                    case OUT_OF_BAND:
+                        return 0;
+                    case OUT_OF_MATRIX:
+                        throw new IndexOutOfBoundsException(
+                                String.format(
+                                        "out of matrix: matrix: %s, (row, column) = (%s, %s)",
+                                        bandMatrixDimension.dimension(), row, column));
+                    default:
+                        throw new AssertionError("Bug");
                 }
             }
 
@@ -316,7 +318,7 @@ interface Block2OrderSymmetricDiagonalMatrix
                 if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
-                                    "右から演算不可:matrix:%s, operand:%s",
+                                    "undefined operation: matrix: %s, operand: %s",
                                     bandMatrixDimension.dimension(), vectorDimension));
                 }
 
@@ -358,7 +360,7 @@ interface Block2OrderSymmetricDiagonalMatrix
             @Override
             public String toString() {
                 return String.format(
-                        "Matrix[band:%s, %s, block2Order]",
+                        "Matrix[band: %s, %s, block2Order]",
                         this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
             }
 

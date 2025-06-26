@@ -81,7 +81,7 @@ public final class BlockMatrix
         if (!this.matrixDimension().rightOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             this.matrixDimension(), operand.vectorDimension()));
         }
 
@@ -114,7 +114,7 @@ public final class BlockMatrix
         if (!this.matrixDimension().leftOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "左から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             this.matrixDimension(), operand.vectorDimension()));
         }
 

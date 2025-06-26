@@ -71,7 +71,7 @@ public final class SquareZeroMatrix
         if (!this.bandMatrixDimension.dimension().isValidIndexes(row, column)) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%s, %s)",
+                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                             this.bandMatrixDimension.dimension(), row, column));
         }
 
@@ -92,7 +92,7 @@ public final class SquareZeroMatrix
         if (!this.bandMatrixDimension.dimension().rightOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             this.bandMatrixDimension.dimension(), operand.vectorDimension()));
         }
         return this.zeroVector;
@@ -126,7 +126,7 @@ public final class SquareZeroMatrix
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, zero]",
+                "Matrix[dim: %s, zero]",
                 this.bandMatrixDimension().dimension());
     }
 

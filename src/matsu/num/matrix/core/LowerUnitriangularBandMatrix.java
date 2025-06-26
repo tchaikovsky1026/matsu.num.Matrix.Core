@@ -80,16 +80,16 @@ public final class LowerUnitriangularBandMatrix
             case LOWER_BAND:
                 return lowerEntry[column * thisLowerBandWidth + (row - column - 1)];
             case UPPER_BAND:
-                throw new AssertionError("Bug: 到達不能");
+                throw new AssertionError("Bug");
             case OUT_OF_BAND:
                 return 0;
             case OUT_OF_MATRIX:
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                 bandMatrixDimension.dimension(), row, column));
             default:
-                throw new AssertionError("Bug: 列挙型に想定外の値");
+                throw new AssertionError("Bug");
         }
     }
 
@@ -117,7 +117,7 @@ public final class LowerUnitriangularBandMatrix
         if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             bandMatrixDimension.dimension(), vectorDimension));
         }
         final int dimension = vectorDimension.intValue();
@@ -153,7 +153,7 @@ public final class LowerUnitriangularBandMatrix
         if (!bandMatrixDimension.dimension().leftOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "左から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             bandMatrixDimension.dimension(), vectorDimension));
         }
 
@@ -254,7 +254,7 @@ public final class LowerUnitriangularBandMatrix
                 if (!bandMatrixDimension.dimension().leftOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
-                                    "左から演算不可:matrix:%s, operand:%s",
+                                    "undefined operation: matrix: %s, operand: %s",
                                     bandMatrixDimension.dimension(), vectorDimension));
                 }
 
@@ -284,7 +284,7 @@ public final class LowerUnitriangularBandMatrix
                 if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
-                                    "右から演算不可:matrix:%s, operand:%s",
+                                    "undefined operation: matrix: %s, operand: %s",
                                     bandMatrixDimension.dimension(), vectorDimension));
                 }
 
@@ -406,25 +406,25 @@ public final class LowerUnitriangularBandMatrix
                 case DIAGONAL:
                     throw new IndexOutOfBoundsException(
                             String.format(
-                                    "対角成分は変更不可:matrix:%s, (row, column)=(%s, %s)",
+                                    "diagonal cannot be substituted: matrix: %s, (row, column) = (%s, %s)",
                                     bandMatrixDimension, row, column));
                 case LOWER_BAND:
                     lowerEntry[column * thisLowerBandWidth + (row - column - 1)] = value;
                     return;
                 case UPPER_BAND:
-                    throw new AssertionError("Bug: 到達不能");
+                    throw new AssertionError("Bug");
                 case OUT_OF_BAND:
                     throw new IndexOutOfBoundsException(
                             String.format(
-                                    "帯の外側:matrix:%s, (row, column)=(%d, %d)",
+                                    "out of band: matrix: %s, (row, column) = (%d, %d)",
                                     bandMatrixDimension, row, column));
                 case OUT_OF_MATRIX:
                     throw new IndexOutOfBoundsException(
                             String.format(
-                                    "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                    "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                     bandMatrixDimension.dimension(), row, column));
                 default:
-                    throw new AssertionError("Bug: 列挙型に想定外の値");
+                    throw new AssertionError("Bug");
             }
         }
 
@@ -442,7 +442,7 @@ public final class LowerUnitriangularBandMatrix
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 

@@ -67,7 +67,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
         if (!(matrixDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%s, %s)",
+                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                             matrixDimension, row, column));
         }
         return entry[row >= column
@@ -100,7 +100,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
         if (!matrixDimension.rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, vectorDimension));
         }
 
@@ -161,7 +161,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, %s]",
+                "Matrix[dim: %s, %s]",
                 this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
@@ -256,7 +256,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row, column)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                 matrixDimension, row, column));
             }
 
@@ -283,7 +283,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                     && matrixDimension.isValidRowIndex(index2))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (index1, index2)=(%s, %s)",
+                                "out of matrix: matrix: %s, (index1, index2) = (%s, %s)",
                                 matrixDimension, index1, index2));
             }
 
@@ -339,7 +339,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 
@@ -445,7 +445,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             }
 
             if (!(Objects.requireNonNull(src) instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("対称行列でない");
+                throw new MatrixNotSymmetricException();
             }
 
             final var srcMatrixDimension = src.matrixDimension();
@@ -484,7 +484,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
          */
         public static Builder from(final EntryReadableMatrix src) {
             if (!(Objects.requireNonNull(src) instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("対称行列でない");
+                throw new MatrixNotSymmetricException();
             }
 
             final var srcMatrixDimension = src.matrixDimension();
@@ -501,7 +501,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
                     if (!EntryReadableMatrix.acceptValue(value)) {
                         throw new AssertionError(
                                 String.format(
-                                        "EntryReadableMatrixが適切に実装されていない: entryValue=%s", value));
+                                        "include illegal value: entryValue = %s", value));
                     }
                     outBuilder.setValue(j, k, value);
                 }

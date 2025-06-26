@@ -84,7 +84,7 @@ public final class LowerUnitriangularMatrix
         if (!(matrixDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%s, %s)",
+                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                             matrixDimension, row, column));
         }
 
@@ -121,7 +121,7 @@ public final class LowerUnitriangularMatrix
         if (!matrixDimension.rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, vectorDimension));
         }
 
@@ -166,7 +166,7 @@ public final class LowerUnitriangularMatrix
         if (!matrixDimension.leftOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "左から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, vectorDimension));
         }
 
@@ -204,7 +204,7 @@ public final class LowerUnitriangularMatrix
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, %s, lower, unitriangular]",
+                "Matrix[dim: %s, %s, lower, unitriangular]",
                 this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
@@ -240,7 +240,7 @@ public final class LowerUnitriangularMatrix
                 if (!matrixDimension.leftOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
-                                    "左から演算不可:matrix:%s, operand:%s",
+                                    "undefined operation: matrix: %s, operand: %s",
                                     matrixDimension, vectorDimension));
                 }
 
@@ -279,7 +279,7 @@ public final class LowerUnitriangularMatrix
                 if (!matrixDimension.rightOperable(vectorDimension)) {
                     throw new MatrixFormatMismatchException(
                             String.format(
-                                    "右から演算不可:matrix:%s, operand:%s",
+                                    "undefined operation: matrix: %s, operand: %s",
                                     matrixDimension, vectorDimension));
                 }
 
@@ -385,7 +385,7 @@ public final class LowerUnitriangularMatrix
             if (!(matrixDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row, column)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                 matrixDimension, row, column));
             }
 
@@ -397,7 +397,7 @@ public final class LowerUnitriangularMatrix
             } else {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "狭義下側三角成分でない:matrix:%s, (row, column)=(%s, %s)",
+                                "out of lower triangular: matrix: %s, (row, column) = (%s, %s)",
                                 matrixDimension, row, column));
             }
         }
@@ -416,7 +416,7 @@ public final class LowerUnitriangularMatrix
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 

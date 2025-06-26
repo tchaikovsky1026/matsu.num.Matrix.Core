@@ -96,7 +96,7 @@ public final class TranspositionEntryReadableUtil {
         @Override
         public String toString() {
             return String.format(
-                    "Matrix[dim:%s, %s]",
+                    "Matrix[dim: %s, %s]",
                     this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
         }
     }

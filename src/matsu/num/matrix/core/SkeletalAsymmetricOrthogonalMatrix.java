@@ -149,7 +149,7 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, orthogonal]",
+                "Matrix[dim: %s, orthogonal]",
                 this.matrixDimension());
     }
 }

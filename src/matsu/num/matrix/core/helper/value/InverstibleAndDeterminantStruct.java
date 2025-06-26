@@ -44,7 +44,7 @@ public final class InverstibleAndDeterminantStruct<T extends Matrix> {
         this.inverseMatrix = Optional.of(inverseMatrix);
 
         if (this.determinantValues.sign() == 0) {
-            throw new IllegalArgumentException("行列式が特異相当なので, 行列式と逆行列が整合していない");
+            throw new IllegalArgumentException("determinant and inverse mismatch");
         }
     }
 

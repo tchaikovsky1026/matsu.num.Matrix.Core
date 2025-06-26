@@ -9,15 +9,13 @@
  */
 package matsu.num.matrix.core.nlsf;
 
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.core.EntryReadableMatrix;
 import matsu.num.matrix.core.Matrix;
 import matsu.num.matrix.core.PseudoRegularMatrixProcess;
+import matsu.num.matrix.core.common.ClassStringUtil;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
 
@@ -87,7 +85,7 @@ abstract class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends M
      * @see #toString()
      */
     String solverName() {
-        return this.getClass().getSimpleName();
+        return ClassStringUtil.getClassString(this);
     }
 
     /**
@@ -102,7 +100,7 @@ abstract class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends M
     @Override
     public String toString() {
         return String.format(
-                "%s[target:%s]", this.solverName(), this.target());
+                "%s[target: %s]", this.solverName(), this.target());
     }
 
     /**
@@ -233,7 +231,7 @@ abstract class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends M
         @Override
         public final Optional<ST> apply(MT matrix, double epsilon) {
             if (!Double.isFinite(epsilon) || epsilon < 0) {
-                throw new IllegalArgumentException(String.format("不正な値:epsilon=%s", epsilon));
+                throw new IllegalArgumentException(String.format("illegal: epsilon = %s", epsilon));
             }
 
             MatrixStructureAcceptance acceptance = this.accepts(matrix);
@@ -254,25 +252,7 @@ abstract class SkeletalLUTypeSolver<TT extends EntryReadableMatrix, IT extends M
          */
         @Override
         public String toString() {
-            Deque<Class<?>> enclosingClassLevels = new LinkedList<>();
-
-            Class<?> currentLevel = this.getClass();
-            while (Objects.nonNull(currentLevel)) {
-                enclosingClassLevels.add(currentLevel);
-                currentLevel = currentLevel.getEnclosingClass();
-            }
-
-            StringBuilder sb = new StringBuilder();
-            for (Iterator<Class<?>> ite = enclosingClassLevels.descendingIterator();
-                    ite.hasNext();) {
-                Class<?> clazz = ite.next();
-                sb.append(clazz.getSimpleName());
-                if (ite.hasNext()) {
-                    sb.append('.');
-                }
-            }
-
-            return sb.toString();
+            return ClassStringUtil.getClassString(this);
         }
     }
 }

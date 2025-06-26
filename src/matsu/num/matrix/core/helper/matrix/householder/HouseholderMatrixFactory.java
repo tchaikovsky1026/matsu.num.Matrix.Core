@@ -50,7 +50,7 @@ public final class HouseholderMatrixFactory {
         //ベクトルの規格化と零ベクトル検証を行う.
         var normalizedReflectionVector = reflection.normalizedEuclidean();
         if (!accepts(normalizedReflectionVector)) {
-            throw new IllegalArgumentException("大きさが0");
+            throw new IllegalArgumentException("not accept");
         }
 
         //1次元の場合はホルダーを呼び出す
@@ -79,14 +79,14 @@ public final class HouseholderMatrixFactory {
         if (!source.equalDimensionTo(target)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "次元が整合しない, from:%s, to:%s",
+                            "from: %s, to: %s",
                             source, target));
         }
         if (!accepts(source)) {
-            throw new IllegalArgumentException("source: 大きさが0");
+            throw new IllegalArgumentException("not accept");
         }
         if (!accepts(target)) {
-            throw new IllegalArgumentException("source: 大きさが0");
+            throw new IllegalArgumentException("not accept");
         }
 
         var dimension = source.vectorDimension();

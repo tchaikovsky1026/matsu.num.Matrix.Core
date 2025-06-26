@@ -128,7 +128,7 @@ public abstract class SkeletalSymmetricOrthogonalMatrix<
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, orthogonal]",
+                "Matrix[dim: %s, orthogonal]",
                 this.matrixDimension());
     }
 }

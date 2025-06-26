@@ -95,7 +95,8 @@ public final class Vector {
         if (!this.vectorDimension.isValidIndex(index)) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
+                            "out of vector: vactor: %s, index = %s",
+                            this.vectorDimension, index));
         }
         return this.entry[index];
     }
@@ -245,7 +246,7 @@ public final class Vector {
         if (!(this.equalDimensionTo(reference))) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "次元不一致:this:%s, reference:%s",
+                            "undefined operation: this: %s, reference: %s",
                             this.vectorDimension, reference.vectorDimension));
         }
     }
@@ -429,7 +430,7 @@ public final class Vector {
         }
 
         return String.format(
-                "Vector[dim:%s, {%s}]",
+                "Vector[dim: %s, {%s}]",
                 this.vectorDimension, entryString.toString());
     }
 
@@ -462,7 +463,8 @@ public final class Vector {
         if (!vectorDimension.isValidIndex(index)) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "indexが有効でない: vactor:%s, index=%s", vectorDimension, index));
+                            "out of vector: dim = %s, index = %s",
+                            vectorDimension, index));
         }
 
         double[] entry = new double[vectorDimension.intValue()];
@@ -577,7 +579,8 @@ public final class Vector {
             if (!this.vectorDimension.isValidIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
+                                "out of vector: dim = %s, index = %s",
+                                this.vectorDimension, index));
             }
 
             this.entry[index] = modified(value);
@@ -608,7 +611,8 @@ public final class Vector {
             if (!this.vectorDimension.isValidIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "indexが有効でない:vactor:%s, index=%s", this.vectorDimension, index));
+                                "out of vector: dim = %s, index = %s",
+                                this.vectorDimension, index));
             }
 
             this.entry[index] = value;
@@ -632,7 +636,8 @@ public final class Vector {
             if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
                 throw new IllegalArgumentException(
                         String.format(
-                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, newEntry.length));
+                                "size mismatch: dim = %s, entry.length = %s",
+                                this.vectorDimension, newEntry.length));
             }
 
             modify(newEntry);
@@ -662,7 +667,8 @@ public final class Vector {
             if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
                 throw new IllegalArgumentException(
                         String.format(
-                                "サイズ不一致:vector:%s, entry:length=%s", this.vectorDimension, newEntry.length));
+                                "size mismatch: dim = %s, entry.length = %s",
+                                this.vectorDimension, newEntry.length));
             }
 
             for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {
@@ -688,7 +694,7 @@ public final class Vector {
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 

@@ -99,6 +99,6 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s]", this.matrixDimension());
+                "Matrix[dim: %s]", this.matrixDimension());
     }
 }
