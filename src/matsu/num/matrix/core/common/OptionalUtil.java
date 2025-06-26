@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.26
  */
 package matsu.num.matrix.core.common;
 
@@ -37,11 +37,13 @@ public final class OptionalUtil {
      */
     public static <T> Optional<T> castSafe(Optional<? extends T> src) {
 
-        // Optionalクラスの実装の性質上, 
-        // Optional<? extends T> を 
-        // Optional<Matrix>として扱っても問題にならない.
+        /*
+         * Optionalクラスの実装の性質上,
+         * Optional<? extends T> を
+         * Optional<Matrix>として扱っても問題にならない.
+         */
         @SuppressWarnings("unchecked")
-        Optional<T> out = (Optional<T>) Objects.requireNonNull(src);
+        Optional<T> out = (Optional<T>) src;
         return Objects.isNull(out)
                 ? Optional.empty()
                 : out;
