@@ -44,7 +44,7 @@ final class BlockDiagonalOrthogonalUtil {
         if (dim > Integer.MAX_VALUE) {
             throw new ElementsTooManyException(
                     String.format(
-                            "全体のサイズが大きすぎる: dim = %s", dim));
+                            "too large total size: dim: %s", dim));
         }
         return MatrixDimension.square((int) dim);
 

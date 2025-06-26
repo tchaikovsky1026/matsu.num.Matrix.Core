@@ -31,7 +31,7 @@ final class MatrixAccepted extends MatrixStructureAcceptance {
 
     @Override
     public final IllegalArgumentException getException(Object cause) {
-        throw new IllegalStateException("ACCEPTであり,このメソッドを呼ぶことは許可されない");
+        throw new IllegalStateException("ACCEPT does not have exception");
     }
 
     @Override

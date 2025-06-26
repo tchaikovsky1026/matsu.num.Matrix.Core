@@ -97,7 +97,7 @@ public final class TranspositionBandUtil {
         @Override
         public String toString() {
             return String.format(
-                    "Matrix[band:%s, %s]",
+                    "Matrix[band: %s, %s]",
                     this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
         }
     }

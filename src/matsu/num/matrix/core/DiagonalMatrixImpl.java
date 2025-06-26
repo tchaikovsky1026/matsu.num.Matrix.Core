@@ -65,18 +65,18 @@ final class DiagonalMatrixImpl
             case DIAGONAL:
                 return this.diagonalEntry[row];
             case LOWER_BAND:
-                throw new AssertionError("Bug: 到達不能");
+                throw new AssertionError("Bug");
             case UPPER_BAND:
-                throw new AssertionError("Bug: 到達不能");
+                throw new AssertionError("Bug");
             case OUT_OF_BAND:
                 return 0;
             case OUT_OF_MATRIX:
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%s, %s)",
+                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                                 bandMatrixDimension.dimension(), row, column));
             default:
-                throw new AssertionError("Bug: 列挙型に想定外の値");
+                throw new AssertionError("Bug");
         }
     }
 
@@ -100,7 +100,7 @@ final class DiagonalMatrixImpl
         if (!this.bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             this.bandMatrixDimension.dimension(), vectorDimension));
         }
 
@@ -139,7 +139,7 @@ final class DiagonalMatrixImpl
     @Override
     public String toString() {
         return String.format(
-                "Matrix[band:%s, %s, diagonal]",
+                "Matrix[band: %s, %s, diagonal]",
                 this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
@@ -386,7 +386,7 @@ final class DiagonalMatrixImpl
             if (!matrixDimension.isValidRowIndex(index)) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (i, i)=(%s, %s)",
+                                "out of matrix: matrix: %s, (i, i) = (%s, %s)",
                                 matrixDimension, index, index));
             }
 
@@ -406,7 +406,7 @@ final class DiagonalMatrixImpl
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 

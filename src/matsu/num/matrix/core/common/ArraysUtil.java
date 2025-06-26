@@ -43,7 +43,7 @@ public final class ArraysUtil {
     public static final void add(double[] operand, double[] reference) {
         final int dimension = operand.length;
         if (dimension != reference.length) {
-            throw new IllegalArgumentException("ベクトルサイズが一致しない");
+            throw new IllegalArgumentException("size mismatch");
         }
         for (int i = 0; i < dimension; i++) {
             operand[i] += reference[i];
@@ -70,7 +70,7 @@ public final class ArraysUtil {
     public static final void subtract(double[] operand, double[] reference) {
         final int dimension = operand.length;
         if (dimension != reference.length) {
-            throw new IllegalArgumentException("ベクトルサイズが一致しない");
+            throw new IllegalArgumentException("size mismatch");
         }
         for (int i = 0; i < dimension; i++) {
             operand[i] -= reference[i];
@@ -99,7 +99,7 @@ public final class ArraysUtil {
     public static final void addCTimes(double[] operand, double[] reference, double scalar) {
         final int dimension = operand.length;
         if (dimension != reference.length) {
-            throw new IllegalArgumentException("ベクトルサイズが一致しない");
+            throw new IllegalArgumentException("size mismatch");
         }
         for (int i = 0; i < dimension; i++) {
             operand[i] += scalar * reference[i];
@@ -147,7 +147,7 @@ public final class ArraysUtil {
     public static double dot(double[] vector1, double[] vector2) {
         final int dimension = vector1.length;
         if (dimension != vector2.length) {
-            throw new IllegalArgumentException("ベクトルサイズが一致しない");
+            throw new IllegalArgumentException("size mismatch");
         }
 
         /*

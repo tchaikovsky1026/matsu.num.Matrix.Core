@@ -49,18 +49,18 @@ public final class UnitMatrix
             case DIAGONAL:
                 return 1d;
             case LOWER_BAND:
-                throw new AssertionError("Bug: 到達不能");
+                throw new AssertionError("Bug");
             case UPPER_BAND:
-                throw new AssertionError("Bug: 到達不能");
+                throw new AssertionError("Bug");
             case OUT_OF_BAND:
                 return 0d;
             case OUT_OF_MATRIX:
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列内部でない:matrix:%s, (row, column)=(%d, %d)",
+                                "out of matrix: matrix: %s, (row, column) = (%d, %d)",
                                 bandMatrixDimension.dimension(), row, column));
             default:
-                throw new AssertionError("Bug: 列挙型に想定外の値");
+                throw new AssertionError("Bug");
         }
     }
 
@@ -92,7 +92,7 @@ public final class UnitMatrix
         if (!bandMatrixDimension.dimension().rightOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可,matrix:%s,operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             bandMatrixDimension.dimension(), operand.vectorDimension()));
         }
         return operand;
@@ -136,7 +136,7 @@ public final class UnitMatrix
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, unit]",
+                "Matrix[dim: %s, unit]",
                 this.matrixDimension());
     }
 

@@ -135,7 +135,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s]",
+                "Matrix[dim: %s]",
                 this.matrixDimension());
     }
 }

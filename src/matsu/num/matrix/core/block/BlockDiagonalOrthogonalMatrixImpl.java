@@ -65,7 +65,7 @@ final class BlockDiagonalOrthogonalMatrixImpl
         if (!matrixDimension.rightOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, operand.vectorDimension()));
         }
 
@@ -92,7 +92,7 @@ final class BlockDiagonalOrthogonalMatrixImpl
         if (!matrixDimension.leftOperable(operand.vectorDimension())) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "左から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, operand.vectorDimension()));
         }
 
@@ -152,14 +152,14 @@ final class BlockDiagonalOrthogonalMatrixImpl
             double[] arrElementVec = elementVec.entryAsArray();
             int blockSize = arrElementVec.length;
 
-            assert startIndex + blockSize <= mergedArray.length : "はみ出している";
+            assert startIndex + blockSize <= mergedArray.length;
 
             System.arraycopy(arrElementVec, 0, mergedArray, startIndex, blockSize);
 
             startIndex += blockSize;
         }
 
-        assert startIndex == mergedArray.length : "合計サイズが一致しない";
+        assert startIndex == mergedArray.length;
 
         Vector.Builder vBuilder = Vector.Builder.zeroBuilder(entireDimension);
         vBuilder.setEntryValue(mergedArray);
@@ -195,7 +195,7 @@ final class BlockDiagonalOrthogonalMatrixImpl
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, orthogonal]",
+                "Matrix[dim: %s, orthogonal]",
                 this.matrixDimension());
     }
 

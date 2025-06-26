@@ -41,9 +41,9 @@ final class HouseholderUtil {
     static Vector computeReflectionVectorToStandardBasis(Vector src) {
         var dimension = src.vectorDimension();
 
-        assert dimension.intValue() >= 2 : "不正: 次元1";
+        assert dimension.intValue() >= 2;
         Vector normalizedSrc = src.normalizedEuclidean();
-        assert normalizedSrc.norm2() > 0d : "不正: 大きさ0";
+        assert normalizedSrc.norm2() > 0d;
 
         // p-eを計算する
         // p = [p_0, p_1, ... , p_{d-1}]

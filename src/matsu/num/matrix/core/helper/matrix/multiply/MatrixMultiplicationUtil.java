@@ -178,12 +178,12 @@ public final class MatrixMultiplicationUtil {
          * @throws MatrixFormatMismatchException 行列のサイズが整合せずに行列積が定義できない場合
          */
         static MultipliedMatrix expand(Deque<Matrix> rawSeries) {
-            assert rawSeries.size() >= 2 : "サイズ2以上でない";
+            assert rawSeries.size() >= 2;
 
             requireFormatMatch(rawSeries)
                     .orElseThrow(
                             () -> new MatrixFormatMismatchException(
-                                    "行列積が定義不可な組み合わせ"));
+                                    "undefined operation"));
 
             MatrixDimension matrixDimension = MatrixDimension.rectangle(
                     rawSeries.getFirst().matrixDimension().rowAsIntValue(),
@@ -241,10 +241,10 @@ public final class MatrixMultiplicationUtil {
          */
         SymmetricMultipliedMatrix(Matrix mid, Matrix leftSide) {
             if (!(Objects.requireNonNull(mid) instanceof Symmetric)) {
-                throw new MatrixNotSymmetricException("中央の行列がSymmetricでない");
+                throw new MatrixNotSymmetricException("mid is not symmetric");
             }
             if (leftSide.matrixDimension().columnAsIntValue() != mid.matrixDimension().columnAsIntValue()) {
-                throw new MatrixFormatMismatchException("行列積が定義できない");
+                throw new MatrixFormatMismatchException("undefined operation");
             }
 
             Deque<Matrix> series = new LinkedList<>();
@@ -336,7 +336,7 @@ public final class MatrixMultiplicationUtil {
         @Override
         public String toString() {
             return String.format(
-                    "Matrix[dim:%s]",
+                    "Matrix[dim: %s]",
                     this.matrixDimension());
         }
     }

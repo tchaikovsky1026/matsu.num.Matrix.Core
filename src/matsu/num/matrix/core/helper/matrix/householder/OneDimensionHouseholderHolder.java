@@ -58,7 +58,7 @@ final class OneDimensionHouseholderHolder {
             if (!this.matrixDimension().rightOperable(operand.vectorDimension())) {
                 throw new MatrixFormatMismatchException(
                         String.format(
-                                "右から演算不可:matrix:%s, operand:%s",
+                                "undefined operation: matrix: %s, operand: %s",
                                 this.matrixDimension(), operand.vectorDimension()));
             }
 

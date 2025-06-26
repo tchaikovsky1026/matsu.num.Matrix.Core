@@ -91,7 +91,7 @@ public final class TranspositionUtil {
         @Override
         public String toString() {
             return String.format(
-                    "Matrix[dim:%s]",
+                    "Matrix[dim: %s]",
                     this.matrixDimension());
         }
     }

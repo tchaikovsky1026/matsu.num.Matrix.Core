@@ -88,7 +88,7 @@ public final class TranspositionOrthogonalUtil {
         @Override
         public String toString() {
             return String.format(
-                    "Matrix[dim:%s, orthogonal]",
+                    "Matrix[dim: %s, orthogonal]",
                     this.matrixDimension());
         }
     }

@@ -46,7 +46,7 @@ abstract class SkeletalHouseholderMatrix<T extends SkeletalHouseholderMatrix<T>>
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, householder]",
+                "Matrix[dim: %s, householder]",
                 this.matrixDimension());
     }
 }

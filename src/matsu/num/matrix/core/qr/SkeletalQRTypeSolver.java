@@ -208,7 +208,7 @@ abstract class SkeletalQRTypeSolver<TT extends EntryReadableMatrix, IT extends M
         @Override
         public final Optional<ST> apply(MT matrix, double epsilon) {
             if (!Double.isFinite(epsilon) || epsilon < 0) {
-                throw new IllegalArgumentException(String.format("不正な値:epsilon=%s", epsilon));
+                throw new IllegalArgumentException(String.format("illegal: epsilon = %s", epsilon));
             }
 
             MatrixStructureAcceptance acceptance = this.accepts(matrix);

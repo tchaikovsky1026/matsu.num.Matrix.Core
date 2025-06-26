@@ -83,7 +83,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
         this.matrixList = builder.matrixList;
 
         if (!analyzeDimension()) {
-            throw new MatrixFormatMismatchException("ブロック構造が不能あるいは不定");
+            throw new MatrixFormatMismatchException("impossible or indeterminate");
         }
 
         //ここで例外が発生する可能性がある
@@ -170,7 +170,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
         if (entireRows > Integer.MAX_VALUE || entireColumns > Integer.MAX_VALUE) {
             throw new ElementsTooManyException(
                     String.format(
-                            "全体のサイズが大きすぎる: (r,c) = (%s,%s)",
+                            "too large total size: (r, c) = (%s, %s)",
                             entireRows, entireColumns));
         }
 
@@ -206,7 +206,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
         if (!(structureDimension.isValidColumnIndex(column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列構造外:structure:%s, column=%s",
+                            "out of structure: structure: %s, column = %s",
                             structureDimension, column));
         }
         return this.elementDimensions[0][column].rightOperableVectorDimension();
@@ -223,7 +223,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
         if (!(structureDimension.isValidRowIndex(row))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列構造外:structure:%s, row=%s",
+                            "out of structure: structure: %s, row = %s",
                             structureDimension, row));
         }
         return this.elementDimensions[row][0].leftOperableVectorDimension();
@@ -242,7 +242,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
         if (!(structureDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列構造外:structure:%s, (row, column)=(%s, %s)",
+                            "out of structure: structure: %s, (row, column) = (%s, %s)",
                             structureDimension, row, column));
         }
         return this.matrixList.get(row).get(column);
@@ -260,7 +260,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
         if (!(structureDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列構造外:structure:%s, (row, column)=(%s, %s)",
+                            "out of structure: structure: %s, (row, column) = (%s, %s)",
                             structureDimension, row, column));
         }
 
@@ -277,7 +277,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
      */
     Vector[] rightSplit(Vector operand) {
 
-        assert this.entireMatrixDimension().rightOperable(operand.vectorDimension()) : "assert: 右から演算不可";
+        assert this.entireMatrixDimension().rightOperable(operand.vectorDimension());
 
         Vector[] splitted = new Vector[this.structureDimension().columnAsIntValue()];
 
@@ -308,7 +308,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
      */
     Vector[] leftSplit(Vector operand) {
 
-        assert this.entireMatrixDimension().leftOperable(operand.vectorDimension()) : "assert: 左から演算不可";
+        assert this.entireMatrixDimension().leftOperable(operand.vectorDimension());
 
         Vector[] splitted = new Vector[this.structureDimension().rowAsIntValue()];
 
@@ -347,15 +347,15 @@ public final class BlockMatrixStructure<T extends Matrix> {
             double[] arrElementVec = splittedColumnMatched[i].entryAsArray();
             int size = arrElementVec.length;
 
-            assert this.rightOperableVectorDimensionAt(i).intValue() == size : "assert: 列ブロックの行数にサイズがマッチしない";
-            assert startIndex + size <= mergedArray.length : "assert: ?Bug:はみ出している（引数が不正の場合,この前の行で落ちるはず）";
+            assert this.rightOperableVectorDimensionAt(i).intValue() == size;
+            assert startIndex + size <= mergedArray.length;
 
             System.arraycopy(arrElementVec, 0, mergedArray, startIndex, size);
 
             startIndex += size;
         }
 
-        assert startIndex == mergedArray.length : "合計サイズが一致しない";
+        assert startIndex == mergedArray.length;
 
         Vector.Builder vBuilder = Vector.Builder.zeroBuilder(entireVectorDimension);
         vBuilder.setEntryValue(mergedArray);
@@ -380,15 +380,15 @@ public final class BlockMatrixStructure<T extends Matrix> {
             double[] arrElementVec = splittedRowMatched[i].entryAsArray();
             int size = arrElementVec.length;
 
-            assert this.leftOperableVectorDimensionAt(i).intValue() == size : "assert: 行ブロックの行数にサイズがマッチしない";
-            assert startIndex + size <= mergedArray.length : "assert: ?Bug:はみ出している（引数が不正の場合,この前の行で落ちるはず）";
+            assert this.leftOperableVectorDimensionAt(i).intValue() == size;
+            assert startIndex + size <= mergedArray.length;
 
             System.arraycopy(arrElementVec, 0, mergedArray, startIndex, size);
 
             startIndex += size;
         }
 
-        assert startIndex == mergedArray.length : "合計サイズが一致しない";
+        assert startIndex == mergedArray.length;
 
         Vector.Builder vBuilder = Vector.Builder.zeroBuilder(entireVectorDimension);
         vBuilder.setEntryValue(mergedArray);
@@ -413,7 +413,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
             columns[i] = bd[i].columnAsIntValue();
         }
 
-        return String.format("(%s:%s)", Arrays.toString(rows), Arrays.toString(columns));
+        return String.format("(%s : %s)", Arrays.toString(rows), Arrays.toString(columns));
     }
 
     /**
@@ -522,7 +522,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
             if (!(structureDimension.isValidIndexes(row, column))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列構造外:structure:%s, (row, column)=(%s, %s)",
+                                "out of structure: structure: %s, (row, column) = (%s, %s)",
                                 structureDimension, row, column));
             }
 
@@ -544,7 +544,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 

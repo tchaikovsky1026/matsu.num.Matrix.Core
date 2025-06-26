@@ -65,7 +65,7 @@ final class PermutationMatrixImpl
         if (!(matrixDimension.isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外,matrix:%s,row=%d,column=%d",
+                            "out of matrix: matrix: %s, row = %d, column = %d",
                             matrixDimension, row, column));
         }
         return permutationHorizontal[row] == column ? 1.0 : 0.0;
@@ -93,7 +93,7 @@ final class PermutationMatrixImpl
         if (!matrixDimension.rightOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "右から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, vectorDimension));
         }
 
@@ -114,7 +114,7 @@ final class PermutationMatrixImpl
         if (!matrixDimension.leftOperable(vectorDimension)) {
             throw new MatrixFormatMismatchException(
                     String.format(
-                            "左から演算不可:matrix:%s, operand:%s",
+                            "undefined operation: matrix: %s, operand: %s",
                             matrixDimension, vectorDimension));
         }
 
@@ -152,7 +152,7 @@ final class PermutationMatrixImpl
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, permutation(%s)]",
+                "Matrix[dim: %s, permutation(%s)]",
                 this.matrixDimension(), this.isEven() ? "even" : "odd");
     }
 
@@ -182,7 +182,7 @@ final class PermutationMatrixImpl
         private Builder(final MatrixDimension matrixDimension) {
             if (!matrixDimension.isSquare()) {
                 throw new MatrixFormatMismatchException(
-                        String.format("正方形ではない行列サイズ:%s", matrixDimension));
+                        String.format("not square: %s", matrixDimension));
             }
             this.matrixDimension = matrixDimension;
 
@@ -216,7 +216,7 @@ final class PermutationMatrixImpl
                     && matrixDimension.isValidRowIndex(row2))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (row1, row2)=(%d, %d)",
+                                "out of matrix: matrix: %s, (row1, row2) = (%d, %d)",
                                 matrixDimension, row1, row2));
             }
 
@@ -244,7 +244,7 @@ final class PermutationMatrixImpl
                     && matrixDimension.isValidColumnIndex(column2))) {
                 throw new IndexOutOfBoundsException(
                         String.format(
-                                "行列外:matrix:%s, (column1, column2)=(%d, %d)",
+                                "out of matrix: matrix: %s, (column1, column2) = (%d, %d)",
                                 matrixDimension, column1, column2));
             }
 
@@ -273,7 +273,7 @@ final class PermutationMatrixImpl
          */
         private void throwISExIfCannotBeUsed() {
             if (!this.canBeUsed()) {
-                throw new IllegalStateException("すでにビルドされています");
+                throw new IllegalStateException("already built");
             }
         }
 

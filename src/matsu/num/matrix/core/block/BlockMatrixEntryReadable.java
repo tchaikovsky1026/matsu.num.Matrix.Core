@@ -91,7 +91,7 @@ public final class BlockMatrixEntryReadable
         if (!(this.matrixDimension().isValidIndexes(row, column))) {
             throw new IndexOutOfBoundsException(
                     String.format(
-                            "行列外:matrix:%s, (row, column)=(%s, %s)",
+                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
                             this.matrixDimension(), row, column));
         }
 
@@ -178,7 +178,7 @@ public final class BlockMatrixEntryReadable
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim:%s, %s]",
+                "Matrix[dim: %s, %s]",
                 this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 }

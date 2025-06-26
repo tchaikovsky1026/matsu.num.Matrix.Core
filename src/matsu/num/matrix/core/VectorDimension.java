@@ -40,7 +40,7 @@ public final class VectorDimension implements Comparable<VectorDimension> {
      */
     private VectorDimension(int dimension) {
         if (dimension < MIN_DIMENSION) {
-            throw new IllegalArgumentException(String.format("不正な次元:dimension=%d", dimension));
+            throw new IllegalArgumentException(String.format("illegal: dimension = %d", dimension));
         }
         this.dimension = dimension;
         this.hashCode = this.calcHashCode();

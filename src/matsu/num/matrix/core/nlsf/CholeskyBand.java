@@ -152,8 +152,11 @@ public final class CholeskyBand
          * 非公開コンストラクタ.
          */
         private Executor() {
+            super();
+
+            //シングルトン強制
             if (Objects.nonNull(INSTANCE)) {
-                throw new AssertionError("シングルトンを強制");
+                throw new AssertionError();
             }
         }
 

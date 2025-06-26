@@ -45,7 +45,7 @@ final class CholeskyFactorizationHelper {
         this.matrixDimension = matrix.matrixDimension();
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
-            throw new ProcessFailedException("正定値でない(零行列である)");
+            throw new ProcessFailedException("zero matrix");
         }
 
         this.mxLowerEntry = lowerSideOfMatrixToArray(matrix);
@@ -95,7 +95,7 @@ final class CholeskyFactorizationHelper {
             //正則性チェック
             final double d = thisMxEntry[in + i];
             if (!(d >= threshold)) {
-                throw new ProcessFailedException("行列が正定値でない");
+                throw new ProcessFailedException("not positive definite");
             }
             //Dの計算
             final double invD = 1 / d;
@@ -149,7 +149,7 @@ final class CholeskyFactorizationHelper {
 
         //スケールの関係で特異になるかもしれないので, 正則判定
         if (this.mxSqrtD.signOfDeterminant() == 0) {
-            throw new ProcessFailedException("行列が正定値でない");
+            throw new ProcessFailedException("not positive definite");
         }
     }
 }

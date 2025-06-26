@@ -47,7 +47,7 @@ final class LUPivotingFactorizationHelper {
             throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
-            throw new ProcessFailedException("行列が特異(零行列である)");
+            throw new ProcessFailedException("zero matrix");
         }
         this.matrixDimension = matrix.matrixDimension();
         this.mxEntry = matrixToArray(matrix);
@@ -116,7 +116,7 @@ final class LUPivotingFactorizationHelper {
                 }
             }
             if (maxValue <= threshold) {
-                throw new ProcessFailedException("行列が特異");
+                throw new ProcessFailedException("singular");
             }
             if (maxValueRow != i) {
                 this.swapRowsOfArray(i, maxValueRow);
@@ -185,7 +185,7 @@ final class LUPivotingFactorizationHelper {
 
         //スケールの関係で特異になるかもしれないので, 正則判定
         if (this.mxD.signOfDeterminant() == 0) {
-            throw new ProcessFailedException("行列が特異");
+            throw new ProcessFailedException("singular");
         }
     }
 

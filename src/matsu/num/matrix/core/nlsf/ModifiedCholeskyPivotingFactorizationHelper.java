@@ -49,7 +49,7 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
             throws ProcessFailedException {
         this.scale = matrix.entryNormMax();
         if (this.scale == 0.0) {
-            throw new ProcessFailedException("行列が特異(零行列である)");
+            throw new ProcessFailedException("zero matrix");
         }
         this.matrixDimension = matrix.matrixDimension();
         this.mxLowerEntry = lowerSideOfMatrixToArray(matrix);
@@ -123,7 +123,7 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
                 }
                 final double absAii = Math.abs(thisMxEntry[in + i]);
                 if (absAii <= threshold && lambda_1 <= threshold) {
-                    throw new ProcessFailedException("行列が特異");
+                    throw new ProcessFailedException("singular");
                 }
                 if (absAii < ALPHA * lambda_1) {
                     final int rn = (r * (r + 1)) / 2;
@@ -245,7 +245,7 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
 
         //スケールの関係で特異になるかもしれないので, 正則判定
         if (this.mxM.signOfDeterminant() == 0) {
-            throw new ProcessFailedException("行列が特異");
+            throw new ProcessFailedException("singular");
         }
     }
 
