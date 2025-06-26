@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.26
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -141,7 +141,7 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
      * </p>
      */
     public static final class Executor
-            extends SkeletalSolvingFactorizationExecutor<
+            extends SkeletalLUTypeSolver.Executor<
                     BandMatrix, LUBand> {
 
         private static final Executor INSTANCE = new Executor();
