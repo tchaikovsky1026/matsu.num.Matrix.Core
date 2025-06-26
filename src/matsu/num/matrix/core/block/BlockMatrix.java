@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.17
+ * 2025.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -18,6 +18,7 @@ import matsu.num.matrix.core.SkeletalAsymmetricMatrix;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.ZeroMatrix;
 import matsu.num.matrix.core.common.OptionalUtil;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -78,12 +79,9 @@ public final class BlockMatrix
      */
     @Override
     public Vector operate(Vector operand) {
-        if (!this.matrixDimension().rightOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            this.matrixDimension(), operand.vectorDimension()));
-        }
+
+        MatrixValidationSupport.validateOperate(
+                this.matrixDimension(), operand.vectorDimension());
 
         Vector[] operandSplittedVectors = this.blockStructure.rightSplit(operand);
         Vector[] resultSplittedVectors = new Vector[this.blockStructure.structureDimension().rowAsIntValue()];
@@ -111,12 +109,9 @@ public final class BlockMatrix
      */
     @Override
     public Vector operateTranspose(Vector operand) {
-        if (!this.matrixDimension().leftOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            this.matrixDimension(), operand.vectorDimension()));
-        }
+
+        MatrixValidationSupport.validateOperateTranspose(
+                this.matrixDimension(), operand.vectorDimension());
 
         Vector[] operandSplittedVectors = this.blockStructure.leftSplit(operand);
         Vector[] resultSplittedVectors = new Vector[this.blockStructure.structureDimension().columnAsIntValue()];
@@ -143,6 +138,8 @@ public final class BlockMatrix
      * <p>
      * (外部からの呼び出し不可)
      * </p>
+     * 
+     * @return -
      */
     @Override
     protected Matrix createTranspose() {

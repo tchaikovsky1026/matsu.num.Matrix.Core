@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -21,6 +21,7 @@ import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
@@ -63,12 +64,9 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
      */
     @Override
     public Vector operate(Vector operand) {
-        if (!matrixDimension.rightOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, operand.vectorDimension()));
-        }
+
+        MatrixValidationSupport.validateOperate(
+                matrixDimension, operand.vectorDimension());
 
         Vector[] splitted = this.splitOperable(operand);
 
@@ -148,10 +146,12 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     protected SymmetricBlockDiagonalOrthogonalMatrix self() {
         return this;
@@ -159,9 +159,8 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[dim: %s, orthogonal]",
-                this.matrixDimension());
+        return "Matrix[dim: %s, orthogonal]"
+                .formatted(this.matrixDimension());
     }
 
     /**

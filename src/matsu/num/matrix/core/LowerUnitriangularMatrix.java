@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -15,6 +15,7 @@ import java.util.Optional;
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.common.CalcUtil;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
@@ -81,12 +82,8 @@ public final class LowerUnitriangularMatrix
      */
     @Override
     public double valueAt(final int row, final int column) {
-        if (!(matrixDimension.isValidIndexes(row, column))) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                            matrixDimension, row, column));
-        }
+
+        MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
 
         if (row == column) {
             return 1;
@@ -118,12 +115,8 @@ public final class LowerUnitriangularMatrix
     @Override
     public Vector operate(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!matrixDimension.rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperate(matrixDimension, vectorDimension);
 
         final int dimension = vectorDimension.intValue();
 
@@ -163,12 +156,8 @@ public final class LowerUnitriangularMatrix
     @Override
     public Vector operateTranspose(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!matrixDimension.leftOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperateTranspose(matrixDimension, vectorDimension);
 
         final int dimension = vectorDimension.intValue();
 
@@ -225,10 +214,12 @@ public final class LowerUnitriangularMatrix
             /**
              * -
              * 
+             * <p>
+             * (外部からの呼び出し不可)
+             * </p>
+             * 
              * @return -
-             * @deprecated (外部からの呼び出し不可)
              */
-            @Deprecated
             @Override
             protected Matrix createTranspose() {
                 return Matrix.createTransposedOf(this);
@@ -237,12 +228,8 @@ public final class LowerUnitriangularMatrix
             @Override
             public Vector operate(Vector operand) {
                 final var vectorDimension = operand.vectorDimension();
-                if (!matrixDimension.leftOperable(vectorDimension)) {
-                    throw new MatrixFormatMismatchException(
-                            String.format(
-                                    "undefined operation: matrix: %s, operand: %s",
-                                    matrixDimension, vectorDimension));
-                }
+
+                MatrixValidationSupport.validateOperateTranspose(matrixDimension, vectorDimension);
 
                 final int dimension = vectorDimension.intValue();
                 final double[] thisLowerEntry = lowerEntry;
@@ -276,12 +263,8 @@ public final class LowerUnitriangularMatrix
             @Override
             public Vector operateTranspose(Vector operand) {
                 final var vectorDimension = operand.vectorDimension();
-                if (!matrixDimension.rightOperable(vectorDimension)) {
-                    throw new MatrixFormatMismatchException(
-                            String.format(
-                                    "undefined operation: matrix: %s, operand: %s",
-                                    matrixDimension, vectorDimension));
-                }
+
+                MatrixValidationSupport.validateOperate(matrixDimension, vectorDimension);
 
                 final int dimension = vectorDimension.intValue();
                 final double[] thisLowerEntry = lowerEntry;
@@ -382,12 +365,7 @@ public final class LowerUnitriangularMatrix
         public void setValue(final int row, final int column, double value) {
             this.throwISExIfCannotBeUsed();
 
-            if (!(matrixDimension.isValidIndexes(row, column))) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                matrixDimension, row, column));
-            }
+            MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
 
             //値を修正する
             value = EntryReadableMatrix.modified(value);
@@ -396,9 +374,8 @@ public final class LowerUnitriangularMatrix
                 lowerEntry[column + CalcUtil.sumOf1To(row - 1)] = value;
             } else {
                 throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of lower triangular: matrix: %s, (row, column) = (%s, %s)",
-                                matrixDimension, row, column));
+                        "out of lower triangular: matrix: %s, (row, column) = (%s, %s)"
+                                .formatted(matrixDimension, row, column));
             }
         }
 

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -281,10 +281,10 @@ public final class BandMatrixDimension {
      * @throws IllegalArgumentException 帯幅が0未満である場合
      * @throws NullPointerException 引数にnullが含まれる場合
      */
-    public static BandMatrixDimension of(MatrixDimension dimension, int lowerBandWidth, int upperBandWidth) {
+    public static BandMatrixDimension of(
+            MatrixDimension dimension, int lowerBandWidth, int upperBandWidth) {
         if (!dimension.isSquare()) {
-            throw new MatrixFormatMismatchException(
-                    String.format("not square: %s", dimension));
+            throw new MatrixFormatMismatchException("not square: " + dimension);
         }
 
         if (lowerBandWidth == upperBandWidth) {
@@ -325,8 +325,7 @@ public final class BandMatrixDimension {
      */
     public static BandMatrixDimension symmetric(MatrixDimension dimension, int bandWidth) {
         if (!dimension.isSquare()) {
-            throw new MatrixFormatMismatchException(
-                    String.format("not square: %s", dimension));
+            throw new MatrixFormatMismatchException("not square: " + dimension);
         }
 
         var out = getSymmetricFromCache(dimension.rowAsIntValue(), bandWidth);

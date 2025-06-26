@@ -5,11 +5,11 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
-import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 
 /**
  * 零行列の実装.
@@ -41,12 +41,7 @@ final class ZeroMatrixImpl
 
     @Override
     public double valueAt(int row, int column) {
-        if (!this.matrixDimension.isValidIndexes(row, column)) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                            this.matrixDimension, row, column));
-        }
+        MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
 
         return 0d;
     }
@@ -63,26 +58,27 @@ final class ZeroMatrixImpl
 
     @Override
     public Vector operate(Vector operand) {
-        if (!this.matrixDimension.rightOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            this.matrixDimension, operand.vectorDimension()));
-        }
+        MatrixValidationSupport.validateOperate(matrixDimension, operand.vectorDimension());
+
         return this.operatedVector;
     }
 
     @Override
     public Vector operateTranspose(Vector operand) {
-        if (!this.matrixDimension.leftOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            this.matrixDimension, operand.vectorDimension()));
-        }
+        MatrixValidationSupport.validateOperateTranspose(matrixDimension, operand.vectorDimension());
+
         return this.transposeOperatedVector;
     }
 
+    /**
+     * -
+     * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
+     * @return -
+     */
     @Override
     protected ZeroMatrix createTranspose() {
         return new TransposeAttachedZeroMatrix(

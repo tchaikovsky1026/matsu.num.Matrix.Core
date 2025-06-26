@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.6.14
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -19,7 +19,7 @@ import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricInvertibleDeterminan
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.DeterminantValues;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
-import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 
 /**
  * {@link DiagonalMatrix} の具象を提供する. <br>
@@ -61,32 +61,30 @@ final class DiagonalMatrixImpl
 
     @Override
     public double valueAt(final int row, final int column) {
+        MatrixValidationSupport.validateIndexInMatrix(
+                this.bandMatrixDimension.dimension(), row, column);
+
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
             case DIAGONAL:
                 return this.diagonalEntry[row];
-            case LOWER_BAND:
-                throw new AssertionError("Bug");
-            case UPPER_BAND:
-                throw new AssertionError("Bug");
             case OUT_OF_BAND:
                 return 0;
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                bandMatrixDimension.dimension(), row, column));
+            //OUT_OF_MATRIX は検証済み
+            //$CASES-OMITTED$
             default:
-                throw new AssertionError("Bug");
+                throw new AssertionError("Bug: unreachable");
         }
     }
 
     /**
      * -
      * 
+     * <p>
+     * (外部から呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     protected DiagonalMatrixImpl self() {
         return this;
@@ -97,12 +95,9 @@ final class DiagonalMatrixImpl
 
         final var vectorDimension = operand.vectorDimension();
         final int dimension = vectorDimension.intValue();
-        if (!this.bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            this.bandMatrixDimension.dimension(), vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperate(
+                bandMatrixDimension.dimension(), vectorDimension);
 
         final double[] resultEntry = operand.entryAsArray();
         final double[] thisDiagonalEntry = this.diagonalEntry;
@@ -138,9 +133,10 @@ final class DiagonalMatrixImpl
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[band: %s, %s, diagonal]",
-                this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
+        return "Matrix[band: %s, %s, diagonal]"
+                .formatted(
+                        this.bandMatrixDimension(),
+                        EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -383,12 +379,9 @@ final class DiagonalMatrixImpl
             this.throwISExIfCannotBeUsed();
 
             var matrixDimension = this.bandMatrixDimension.dimension();
-            if (!matrixDimension.isValidRowIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (i, i) = (%s, %s)",
-                                matrixDimension, index, index));
-            }
+
+            MatrixValidationSupport.validateIndexInMatrix(
+                    matrixDimension, index, index);
 
             //値を修正する
             value = EntryReadableMatrix.modified(value);

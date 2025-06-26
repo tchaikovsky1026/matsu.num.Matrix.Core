@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.9
+ * 2025.6.27
  */
 package matsu.num.matrix.core.sparse;
 
@@ -93,13 +93,10 @@ final class HouseholderMatrixWithSparseVector
      * おそらくは次のような表現であろう. <br>
      * {@code Matrix[dim:(%dimension), householder]}
      * </p>
-     * 
-     * @return 説明表現
      */
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[dim: %s, householder]",
-                this.matrixDimension());
+        return "Matrix[dim: %s, householder]"
+                .formatted(this.matrixDimension());
     }
 }

@@ -5,12 +5,13 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
 import java.util.Optional;
 
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -53,8 +54,9 @@ public final class SquareZeroMatrix
      */
     public static SquareZeroMatrix matrixOf(final MatrixDimension matrixDimension) {
         if (!matrixDimension.isSquare()) {
-            throw new MatrixFormatMismatchException();
+            throw new MatrixFormatMismatchException("not square: " + matrixDimension);
         }
+
         return new SquareZeroMatrix(matrixDimension);
     }
 
@@ -68,12 +70,7 @@ public final class SquareZeroMatrix
      */
     @Override
     public double valueAt(int row, int column) {
-        if (!this.bandMatrixDimension.dimension().isValidIndexes(row, column)) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                            this.bandMatrixDimension.dimension(), row, column));
-        }
+        MatrixValidationSupport.validateIndexInMatrix(bandMatrixDimension.dimension(), row, column);
 
         return 0d;
     }
@@ -89,12 +86,8 @@ public final class SquareZeroMatrix
      */
     @Override
     public Vector operate(Vector operand) {
-        if (!this.bandMatrixDimension.dimension().rightOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            this.bandMatrixDimension.dimension(), operand.vectorDimension()));
-        }
+        MatrixValidationSupport.validateOperate(bandMatrixDimension.dimension(), operand.vectorDimension());
+
         return this.zeroVector;
     }
 

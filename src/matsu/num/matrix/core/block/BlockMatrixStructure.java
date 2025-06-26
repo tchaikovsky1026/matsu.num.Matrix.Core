@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.3
+ * 2025.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -205,9 +205,8 @@ public final class BlockMatrixStructure<T extends Matrix> {
     public VectorDimension rightOperableVectorDimensionAt(int column) {
         if (!(structureDimension.isValidColumnIndex(column))) {
             throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of structure: structure: %s, column = %s",
-                            structureDimension, column));
+                    "out of structure: structure: %s, column = %s"
+                            .formatted(structureDimension, column));
         }
         return this.elementDimensions[0][column].rightOperableVectorDimension();
     }
@@ -222,9 +221,8 @@ public final class BlockMatrixStructure<T extends Matrix> {
     public VectorDimension leftOperableVectorDimensionAt(int row) {
         if (!(structureDimension.isValidRowIndex(row))) {
             throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of structure: structure: %s, row = %s",
-                            structureDimension, row));
+                    "out of structure: structure: %s, row = %s"
+                            .formatted(structureDimension, row));
         }
         return this.elementDimensions[row][0].leftOperableVectorDimension();
     }
@@ -239,12 +237,8 @@ public final class BlockMatrixStructure<T extends Matrix> {
      * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が構造の内部でない場合
      */
     public Optional<T> matrixAt(int row, int column) {
-        if (!(structureDimension.isValidIndexes(row, column))) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of structure: structure: %s, (row, column) = (%s, %s)",
-                            structureDimension, row, column));
-        }
+        validateIndexInStructure(structureDimension, row, column);
+
         return this.matrixList.get(row).get(column);
     }
 
@@ -257,12 +251,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
      * @throws IndexOutOfBoundsException (<i>i</i>, <i>j</i>) が構造の内部でない場合
      */
     public MatrixDimension elementDimensionAt(int row, int column) {
-        if (!(structureDimension.isValidIndexes(row, column))) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of structure: structure: %s, (row, column) = (%s, %s)",
-                            structureDimension, row, column));
-        }
+        validateIndexInStructure(structureDimension, row, column);
 
         return this.elementDimensions[row][column];
     }
@@ -398,7 +387,11 @@ public final class BlockMatrixStructure<T extends Matrix> {
     /**
      * このインスタンスの文字列表現を返す.
      * 
-     * @return 文字列表現
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code (%structureRows : %structureColumns)}
+     * </p>
      */
     @Override
     public String toString() {
@@ -413,7 +406,26 @@ public final class BlockMatrixStructure<T extends Matrix> {
             columns[i] = bd[i].columnAsIntValue();
         }
 
-        return String.format("(%s : %s)", Arrays.toString(rows), Arrays.toString(columns));
+        return "(%s : %s)"
+                .formatted(Arrays.toString(rows), Arrays.toString(columns));
+    }
+
+    /**
+     * (r,c)が行列内かどうかを判定する.
+     * 
+     * @param structureDimension dimension
+     * @param row row
+     * @param column column
+     * @throws IndexOutOfBoundsException out of matrix
+     * @throws NullPointerException null
+     */
+    private static void validateIndexInStructure(
+            MatrixDimension structureDimension, int row, int column) {
+        if (!(structureDimension.isValidIndexes(row, column))) {
+            throw new IndexOutOfBoundsException(
+                    "out of structure: structure: %s, (row, column) = (%s, %s)"
+                            .formatted(structureDimension, row, column));
+        }
     }
 
     /**
@@ -519,12 +531,7 @@ public final class BlockMatrixStructure<T extends Matrix> {
         public void setBlockElement(final int row, final int column, T element) {
             this.throwISExIfCannotBeUsed();
 
-            if (!(structureDimension.isValidIndexes(row, column))) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of structure: structure: %s, (row, column) = (%s, %s)",
-                                structureDimension, row, column));
-            }
+            validateIndexInStructure(structureDimension, row, column);
 
             this.matrixList.get(row).set(column, Optional.ofNullable(element));
         }

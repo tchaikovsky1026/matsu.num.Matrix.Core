@@ -13,6 +13,7 @@ package matsu.num.matrix.core;
 import java.util.Objects;
 import java.util.Optional;
 
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -62,15 +63,21 @@ final class PermutationMatrixImpl
 
     @Override
     public double valueAt(final int row, final int column) {
-        if (!(matrixDimension.isValidIndexes(row, column))) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of matrix: matrix: %s, row = %d, column = %d",
-                            matrixDimension, row, column));
-        }
+
+        MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
+
         return permutationHorizontal[row] == column ? 1.0 : 0.0;
     }
 
+    /**
+     * -
+     * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
+     * @return -
+     */
     @Override
     protected PermutationMatrix createTranspose() {
         return new InverseAndDeterminantAttachedPermutationMatrixImpl(
@@ -90,12 +97,8 @@ final class PermutationMatrixImpl
     @Override
     public Vector operate(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!matrixDimension.rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperate(matrixDimension, vectorDimension);
 
         final int dimension = vectorDimension.intValue();
         final double[] resultEntry = new double[dimension];
@@ -111,12 +114,8 @@ final class PermutationMatrixImpl
     @Override
     public Vector operateTranspose(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!matrixDimension.leftOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperateTranspose(matrixDimension, vectorDimension);
 
         final int dimension = vectorDimension.intValue();
         final double[] resultEntry = new double[dimension];
@@ -151,9 +150,8 @@ final class PermutationMatrixImpl
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[dim: %s, permutation(%s)]",
-                this.matrixDimension(), this.isEven() ? "even" : "odd");
+        return "Matrix[dim: %s, permutation(%s)]"
+                .formatted(this.matrixDimension(), this.isEven() ? "even" : "odd");
     }
 
     /**
@@ -215,9 +213,8 @@ final class PermutationMatrixImpl
             if (!(matrixDimension.isValidRowIndex(row1)
                     && matrixDimension.isValidRowIndex(row2))) {
                 throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row1, row2) = (%d, %d)",
-                                matrixDimension, row1, row2));
+                        "out of matrix: matrix: %s, (row1, row2) = (%d, %d)"
+                                .formatted(matrixDimension, row1, row2));
             }
 
             if (row1 == row2) {
@@ -243,9 +240,8 @@ final class PermutationMatrixImpl
             if (!(matrixDimension.isValidColumnIndex(column1)
                     && matrixDimension.isValidColumnIndex(column2))) {
                 throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (column1, column2) = (%d, %d)",
-                                matrixDimension, column1, column2));
+                        "out of matrix: matrix: %s, (column1, column2) = (%d, %d)"
+                                .formatted(matrixDimension, column1, column2));
             }
 
             if (column1 == column2) {

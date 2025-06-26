@@ -13,6 +13,7 @@ package matsu.num.matrix.core;
 import java.util.Objects;
 
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -49,23 +50,19 @@ final class SignatureMatrixImpl
 
     @Override
     public double valueAt(int row, int column) {
+
+        MatrixValidationSupport.validateIndexInMatrix(bandMatrixDimension.dimension(), row, column);
+
         switch (BandDimensionPositionState.positionStateAt(
                 row, column, this.bandMatrixDimension)) {
             case DIAGONAL:
                 return this.signature[row] ? -1d : 1d;
-            case LOWER_BAND:
-                throw new AssertionError("Bug");
-            case UPPER_BAND:
-                throw new AssertionError("Bug");
             case OUT_OF_BAND:
                 return 0d;
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%d, %d)",
-                                bandMatrixDimension.dimension(), row, column));
+            //OUT_OF_MATRIXは検証済み
+            //$CASES-OMITTED$
             default:
-                throw new AssertionError("Bug");
+                throw new AssertionError("Bug: reachable");
         }
     }
 
@@ -77,12 +74,8 @@ final class SignatureMatrixImpl
     @Override
     public Vector operate(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            bandMatrixDimension, vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperate(bandMatrixDimension.dimension(), vectorDimension);
 
         final double[] entry = operand.entryAsArray();
 
@@ -122,6 +115,15 @@ final class SignatureMatrixImpl
         return this.even;
     }
 
+    /**
+     * -
+     * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
+     * @return -
+     */
     @Override
     protected SignatureMatrixImpl self() {
         return this;
@@ -141,7 +143,7 @@ final class SignatureMatrixImpl
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim: %s, signiture(%s)]",
+                "Matrix[dim: %s, signature(%s)]",
                 this.matrixDimension(), this.signOfDeterminant());
     }
 
@@ -168,8 +170,7 @@ final class SignatureMatrixImpl
          */
         private Builder(MatrixDimension matrixDimension) {
             if (!matrixDimension.isSquare()) {
-                throw new MatrixFormatMismatchException(
-                        String.format("not square: %s", matrixDimension));
+                throw new MatrixFormatMismatchException("not square: " + matrixDimension);
             }
 
             this.matrixDimension = matrixDimension;
@@ -197,12 +198,8 @@ final class SignatureMatrixImpl
         public void setPositiveAt(int index) {
             this.throwISExIfCannotBeUsed();
 
-            if (!this.matrixDimension.isValidRowIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, index = %d",
-                                matrixDimension, index));
-            }
+            MatrixValidationSupport.validateIndexInMatrix(matrixDimension, index, index);
+
             if (this.signature[index]) {
                 this.reverseAt(index);
             }
@@ -212,12 +209,8 @@ final class SignatureMatrixImpl
         public void setNegativeAt(int index) {
             this.throwISExIfCannotBeUsed();
 
-            if (!this.matrixDimension.isValidRowIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, index = %d",
-                                matrixDimension, index));
-            }
+            MatrixValidationSupport.validateIndexInMatrix(matrixDimension, index, index);
+
             if (!this.signature[index]) {
                 this.reverseAt(index);
             }
@@ -227,12 +220,8 @@ final class SignatureMatrixImpl
         public void reverseAt(int index) {
             this.throwISExIfCannotBeUsed();
 
-            if (!this.matrixDimension.isValidRowIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, index = %d",
-                                matrixDimension, index));
-            }
+            MatrixValidationSupport.validateIndexInMatrix(matrixDimension, index, index);
+
             this.signature[index] = !this.signature[index];
             this.unit = false;
             this.even = !this.even;
