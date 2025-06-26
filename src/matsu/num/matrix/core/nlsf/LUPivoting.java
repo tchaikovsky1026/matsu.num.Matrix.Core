@@ -113,7 +113,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
-     * {@link SolvingFactorizationExecutor} に加えて次のとおりである.
+     * {@link LUTypeSolver.Executor} に加えて次のとおりである.
      * </p>
      * 
      * <ul>
@@ -122,7 +122,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      * 
      * <p>
      * {@code apply} メソッドで空が返る条件は,
-     * {@link SolvingFactorizationExecutor} に加わる追加条件は無い.
+     * {@link LUTypeSolver.Executor} に加わる追加条件は無い.
      * </p>
      * 
      * <p>

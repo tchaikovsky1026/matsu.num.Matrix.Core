@@ -14,7 +14,7 @@
  * {@link matsu.num.matrix.core.nlsf.LUTypeSolver}
  * のサブタイプにより提供される. <br>
  * そしてインスタンスの生成は,
- * {@link matsu.num.matrix.core.nlsf.SolvingFactorizationExecutor}
+ * {@link matsu.num.matrix.core.nlsf.LUTypeSolver.Executor}
  * のサブタイプにより提供される. <br>
  * {@link matsu.num.matrix.core.nlsf.LUTypeSolver} は同時に
  * {@link matsu.num.matrix.core.Determinantable} を継承しており,
@@ -24,7 +24,7 @@
  * <p>
  * 行列が特異の場合は逆行列が生成できないが,
  * そのことは,
- * {@link matsu.num.matrix.core.nlsf.SolvingFactorizationExecutor}
+ * {@link matsu.num.matrix.core.nlsf.LUTypeSolver.Executor}
  * による行列分解が {@link java.util.Optional} として空を返すという形で表現されている. <br>
  * {@link matsu.num.matrix.core.nlsf.LUTypeSolver}
  * のインスタンスは行列分解が成功していることを表しており,

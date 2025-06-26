@@ -118,7 +118,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
      * 
      * <p>
      * {@code accepts} メソッドでrejectされる条件は,
-     * {@link SolvingFactorizationExecutor} に加えて次のとおりである.
+     * {@link LUTypeSolver.Executor} に加えて次のとおりである.
      * </p>
      * 
      * <ul>
@@ -128,7 +128,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
      * 
      * <p>
      * {@code apply} メソッドで空が返る条件は,
-     * {@link SolvingFactorizationExecutor} に加えて次のとおりである.
+     * {@link LUTypeSolver.Executor} に加えて次のとおりである.
      * </p>
      * 
      * <ul>
