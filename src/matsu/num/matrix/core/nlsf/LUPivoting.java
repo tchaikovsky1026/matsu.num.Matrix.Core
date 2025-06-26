@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.26
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -139,7 +139,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
      * </p>
      */
     public static final class Executor
-            extends SkeletalSolvingFactorizationExecutor<EntryReadableMatrix, LUPivoting> {
+            extends SkeletalLUTypeSolver.Executor<EntryReadableMatrix, LUPivoting> {
 
         private static final Executor INSTANCE = new Executor();
 
