@@ -107,6 +107,7 @@ public final class MatrixMultiplicationUtil {
 
         @Override
         public final Vector operate(Vector operand) {
+
             Vector result = Objects.requireNonNull(operand);
             for (Iterator<Matrix> ite = this.series.descendingIterator(); ite.hasNext();) {
                 Matrix mx = ite.next();
@@ -117,6 +118,7 @@ public final class MatrixMultiplicationUtil {
 
         @Override
         public final Vector operateTranspose(Vector operand) {
+
             Vector result = Objects.requireNonNull(operand);
             for (Iterator<Matrix> ite = this.series.iterator(); ite.hasNext();) {
                 Matrix mx = ite.next();
@@ -335,9 +337,8 @@ public final class MatrixMultiplicationUtil {
 
         @Override
         public String toString() {
-            return String.format(
-                    "Matrix[dim: %s]",
-                    this.matrixDimension());
+            return "Matrix[dim: %s]"
+                    .formatted(this.matrixDimension());
         }
     }
 }

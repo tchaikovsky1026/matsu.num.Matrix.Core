@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -15,6 +15,7 @@ import java.util.Optional;
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
@@ -74,22 +75,19 @@ public final class LowerUnitriangularBandMatrix
 
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
 
+        MatrixValidationSupport.validateIndexInMatrix(bandMatrixDimension.dimension(), row, column);
+
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
             case DIAGONAL:
                 return 1;
             case LOWER_BAND:
                 return lowerEntry[column * thisLowerBandWidth + (row - column - 1)];
-            case UPPER_BAND:
-                throw new AssertionError("Bug");
             case OUT_OF_BAND:
                 return 0;
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                bandMatrixDimension.dimension(), row, column));
+            // OUT_OF_MATRIXは検証済み
+            //$CASES-OMITTED$
             default:
-                throw new AssertionError("Bug");
+                throw new AssertionError("Bug: unreachable");
         }
     }
 
@@ -114,12 +112,9 @@ public final class LowerUnitriangularBandMatrix
     @Override
     public Vector operate(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            bandMatrixDimension.dimension(), vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperate(bandMatrixDimension.dimension(), vectorDimension);
+
         final int dimension = vectorDimension.intValue();
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
 
@@ -150,12 +145,8 @@ public final class LowerUnitriangularBandMatrix
     @Override
     public Vector operateTranspose(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!bandMatrixDimension.dimension().leftOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            bandMatrixDimension.dimension(), vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperateTranspose(bandMatrixDimension.dimension(), vectorDimension);
 
         final int dimension = vectorDimension.intValue();
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -218,9 +209,10 @@ public final class LowerUnitriangularBandMatrix
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[band:%s, %s, lower, unitriangular]",
-                this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
+        return "Matrix[band: %s, %s, lower, unitriangular]"
+                .formatted(
+                        this.bandMatrixDimension(),
+                        EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -239,10 +231,13 @@ public final class LowerUnitriangularBandMatrix
             /**
              * -
              * 
+             * <p>
+             * (外部からの呼び出し不可)
+             * </p>
+             * 
              * @return -
-             * @deprecated (外部からの呼び出し不可)
+             * 
              */
-            @Deprecated
             @Override
             protected Matrix createTranspose() {
                 return Matrix.createTransposedOf(this);
@@ -251,12 +246,9 @@ public final class LowerUnitriangularBandMatrix
             @Override
             public Vector operate(Vector operand) {
                 final var vectorDimension = operand.vectorDimension();
-                if (!bandMatrixDimension.dimension().leftOperable(vectorDimension)) {
-                    throw new MatrixFormatMismatchException(
-                            String.format(
-                                    "undefined operation: matrix: %s, operand: %s",
-                                    bandMatrixDimension.dimension(), vectorDimension));
-                }
+
+                MatrixValidationSupport.validateOperateTranspose(
+                        bandMatrixDimension.dimension(), vectorDimension);
 
                 final int dimension = vectorDimension.intValue();
                 final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -281,12 +273,9 @@ public final class LowerUnitriangularBandMatrix
             @Override
             public Vector operateTranspose(Vector operand) {
                 final var vectorDimension = operand.vectorDimension();
-                if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
-                    throw new MatrixFormatMismatchException(
-                            String.format(
-                                    "undefined operation: matrix: %s, operand: %s",
-                                    bandMatrixDimension.dimension(), vectorDimension));
-                }
+
+                MatrixValidationSupport.validateOperate(
+                        bandMatrixDimension.dimension(), vectorDimension);
 
                 final int dimension = vectorDimension.intValue();
                 final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -399,32 +388,23 @@ public final class LowerUnitriangularBandMatrix
 
             final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
 
+            MatrixValidationSupport.validateIndexInMatrixAndBand(bandMatrixDimension, row, column);
+
             //値を修正する
             value = EntryReadableMatrix.modified(value);
 
             switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
                 case DIAGONAL:
                     throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "diagonal cannot be substituted: matrix: %s, (row, column) = (%s, %s)",
-                                    bandMatrixDimension, row, column));
+                            "diagonal cannot be substituted: matrix: %s, (row, column) = (%s, %s)"
+                                    .formatted(bandMatrixDimension, row, column));
                 case LOWER_BAND:
                     lowerEntry[column * thisLowerBandWidth + (row - column - 1)] = value;
                     return;
-                case UPPER_BAND:
-                    throw new AssertionError("Bug");
-                case OUT_OF_BAND:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "out of band: matrix: %s, (row, column) = (%d, %d)",
-                                    bandMatrixDimension, row, column));
-                case OUT_OF_MATRIX:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                    bandMatrixDimension.dimension(), row, column));
+                //OUT_OF_BAND, OUT_OF_MATRIXは検証済み
+                //$CASES-OMITTED$
                 default:
-                    throw new AssertionError("Bug");
+                    throw new AssertionError("Bug: unreachable");
             }
         }
 

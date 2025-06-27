@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.1.18
+ * 2025.6.27
  */
 package matsu.num.matrix.core.helper.matrix.householder;
 
@@ -78,9 +78,8 @@ public final class HouseholderMatrixFactory {
         target = target.normalizedEuclidean();
         if (!source.equalDimensionTo(target)) {
             throw new MatrixFormatMismatchException(
-                    String.format(
-                            "from: %s, to: %s",
-                            source, target));
+                    "from: %s, to: %s"
+                            .formatted(source, target));
         }
         if (!accepts(source)) {
             throw new IllegalArgumentException("not accept");

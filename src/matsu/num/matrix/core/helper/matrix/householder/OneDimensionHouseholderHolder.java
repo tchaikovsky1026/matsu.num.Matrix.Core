@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.1.18
+ * 2025.6.27
  */
 package matsu.num.matrix.core.helper.matrix.householder;
 
@@ -14,6 +14,7 @@ import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -55,12 +56,8 @@ final class OneDimensionHouseholderHolder {
          */
         @Override
         public Vector operate(Vector operand) {
-            if (!this.matrixDimension().rightOperable(operand.vectorDimension())) {
-                throw new MatrixFormatMismatchException(
-                        String.format(
-                                "undefined operation: matrix: %s, operand: %s",
-                                this.matrixDimension(), operand.vectorDimension()));
-            }
+            MatrixValidationSupport.validateOperate(
+                    this.matrixDimension(), operand.vectorDimension());
 
             return operand.negated();
         }

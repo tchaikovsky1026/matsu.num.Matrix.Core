@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -15,6 +15,7 @@ import java.util.Objects;
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
@@ -77,6 +78,8 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
     public double valueAt(final int row, final int column) {
         final int thisBandWidth = bandMatrixDimension.lowerBandWidth();
 
+        MatrixValidationSupport.validateIndexInMatrix(bandMatrixDimension.dimension(), row, column);
+
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
             case DIAGONAL:
                 return diagonalEntry[row];
@@ -86,11 +89,8 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
                 return bandEntry[row * thisBandWidth + (column - row - 1)];
             case OUT_OF_BAND:
                 return 0;
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                bandMatrixDimension.dimension(), row, column));
+            //OUT_OF_MATRIXは検証済み
+            //$CASES-OMITTED$
             default:
                 throw new AssertionError("Bug");
         }
@@ -117,12 +117,10 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
     @Override
     public Vector operate(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            bandMatrixDimension.dimension(), vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperate(
+                bandMatrixDimension.dimension(), operand.vectorDimension());
+
         final int dimension = vectorDimension.intValue();
         final int thisBandWidth = bandMatrixDimension.lowerBandWidth();
 
@@ -296,6 +294,8 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
             //値の修正
             value = EntryReadableMatrix.modified(value);
 
+            MatrixValidationSupport.validateIndexInMatrixAndBand(bandMatrixDimension, row, column);
+
             switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
                 case DIAGONAL:
                     diagonalEntry[row] = value;
@@ -306,16 +306,8 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
                 case UPPER_BAND:
                     bandEntry[row * thisBandWidth + (column - row - 1)] = value;
                     return;
-                case OUT_OF_BAND:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "out of band: matrix: %s, (row, column) = (%s, %s)",
-                                    bandMatrixDimension, row, column));
-                case OUT_OF_MATRIX:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                    bandMatrixDimension.dimension(), row, column));
+                //OUT_OF_BAND, OUT_OF_MATRIXは検証済み
+                //$CASES-OMITTED$
                 default:
                     throw new AssertionError("Bug");
             }

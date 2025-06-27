@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.6.14
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -76,11 +76,7 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Mat
         super();
         this.transposeSupplier = ImmutableLazyCacheSupplier.of(() -> this.createTranspose());
         if (this instanceof Symmetric) {
-            throw new AssertionError(
-                    String.format(
-                            "実装規約違反: %s のサブクラスに %s を付与してはいけない",
-                            SkeletalAsymmetricMatrix.class.getSimpleName(),
-                            Symmetric.class.getSimpleName()));
+            throw new AssertionError("ImplSpec fault");
         }
     }
 

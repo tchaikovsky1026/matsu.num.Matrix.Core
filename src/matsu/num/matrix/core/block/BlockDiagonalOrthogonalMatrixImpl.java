@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -21,6 +21,7 @@ import matsu.num.matrix.core.OrthogonalMatrix;
 import matsu.num.matrix.core.SkeletalAsymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
@@ -62,12 +63,9 @@ final class BlockDiagonalOrthogonalMatrixImpl
      */
     @Override
     public Vector operate(Vector operand) {
-        if (!matrixDimension.rightOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, operand.vectorDimension()));
-        }
+
+        MatrixValidationSupport.validateOperate(
+                matrixDimension, operand.vectorDimension());
 
         Vector[] splitted = this.splitOperable(operand);
 
@@ -89,12 +87,9 @@ final class BlockDiagonalOrthogonalMatrixImpl
      */
     @Override
     public Vector operateTranspose(Vector operand) {
-        if (!matrixDimension.leftOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, operand.vectorDimension()));
-        }
+
+        MatrixValidationSupport.validateOperateTranspose(
+                matrixDimension, operand.vectorDimension());
 
         Vector[] splitted = this.splitOperable(operand);
 
@@ -174,10 +169,12 @@ final class BlockDiagonalOrthogonalMatrixImpl
     /**
      * -
      * 
+     * <p>
+     * (外部からの呼び出し不可)
+     * </p>
+     * 
      * @return -
-     * @deprecated (外部からの呼び出し不可)
      */
-    @Deprecated
     @Override
     protected BlockDiagonalOrthogonalMatrix createTranspose() {
         List<OrthogonalMatrix> transposeList =
@@ -194,9 +191,8 @@ final class BlockDiagonalOrthogonalMatrixImpl
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[dim: %s, orthogonal]",
-                this.matrixDimension());
+        return "Matrix[dim: %s, orthogonal]"
+                .formatted(this.matrixDimension());
     }
 
     /**
@@ -280,5 +276,4 @@ final class BlockDiagonalOrthogonalMatrixImpl
             return this.original.toString();
         }
     }
-
 }

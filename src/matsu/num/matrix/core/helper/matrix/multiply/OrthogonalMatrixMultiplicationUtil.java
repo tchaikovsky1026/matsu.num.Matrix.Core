@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.11
+ * 2025.6.27
  */
 package matsu.num.matrix.core.helper.matrix.multiply;
 
@@ -94,6 +94,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
 
         @Override
         public Vector operate(Vector operand) {
+
             Vector result = Objects.requireNonNull(operand);
             for (Iterator<OrthogonalMatrix> ite = this.series.descendingIterator(); ite.hasNext();) {
                 Matrix mx = ite.next();
@@ -104,6 +105,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
 
         @Override
         public Vector operateTranspose(Vector operand) {
+
             Vector result = Objects.requireNonNull(operand);
             for (Iterator<OrthogonalMatrix> ite = this.series.iterator(); ite.hasNext();) {
                 Matrix mx = ite.next();
@@ -308,9 +310,8 @@ public final class OrthogonalMatrixMultiplicationUtil {
 
         @Override
         public String toString() {
-            return String.format(
-                    "Matrix[dim: %s, orthogonal]",
-                    this.matrixDimension());
+            return "Matrix[dim: %s, orthogonal]"
+                    .formatted(this.matrixDimension());
         }
     }
 }
