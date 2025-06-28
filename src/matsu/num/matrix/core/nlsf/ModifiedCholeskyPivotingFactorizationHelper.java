@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.28
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -14,6 +14,7 @@ import matsu.num.matrix.core.LowerUnitriangular;
 import matsu.num.matrix.core.LowerUnitriangularMatrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.PermutationMatrix;
+import matsu.num.matrix.core.common.CalcUtil;
 
 /**
  * 対称な部分ピボッティング付き修正Cholesky分解のヘルパ. <br>
@@ -77,7 +78,7 @@ final class ModifiedCholeskyPivotingFactorizationHelper {
      */
     private double[] lowerSideOfMatrixToArray(final EntryReadableMatrix matrix) {
         final int thisDimension = this.matrixDimension.rowAsIntValue();
-        final int entrySize = (thisDimension * thisDimension + thisDimension) / 2;
+        final int entrySize = CalcUtil.sumOf1To(thisDimension);
 
         double[] outArray = new double[entrySize];
         int c = 0;
