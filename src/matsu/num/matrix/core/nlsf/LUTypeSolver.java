@@ -122,9 +122,7 @@ public interface LUTypeSolver
      * 
      * @param <MT> 対応する行列の型パラメータ
      */
-    @SuppressWarnings("deprecation")
-    public static interface Executor<MT extends EntryReadableMatrix>
-            extends SolvingFactorizationExecutor<MT> {
+    public static interface Executor<MT extends EntryReadableMatrix> {
 
         /**
          * このインスタンスが与えた行列を受け入れることができるかを判定する. <br>
@@ -135,7 +133,6 @@ public interface LUTypeSolver
          * @return 判定結果
          * @throws NullPointerException 引数にnullが含まれる場合
          */
-        @Override
         public abstract MatrixStructureAcceptance accepts(MT matrix);
 
         /**
@@ -161,7 +158,6 @@ public interface LUTypeSolver
          *             行列がacceptされない場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
-        @Override
         public abstract Optional<? extends LUTypeSolver> apply(MT matrix, double epsilon);
 
         /**
@@ -177,7 +173,6 @@ public interface LUTypeSolver
          * @return 行列分解
          * @see PseudoRegularMatrixProcess
          */
-        @Override
         public abstract Optional<? extends LUTypeSolver> apply(MT matrix);
     }
 }

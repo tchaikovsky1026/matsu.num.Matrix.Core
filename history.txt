@@ -1,3 +1,6 @@
+develop-next-gen:
+削除予定APIの削除.
+
 develop:
 リファクタリング(パフォーマンス含む).
 
