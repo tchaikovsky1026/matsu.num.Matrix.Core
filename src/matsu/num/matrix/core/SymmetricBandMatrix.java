@@ -147,21 +147,28 @@ public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<Symmetric
         //狭義上三角成分
         in = -thisBandWidth;
         for (int i = 0; i < dimension; i++) {
-            double sumProduct = 0;
-            int k, l;
             in += thisBandWidth;
+
+            /*
+             * 主要ループで4成分の計算を同時に行う.
+             * 影響する変数を分けることで, 並列実行できる可能性がある.
+             */
+            double v0 = 0d;
+            double v1 = 0d;
+            double v2 = 0d;
+            double v3 = 0d;
+
+            int k, l;
             for (k = 0, l = Math.min(thisBandWidth, dimension - i - 1); k < l - 3; k += 4) {
-                final double v0 = thisBandEntry[in + k] * operandEntry[i + k + 1];
-                final double v1 = thisBandEntry[in + k + 1] * operandEntry[i + k + 2];
-                final double v2 = thisBandEntry[in + k + 2] * operandEntry[i + k + 3];
-                final double v3 = thisBandEntry[in + k + 3] * operandEntry[i + k + 4];
-                sumProduct += (v0 + v1) + (v2 + v3);
+                v0 += thisBandEntry[in + k] * operandEntry[i + k + 1];
+                v1 += thisBandEntry[in + k + 1] * operandEntry[i + k + 2];
+                v2 += thisBandEntry[in + k + 2] * operandEntry[i + k + 3];
+                v3 += thisBandEntry[in + k + 3] * operandEntry[i + k + 4];
             }
             for (; k < l; k++) {
-                final double v0 = thisBandEntry[in + k] * operandEntry[i + k + 1];
-                sumProduct += v0;
+                v0 += thisBandEntry[in + k] * operandEntry[i + k + 1];
             }
-            resultEntry[i] += sumProduct;
+            resultEntry[i] += (v0 + v1) + (v2 + v3);
         }
 
         var builder = Vector.Builder.zeroBuilder(vectorDimension);

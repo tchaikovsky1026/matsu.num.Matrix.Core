@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.6.26
+ * 2025.6.27
  */
 package matsu.num.matrix.core;
 
@@ -98,20 +98,28 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
 
         int jn = -columnDimension;
         for (int j = 0; j < rowDimension; j++) {
-            double sumProduct = 0.0;
-            int k;
             jn += columnDimension;
+
+            /*
+             * 主要ループで4成分の計算を同時に行う.
+             * 影響する変数を分けることで, 並列実行できる可能性がある.
+             */
+            double v0 = 0d;
+            double v1 = 0d;
+            double v2 = 0d;
+            double v3 = 0d;
+
+            int k;
             for (k = 0; k < columnDimension - 3; k += 4) {
-                final double v0 = matrixEntry[jn + k] * operandEntry[k];
-                final double v1 = matrixEntry[jn + k + 1] * operandEntry[k + 1];
-                final double v2 = matrixEntry[jn + k + 2] * operandEntry[k + 2];
-                final double v3 = matrixEntry[jn + k + 3] * operandEntry[k + 3];
-                sumProduct += (v0 + v1) + (v2 + v3);
+                v0 += matrixEntry[jn + k] * operandEntry[k];
+                v1 += matrixEntry[jn + k + 1] * operandEntry[k + 1];
+                v2 += matrixEntry[jn + k + 2] * operandEntry[k + 2];
+                v3 += matrixEntry[jn + k + 3] * operandEntry[k + 3];
             }
             for (; k < columnDimension; k++) {
-                sumProduct += matrixEntry[jn + k] * operandEntry[k];
+                v0 += matrixEntry[jn + k] * operandEntry[k];
             }
-            resultEntry[j] = sumProduct;
+            resultEntry[j] = (v0 + v1) + (v2 + v3);
         }
 
         var builder = Vector.Builder.zeroBuilder(this.matrixDimension.leftOperableVectorDimension());

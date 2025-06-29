@@ -5,11 +5,12 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.6.28
  */
 package matsu.num.matrix.core;
 
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -45,20 +46,16 @@ public final class UnitMatrix
      */
     @Override
     public double valueAt(final int row, final int column) {
+        MatrixValidationSupport.validateIndexInMatrix(
+                this.matrixDimension(), row, column);
+
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
             case DIAGONAL:
                 return 1d;
-            case LOWER_BAND:
-                throw new AssertionError("Bug");
-            case UPPER_BAND:
-                throw new AssertionError("Bug");
             case OUT_OF_BAND:
                 return 0d;
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%d, %d)",
-                                bandMatrixDimension.dimension(), row, column));
+            //OUT_OF_MATRIXは検証済み
+            //$CASES-OMITTED$
             default:
                 throw new AssertionError("Bug");
         }
@@ -89,12 +86,8 @@ public final class UnitMatrix
      */
     @Override
     public Vector operate(Vector operand) {
-        if (!bandMatrixDimension.dimension().rightOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            bandMatrixDimension.dimension(), operand.vectorDimension()));
-        }
+        MatrixValidationSupport.validateOperate(this.matrixDimension(), operand.vectorDimension());
+
         return operand;
     }
 

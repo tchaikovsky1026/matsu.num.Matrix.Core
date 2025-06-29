@@ -105,20 +105,28 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
 
         int jn = 0;
         for (int j = 0; j < dimension; j++) {
-            double sumProduct = 0.0;
             jn += j;
+
+            /*
+             * 主要ループで4成分の計算を同時に行う.
+             * 影響する変数を分けることで, 並列実行できる可能性がある.
+             */
+            double v0 = 0d;
+            double v1 = 0d;
+            double v2 = 0d;
+            double v3 = 0d;
+
             int k;
             for (k = 0; k <= j - 3; k += 4) {
-                double v0 = matrixEntry[jn + k] * operandEntry[k];
-                double v1 = matrixEntry[jn + k + 1] * operandEntry[k + 1];
-                double v2 = matrixEntry[jn + k + 2] * operandEntry[k + 2];
-                double v3 = matrixEntry[jn + k + 3] * operandEntry[k + 3];
-                sumProduct += (v0 + v1) + (v2 + v3);
+                v0 += matrixEntry[jn + k] * operandEntry[k];
+                v1 += matrixEntry[jn + k + 1] * operandEntry[k + 1];
+                v2 += matrixEntry[jn + k + 2] * operandEntry[k + 2];
+                v3 += matrixEntry[jn + k + 3] * operandEntry[k + 3];
             }
             for (; k <= j; k++) {
-                sumProduct += matrixEntry[jn + k] * operandEntry[k];
+                v0 += matrixEntry[jn + k] * operandEntry[k];
             }
-            resultEntry[j] = sumProduct;
+            resultEntry[j] = (v0 + v1) + (v2 + v3);
         }
         jn = 0;
         for (int j = 0; j < dimension; j++) {
