@@ -43,13 +43,12 @@
 		         notree="false"
 		         splitindex="true"
 		         use="true"
-		         source="17"
 		         author="true"
 		         version="true"
 		         sourcepath="${src.dir}"
 		         link="https://docs.oracle.com/javase/jp/17/docs/api/"
 		         modulepath="${module.path}"
-		         additionalparam="-tag 'implSpec:a:実装要件:' --no-fonts --show-module-contents api"
+		         additionalparam="--release '17' -tag 'implSpec:a:実装要件:' --show-module-contents api"
 		         packagenames="${public.packages}"
 		/>
 	</target>
