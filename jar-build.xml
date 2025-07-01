@@ -27,6 +27,7 @@
 		       destdir="${bin.dir}"
 		       includeantruntime="false"
 		       modulepath="${module.path}"
+		       release="17"
 		>
 			<compilerarg value="-Xlint:-removal" />
 		</javac>
