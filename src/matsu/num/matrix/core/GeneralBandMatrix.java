@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.27
  */
 package matsu.num.matrix.core;
 
@@ -15,6 +15,7 @@ import java.util.Objects;
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
@@ -81,6 +82,8 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
         final int thisUpperBandWidth = bandMatrixDimension.upperBandWidth();
 
+        MatrixValidationSupport.validateIndexInMatrix(bandMatrixDimension.dimension(), row, column);
+
         switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
             case DIAGONAL:
                 return diagonalEntry[row];
@@ -90,13 +93,10 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
                 return upperEntry[row * thisUpperBandWidth + (column - row - 1)];
             case OUT_OF_BAND:
                 return 0;
-            case OUT_OF_MATRIX:
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                bandMatrixDimension.dimension(), row, column));
+            //OUT_OF_MATRIXは検証済み
+            //$CASES-OMITTED$
             default:
-                throw new AssertionError("Bug");
+                throw new AssertionError("Bug: unreachable");
         }
     }
 
@@ -121,12 +121,9 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
     @Override
     public Vector operate(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!bandMatrixDimension.dimension().rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            bandMatrixDimension.dimension(), vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperate(
+                bandMatrixDimension.dimension(), operand.vectorDimension());
 
         final int dimension = vectorDimension.intValue();
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -155,21 +152,28 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         //狭義上三角成分
         in = -thisUpperBandWidth;
         for (int i = 0; i < dimension; i++) {
-            double sumProduct = 0;
-            int k, l;
             in += thisUpperBandWidth;
+
+            /*
+             * 主要ループで4成分の計算を同時に行う.
+             * 影響する変数を分けることで, 並列実行できる可能性がある.
+             */
+            double v0 = 0d;
+            double v1 = 0d;
+            double v2 = 0d;
+            double v3 = 0d;
+
+            int k, l;
             for (k = 0, l = Math.min(thisUpperBandWidth, dimension - i - 1); k < l - 3; k += 4) {
-                final double v0 = thisUpperEntry[in + k] * operandEntry[i + k + 1];
-                final double v1 = thisUpperEntry[in + k + 1] * operandEntry[i + k + 2];
-                final double v2 = thisUpperEntry[in + k + 2] * operandEntry[i + k + 3];
-                final double v3 = thisUpperEntry[in + k + 3] * operandEntry[i + k + 4];
-                sumProduct += (v0 + v1) + (v2 + v3);
+                v0 += thisUpperEntry[in + k] * operandEntry[i + k + 1];
+                v1 += thisUpperEntry[in + k + 1] * operandEntry[i + k + 2];
+                v2 += thisUpperEntry[in + k + 2] * operandEntry[i + k + 3];
+                v3 += thisUpperEntry[in + k + 3] * operandEntry[i + k + 4];
             }
             for (; k < l; k++) {
-                final double v0 = thisUpperEntry[in + k] * operandEntry[i + k + 1];
-                sumProduct += v0;
+                v0 += thisUpperEntry[in + k] * operandEntry[i + k + 1];
             }
-            resultEntry[i] += sumProduct;
+            resultEntry[i] += (v0 + v1) + (v2 + v3);
         }
 
         var builder = Vector.Builder.zeroBuilder(vectorDimension);
@@ -184,12 +188,9 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
     @Override
     public Vector operateTranspose(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
-        if (!bandMatrixDimension.dimension().leftOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            bandMatrixDimension.dimension(), vectorDimension));
-        }
+
+        MatrixValidationSupport.validateOperateTranspose(
+                bandMatrixDimension.dimension(), operand.vectorDimension());
 
         final int dimension = vectorDimension.intValue();
         final int thisLowerBandWidth = bandMatrixDimension.lowerBandWidth();
@@ -218,23 +219,30 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
         //狭義下三角成分
         in = -thisLowerBandWidth;
         for (int i = 0; i < dimension; i++) {
-            double sumProduct = 0;
-            int k, l;
             in += thisLowerBandWidth;
+
+            /*
+             * 主要ループで4成分の計算を同時に行う.
+             * 影響する変数を分けることで, 並列実行できる可能性がある.
+             */
+            double v0 = 0d;
+            double v1 = 0d;
+            double v2 = 0d;
+            double v3 = 0d;
+            int k, l;
+
             for (k = 0, l = Math.min(thisLowerBandWidth, dimension - i - 1); k < l - 3; k += 4) {
                 final int in_p_k = in + k;
                 final int i_p_k = i + k;
-                final double v0 = thisLowerEntry[in_p_k] * operandEntry[i_p_k + 1];
-                final double v1 = thisLowerEntry[in_p_k + 1] * operandEntry[i_p_k + 2];
-                final double v2 = thisLowerEntry[in_p_k + 2] * operandEntry[i_p_k + 3];
-                final double v3 = thisLowerEntry[in_p_k + 3] * operandEntry[i_p_k + 4];
-                sumProduct += (v0 + v1) + (v2 + v3);
+                v0 += thisLowerEntry[in_p_k] * operandEntry[i_p_k + 1];
+                v1 += thisLowerEntry[in_p_k + 1] * operandEntry[i_p_k + 2];
+                v2 += thisLowerEntry[in_p_k + 2] * operandEntry[i_p_k + 3];
+                v3 += thisLowerEntry[in_p_k + 3] * operandEntry[i_p_k + 4];
             }
             for (; k < l; k++) {
-                final double v0 = thisLowerEntry[in + k] * operandEntry[i + k + 1];
-                sumProduct += v0;
+                v0 += thisLowerEntry[in + k] * operandEntry[i + k + 1];
             }
-            resultEntry[i] += sumProduct;
+            resultEntry[i] += (v0 + v1) + (v2 + v3);
         }
 
         var builder = Vector.Builder.zeroBuilder(vectorDimension);
@@ -261,9 +269,10 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[band: %s, %s]",
-                this.bandMatrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
+        return "Matrix[band: %s, %s]"
+                .formatted(
+                        this.bandMatrixDimension(),
+                        EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -369,6 +378,8 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
             //値を修正する
             value = EntryReadableMatrix.modified(value);
 
+            MatrixValidationSupport.validateIndexInMatrixAndBand(bandMatrixDimension, row, column);
+
             switch (BandDimensionPositionState.positionStateAt(row, column, this.bandMatrixDimension)) {
                 case DIAGONAL:
                     diagonalEntry[row] = value;
@@ -379,16 +390,8 @@ public final class GeneralBandMatrix extends SkeletalAsymmetricMatrix<BandMatrix
                 case UPPER_BAND:
                     upperEntry[row * thisUpperBandWidth + (column - row - 1)] = value;
                     return;
-                case OUT_OF_BAND:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "out of band: matrix: %s, (row, column) = (%s, %s)",
-                                    bandMatrixDimension, row, column));
-                case OUT_OF_MATRIX:
-                    throw new IndexOutOfBoundsException(
-                            String.format(
-                                    "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                    bandMatrixDimension.dimension(), row, column));
+                //OUT_OF_BAND, OUT_OF_MATRIXは検証済み
+                //$CASES-OMITTED$
                 default:
                     throw new AssertionError("Bug");
             }

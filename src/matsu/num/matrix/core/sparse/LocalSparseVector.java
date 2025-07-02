@@ -109,9 +109,12 @@ public final class LocalSparseVector implements SparseVector {
      */
     @Override
     public double valueAt(int index) {
-        if (!(0 <= index && index < this.vectorDimension.intValue())) {
-            throw new IndexOutOfBoundsException();
+        if (!vectorDimension.isValidIndex(index)) {
+            throw new IndexOutOfBoundsException(
+                    "out of vector: vec-dim: %s, index = %s"
+                            .formatted(vectorDimension, index));
         }
+
         int relative = index - this.pos;
         if (0 <= relative && relative < this.entry.length) {
             return this.entry[relative];
@@ -138,8 +141,10 @@ public final class LocalSparseVector implements SparseVector {
 
     @Override
     public double dot(Vector reference) {
-        if (!this.vectorDimension.equals(reference.vectorDimension())) {
-            throw new MatrixFormatMismatchException();
+        if (!(this.vectorDimension.equals(reference.vectorDimension()))) {
+            throw new MatrixFormatMismatchException(
+                    "undefined operation: this: %s, reference: %s"
+                            .formatted(this.vectorDimension, reference.vectorDimension()));
         }
 
         double dot = 0;
@@ -269,9 +274,8 @@ public final class LocalSparseVector implements SparseVector {
             entryString.append(", ...");
         }
 
-        return String.format(
-                "SparseVector[dim: %s, {%s}]",
-                this.vectorDimension, entryString.toString());
+        return "SparseVector[dim: %s, {%s}]"
+                .formatted(this.vectorDimension, entryString.toString());
     }
 
     /**
@@ -313,9 +317,8 @@ public final class LocalSparseVector implements SparseVector {
         }
         if (pos < 0 || entry.length == 0 || pos + entry.length > vectorDimension.intValue()) {
             throw new IllegalArgumentException(
-                    String.format(
-                            "entry is out of vector: dim: %s, localPosition: [%s, %s)",
-                            vectorDimension, pos, pos + entry.length));
+                    "entry is out of vector: dim: %s, localPosition: [%s, %s)"
+                            .formatted(vectorDimension, pos, pos + entry.length));
         }
 
         double[] copyOfEntry = entry.clone();

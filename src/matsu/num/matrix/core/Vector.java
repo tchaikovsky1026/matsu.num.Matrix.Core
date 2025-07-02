@@ -92,12 +92,8 @@ public final class Vector {
      * @throws IndexOutOfBoundsException indexが範囲外の場合
      */
     public double valueAt(final int index) {
-        if (!this.vectorDimension.isValidIndex(index)) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of vector: vactor: %s, index = %s",
-                            this.vectorDimension, index));
-        }
+        throwIOOBExIfIndexOutOfVector(vectorDimension, index);
+
         return this.entry[index];
     }
 
@@ -245,9 +241,8 @@ public final class Vector {
     private void validateDimensionMatch(Vector reference) {
         if (!(this.equalDimensionTo(reference))) {
             throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: this: %s, reference: %s",
-                            this.vectorDimension, reference.vectorDimension));
+                    "undefined operation: this: %s, reference: %s"
+                            .formatted(this.vectorDimension, reference.vectorDimension));
         }
     }
 
@@ -429,9 +424,8 @@ public final class Vector {
             entryString.append(", ...");
         }
 
-        return String.format(
-                "Vector[dim: %s, {%s}]",
-                this.vectorDimension, entryString.toString());
+        return "Vector[dim: %s, {%s}]"
+                .formatted(this.vectorDimension, entryString.toString());
     }
 
     /**
@@ -457,15 +451,9 @@ public final class Vector {
      * @return <i>i</i> 番目の標準基底ベクトル
      * @throws IndexOutOfBoundsException indexが範囲外の場合
      * @throws NullPointerException 引数にnullが含まれる場合
-     * 
      */
     public static Vector standardBasis(VectorDimension vectorDimension, int index) {
-        if (!vectorDimension.isValidIndex(index)) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of vector: dim = %s, index = %s",
-                            vectorDimension, index));
-        }
+        throwIOOBExIfIndexOutOfVector(vectorDimension, index);
 
         double[] entry = new double[vectorDimension.intValue()];
         entry[index] = 1d;
@@ -475,6 +463,18 @@ public final class Vector {
         out.norm2 = 1d;
         out.norm2Square = 1d;
         return out;
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException indexがベクトルの外の場合
+     * @throws NullPointerException null
+     */
+    private static void throwIOOBExIfIndexOutOfVector(VectorDimension vectorDimension, int index) {
+        if (!vectorDimension.isValidIndex(index)) {
+            throw new IndexOutOfBoundsException(
+                    "out of vector: vec-dim: %s, index = %s"
+                            .formatted(vectorDimension, index));
+        }
     }
 
     /**
@@ -576,12 +576,7 @@ public final class Vector {
         public void setValue(final int index, final double value) {
             this.throwISExIfCannotBeUsed();
 
-            if (!this.vectorDimension.isValidIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of vector: dim = %s, index = %s",
-                                this.vectorDimension, index));
-            }
+            throwIOOBExIfIndexOutOfVector(this.vectorDimension, index);
 
             this.entry[index] = modified(value);
         }
@@ -604,15 +599,10 @@ public final class Vector {
                 DoubleFunction<X> invalidValueExceptionGetter) throws X {
 
             this.throwISExIfCannotBeUsed();
+            throwIOOBExIfIndexOutOfVector(this.vectorDimension, index);
 
             if (!Vector.acceptValue(value)) {
                 throw invalidValueExceptionGetter.apply(value);
-            }
-            if (!this.vectorDimension.isValidIndex(index)) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of vector: dim = %s, index = %s",
-                                this.vectorDimension, index));
             }
 
             this.entry[index] = value;
@@ -635,9 +625,8 @@ public final class Vector {
             double[] newEntry = entry.clone();
             if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
                 throw new IllegalArgumentException(
-                        String.format(
-                                "size mismatch: dim = %s, entry.length = %s",
-                                this.vectorDimension, newEntry.length));
+                        "size mismatch: vec-dim: %s, entry.length = %s"
+                                .formatted(this.vectorDimension, newEntry.length));
             }
 
             modify(newEntry);
@@ -666,9 +655,8 @@ public final class Vector {
             double[] newEntry = entry.clone();
             if (!this.vectorDimension.equalsValueOf(newEntry.length)) {
                 throw new IllegalArgumentException(
-                        String.format(
-                                "size mismatch: dim = %s, entry.length = %s",
-                                this.vectorDimension, newEntry.length));
+                        "size mismatch: vec-dim: %s, entry.length = %s"
+                                .formatted(this.vectorDimension, newEntry.length));
             }
 
             for (int j = 0, len = vectorDimension.intValue(); j < len; j++) {

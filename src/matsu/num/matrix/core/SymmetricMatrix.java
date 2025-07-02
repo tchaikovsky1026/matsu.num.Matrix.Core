@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.1.20
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -14,6 +14,7 @@ import java.util.Objects;
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.common.CalcUtil;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
@@ -64,12 +65,8 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
      */
     @Override
     public double valueAt(final int row, final int column) {
-        if (!(matrixDimension.isValidIndexes(row, column))) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                            matrixDimension, row, column));
-        }
+        MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
+
         return entry[row >= column
                 ? column + CalcUtil.sumOf1To(row)
                 : row + CalcUtil.sumOf1To(column)];
@@ -96,13 +93,10 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
     @Override
     public Vector operate(Vector operand) {
         final var vectorDimension = operand.vectorDimension();
+
+        MatrixValidationSupport.validateOperate(matrixDimension, vectorDimension);
+
         final int dimension = vectorDimension.intValue();
-        if (!matrixDimension.rightOperable(vectorDimension)) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, vectorDimension));
-        }
 
         final double[] operandEntry = operand.entryAsArray();
         final double[] resultEntry = new double[dimension];
@@ -111,20 +105,28 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
 
         int jn = 0;
         for (int j = 0; j < dimension; j++) {
-            double sumProduct = 0.0;
             jn += j;
+
+            /*
+             * 主要ループで4成分の計算を同時に行う.
+             * 影響する変数を分けることで, 並列実行できる可能性がある.
+             */
+            double v0 = 0d;
+            double v1 = 0d;
+            double v2 = 0d;
+            double v3 = 0d;
+
             int k;
             for (k = 0; k <= j - 3; k += 4) {
-                double v0 = matrixEntry[jn + k] * operandEntry[k];
-                double v1 = matrixEntry[jn + k + 1] * operandEntry[k + 1];
-                double v2 = matrixEntry[jn + k + 2] * operandEntry[k + 2];
-                double v3 = matrixEntry[jn + k + 3] * operandEntry[k + 3];
-                sumProduct += (v0 + v1) + (v2 + v3);
+                v0 += matrixEntry[jn + k] * operandEntry[k];
+                v1 += matrixEntry[jn + k + 1] * operandEntry[k + 1];
+                v2 += matrixEntry[jn + k + 2] * operandEntry[k + 2];
+                v3 += matrixEntry[jn + k + 3] * operandEntry[k + 3];
             }
             for (; k <= j; k++) {
-                sumProduct += matrixEntry[jn + k] * operandEntry[k];
+                v0 += matrixEntry[jn + k] * operandEntry[k];
             }
-            resultEntry[j] = sumProduct;
+            resultEntry[j] = (v0 + v1) + (v2 + v3);
         }
         jn = 0;
         for (int j = 0; j < dimension; j++) {
@@ -253,12 +255,7 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
         public void setValue(final int row, final int column, double value) {
             this.throwISExIfCannotBeUsed();
 
-            if (!(matrixDimension.isValidIndexes(row, column))) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                matrixDimension, row, column));
-            }
+            MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
 
             //値の修正
             value = EntryReadableMatrix.modified(value);
@@ -282,9 +279,8 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             if (!(matrixDimension.isValidRowIndex(index1)
                     && matrixDimension.isValidRowIndex(index2))) {
                 throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (index1, index2) = (%s, %s)",
-                                matrixDimension, index1, index2));
+                        "out of matrix: matrix: %s, (index1, index2) = (%s, %s)"
+                                .formatted(matrixDimension, index1, index2));
             }
 
             if (index1 == index2) {
@@ -498,11 +494,6 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
             for (int j = 0; j < dimension; j++) {
                 for (int k = 0; k <= j; k++) {
                     double value = src.valueAt(j, k);
-                    if (!EntryReadableMatrix.acceptValue(value)) {
-                        throw new AssertionError(
-                                String.format(
-                                        "include illegal value: entryValue = %s", value));
-                    }
                     outBuilder.setValue(j, k, value);
                 }
             }

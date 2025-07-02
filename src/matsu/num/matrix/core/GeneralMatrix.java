@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.5.10
+ * 2025.6.27
  */
 package matsu.num.matrix.core;
 
@@ -14,6 +14,7 @@ import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
@@ -59,12 +60,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
      */
     @Override
     public double valueAt(final int row, final int column) {
-        if (!(matrixDimension.isValidIndexes(row, column))) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                            matrixDimension, row, column));
-        }
+        MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
+
         return entry[row * matrixDimension.columnAsIntValue() + column];
     }
 
@@ -88,12 +85,9 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
      */
     @Override
     public Vector operate(Vector operand) {
-        if (!matrixDimension.rightOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, operand.vectorDimension()));
-        }
+
+        MatrixValidationSupport.validateOperate(
+                matrixDimension, operand.vectorDimension());
 
         final int rowDimension = matrixDimension.rowAsIntValue();
         final int columnDimension = matrixDimension.columnAsIntValue();
@@ -104,20 +98,28 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
 
         int jn = -columnDimension;
         for (int j = 0; j < rowDimension; j++) {
-            double sumProduct = 0.0;
-            int k;
             jn += columnDimension;
+
+            /*
+             * 主要ループで4成分の計算を同時に行う.
+             * 影響する変数を分けることで, 並列実行できる可能性がある.
+             */
+            double v0 = 0d;
+            double v1 = 0d;
+            double v2 = 0d;
+            double v3 = 0d;
+
+            int k;
             for (k = 0; k < columnDimension - 3; k += 4) {
-                final double v0 = matrixEntry[jn + k] * operandEntry[k];
-                final double v1 = matrixEntry[jn + k + 1] * operandEntry[k + 1];
-                final double v2 = matrixEntry[jn + k + 2] * operandEntry[k + 2];
-                final double v3 = matrixEntry[jn + k + 3] * operandEntry[k + 3];
-                sumProduct += (v0 + v1) + (v2 + v3);
+                v0 += matrixEntry[jn + k] * operandEntry[k];
+                v1 += matrixEntry[jn + k + 1] * operandEntry[k + 1];
+                v2 += matrixEntry[jn + k + 2] * operandEntry[k + 2];
+                v3 += matrixEntry[jn + k + 3] * operandEntry[k + 3];
             }
             for (; k < columnDimension; k++) {
-                sumProduct += matrixEntry[jn + k] * operandEntry[k];
+                v0 += matrixEntry[jn + k] * operandEntry[k];
             }
-            resultEntry[j] = sumProduct;
+            resultEntry[j] = (v0 + v1) + (v2 + v3);
         }
 
         var builder = Vector.Builder.zeroBuilder(this.matrixDimension.leftOperableVectorDimension());
@@ -131,12 +133,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
      */
     @Override
     public Vector operateTranspose(Vector operand) {
-        if (!matrixDimension.leftOperable(operand.vectorDimension())) {
-            throw new MatrixFormatMismatchException(
-                    String.format(
-                            "undefined operation: matrix: %s, operand: %s",
-                            matrixDimension, operand.vectorDimension()));
-        }
+        MatrixValidationSupport.validateOperateTranspose(
+                matrixDimension, operand.vectorDimension());
 
         final int rowDimension = matrixDimension.rowAsIntValue();
         final int columnDimension = matrixDimension.columnAsIntValue();
@@ -180,9 +178,10 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[dim: %s, %s]",
-                this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
+        return "Matrix[dim: %s, %s]"
+                .formatted(
+                        this.matrixDimension(),
+                        EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
@@ -274,12 +273,7 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
         public void setValue(final int row, final int column, double value) {
             this.throwISExIfCannotBeUsed();
 
-            if (!(matrixDimension.isValidIndexes(row, column))) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                matrixDimension, row, column));
-            }
+            MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
 
             //値を修正する
             value = EntryReadableMatrix.modified(value);
@@ -302,20 +296,18 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
          * @throws NullPointerException 例外生成器がnullでかつ例外を生成しようとした場合
          * @see EntryReadableMatrix#acceptValue(double)
          */
-        public <X extends Exception> void setValueOrElseThrow(final int row, final int column, double value,
+        public <X extends Exception> void setValueOrElseThrow(
+                final int row, final int column, double value,
                 DoubleFunction<X> invalidValueExceptionGetter) throws X {
 
             this.throwISExIfCannotBeUsed();
 
+            MatrixValidationSupport.validateIndexInMatrix(matrixDimension, row, column);
+
             if (!EntryReadableMatrix.acceptValue(value)) {
                 throw invalidValueExceptionGetter.apply(value);
             }
-            if (!(matrixDimension.isValidIndexes(row, column))) {
-                throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                                matrixDimension, row, column));
-            }
+
             entry[row * matrixDimension.columnAsIntValue() + column] = value;
         }
 
@@ -333,9 +325,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             if (!(matrixDimension.isValidRowIndex(row1)
                     && matrixDimension.isValidRowIndex(row2))) {
                 throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (row1, row2) = (%s, %s)",
-                                matrixDimension, row1, row2));
+                        "out of matrix: matrix: %s, (row1, row2) = (%s, %s)"
+                                .formatted(matrixDimension, row1, row2));
             }
 
             if (row1 == row2) {
@@ -369,9 +360,8 @@ public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableM
             if (!(matrixDimension.isValidColumnIndex(column1)
                     && matrixDimension.isValidColumnIndex(column2))) {
                 throw new IndexOutOfBoundsException(
-                        String.format(
-                                "out of matrix: matrix: %s, (column1, column2) = (%s, %s)",
-                                matrixDimension, column1, column2));
+                        "out of matrix: matrix: %s, (column1, column2) = (%s, %s)"
+                                .formatted(matrixDimension, column1, column2));
             }
 
             if (column1 == column2) {

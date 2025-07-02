@@ -5,15 +5,16 @@
 	local.properties: ローカルなパラメータを記述する.
 	local.properties.example を参照のこと.
 	-->
-	<property file="./local.properties" />
+	<property file="local.properties" />
 
-	<!-- ========== Jarビルド用プロパティファイル ========== -->
-	<property file="./build.properties" />
+	<!-- ========== ビルド用プロパティファイル ========== -->
+	<property file="build.properties" />
 
-	<!-- ========== パスの定義 ========== -->
-	<property name="src.dir" value="src" />
-	<property name="bin.dir" value="bin" />
-	<property name="res.dir" value="." />
+	<!-- ========== パス, 名前の定義 ========== -->
+	<property name="src.dir" location="src" />
+	<property name="bin.dir" location="bin" />
+	<property name="res.dir" location="." />
+	<property name="jar.name" value="${dist.label}.jar" />
 
 	<!-- ========== 初期化（ビルドディレクトリ作成） ========== -->
 	<target name="init">
@@ -27,6 +28,7 @@
 		       destdir="${bin.dir}"
 		       includeantruntime="false"
 		       modulepath="${module.path}"
+		       release="17"
 		>
 			<compilerarg value="-Xlint:-removal" />
 		</javac>

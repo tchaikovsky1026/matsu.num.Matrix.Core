@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.6.14
+ * 2025.6.26
  */
 package matsu.num.matrix.core;
 
@@ -85,11 +85,7 @@ public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMa
         this.inverseSupplier = ImmutableLazyCacheSupplier.of(
                 () -> Optional.of(this.createTranspose()));
         if (this instanceof Symmetric) {
-            throw new AssertionError(
-                    String.format(
-                            "実装規約違反: %s のサブクラスに %s を付与してはいけない",
-                            SkeletalAsymmetricOrthogonalMatrix.class.getSimpleName(),
-                            Symmetric.class.getSimpleName()));
+            throw new AssertionError("ImplSpec fault");
         }
     }
 

@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.17
+ * 2025.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -17,6 +17,7 @@ import matsu.num.matrix.core.Matrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.SkeletalAsymmetricMatrix;
 import matsu.num.matrix.core.Vector;
+import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -88,12 +89,8 @@ public final class BlockMatrixEntryReadable
      */
     @Override
     public double valueAt(int row, int column) {
-        if (!(this.matrixDimension().isValidIndexes(row, column))) {
-            throw new IndexOutOfBoundsException(
-                    String.format(
-                            "out of matrix: matrix: %s, (row, column) = (%s, %s)",
-                            this.matrixDimension(), row, column));
-        }
+
+        MatrixValidationSupport.validateIndexInMatrix(this.matrixDimension(), row, column);
 
         /**
          * 線形探索で読みだすべき行列を特定する.
@@ -169,6 +166,8 @@ public final class BlockMatrixEntryReadable
      * <p>
      * (外部からの呼び出し不可)
      * </p>
+     * 
+     * @return -
      */
     @Override
     protected EntryReadableMatrix createTranspose() {
@@ -177,8 +176,9 @@ public final class BlockMatrixEntryReadable
 
     @Override
     public String toString() {
-        return String.format(
-                "Matrix[dim: %s, %s]",
-                this.matrixDimension(), EntryReadableMatrix.toSimplifiedEntryString(this));
+        return "Matrix[dim: %s, %s]"
+                .formatted(
+                        this.matrixDimension(),
+                        EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 }

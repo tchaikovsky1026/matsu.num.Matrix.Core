@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2025.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -42,12 +42,9 @@ final class BlockDiagonalOrthogonalUtil {
             dim += m.matrixDimension().rowAsIntValue();
         }
         if (dim > Integer.MAX_VALUE) {
-            throw new ElementsTooManyException(
-                    String.format(
-                            "too large total size: dim: %s", dim));
+            throw new ElementsTooManyException("too large total size: dim: %s".formatted(dim));
         }
         return MatrixDimension.square((int) dim);
-
     }
 
     /**
