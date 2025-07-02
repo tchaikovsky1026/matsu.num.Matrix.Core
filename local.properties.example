@@ -6,5 +6,5 @@
 # separated by semicolons
 module.path=./lib;./lib2
 
-# distribution path (create Jar)
+# distribution path (create Jar, Zip)
 jardist.dir=./dist
