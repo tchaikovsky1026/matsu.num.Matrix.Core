@@ -1,5 +1,10 @@
-develop-next-gen:
-削除予定APIの削除.
+develop/next-generation:
+バージョン29.0.0として, 以下の更新を行う.
+
+29:
+29.0.0: Majorアップ(破壊的変更).
+    - 削除予定のAPIを削除
+        - LU分解の実行に関するインターフェース: SolvingFactorizationExecutor
 
 28:
 28.4.0: リファクタリング(パフォーマンス含む).
