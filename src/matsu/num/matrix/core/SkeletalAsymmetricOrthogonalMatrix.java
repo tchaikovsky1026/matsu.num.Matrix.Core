@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.26
+ * 2026.4.29
  */
 package matsu.num.matrix.core;
 
@@ -62,7 +63,9 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  *            サブクラスで型をバインドすることで,
  *            {@code transpose()}, {@code inverse()}
  *            の戻り値型を共変で扱うために用意されている.
+ * @deprecated リファクタリング中で, 一時的に非推奨とする
  */
+@Deprecated
 public abstract class SkeletalAsymmetricOrthogonalMatrix<TT extends OrthogonalMatrix>
         implements OrthogonalMatrix {
 

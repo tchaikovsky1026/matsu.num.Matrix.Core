@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.14
+ * 2026.4.29
  */
 package matsu.num.matrix.core;
 
@@ -55,7 +56,9 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  *            サブクラスで型をバインドすることで,
  *            {@code transpose()}, {@code inverse()}
  *            の戻り値型を共変で扱うために用意されている.
+ * @deprecated リファクタリング中で, 一時的に非推奨とする
  */
+@Deprecated
 public abstract class SkeletalSymmetricOrthogonalMatrix<
         T extends SkeletalSymmetricOrthogonalMatrix<T>>
         implements OrthogonalMatrix, Symmetric {
