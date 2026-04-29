@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.6.16
+ * 2026.4.29
  */
 package matsu.num.matrix.core;
 
@@ -69,14 +69,6 @@ package matsu.num.matrix.core;
  * this.inverse() == this.inverse()</pre>
  * 
  *               </blockquote>
- * 
- *               <p>
- *               正則行列の場合において, 逆行列の逆行列は自身であるという数学的事実から,
- *               {@link #inverse()} メソッドの戻り値に {@link Invertible} を実装し,
- *               その {@link Invertible#inverse()} でターゲット行列を返したくなる. <br>
- *               これは過剰であり, {@link #inverse()} メソッドの戻り値に {@link Invertible}
- *               を実装するのは推奨されない.
- *               </p>
  * 
  *               <p>
  *               Moore-Penrose 逆行列が対称行列であることが確証できる場合,

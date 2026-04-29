@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.12.17
+ * 2026.4.24
  */
 package matsu.num.matrix.core.lazy;
 
@@ -17,9 +17,12 @@ import java.util.function.Supplier;
  * 
  * <p>
  * オブジェクトのコンピュータ (作成器) を与えてサプライヤを生成する. <br>
- * 初めて {@link Supplier#get()} をコールしたときに, コンピュータによりオブジェクトの生成する. <br>
- * 同時にそのオブジェクトをキャッシュしておき,
- * 2回目以降の呼び出しではキャッシュしたオブジェクトを返す.
+ * 初めて {@link Supplier#get()} をコールしたときに, コンピュータによりオブジェクトの生成し,
+ * キャッシュする. <br>
+ * 2回目以降の呼び出しではキャッシュしたオブジェクトを返す. <br>
+ * コンピュータによるオブジェクト生成は複数回行われる可能性があるが,
+ * 初期化は必ず1回である
+ * (複数回計算されたとしても, 返されるインスタンスは唯一の物となる).
  * </p>
  * 
  * <p>
@@ -54,14 +57,15 @@ public final class ImmutableLazyCacheSupplier<T> implements Supplier<T> {
         if (Objects.nonNull(out)) {
             return out;
         }
+
+        // 競合安全性向上のため, コンピュータによる計算は synchronized ブロックの外で行う
+        T calcResult = this.computer.get();
         synchronized (this.lock) {
             out = this.product;
             if (Objects.nonNull(out)) {
                 return out;
             }
-            out = this.computer.get();
-            this.product = out;
-            return out;
+            return this.product = calcResult;
         }
     }
 
@@ -71,7 +75,7 @@ public final class ImmutableLazyCacheSupplier<T> implements Supplier<T> {
      * <p>
      * クラス説明の通り, コンピュータによる計算はキャッシュされる. <br>
      * したがって,
-     * 引数で与えるサプライヤは可変な状態を持つべきではない.
+     * 引数で与えるサプライヤは可変な状態を持っては行けない.
      * </p>
      * 
      * @param <T> 生成されるインスタンスの型

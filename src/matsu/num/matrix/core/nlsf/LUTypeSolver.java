@@ -122,7 +122,7 @@ public interface LUTypeSolver
      * 
      * @param <MT> 対応する行列の型パラメータ
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "removal", "deprecation" })
     public static interface Executor<MT extends EntryReadableMatrix>
             extends SolvingFactorizationExecutor<MT> {
 
