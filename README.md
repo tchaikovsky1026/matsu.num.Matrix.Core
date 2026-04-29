@@ -1,13 +1,13 @@
 # matsu.num.Matrix.Core
 
-![Version](https://img.shields.io/badge/version-28.4.0-blue)
+![Version](https://img.shields.io/badge/version-28.5.0-blue)
 ![Java](https://img.shields.io/badge/Java-17%2B-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![Javadoc](https://img.shields.io/badge/docs-Javadoc-blue)](https://tchaikovsky1026.github.io/matsu.num.Matrix.Core/)
 [![SemVer](https://img.shields.io/badge/SemVer-2.0.0-blue)](https://semver.org/spec/v2.0.0.html)
 
 `matsu.num.Matrix.Core` は Java 言語向けの数値計算における, 線形代数の基本コンポーネントを扱うライブラリである.  
-現在のリリースバージョンは `28.4.0` であり, Java 17 に準拠する.  
+現在のリリースバージョンは `28.5.0` であり, Java 17 に準拠する.  
 このバージョンにおいて, 次がサポートされている.
 
 - ベクトル  &middot; 行列コンポーネント
