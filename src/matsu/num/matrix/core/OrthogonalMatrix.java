@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
  * 2025.6.14
  */
@@ -137,8 +138,7 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * <p>
      * <u>
      * <i>
-     * このメソッドは {@link #transpose()} や {@link #inverse()},
-     * {@link SkeletalAsymmetricOrthogonalMatrix#createTranspose()}
+     * このメソッドは {@link #transpose()} や {@link #inverse()}
      * の実装を補助するために用意されている. <br>
      * {@link OrthogonalMatrix} およびそのサブタイプのインスタンスの転置行列, 逆行列を得る場合は,
      * このメソッドではなくインスタンスメソッドである {@link #transpose()}, {@link #inverse()}
