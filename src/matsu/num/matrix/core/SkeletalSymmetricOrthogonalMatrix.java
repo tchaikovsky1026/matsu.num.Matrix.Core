@@ -6,15 +6,11 @@
  */
 
 /*
- * 2026.4.29
+ * 2026.4.30
  */
 package matsu.num.matrix.core;
 
 import java.util.Optional;
-import java.util.function.Supplier;
-
-import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
-import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
  * {@link Symmetric} が付与された
@@ -61,77 +57,13 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 @Deprecated
 public abstract class SkeletalSymmetricOrthogonalMatrix<
         T extends SkeletalSymmetricOrthogonalMatrix<T>>
+        extends matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix<T>
         implements OrthogonalMatrix, Symmetric {
-
-    /**
-     * thisのオプショナルを生成するサプライヤ. <br>
-     * {@code Optional<T>} を生成するためにオーバーライド可能なメソッド
-     * {@code self()} が直接的あるいは間接的に必ず呼ばれるため,
-     * 遅延初期化を行う.
-     */
-    private final Supplier<Optional<T>> opSelfSupplier;
 
     /**
      * 骨格実装を生成する唯一のコンストラクタ.
      */
     protected SkeletalSymmetricOrthogonalMatrix() {
         super();
-        this.opSelfSupplier = ImmutableLazyCacheSupplier.of(
-                () -> Optional.of(this.self()));
-    }
-
-    /**
-     * @throws MatrixFormatMismatchException {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
-     */
-    @Override
-    public final Vector operateTranspose(Vector operand) {
-        return this.operate(operand);
-    }
-
-    /**
-     * {@code this} を返す.
-     * 
-     * <p>
-     * このメソッドの公開, サブクラスからのコールはほとんど全ての場合に不適切である.
-     * </p>
-     * 
-     * @implSpec アクセス修飾子を {@code public} にしてはいけない.
-     * 
-     * @return this
-     */
-    protected abstract T self();
-
-    @Override
-    public final T transpose() {
-        return this.self();
-    }
-
-    @Override
-    public final Optional<T> inverse() {
-        return this.opSelfSupplier.get();
-    }
-
-    /**
-     * このオブジェクトの文字列説明表現を返す.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:%dimension, orthogonal]}
-     * </p>
-     * 
-     * @implSpec
-     *               継承先においてオーバーライドを許可する. <br>
-     *               {@code Matrix["param":%param, %orthogonalType]} や
-     *               {@code Matrix["param"=%param, %orthogonalType]}
-     *               の形が適切であると思われる. <br>
-     *               {@code %orthogonalType} は "unit" などの直交行列の性質を表現する.
-     */
-    @Override
-    public String toString() {
-        return String.format(
-                "Matrix[dim: %s, orthogonal]",
-                this.matrixDimension());
     }
 }
