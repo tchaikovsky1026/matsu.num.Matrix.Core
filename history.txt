@@ -5,9 +5,7 @@ develop/next-generation:
 29.0.0: Majorアップ(破壊的変更).
     - 削除予定のAPIを削除
         - LU分解の実行に関するインターフェース: SolvingFactorizationExecutor
-
-develop:
-公開されている骨格実装クラスの削除準備(deprecation).
+        - 行列を実装する公開骨格実装クラス: SkeletalAsymmetricMatrix, SkeletalAsymmetricOrthogonalMatrix, SkeletalSymmetricMatrix, SkeletalSymmetricOrthogonalMatrix
 
 28:
 28.5.0: 競合安全性の向上.
