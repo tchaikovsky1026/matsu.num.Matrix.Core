@@ -8,6 +8,7 @@ develop/next-generation:
         - 行列を実装する公開骨格実装クラス: SkeletalAsymmetricMatrix, SkeletalAsymmetricOrthogonalMatrix, SkeletalSymmetricMatrix, SkeletalSymmetricOrthogonalMatrix
 
 28:
+28.6.0: 公開されている骨格実装クラスの削除準備(deprecation).
 28.5.0: 競合安全性の向上.
 28.4.0: リファクタリング(パフォーマンス含む).
 28.3.1: nlsfのレアケースなバグを修正.
