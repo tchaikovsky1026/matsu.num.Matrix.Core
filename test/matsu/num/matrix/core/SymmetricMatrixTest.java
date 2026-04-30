@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -322,29 +323,26 @@ final class SymmetricMatrixTest {
 
         @Test
         public void test_転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalAsymmetricMatrix) {
+            if (original instanceof SkeletalSymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose(), is(original.transpose()));
             }
-
         }
 
         @Test
         public void test_転置の転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalAsymmetricMatrix) {
+            if (original instanceof SkeletalSymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose().transpose(), is(original.transpose().transpose()));
             }
-
         }
 
         @Test
         public void test_転置の転置は自身と同一() {
-            if (original instanceof SkeletalAsymmetricMatrix) {
+            if (original instanceof SkeletalSymmetricMatrix) {
                 //骨格実装を継承している場合のみ, このテストを走らせる
                 assertThat(original.transpose().transpose(), is(original));
             }
-
         }
     }
 }

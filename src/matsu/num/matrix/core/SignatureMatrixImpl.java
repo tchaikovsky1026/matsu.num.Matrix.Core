@@ -6,12 +6,13 @@
  */
 
 /*
- * 2025.6.14
+ * 2026.4.30
  */
 package matsu.num.matrix.core;
 
 import java.util.Objects;
 
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;

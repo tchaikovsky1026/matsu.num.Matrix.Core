@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.26
+ * 2026.4.30
  */
 package matsu.num.matrix.core;
 
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import matsu.num.matrix.core.common.ArraysUtil;
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
@@ -30,7 +32,8 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * 
  * @author Matsuura Y.
  */
-public final class SymmetricBandMatrix extends SkeletalSymmetricMatrix<SymmetricBandMatrix>
+public final class SymmetricBandMatrix
+        extends SkeletalSymmetricMatrix<SymmetricBandMatrix>
         implements BandMatrix, Symmetric {
     /*
      * 行列の各要素は対角成分, 副対角成分に分けて, それぞれ1次元配列として扱う.

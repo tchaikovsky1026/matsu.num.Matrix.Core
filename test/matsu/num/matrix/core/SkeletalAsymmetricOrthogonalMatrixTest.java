@@ -12,8 +12,11 @@ import org.junit.runner.RunWith;
 
 /**
  * {@link SkeletalAsymmetricOrthogonalMatrix} クラスの(実装規約違反の)テスト.
+ * 
+ * @deprecated テスト対象クラスのdeprecatedの伝播
  */
 @RunWith(Enclosed.class)
+@Deprecated
 final class SkeletalAsymmetricOrthogonalMatrixTest {
 
     public static class 実装規約違反に関するテスト {

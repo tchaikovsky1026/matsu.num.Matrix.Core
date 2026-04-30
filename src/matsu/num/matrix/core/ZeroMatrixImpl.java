@@ -4,11 +4,13 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.26
+ * 2026.4.30
  */
 package matsu.num.matrix.core;
 
+import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 
 /**

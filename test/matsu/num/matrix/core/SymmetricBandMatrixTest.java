@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+
 /**
  * {@link SymmetricBandMatrix} クラスのテスト.
  */
