@@ -4,19 +4,21 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
-package matsu.num.matrix.core;
+package matsu.num.matrix.core.helper.matrix;
 
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import matsu.num.matrix.core.MatrixDimension;
+import matsu.num.matrix.core.OrthogonalMatrix;
+import matsu.num.matrix.core.Symmetric;
+import matsu.num.matrix.core.Vector;
+
 /**
  * {@link SkeletalAsymmetricOrthogonalMatrix} クラスの(実装規約違反の)テスト.
- * 
- * @deprecated テスト対象クラスのdeprecatedの伝播
  */
 @RunWith(Enclosed.class)
-@Deprecated
 final class SkeletalAsymmetricOrthogonalMatrixTest {
 
     public static class 実装規約違反に関するテスト {

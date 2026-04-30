@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.4
+ * 2026.4.30
  */
 package matsu.num.matrix.core.helper.matrix;
 
@@ -15,7 +15,6 @@ import java.util.function.Supplier;
 import matsu.num.matrix.core.Determinantable;
 import matsu.num.matrix.core.Invertible;
 import matsu.num.matrix.core.Matrix;
-import matsu.num.matrix.core.SkeletalSymmetricMatrix;
 import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;

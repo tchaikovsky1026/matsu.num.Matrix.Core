@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
  * 2025.6.14
  */
@@ -64,8 +65,7 @@ public interface BandMatrix extends EntryReadableMatrix {
      * <p>
      * <u>
      * <i>
-     * このメソッドは {@link #transpose()} や
-     * {@link SkeletalAsymmetricMatrix#createTranspose()}
+     * このメソッドは {@link #transpose()}
      * の実装を補助するために用意されている. <br>
      * {@link Matrix} およびそのサブタイプのインスタンスの転置行列を得る場合は,
      * このメソッドではなく, インスタンスメソッドである {@link #transpose()} を呼ばなければならない.
