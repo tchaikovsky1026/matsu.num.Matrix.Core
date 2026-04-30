@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.6.26
+ * 2026.4.30
  */
 package matsu.num.matrix.core;
 
@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.common.CalcUtil;
+import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;

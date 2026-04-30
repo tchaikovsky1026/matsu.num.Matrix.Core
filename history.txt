@@ -6,6 +6,9 @@ develop/next-generation:
     - 削除予定のAPIを削除
         - LU分解の実行に関するインターフェース: SolvingFactorizationExecutor
 
+develop:
+公開されている骨格実装クラスの削除準備(deprecation).
+
 28:
 28.5.0: 競合安全性の向上.
 28.4.0: リファクタリング(パフォーマンス含む).

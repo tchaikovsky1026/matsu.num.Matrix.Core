@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.27
+ * 2026.4.30
  */
 package matsu.num.matrix.core.helper.matrix.multiply;
 
@@ -18,10 +19,10 @@ import java.util.Optional;
 import matsu.num.matrix.core.Matrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.OrthogonalMatrix;
-import matsu.num.matrix.core.SkeletalAsymmetricOrthogonalMatrix;
-import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.Vector;
+import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 
