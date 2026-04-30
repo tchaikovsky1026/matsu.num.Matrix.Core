@@ -8,7 +8,12 @@
 /*
  * 2026.4.30
  */
-package matsu.num.matrix.core;
+package matsu.num.matrix.core.helper.matrix;
+
+import matsu.num.matrix.core.Matrix;
+import matsu.num.matrix.core.Symmetric;
+import matsu.num.matrix.core.Vector;
+import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
  * {@link Symmetric} が付与された {@link Matrix} の骨格実装.
@@ -43,13 +48,8 @@ package matsu.num.matrix.core;
  * @param <T>
  *            {@code this} の具象型を表す. <br>
  *            サブクラスで型をバインドすることで, {@code transpose()} の戻り値型を共変で扱うために用意されている.
- * @deprecated
- *                 この骨格実装は version 29 以降に削除される. <br>
- *                 代替となるクラスは公開されていない.
  */
-@Deprecated(forRemoval = true, since = "28.6")
 public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<T>>
-        extends matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix<T>
         implements Matrix, Symmetric {
 
     /**
@@ -57,5 +57,52 @@ public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<
      */
     protected SkeletalSymmetricMatrix() {
         super();
+    }
+
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public final Vector operateTranspose(Vector operand) {
+        return this.operate(operand);
+    }
+
+    /**
+     * {@code this} を返す.
+     * 
+     * <p>
+     * このメソッドの公開, サブクラスからのコールはほとんど全ての場合に不適切である.
+     * </p>
+     * 
+     * @implSpec アクセス修飾子を {@code public} にしてはいけない.
+     * 
+     * @return this
+     */
+    protected abstract T self();
+
+    @Override
+    public final T transpose() {
+        return this.self();
+    }
+
+    /**
+     * このインスタンスの文字列説明表現を返す.
+     * 
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code Matrix[dim:%dimension]}
+     * </p>
+     * 
+     * @implSpec
+     *               継承先においてオーバーライドを許可する. <br>
+     *               {@code Matrix["param":%param]} や
+     *               {@code Matrix["param"=%param]} の形が適切であると思われる.
+     */
+    @Override
+    public String toString() {
+        return String.format(
+                "Matrix[dim: %s]", this.matrixDimension());
     }
 }

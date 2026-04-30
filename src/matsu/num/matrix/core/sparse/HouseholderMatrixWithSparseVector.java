@@ -4,15 +4,16 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.27
+ * 2026.4.30
  */
 package matsu.num.matrix.core.sparse;
 
 import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.MatrixDimension;
-import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.Vector;
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
 
 /**
  * 鏡映ベクトルとして {@link SparseVector} を指定する形で構築される,

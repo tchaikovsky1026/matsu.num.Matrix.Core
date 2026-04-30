@@ -6,12 +6,12 @@
  */
 
 /*
- * 2025.5.9
+ * 2026.4.30
  */
 package matsu.num.matrix.core.helper.matrix.householder;
 
 import matsu.num.matrix.core.HouseholderMatrix;
-import matsu.num.matrix.core.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
 
 /**
  * {@link HouseholderMatrix} の骨格実装を扱う.

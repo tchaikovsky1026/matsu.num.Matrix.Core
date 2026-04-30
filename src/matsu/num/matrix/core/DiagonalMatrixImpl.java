@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.6.26
+ * 2026.4.30
  */
 package matsu.num.matrix.core;
 
@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.DeterminantValues;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
