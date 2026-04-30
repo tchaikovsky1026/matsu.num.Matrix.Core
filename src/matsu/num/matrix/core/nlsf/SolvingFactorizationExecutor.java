@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.26
+ * 2026.4.30
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -24,7 +25,7 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  *                 このインターフェースは version 29 以降に削除される.
  *                 {@link LUTypeSolver.Executor} は, このインターフェースの完全な代替である.
  */
-@Deprecated(forRemoval = true)
+@Deprecated(forRemoval = true, since = "28.3")
 public interface SolvingFactorizationExecutor<MT extends Matrix> {
 
     /**

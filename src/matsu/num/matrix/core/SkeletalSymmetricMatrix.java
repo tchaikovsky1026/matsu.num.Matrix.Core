@@ -43,9 +43,11 @@ package matsu.num.matrix.core;
  * @param <T>
  *            {@code this} の具象型を表す. <br>
  *            サブクラスで型をバインドすることで, {@code transpose()} の戻り値型を共変で扱うために用意されている.
- * @deprecated リファクタリング中で, 一時的に非推奨とする
+ * @deprecated
+ *                 この骨格実装は version 29 以降に削除される. <br>
+ *                 代替となるクラスは公開されていない.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "28.6")
 public abstract class SkeletalSymmetricMatrix<T extends SkeletalSymmetricMatrix<T>>
         extends matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix<T>
         implements Matrix, Symmetric {
