@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.9
  */
 package matsu.num.matrix.core.block;
 
@@ -18,6 +18,7 @@ import matsu.num.matrix.core.Matrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableUtil;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
@@ -172,7 +173,7 @@ public final class BlockMatrixEntryReadable
      */
     @Override
     protected EntryReadableMatrix createTranspose() {
-        return EntryReadableMatrix.createTransposedOf(this);
+        return TranspositionEntryReadableUtil.apply(this);
     }
 
     @Override
