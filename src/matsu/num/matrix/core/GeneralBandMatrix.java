@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.9
  */
 package matsu.num.matrix.core;
 
@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.transpose.TranspositionBandUtil;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
@@ -115,7 +116,7 @@ public final class GeneralBandMatrix
      */
     @Override
     protected BandMatrix createTranspose() {
-        return BandMatrix.createTransposedOf(this);
+        return TranspositionBandUtil.apply(this);
     }
 
     /**
