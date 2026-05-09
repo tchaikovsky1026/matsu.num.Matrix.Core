@@ -6,6 +6,7 @@ develop/next-generation:
     - 削除予定のAPIを削除
         - LU分解の実行に関するインターフェース: SolvingFactorizationExecutor
         - 行列を実装する公開骨格実装クラス: SkeletalAsymmetricMatrix, SkeletalAsymmetricOrthogonalMatrix, SkeletalSymmetricMatrix, SkeletalSymmetricOrthogonalMatrix
+        - 骨格実装向け公開ヘルパメソッド: BandMatrix#createTransposedOf, EntryReadableMatrix#createTransposedOf, Matrix#createTransposedOf, OrthogonalMatrix#createTransposedOf
 
 28:
 28.7.0: 骨格実装向けヘルパメソッドの削除準備(deprecation).
