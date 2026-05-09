@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.6.14
+ * 2026.5.9
  */
 package matsu.num.matrix.core;
 
@@ -196,7 +196,11 @@ public interface Matrix {
      * @param original 元の行列
      * @return 転置行列
      * @throws NullPointerException 引数にnullが含まれる場合
+     * @deprecated
+     *                 この公開ヘルパメソッドは version 29 以降に削除される. <br>
+     *                 代替となるメソッドは公開されていない.
      */
+    @Deprecated(forRemoval = true, since = "28.7")
     public static Matrix createTransposedOf(Matrix original) {
         return TranspositionUtil.apply(original);
     }
