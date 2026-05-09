@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.1.7
+ * 2026.5.9
  */
 package matsu.num.matrix.core.helper.matrix.transpose;
 
@@ -17,7 +18,7 @@ import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.Vector;
 
 /**
- * {@link OrthogonalMatrix}の転置を扱う.
+ * {@link OrthogonalMatrix} の転置を扱うユーティリティ.
  * 
  * @author Matsuura Y.
  */
@@ -29,8 +30,37 @@ public final class TranspositionOrthogonalUtil {
     }
 
     /**
-     * {@link OrthogonalMatrix} の推奨される実装規約に則った転置行列を返す. <br>
-     * {@link Symmetric} が付与されている場合は, 引数をそのまま返す.
+     * {@link OrthogonalMatrix} の推奨される実装規約に則った転置行列を返す.
+     * 
+     * <p>
+     * 引数 {@code original}, 戻り値 {@code returnValue} について,
+     * 次が {@code true} である.
+     * </p>
+     * 
+     * <ul>
+     * <li>{@code returnValue.transpose() == original}</li>
+     * <li>{@code returnValue.inverse().get() == original}</li>
+     * </ul>
+     * 
+     * <p>
+     * {@code original} に {@link Symmetric} が付与されている場合,
+     * {@code returnValue == original} が {@code true} である.
+     * </p>
+     * 
+     * <p>
+     * <u>
+     * <i>
+     * このメソッドは {@link OrthogonalMatrix#transpose()} や
+     * {@link OrthogonalMatrix#inverse()}
+     * の実装を補助するために用意されている. <br>
+     * {@link OrthogonalMatrix} およびそのサブタイプのインスタンスの転置行列, 逆行列を得る場合は,
+     * このメソッドではなくインスタンスメソッドである {@link OrthogonalMatrix#transpose()},
+     * {@link OrthogonalMatrix#inverse()}
+     * を呼ばなければならない.
+     * </i>
+     * </u>
+     * </p>
+     * 
      *
      * @param original 元の行列
      * @return 転置行列
