@@ -13,7 +13,6 @@ package matsu.num.matrix.core;
 import java.util.Optional;
 
 import matsu.num.matrix.core.helper.matrix.multiply.OrthogonalMatrixMultiplicationUtil;
-import matsu.num.matrix.core.helper.matrix.transpose.TranspositionOrthogonalUtil;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 
@@ -114,48 +113,5 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      */
     public static OrthogonalMatrix symmetricMultiply(OrthogonalMatrix mid, OrthogonalMatrix leftSide) {
         return OrthogonalMatrixMultiplicationUtil.symmetricMultiply(mid, leftSide);
-    }
-
-    /**
-     * 
-     * 与えられた直交行列の転置行列 (逆行列) を生成する.
-     * 
-     * <p>
-     * 引数 {@code original}, 戻り値 {@code returnValue} について,
-     * 次が {@code true} である.
-     * </p>
-     * 
-     * <ul>
-     * <li>{@code returnValue.transpose() == original}</li>
-     * <li>{@code returnValue.inverse().get() == original}</li>
-     * </ul>
-     * 
-     * <p>
-     * {@code original} に {@link Symmetric} が付与されている場合,
-     * {@code returnValue == original} が {@code true} である.
-     * </p>
-     * 
-     * <p>
-     * <u>
-     * <i>
-     * このメソッドは {@link #transpose()} や {@link #inverse()}
-     * の実装を補助するために用意されている. <br>
-     * {@link OrthogonalMatrix} およびそのサブタイプのインスタンスの転置行列, 逆行列を得る場合は,
-     * このメソッドではなくインスタンスメソッドである {@link #transpose()}, {@link #inverse()}
-     * を呼ばなければならない.
-     * </i>
-     * </u>
-     * </p>
-     *
-     * @param original 元の行列
-     * @return 転置行列
-     * @throws NullPointerException 引数にnullが含まれる場合
-     * @deprecated
-     *                 この公開ヘルパメソッドは version 29 以降に削除される. <br>
-     *                 代替となるメソッドは公開されていない.
-     */
-    @Deprecated(forRemoval = true, since = "28.7")
-    public static OrthogonalMatrix createTransposedOf(OrthogonalMatrix original) {
-        return TranspositionOrthogonalUtil.apply(original);
     }
 }

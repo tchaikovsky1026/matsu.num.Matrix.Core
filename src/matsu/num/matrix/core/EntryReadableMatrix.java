@@ -10,8 +10,6 @@
  */
 package matsu.num.matrix.core;
 
-import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableUtil;
-
 /**
  * 成分に <i>O</i>(1) でアクセス可能な行列を表す. <br>
  * 成分に不正値 (inf, NaN) を含まない
@@ -215,39 +213,5 @@ public interface EntryReadableMatrix extends Matrix {
         }
         sb.append(sp);
         return sb.toString();
-    }
-
-    /**
-     * 与えられた行列の転置行列を生成する.
-     * 
-     * <p>
-     * 引数 {@code original}, 戻り値 {@code returnValue} について,
-     * {@code returnValue.transpose() == original} が {@code true} である.
-     * <br>
-     * {@code original} に {@link Symmetric} が付与されている場合,
-     * {@code returnValue == original} が {@code true} である.
-     * </p>
-     * 
-     * <p>
-     * <u>
-     * <i>
-     * このメソッドは {@link #transpose()}
-     * の実装を補助するために用意されている. <br>
-     * {@link Matrix} およびそのサブタイプのインスタンスの転置行列を得る場合は,
-     * このメソッドではなく, インスタンスメソッドである {@link #transpose()} を呼ばなければならない.
-     * </i>
-     * </u>
-     * </p>
-     *
-     * @param original 元の行列
-     * @return 転置行列
-     * @throws NullPointerException 引数にnullが含まれる場合
-     * @deprecated
-     *                 この公開ヘルパメソッドは version 29 以降に削除される. <br>
-     *                 代替となるメソッドは公開されていない.
-     */
-    @Deprecated(forRemoval = true, since = "28.7")
-    public static EntryReadableMatrix createTransposedOf(EntryReadableMatrix original) {
-        return TranspositionEntryReadableUtil.apply(original);
     }
 }
