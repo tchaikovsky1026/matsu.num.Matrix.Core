@@ -39,6 +39,7 @@
 module matsu.num.Matrix.Core {
     exports matsu.num.matrix.core;
     exports matsu.num.matrix.core.block;
+    exports matsu.num.matrix.core.mult;
     exports matsu.num.matrix.core.nlsf;
     exports matsu.num.matrix.core.qr;
     exports matsu.num.matrix.core.sparse;
