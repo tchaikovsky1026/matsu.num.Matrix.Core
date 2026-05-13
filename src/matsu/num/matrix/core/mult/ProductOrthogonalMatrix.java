@@ -12,6 +12,7 @@ package matsu.num.matrix.core.mult;
 
 import java.util.Optional;
 
+import matsu.num.matrix.core.EntryReadableMatrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.OrthogonalMatrix;
 import matsu.num.matrix.core.Vector;
@@ -102,6 +103,23 @@ public final class ProductOrthogonalMatrix implements VectorAccessibleMatrix, Or
     @Override
     public Vector columnVectorAt(int index) {
         return baseMatrix.columnVectorAt(index);
+    }
+
+    /**
+     * このインスタンスの文字列説明表現を返す.
+     * 
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code Matrix[dim:%dimension, orthogonal, %entry]}
+     * </p>
+     */
+    @Override
+    public String toString() {
+        return String.format(
+                "Matrix[dim: %s, orthogonal, %s]",
+                this.matrixDimension(),
+                EntryReadableMatrix.toSimplifiedEntryString(this));
     }
 
     /**
