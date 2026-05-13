@@ -135,7 +135,7 @@ final class BaseVectorAccessibleMatrix implements VectorAccessibleMatrix {
      * @param rowVectors 行ベクトルたち, 配列サイズが rows に一致し, ベクトル次元は columns に一致させる
      * @return インスタンス
      */
-    static VectorAccessibleMatrix fromRowVectors(MatrixDimension matrixDimension, Vector[] rowVectors) {
+    static BaseVectorAccessibleMatrix fromRowVectors(MatrixDimension matrixDimension, Vector[] rowVectors) {
 
         // columnVectorsの生成時に引数がバリデーションされる
         return ofHelper(matrixDimension, rowVectors, calcColumnVectors(matrixDimension, rowVectors));
@@ -153,7 +153,7 @@ final class BaseVectorAccessibleMatrix implements VectorAccessibleMatrix {
      * @param columnVectors 列ベクトルたち, 配列サイズが columns に一致し, ベクトル次元は rows に一致させる
      * @return インスタンス
      */
-    static VectorAccessibleMatrix fromColumnVectors(MatrixDimension matrixDimension, Vector[] columnVectors) {
+    static BaseVectorAccessibleMatrix fromColumnVectors(MatrixDimension matrixDimension, Vector[] columnVectors) {
 
         // columnVectorsの生成時に引数がバリデーションされる
         return ofHelper(matrixDimension, calcRowVectors(matrixDimension, columnVectors), columnVectors);
