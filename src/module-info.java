@@ -16,7 +16,9 @@
  * パッケージ,
  * {@link matsu.num.matrix.core.sparse}
  * パッケージは,
- * 疎な行列 &middot; ベクトルを扱うためのパッケージである.
+ * 疎な行列 &middot; ベクトルを扱うためのパッケージである. <br>
+ * {@link matsu.num.matrix.core.mult}
+ * パッケージは行列積に関する高機能なサポートである.
  * </p>
  * 
  * <p>
