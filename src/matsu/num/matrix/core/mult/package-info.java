@@ -18,5 +18,15 @@
  * が適切である. <br>
  * このパッケージでは, より複雑 &middot; 高機能な行列積とその結果を提供する.
  * </p>
+ * 
+ * <p>
+ * 機能としては,
+ * {@link matsu.num.matrix.core.mult.SequentialMultiplyingContainer
+ * SequentialMultiplyingContainer}
+ * と
+ * {@link matsu.num.matrix.core.mult.OrthSequentialMultiplyingContainer
+ * OrthSequentialMultiplyingContainer}
+ * を参照すること.
+ * </p>
  */
 package matsu.num.matrix.core.mult;
