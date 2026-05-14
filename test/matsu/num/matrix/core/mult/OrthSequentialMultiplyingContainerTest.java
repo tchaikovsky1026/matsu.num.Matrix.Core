@@ -59,7 +59,7 @@ final class OrthSequentialMultiplyingContainerTest {
             OrthogonalMatrix r1 = createRandomOthoMatrix(matrixDimension);
             OrthogonalMatrix r2 = createRandomOthoMatrix(matrixDimension);
 
-            var con = OrthSequentialMultiplyingContainer.basedOn(baseSrc);
+            var con = OrthSequentialMultiplyingContainer.basedOnOrth(baseSrc);
             con.operateLeftSide(l1);
             con.operateRightSide(r1);
             con.operateLeftSide(l2);

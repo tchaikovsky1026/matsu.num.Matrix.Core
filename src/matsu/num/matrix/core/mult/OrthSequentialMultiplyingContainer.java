@@ -6,9 +6,11 @@
  */
 
 /*
- * 2026.5.13
+ * 2026.5.14
  */
 package matsu.num.matrix.core.mult;
+
+import java.util.Objects;
 
 import matsu.num.matrix.core.EntryReadableMatrix;
 import matsu.num.matrix.core.OrthogonalMatrix;
@@ -20,7 +22,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * <p>
  * このクラスはミュータブルなクラスである. <br>
  * 最初にベースとなる, 成分アクセス可能な直交行列を与え, コンテナを用意する
- * ({@link #basedOn(EntryReadableMatrix) basedOn(T)} メソッド). <br>
+ * ({@link #basedOnOrth(EntryReadableMatrix)} メソッド). <br>
  * その後, 左右から直交行列を乗算するメソッド
  * {@link #operateLeftSide(OrthogonalMatrix)},
  * {@link #operateRightSide(OrthogonalMatrix)}
@@ -93,22 +95,20 @@ public final class OrthSequentialMultiplyingContainer {
     }
 
     /**
-     * 与えた直交行列をベースとする, 乗算コンテナを作成する.
+     * 与えた成分アクセス可能な直交行列をベースとする, 乗算コンテナを作成する.
      * 
-     * @param <T> 型制限のための型パラメータ,
-     *            {@link EntryReadableMatrix} と
-     *            {@link OrthogonalMatrix} の両方のサブタイプを要求する.
      * @param base ベースとなる直交行列
      * @return 乗算コンテナ
+     * @throws MatrixFormatMismatchException
+     *             引数が直交行列 ({@link OrthogonalMatrix}
+     *             のサブタイプ) でない場合
      * @throws NullPointerException 引数がnullの場合
      */
-    public static <T extends EntryReadableMatrix & OrthogonalMatrix>
-            OrthSequentialMultiplyingContainer basedOn(T base) {
+    public static OrthSequentialMultiplyingContainer basedOnOrth(EntryReadableMatrix base) {
 
-        // OrthogonalMatrix型は, マーカーインターフェースのような扱いである.
-        // 防御的キャスト検証: 型安全でない使い方をした場合, ClassCastExが発生する可能性
-        // (適切にジェネリクスを利用した場合は必ずキャスト可能)
-        OrthogonalMatrix.class.cast(base);
+        if (!(Objects.requireNonNull(base) instanceof OrthogonalMatrix)) {
+            throw new MatrixFormatMismatchException("not orthogonal");
+        }
 
         return new OrthSequentialMultiplyingContainer(BaseMultiplyingContainer.basedOn(base));
     }
