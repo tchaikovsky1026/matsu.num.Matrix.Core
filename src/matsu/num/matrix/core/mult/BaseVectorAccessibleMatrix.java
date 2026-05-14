@@ -19,11 +19,11 @@ import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
- * {@link VectorAccessibleMatrix} のベースとなるクラス.
+ * {@link SkeletalVectorAccessibleMatrix} のベースとなるクラス.
  * 
  * @author Matsuura Y.
  */
-final class BaseVectorAccessibleMatrix implements VectorAccessibleMatrix {
+final class BaseVectorAccessibleMatrix extends SkeletalVectorAccessibleMatrix {
 
     private final MatrixDimension matrixDimension;
     private final Vector[] rowVectors;

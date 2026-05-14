@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.12
+ * 2026.5.14
  */
 package matsu.num.matrix.core.mult;
 
@@ -23,7 +23,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * 
  * @author Matsuura Y.
  */
-public final class ProductOrthogonalMatrix implements VectorAccessibleMatrix, OrthogonalMatrix {
+public final class ProductOrthogonalMatrix
+        extends SkeletalVectorAccessibleMatrix implements OrthogonalMatrix {
 
     private final BaseVectorAccessibleMatrix baseMatrix;
 
@@ -82,11 +83,7 @@ public final class ProductOrthogonalMatrix implements VectorAccessibleMatrix, Or
     }
 
     /**
-     * 与えられた行番号の行ベクトルを取得する.
-     * 
-     * @param index index
-     * @return rowVector
-     * @throws IndexOutOfBoundsException indexが範囲外
+     * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     @Override
     public Vector rowVectorAt(int index) {
@@ -94,30 +91,17 @@ public final class ProductOrthogonalMatrix implements VectorAccessibleMatrix, Or
     }
 
     /**
-     * 与えられた列番号の列ベクトルを取得する.
-     * 
-     * @param index index
-     * @return columnVector
-     * @throws IndexOutOfBoundsException indexが範囲外
+     * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     @Override
     public Vector columnVectorAt(int index) {
         return baseMatrix.columnVectorAt(index);
     }
 
-    /**
-     * このインスタンスの文字列説明表現を返す.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:%dimension, orthogonal, %entry]}
-     * </p>
-     */
     @Override
     public String toString() {
         return String.format(
-                "Matrix[dim: %s, orthogonal, %s]",
+                "Matrix[dim: %s, vector-accessible, orthogonal, %s]",
                 this.matrixDimension(),
                 EntryReadableMatrix.toSimplifiedEntryString(this));
     }
