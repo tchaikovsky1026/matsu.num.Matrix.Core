@@ -281,7 +281,7 @@ final class GeneralMatrixTest {
 
             @Override
             protected EntryReadableMatrix createTranspose() {
-                return mx.transpose();
+                return mx.transposeAsEntryReadable();
             }
 
             @Override

@@ -153,7 +153,7 @@ final class GeneralBandMatrixTest {
 
             @Override
             protected BandMatrix createTranspose() {
-                return mx.transpose();
+                return mx.transposeAsEntryReadable();
             }
 
             @Override
