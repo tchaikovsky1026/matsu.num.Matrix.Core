@@ -180,7 +180,7 @@ final class BlockDiagonalOrthogonalMatrixImpl
     protected BlockDiagonalOrthogonalMatrix createTranspose() {
         List<OrthogonalMatrix> transposeList =
                 this.blockSeries.stream()
-                        .map(OrthogonalMatrix::transpose)
+                        .map(OrthogonalMatrix::transposeAsOrthogonal)
                         .toList();
 
         //dimensionは正方形だが, 意図の明確化のためdimension.transpose()とする

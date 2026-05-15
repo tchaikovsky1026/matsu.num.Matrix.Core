@@ -90,7 +90,7 @@ public final class HouseholderQR
         return Matrix.multiply(
                 this.mxD.inverse().get(),
                 mxInvExtR,
-                this.mxQ.transpose());
+                this.mxQ.transposeAsOrthogonal());
     }
 
     /**

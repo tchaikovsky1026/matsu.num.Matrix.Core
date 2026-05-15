@@ -79,7 +79,7 @@ public final class HouseholderQRBand
         return Matrix.multiply(
                 this.mxD.inverse().get(),
                 this.mxRt.inverse().get().transpose(),
-                this.mxQ.transpose());
+                this.mxQ.transposeAsOrthogonal());
     }
 
     /**

@@ -148,17 +148,6 @@ final class OrthogonalMatrixMultiplicationUtilTest {
             OrthogonalMatrixMultiplicationUtil
                     .apply(m1, m2, PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(1)).build());
         }
-
-        @Test
-        public void test_インスタンスの同一性() {
-            //このテストは実装の詳細に依存している
-
-            //逆行列は同一
-            assertThat(m1To4.inverse() == m1To4.inverse(), is(true));
-
-            //逆行列の逆行列は自分自身と同一
-            assertThat(m1To4.inverse().get().inverse().get(), is(m1To4));
-        }
     }
 
     public static class 対称行列積のテスト {
@@ -226,14 +215,14 @@ final class OrthogonalMatrixMultiplicationUtilTest {
             //4積
             OrthogonalMatrix multi_1 = OrthogonalMatrixMultiplicationUtil.apply(m1, m2, m3, m4);
             System.out.println(multi_1);
-            System.out.println(multi_1.inverse().get());
+            System.out.println(multi_1.transposeAsOrthogonal());
 
             //4積,逐次
             OrthogonalMatrix multi_2 = OrthogonalMatrixMultiplicationUtil.apply(
                     m1, m2,
                     OrthogonalMatrixMultiplicationUtil.apply(m3, m4));
             System.out.println(multi_2);
-            System.out.println(multi_2.inverse().get());
+            System.out.println(multi_2.transposeAsOrthogonal());
 
             System.out.println();
         }

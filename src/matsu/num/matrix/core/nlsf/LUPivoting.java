@@ -91,7 +91,7 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
                 this.mxUt.inverse().get().transpose(),
                 this.mxD.inverse().get(),
                 this.mxL.inverse().get(),
-                this.mxP.inverse().get());
+                this.mxP.transposeAsOrthogonal());
 
         return new InverstibleAndDeterminantStruct<Matrix>(det, invMatrix);
     }
