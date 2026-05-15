@@ -184,7 +184,7 @@ final class SignatureMatrixTest {
         public void test_toString() {
             System.out.println(TEST_CLASS.getName());
             System.out.println(m);
-            System.out.println(m.inverse().get());
+            System.out.println(m.transposeAsOrthogonal());
             System.out.println();
         }
     }
