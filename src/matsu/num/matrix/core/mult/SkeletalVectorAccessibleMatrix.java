@@ -44,6 +44,15 @@ abstract class SkeletalVectorAccessibleMatrix implements EntryReadableMatrix {
      */
     public abstract Vector columnVectorAt(int index);
 
+    @Override
+    @SuppressWarnings("removal")
+    public abstract EntryReadableMatrix transpose();
+
+    @Override
+    public final EntryReadableMatrix transposeAsEntryReadable() {
+        return transpose();
+    }
+
     /**
      * このインスタンスの文字列説明表現を返す.
      * 
