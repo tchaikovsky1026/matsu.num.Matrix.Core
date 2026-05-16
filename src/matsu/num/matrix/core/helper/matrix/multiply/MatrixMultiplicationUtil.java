@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core.helper.matrix.multiply;
 
@@ -21,8 +21,7 @@ import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.UnitMatrix;
 import matsu.num.matrix.core.Vector;
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalMatrix;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 
@@ -87,7 +86,7 @@ public final class MatrixMultiplicationUtil {
      * 行列積を表現する行列.
      */
     private static final class MultiplyingSeries
-            extends SkeletalAsymmetricMatrix<MultipliedMatrix> implements MultipliedMatrix {
+            extends SkeletalMatrix<Matrix> implements MultipliedMatrix {
 
         final Deque<Matrix> series;
         final MatrixDimension matrixDimension;
@@ -136,7 +135,7 @@ public final class MatrixMultiplicationUtil {
          * </p>
          */
         @Override
-        protected MultipliedMatrix createTranspose() {
+        protected Matrix createTranspose() {
 
             Deque<Matrix> transposedSeries = new LinkedList<>();
             for (Iterator<Matrix> ite = this.series.descendingIterator();
@@ -233,7 +232,8 @@ public final class MatrixMultiplicationUtil {
      * LDL^T
      */
     private static final class SymmetricMultipliedMatrix
-            extends SkeletalSymmetricMatrix<SymmetricMultipliedMatrix> implements MultipliedMatrix {
+            extends SkeletalMatrix<Matrix>
+            implements MultipliedMatrix, Symmetric {
 
         private final MultipliedMatrix wrappedSeriesMatrix;
 
@@ -268,16 +268,18 @@ public final class MatrixMultiplicationUtil {
          * @return -
          */
         @Override
-        protected SymmetricMultipliedMatrix self() {
+        protected Matrix createTranspose() {
             return this;
         }
 
-        /**
-         * {@inheritDoc }
-         */
         @Override
         public Vector operate(Vector operand) {
             return this.wrappedSeriesMatrix.operate(operand);
+        }
+
+        @Override
+        public Vector operateTranspose(Vector operand) {
+            return operate(operand);
         }
 
         @Override

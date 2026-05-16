@@ -106,12 +106,19 @@ public final class TranspositionOrthogonalUtil {
         }
 
         @Override
+        @SuppressWarnings("removal")
         public Optional<? extends OrthogonalMatrix> inverse() {
             return this.original;
         }
 
         @Override
+        @SuppressWarnings("removal")
         public final OrthogonalMatrix transpose() {
+            return this.original.get();
+        }
+
+        @Override
+        public OrthogonalMatrix transposeAsOrthogonal() {
             return this.original.get();
         }
 
