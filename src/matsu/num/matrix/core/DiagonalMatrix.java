@@ -73,7 +73,7 @@ public interface DiagonalMatrix
      * 
      * @implSpec
      *               サブインターフェースでの型精密化を禁止する. <br>
-     *               その他は, {@link Invertible#transpose()} に従う.
+     *               その他は, {@link Invertible#inverse()} に従う.
      * 
      *               <p>
      *               <i><u>
@@ -84,8 +84,8 @@ public interface DiagonalMatrix
      * 
      * @return 逆行列
      */
-    public default Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
-        return inverse();
+    public default Optional<DiagonalMatrix> inverseAsDiagonal() {
+        return inverse().map(t -> t);
     }
 
     /**
