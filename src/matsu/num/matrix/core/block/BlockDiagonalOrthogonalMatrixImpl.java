@@ -21,7 +21,7 @@ import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.OrthogonalMatrix;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
@@ -32,7 +32,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 final class BlockDiagonalOrthogonalMatrixImpl
-        extends SkeletalAsymmetricOrthogonalMatrix<BlockDiagonalOrthogonalMatrix>
+        extends SkeletalOrthogonalMatrix<OrthogonalMatrix>
         implements BlockDiagonalOrthogonalMatrix {
 
     private final MatrixDimension matrixDimension;
@@ -263,13 +263,20 @@ final class BlockDiagonalOrthogonalMatrixImpl
         }
 
         @Override
-        public BlockDiagonalOrthogonalMatrix transpose() {
+        @SuppressWarnings("removal")
+        public OrthogonalMatrix transpose() {
             return this.opTranspose.get();
         }
 
         @Override
-        public Optional<? extends BlockDiagonalOrthogonalMatrix> inverse() {
+        @SuppressWarnings("removal")
+        public Optional<? extends OrthogonalMatrix> inverse() {
             return this.opTranspose;
+        }
+
+        @Override
+        public OrthogonalMatrix transposeAsOrthogonal() {
+            return this.opTranspose.get();
         }
 
         @Override

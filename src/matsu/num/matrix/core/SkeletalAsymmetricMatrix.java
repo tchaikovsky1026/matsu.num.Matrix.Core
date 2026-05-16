@@ -10,6 +10,10 @@
  */
 package matsu.num.matrix.core;
 
+import java.util.function.Supplier;
+
+import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
+
 /**
  * 非対称な {@link Matrix} の骨格実装.
  * 
@@ -57,9 +61,11 @@ package matsu.num.matrix.core;
  *                 代替となるクラスは公開されていない.
  */
 @Deprecated(forRemoval = true, since = "28.6")
-public abstract class SkeletalAsymmetricMatrix<TT extends Matrix>
-        extends matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix<TT>
-        implements Matrix {
+@SuppressWarnings("removal")
+public abstract class SkeletalAsymmetricMatrix<TT extends Matrix> implements Matrix {
+
+    //転置行列を生成するサプライヤ
+    private final Supplier<TT> transposeSupplier;
 
     /**
      * 唯一のコンストラクタ.
@@ -74,5 +80,64 @@ public abstract class SkeletalAsymmetricMatrix<TT extends Matrix>
      */
     protected SkeletalAsymmetricMatrix() {
         super();
+        this.transposeSupplier = ImmutableLazyCacheSupplier.of(() -> this.createTranspose());
+        if (this instanceof Symmetric) {
+            throw new AssertionError("ImplSpec fault");
+        }
+    }
+
+    @Override
+    public final TT transpose() {
+        return this.transposeSupplier.get();
+    }
+
+    /**
+     * <p>
+     * 自身の転置行列を生成する.
+     * </p>
+     * 
+     * <p>
+     * {@link #transpose()} を遅延初期化するために実装されるメソッドである. <br>
+     * それが初めて呼ばれたときに, 内部に持つキャッシュシステムから1度だけこのメソッドが呼ばれる. <br>
+     * 公開は禁止されており, サブクラスからもコールしてはならない.
+     * </p>
+     *
+     * @implSpec
+     * 
+     *               {@link Matrix} の実装規約より,
+     * 
+     *               <blockquote>
+     * 
+     *               <pre>
+     * this.createTranspose().transpose() == this</pre>
+     * 
+     *               </blockquote>
+     * 
+     *               を満たすことが推奨される. <br>
+     *               アクセス修飾子を {@code public} にしてはいけない.
+     * 
+     * @return 自身の転置行列
+     */
+    protected abstract TT createTranspose();
+
+    /**
+     * このインスタンスの文字列説明表現を返す.
+     * 
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code Matrix[dim:%dimension]}
+     * </p>
+     * 
+     * @implSpec
+     *               継承先においてオーバーライドを許可する. <br>
+     *               {@code Matrix["param":%param]} や
+     *               {@code Matrix["param"=%param]} の形が適切であると思われる.
+     */
+    @Override
+    public String toString() {
+        return String.format(
+                "Matrix[dim: %s]",
+                this.matrixDimension());
     }
 }

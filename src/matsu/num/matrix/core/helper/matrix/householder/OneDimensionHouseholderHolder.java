@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.6.27
+ * 2026.5.16
  */
 package matsu.num.matrix.core.helper.matrix.householder;
 
@@ -14,6 +14,7 @@ import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
@@ -33,7 +34,8 @@ final class OneDimensionHouseholderHolder {
     static final HouseholderMatrix INSTANCE = new OneDimensionHouseholder();
 
     private static final class OneDimensionHouseholder
-            extends SkeletalHouseholderMatrix<OneDimensionHouseholder> {
+            extends SkeletalOrthogonalMatrix<HouseholderMatrix>
+            implements HouseholderMatrix {
 
         private final VectorDimension vecDim = DIMENSION;
         private final MatrixDimension mxDim = MatrixDimension.square(this.vecDim);
@@ -62,8 +64,17 @@ final class OneDimensionHouseholderHolder {
             return operand.negated();
         }
 
+        /**
+         * @throws MatrixFormatMismatchException {@inheritDoc}
+         * @throws NullPointerException {@inheritDoc}
+         */
         @Override
-        protected OneDimensionHouseholder self() {
+        public Vector operateTranspose(Vector operand) {
+            return operate(operand);
+        }
+
+        @Override
+        protected HouseholderMatrix createTranspose() {
             return this;
         }
     }

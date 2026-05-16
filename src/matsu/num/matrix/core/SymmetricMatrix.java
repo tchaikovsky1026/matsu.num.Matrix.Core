@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import matsu.num.matrix.core.common.ArraysUtil;
 import matsu.num.matrix.core.common.CalcUtil;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
@@ -31,7 +31,8 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * 
  * @author Matsuura Y.
  */
-public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatrix>
+public final class SymmetricMatrix
+        extends SkeletalEntryReadableMatrix<SymmetricMatrix, EntryReadableMatrix>
         implements EntryReadableMatrix, Symmetric {
 
     /*
@@ -84,8 +85,9 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
      * @return -
      */
     @Override
-    protected SymmetricMatrix self() {
-        return this;
+    protected SymmetricMatrix createTranspose() {
+        // TODO 自動生成されたメソッド・スタブ
+        return null;
     }
 
     /**
@@ -142,6 +144,15 @@ public final class SymmetricMatrix extends SkeletalSymmetricMatrix<SymmetricMatr
         var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
+    }
+
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
     }
 
     @Override

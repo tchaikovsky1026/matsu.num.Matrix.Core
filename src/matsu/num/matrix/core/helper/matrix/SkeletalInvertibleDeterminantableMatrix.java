@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core.helper.matrix;
 
@@ -23,7 +24,7 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * 逆行列と行列式が計算可能な行列に対する, 骨格実装.
  * 
  * <p>
- * このクラスは, {@link SkeletalSymmetricMatrix} による {@link #transpose()} の実装に加え,
+ * このクラスは, {@link SkeletalMatrix} による {@link #transpose()} の実装に加え,
  * {@link #inverse()},
  * {@link #determinant()}, {@link #logAbsDeterminant()},
  * {@link #signOfDeterminant()}
@@ -35,30 +36,46 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * </p>
  * 
  * @author Matsuura Y.
- * @param <MT> thisのタイプ, 再帰的ジェネリクスによりtransposeの戻り値型を具象クラスにゆだねる.
+ * @param <CTT>
+ *            生成する転置行列の型を表す. <br>
+ *            {@link #createTranspose()} の型を決める.
+ * 
  * @param <IT> inverseのタイプ
  */
-public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<
-        MT extends SkeletalSymmetricInvertibleDeterminantableMatrix<MT, IT>,
-        IT extends Matrix>
-        extends SkeletalSymmetricMatrix<MT>
+public abstract class SkeletalInvertibleDeterminantableMatrix<
+        CTT extends Matrix, IT extends Matrix>
+        extends SkeletalMatrix<CTT>
         implements Matrix, Invertible, Determinantable, Symmetric {
 
-    //循環参照が生じるため, 逆行列は遅延初期化
-    //逆行列と行列式はそれぞれの整合性のため, セットで扱う
-    private Supplier<InverstibleAndDeterminantStruct<IT>> invAndDetStructSupplier;
+    /**
+     * (外部からの呼び出し不可)
+     */
+    protected Supplier<InverstibleAndDeterminantStruct<IT>> invAndDetStructSupplier;
 
     /**
      * 骨格実装のコンストラクタ.
      */
-    protected SkeletalSymmetricInvertibleDeterminantableMatrix() {
+    protected SkeletalInvertibleDeterminantableMatrix() {
         super();
         this.invAndDetStructSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createInvAndDetWrapper());
     }
 
+    /**
+     * `{@inheritDoc}
+     * 
+     * <p>
+     * <i><u>
+     * version 29 にMAJORアップする際に, 戻り値型が
+     * {@code Optional<Matrix>}
+     * になる可能性がある. <br>
+     * 変更になった場合, 再コンパイルが必要となるかもしれない.
+     * </u></i>
+     * </p>
+     */
+    @SuppressWarnings("removal")
     @Override
-    public final Optional<? extends IT> inverse() {
+    public final Optional<IT> inverse() {
         return this.invAndDetStructSupplier.get().inverseMatrix();
     }
 

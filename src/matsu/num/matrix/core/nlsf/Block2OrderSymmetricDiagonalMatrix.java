@@ -22,7 +22,7 @@ import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
 import matsu.num.matrix.core.common.ArraysUtil;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalInvertibleDeterminantableMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.DeterminantValues;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
@@ -42,11 +42,7 @@ interface Block2OrderSymmetricDiagonalMatrix
         extends BandMatrix, Symmetric,
         Invertible, Determinantable {
 
-    @Override
-    public abstract Block2OrderSymmetricDiagonalMatrix transpose();
-
-    @Override
-    public Optional<? extends Block2OrderSymmetricDiagonalMatrix> inverse();
+    public Optional<Block2OrderSymmetricDiagonalMatrix> inverseAsBlock2OrderSymmetricDiagonal();
 
     /**
      * <p>
@@ -197,8 +193,8 @@ interface Block2OrderSymmetricDiagonalMatrix
         }
 
         private static final class Block2OrderSymmetricDiagonalMatrixImpl
-                extends SkeletalSymmetricInvertibleDeterminantableMatrix<
-                        Block2OrderSymmetricDiagonalMatrixImpl, Block2OrderSymmetricDiagonalMatrix>
+                extends SkeletalInvertibleDeterminantableMatrix<
+                        Block2OrderSymmetricDiagonalMatrix, Block2OrderSymmetricDiagonalMatrix>
                 implements Block2OrderSymmetricDiagonalMatrix {
 
             /*
@@ -298,7 +294,7 @@ interface Block2OrderSymmetricDiagonalMatrix
              * @return -
              */
             @Override
-            protected Block2OrderSymmetricDiagonalMatrixImpl self() {
+            protected Block2OrderSymmetricDiagonalMatrix createTranspose() {
                 return this;
             }
 
@@ -349,6 +345,15 @@ interface Block2OrderSymmetricDiagonalMatrix
             }
 
             /**
+             * @throws MatrixFormatMismatchException {@inheritDoc }
+             * @throws NullPointerException {@inheritDoc }
+             */
+            @Override
+            public Vector operateTranspose(Vector operand) {
+                return operate(operand);
+            }
+
+            /**
              * このオブジェクトの文字列説明表現を返す.
              * 
              * <p>
@@ -381,6 +386,16 @@ interface Block2OrderSymmetricDiagonalMatrix
                 }
 
                 return new CreateInvAndDetWrapper().execute();
+            }
+
+            @Override
+            public Optional<Block2OrderSymmetricDiagonalMatrix> inverseAsBlock2OrderSymmetricDiagonal() {
+                return invAndDetStructSupplier.get().inverseMatrix();
+            }
+
+            @Override
+            public BandMatrix transposeAsEntryReadable() {
+                return transposeSupplier.get();
             }
 
             /**
