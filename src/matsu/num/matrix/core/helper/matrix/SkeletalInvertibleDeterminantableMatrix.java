@@ -16,12 +16,12 @@ import java.util.function.Supplier;
 import matsu.num.matrix.core.Determinantable;
 import matsu.num.matrix.core.Invertible;
 import matsu.num.matrix.core.Matrix;
-import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * 逆行列と行列式が計算可能な行列に対する, 骨格実装.
+ * 逆行列と行列式が計算可能な行列に対する,
+ * transpose, inverse, determinant に関わる骨格実装.
  * 
  * <p>
  * このクラスは, {@link SkeletalMatrix} による {@link #transpose()} の実装に加え,
@@ -35,17 +35,25 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * 以降はそのキャッシュから値を抽出して戻す.
  * </p>
  * 
- * @author Matsuura Y.
- * @param <CTT>
- *            生成する転置行列の型を表す. <br>
- *            {@link #createTranspose()} の型を決める.
+ * <p>
+ * このクラスはを型として扱ってはいけない.
+ * </p>
  * 
- * @param <IT> inverseのタイプ
+ * @implSpec
+ *               型をバインドしたクラスは {@code final} とするのが望ましい.
+ * 
+ * @author Matsuura Y.
+ * @param <TT>
+ *            生成する転置行列の型を表す. <br>
+ *            {@link #transpose()} の戻り値型にバインドされる型を決める.
+ * 
+ * @param <IT>
+ *            {@link #inverse()} の戻り値 {@code Optional} の要素型にバインドされる型を決める.
  */
 public abstract class SkeletalInvertibleDeterminantableMatrix<
-        CTT extends Matrix, IT extends Matrix>
-        extends SkeletalMatrix<CTT>
-        implements Matrix, Invertible, Determinantable, Symmetric {
+        TT extends Matrix, IT extends Matrix>
+        extends SkeletalMatrix<TT>
+        implements Matrix, Invertible, Determinantable {
 
     /**
      * (外部からの呼び出し不可)
@@ -61,18 +69,6 @@ public abstract class SkeletalInvertibleDeterminantableMatrix<
                 () -> this.createInvAndDetWrapper());
     }
 
-    /**
-     * `{@inheritDoc}
-     * 
-     * <p>
-     * <i><u>
-     * version 29 にMAJORアップする際に, 戻り値型が
-     * {@code Optional<Matrix>}
-     * になる可能性がある. <br>
-     * 変更になった場合, 再コンパイルが必要となるかもしれない.
-     * </u></i>
-     * </p>
-     */
     @SuppressWarnings("removal")
     @Override
     public final Optional<IT> inverse() {

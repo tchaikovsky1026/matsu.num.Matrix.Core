@@ -13,23 +13,26 @@ package matsu.num.matrix.core.helper.matrix;
 import matsu.num.matrix.core.EntryReadableMatrix;
 
 /**
- * 非対称な {@link EntryReadableMatrix} の骨格実装. <br>
- * {@link SkeletalMatrix} に準拠.
+ * 成分アクセス可能行列の,
+ * transpose に関わる骨格実装.
  * 
  * <p>
  * このクラスはを型として扱ってはいけない.
  * </p>
  * 
+ * @implSpec
+ *               型をバインドしたクラスは {@code final} とするのが望ましい.
+ * 
  * @author Matsuura Y.
- * @param <CTT>
+ * @param <T>
  *            生成する転置行列の型を表す. <br>
- *            {@link #createTranspose()} の型を決める.
+ *            {@link #transpose()} の戻り値型にバインドされる型を決める.
  * @param <ETT>
- *            {@link #transposeReadable()} の戻り値型を表す. <br>
+ *            {@link #transposeReadable()} の戻り値型にバインドされる型を決める. <br>
  *            インターフェースの実装規約に従うこと.
  */
-public abstract class SkeletalEntryReadableMatrix<CTT extends ETT, ETT extends EntryReadableMatrix>
-        extends SkeletalMatrix<CTT>
+public abstract class SkeletalEntryReadableMatrix<T extends ETT, ETT extends EntryReadableMatrix>
+        extends SkeletalMatrix<T>
         implements EntryReadableMatrix {
 
     /**

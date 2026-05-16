@@ -20,7 +20,8 @@ import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * 非対称な {@link Matrix} の骨格実装.
+ * 直交行列の,
+ * transpose, inverse に関わる骨格実装.
  * 
  * <p>
  * このクラスは, {@link Matrix#transpose()},
@@ -36,18 +37,22 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * このクラスはを型として扱ってはいけない.
  * </p>
  * 
+ * @implSpec
+ *               型をバインドしたクラスは {@code final} とするのが望ましい.
+ * 
  * @author Matsuura Y.
- * @param <CTT>
+ * @param <TT>
  *            生成する転置行列の型を表す. <br>
- *            {@link #createTranspose()} の型を決める.
+ *            {@link #transpose()} の戻り値型と,
+ *            {@link #inverse()} の戻り値 {@code Optional} の要素型にバインドされる型を決める.
  */
-public abstract class SkeletalOrthogonalMatrix<CTT extends OrthogonalMatrix>
+public abstract class SkeletalOrthogonalMatrix<TT extends OrthogonalMatrix>
         implements OrthogonalMatrix {
 
     /**
      * (外部からの呼び出し不可)
      */
-    protected final Supplier<Optional<CTT>> transposeSupplier;
+    protected final Supplier<Optional<TT>> transposeSupplier;
 
     /**
      * 唯一のコンストラクタ.
@@ -58,37 +63,15 @@ public abstract class SkeletalOrthogonalMatrix<CTT extends OrthogonalMatrix>
                 () -> Optional.of(this.createTranspose()));
     }
 
-    /**
-     * `{@inheritDoc}
-     * 
-     * <p>
-     * <i><u>
-     * version 29 にMAJORアップする際に, 戻り値型が {@link Matrix} になる可能性がある. <br>
-     * 変更になった場合, 再コンパイルが必要となるかもしれない.
-     * </u></i>
-     * </p>
-     */
     @Override
     @SuppressWarnings("removal")
-    public final CTT transpose() {
+    public final TT transpose() {
         return transposeSupplier.get().get();
     }
 
-    /**
-     * `{@inheritDoc}
-     * 
-     * <p>
-     * <i><u>
-     * version 29 にMAJORアップする際に, 戻り値型が
-     * {@code Optional<? extends Matrix>}
-     * になる可能性がある. <br>
-     * 変更になった場合, 再コンパイルが必要となるかもしれない.
-     * </u></i>
-     * </p>
-     */
     @Override
     @SuppressWarnings("removal")
-    public final Optional<CTT> inverse() {
+    public final Optional<TT> inverse() {
         return transposeSupplier.get();
     }
 
@@ -124,7 +107,7 @@ public abstract class SkeletalOrthogonalMatrix<CTT extends OrthogonalMatrix>
      * 
      * @return 自身の転置行列
      */
-    protected abstract CTT createTranspose();
+    protected abstract TT createTranspose();
 
     /**
      * このインスタンスの文字列説明表現を返す.

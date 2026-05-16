@@ -50,7 +50,7 @@ public interface DiagonalMatrix
         extends BandMatrix, Symmetric, Invertible, Determinantable {
 
     /**
-     * @implSpec
+     * @deprecated
      *               この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
      *               {@code Invertible.inverse()} か
      *               {@link #inverseDiag()}
