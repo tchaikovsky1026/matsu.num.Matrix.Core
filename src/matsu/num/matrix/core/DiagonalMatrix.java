@@ -84,8 +84,8 @@ public interface DiagonalMatrix
      * 
      * @return 逆行列
      */
-    public default Optional<DiagonalMatrix> inverseAsDiagonal() {
-        return inverse().map(t -> t);
+    public default Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+        return inverse();
     }
 
     /**
