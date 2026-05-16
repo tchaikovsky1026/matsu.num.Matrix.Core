@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core.block;
 
@@ -21,7 +21,7 @@ import matsu.num.matrix.core.OrthogonalMatrix;
 import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.Vector;
 import matsu.num.matrix.core.VectorDimension;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.ElementsTooManyException;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
@@ -33,8 +33,8 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * @author Matsuura Y.
  */
 final class SymmetricBlockDiagonalOrthogonalMatrix
-        extends SkeletalSymmetricOrthogonalMatrix<SymmetricBlockDiagonalOrthogonalMatrix>
-        implements BlockDiagonalOrthogonalMatrix {
+        extends SkeletalOrthogonalMatrix<OrthogonalMatrix>
+        implements BlockDiagonalOrthogonalMatrix, Symmetric {
 
     private final MatrixDimension matrixDimension;
     private final Collection<? extends OrthogonalMatrix> blockSeries;
@@ -81,6 +81,15 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
         }
 
         return this.merge(operated);
+    }
+
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throwsh NullPointerException {@inheritDoc}
+     */
+    @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
     }
 
     /**
@@ -154,7 +163,7 @@ final class SymmetricBlockDiagonalOrthogonalMatrix
      * @return -
      */
     @Override
-    protected SymmetricBlockDiagonalOrthogonalMatrix self() {
+    protected OrthogonalMatrix createTranspose() {
         return this;
     }
 

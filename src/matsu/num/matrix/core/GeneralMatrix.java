@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.9
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.DoubleFunction;
 
 import matsu.num.matrix.core.common.ArraysUtil;
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableUtil;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
@@ -31,7 +31,8 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * 
  * @author Matsuura Y.
  */
-public final class GeneralMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
+public final class GeneralMatrix
+        extends SkeletalEntryReadableMatrix<EntryReadableMatrix, EntryReadableMatrix>
         implements EntryReadableMatrix {
 
     /*

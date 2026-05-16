@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.core.common.ArraysUtil;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricInvertibleDeterminantableMatrix;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalInvertibleDeterminantableMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.DeterminantValues;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
@@ -29,8 +29,7 @@ import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
  * @author Matsuura Y.
  */
 final class DiagonalMatrixImpl
-        extends SkeletalSymmetricInvertibleDeterminantableMatrix<
-                DiagonalMatrixImpl, DiagonalMatrix>
+        extends SkeletalInvertibleDeterminantableMatrix<DiagonalMatrix, DiagonalMatrix>
         implements DiagonalMatrix {
 
     private final BandMatrixDimension bandMatrixDimension;
@@ -87,7 +86,7 @@ final class DiagonalMatrixImpl
      * @return -
      */
     @Override
-    protected DiagonalMatrixImpl self() {
+    protected DiagonalMatrix createTranspose() {
         return this;
     }
 
@@ -111,6 +110,11 @@ final class DiagonalMatrixImpl
         return builder.build();
     }
 
+    @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
+    }
+
     /**
      * -
      * 
@@ -130,6 +134,16 @@ final class DiagonalMatrixImpl
 
     private double calcEntryNormMax() {
         return Double.valueOf(ArraysUtil.normMax(this.diagonalEntry));
+    }
+
+    @Override
+    public BandMatrix transposeAsEntryReadable() {
+        return transposeSupplier.get();
+    }
+
+    @Override
+    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+        return invAndDetStructSupplier.get().inverseMatrix();
     }
 
     @Override
@@ -276,7 +290,7 @@ final class DiagonalMatrixImpl
      * originalインスタンスの行列式と逆行列関連のメソッドが呼ばれないようにする.
      */
     private static final class InverseAndDeterminantAttachedDiagonalMatrixImpl
-            extends SkeletalSymmetricMatrix<InverseAndDeterminantAttachedDiagonalMatrixImpl>
+            extends SkeletalEntryReadableMatrix<DiagonalMatrix, DiagonalMatrix>
             implements DiagonalMatrix {
 
         private final DiagonalMatrix original;
@@ -317,6 +331,11 @@ final class DiagonalMatrixImpl
         }
 
         @Override
+        public Vector operateTranspose(Vector operand) {
+            return operate(operand);
+        }
+
+        @Override
         public double determinant() {
             return this.determinantValues.determinant();
         }
@@ -332,12 +351,18 @@ final class DiagonalMatrixImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public Optional<? extends DiagonalMatrix> inverse() {
             return this.opInverse;
         }
 
         @Override
-        protected InverseAndDeterminantAttachedDiagonalMatrixImpl self() {
+        public Optional<DiagonalMatrix> inverseAsDiagonal() {
+            return this.opInverse;
+        }
+
+        @Override
+        protected DiagonalMatrix createTranspose() {
             return this;
         }
 

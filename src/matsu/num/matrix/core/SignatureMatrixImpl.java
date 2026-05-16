@@ -6,13 +6,14 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
 import java.util.Objects;
+import java.util.Optional;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
@@ -24,7 +25,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 final class SignatureMatrixImpl
-        extends SkeletalSymmetricOrthogonalMatrix<SignatureMatrixImpl>
+        extends SkeletalOrthogonalMatrix<SignatureMatrix>
         implements SignatureMatrix {
 
     private final BandMatrixDimension bandMatrixDimension;
@@ -93,6 +94,11 @@ final class SignatureMatrixImpl
     }
 
     @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
+    }
+
+    @Override
     public double determinant() {
         return this.even
                 ? 1d
@@ -116,6 +122,16 @@ final class SignatureMatrixImpl
         return this.even;
     }
 
+    @Override
+    public BandMatrix transposeAsEntryReadable() {
+        return transposeSupplier.get().get();
+    }
+
+    @Override
+    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+        return transposeSupplier.get();
+    }
+
     /**
      * -
      * 
@@ -126,7 +142,7 @@ final class SignatureMatrixImpl
      * @return -
      */
     @Override
-    protected SignatureMatrixImpl self() {
+    protected SignatureMatrix createTranspose() {
         return this;
     }
 

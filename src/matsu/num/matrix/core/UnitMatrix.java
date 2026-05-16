@@ -6,11 +6,13 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
+import java.util.Optional;
+
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
@@ -26,7 +28,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 public final class UnitMatrix
-        extends SkeletalSymmetricOrthogonalMatrix<UnitMatrix>
+        extends SkeletalOrthogonalMatrix<UnitMatrix>
         implements SignatureMatrix, PermutationMatrix, LowerUnitriangular {
 
     private final BandMatrixDimension bandMatrixDimension;
@@ -78,7 +80,7 @@ public final class UnitMatrix
      * @return -
      */
     @Override
-    protected UnitMatrix self() {
+    protected UnitMatrix createTranspose() {
         return this;
     }
 
@@ -91,6 +93,15 @@ public final class UnitMatrix
         MatrixValidationSupport.validateOperate(this.matrixDimension(), operand.vectorDimension());
 
         return operand;
+    }
+
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
     }
 
     @Override
@@ -126,6 +137,16 @@ public final class UnitMatrix
     @Override
     public boolean isEven() {
         return true;
+    }
+
+    @Override
+    public DiagonalMatrix transposeAsEntryReadable() {
+        return transposeSupplier.get().get();
+    }
+
+    @Override
+    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+        return transposeSupplier.get();
     }
 
     @Override

@@ -6,14 +6,14 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
@@ -24,7 +24,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 final class PermutationMatrixImpl
-        extends SkeletalAsymmetricOrthogonalMatrix<PermutationMatrix>
+        extends SkeletalOrthogonalMatrix<PermutationMatrix>
         implements PermutationMatrix {
 
     private final MatrixDimension matrixDimension;
@@ -147,6 +147,11 @@ final class PermutationMatrixImpl
     @Override
     public int signOfDeterminant() {
         return this.isEven() ? 1 : -1;
+    }
+
+    @Override
+    public EntryReadableMatrix transposeAsEntryReadable() {
+        return transposeSupplier.get().get();
     }
 
     @Override
@@ -337,6 +342,7 @@ final class PermutationMatrixImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public PermutationMatrix transpose() {
             return this.opInverse.get();
         }
@@ -382,8 +388,19 @@ final class PermutationMatrixImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public Optional<? extends PermutationMatrix> inverse() {
             return this.opInverse;
+        }
+
+        @Override
+        public EntryReadableMatrix transposeAsEntryReadable() {
+            return opInverse.get();
+        }
+
+        @Override
+        public OrthogonalMatrix transposeAsOrthogonal() {
+            return opInverse.get();
         }
 
         @Override
