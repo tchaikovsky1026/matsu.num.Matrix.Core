@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.15
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
@@ -51,10 +51,42 @@ public interface DiagonalMatrix
 
     /**
      * @implSpec
-     *               {@link Invertible#inverse()} に従う.
+     *               この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
+     *               {@code Invertible.inverse()} か
+     *               {@link #inverseAsDiagonal()}
+     *               を使用すべき.
+     * 
+     *               <p>
+     *               <i><u>
+     *               version 29 以降に削除され, {@code Invertible.inverse()}
+     *               が呼ばれるようになる.
+     *               </u></i>
+     *               </p>
      */
+    @Deprecated(forRemoval = true, since = "28.9")
     @Override
     public abstract Optional<? extends DiagonalMatrix> inverse();
+
+    /**
+     * この行列の逆行列を, 対角行列の形で返す. <br>
+     * 逆行列が存在しない場合は空を返す.
+     * 
+     * @implSpec
+     *               サブインターフェースでの型精密化を禁止する. <br>
+     *               その他は, {@link Invertible#transpose()} に従う.
+     * 
+     *               <p>
+     *               <i><u>
+     *               version 29 以降デフォルトメソッドが削除されるので,
+     *               実装側は必ずオーバーライドすること.
+     *               </u></i>
+     *               </p>
+     * 
+     * @return 逆行列
+     */
+    public default Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+        return inverse();
+    }
 
     /**
      * 

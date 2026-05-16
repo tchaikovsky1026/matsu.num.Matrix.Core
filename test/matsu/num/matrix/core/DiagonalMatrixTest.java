@@ -147,16 +147,18 @@ final class DiagonalMatrixTest {
             double[] expected = { 9, 3, 1 };
 
             assertThat(
-                    matrix.inverse().get().operate(right).entryAsArray(), is(expected));
-            assertThat(matrix.inverse().get().operate(right).entryAsArray(), is(expected));
+                    matrix.inverseAsDiagonal().get().operate(right).entryAsArray(), is(expected));
+            assertThat(matrix.inverseAsDiagonal().get().operate(right).entryAsArray(), is(expected));
 
         }
 
         @Test
         public void test_逆行列の行列式() {
-            assertThat(matrix.inverse().get().logAbsDeterminant(), is(closeTo(-matrix.logAbsDeterminant(), 1E-10)));
-            assertThat(matrix.inverse().get().signOfDeterminant(), is(matrix.signOfDeterminant()));
-            assertThat(matrix.inverse().get().determinant(), is(closeTo(1 / matrix.determinant(), 1E-10)));
+            assertThat(
+                    matrix.inverseAsDiagonal().get().logAbsDeterminant(),
+                    is(closeTo(-matrix.logAbsDeterminant(), 1E-10)));
+            assertThat(matrix.inverseAsDiagonal().get().signOfDeterminant(), is(matrix.signOfDeterminant()));
+            assertThat(matrix.inverseAsDiagonal().get().determinant(), is(closeTo(1 / matrix.determinant(), 1E-10)));
         }
 
         @Test
@@ -165,12 +167,15 @@ final class DiagonalMatrixTest {
             //注意:このテストは実装の詳細に依存している
 
             //逆行列の逆行列は自分自身
-            assertThat(matrix.inverse().get().inverse().get(), is(matrix));
+            assertThat(matrix.inverseAsDiagonal().get().inverseAsDiagonal().get(), is(matrix));
 
             //逆行列の複数回の呼び出しは同一インスタンスを返す
-            assertThat(matrix.inverse() == matrix.inverse(), is(true));
+            assertThat(matrix.inverseAsDiagonal() == matrix.inverseAsDiagonal(), is(true));
             //逆行列の逆行列の複数回の呼び出しは同一インスタンスを返す.
-            assertThat(matrix.inverse().get().inverse() == matrix.inverse().get().inverse(), is(true));
+            assertThat(
+                    matrix.inverseAsDiagonal().get().inverseAsDiagonal() == matrix.inverseAsDiagonal().get()
+                            .inverseAsDiagonal(),
+                    is(true));
 
         }
 
@@ -182,7 +187,7 @@ final class DiagonalMatrixTest {
             builder.setValue(2, 3);
             DiagonalMatrix matrix = builder.build();
 
-            matrix.inverse().orElseThrow();
+            matrix.inverseAsDiagonal().orElseThrow();
         }
     }
 
@@ -341,7 +346,7 @@ final class DiagonalMatrixTest {
 
             System.out.println(TEST_CLASS.getName());
             System.out.println(dm);
-            System.out.println(dm.inverse().get());
+            System.out.println(dm.inverseAsDiagonal().get());
             System.out.println();
         }
     }
