@@ -150,7 +150,7 @@ final class PermutationMatrixImpl
     }
 
     @Override
-    public EntryReadableMatrix transposeAsEntryReadable() {
+    public EntryReadableMatrix transposeReadable() {
         return transposeSupplier.get().get();
     }
 
@@ -394,12 +394,12 @@ final class PermutationMatrixImpl
         }
 
         @Override
-        public EntryReadableMatrix transposeAsEntryReadable() {
+        public EntryReadableMatrix transposeReadable() {
             return opInverse.get();
         }
 
         @Override
-        public OrthogonalMatrix transposeAsOrthogonal() {
+        public OrthogonalMatrix transposeOrth() {
             return opInverse.get();
         }
 

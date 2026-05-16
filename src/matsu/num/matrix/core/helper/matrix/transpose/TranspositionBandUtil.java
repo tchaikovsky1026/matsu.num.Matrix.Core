@@ -116,7 +116,7 @@ public final class TranspositionBandUtil {
         }
 
         @Override
-        public BandMatrix transposeAsEntryReadable() {
+        public BandMatrix transposeReadable() {
             return this.original;
         }
 

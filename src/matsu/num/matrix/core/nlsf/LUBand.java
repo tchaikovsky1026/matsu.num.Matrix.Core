@@ -90,7 +90,7 @@ public final class LUBand extends SkeletalLUTypeSolver<BandMatrix, Matrix> {
         // A^{-1} = (LDU)^{-1} = U^{-1}D^{-1}L^{-1}
         Matrix invMatrix = Matrix.multiply(
                 this.mxUt.inverse().get().transpose(),
-                this.mxD.inverseAsDiagonal().get(),
+                this.mxD.inverseDiag().get(),
                 this.mxL.inverse().get());
         return new InverstibleAndDeterminantStruct<>(det, invMatrix);
     }

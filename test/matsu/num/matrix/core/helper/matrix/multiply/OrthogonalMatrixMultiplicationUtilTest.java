@@ -215,14 +215,14 @@ final class OrthogonalMatrixMultiplicationUtilTest {
             //4積
             OrthogonalMatrix multi_1 = OrthogonalMatrixMultiplicationUtil.apply(m1, m2, m3, m4);
             System.out.println(multi_1);
-            System.out.println(multi_1.transposeAsOrthogonal());
+            System.out.println(multi_1.transposeOrth());
 
             //4積,逐次
             OrthogonalMatrix multi_2 = OrthogonalMatrixMultiplicationUtil.apply(
                     m1, m2,
                     OrthogonalMatrixMultiplicationUtil.apply(m3, m4));
             System.out.println(multi_2);
-            System.out.println(multi_2.transposeAsOrthogonal());
+            System.out.println(multi_2.transposeOrth());
 
             System.out.println();
         }

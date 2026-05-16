@@ -241,7 +241,7 @@ public final class Cholesky
              * となる.
              */
             final Matrix asymmInvSqrt = Matrix.multiply(
-                    this.mxSqrtD.inverseAsDiagonal().get(),
+                    this.mxSqrtD.inverseDiag().get(),
                     this.mxL.inverse().get());
 
             final double logDetSqrtL = this.mxSqrtD.logAbsDeterminant();

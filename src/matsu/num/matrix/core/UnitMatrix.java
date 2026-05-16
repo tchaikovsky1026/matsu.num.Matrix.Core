@@ -140,12 +140,12 @@ public final class UnitMatrix
     }
 
     @Override
-    public DiagonalMatrix transposeAsEntryReadable() {
+    public DiagonalMatrix transposeReadable() {
         return transposeSupplier.get().get();
     }
 
     @Override
-    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+    public Optional<? extends DiagonalMatrix> inverseDiag() {
         return transposeSupplier.get();
     }
 

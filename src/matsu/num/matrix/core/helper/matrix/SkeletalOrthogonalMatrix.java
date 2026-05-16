@@ -93,7 +93,7 @@ public abstract class SkeletalOrthogonalMatrix<CTT extends OrthogonalMatrix>
     }
 
     @Override
-    public final OrthogonalMatrix transposeAsOrthogonal() {
+    public final OrthogonalMatrix transposeOrth() {
         return transposeSupplier.get().get();
     }
 

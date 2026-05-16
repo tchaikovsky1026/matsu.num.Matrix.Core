@@ -25,7 +25,7 @@ import matsu.num.matrix.core.EntryReadableMatrix;
  *            生成する転置行列の型を表す. <br>
  *            {@link #createTranspose()} の型を決める.
  * @param <ETT>
- *            {@link #transposeAsEntryReadable()} の戻り値型を表す. <br>
+ *            {@link #transposeReadable()} の戻り値型を表す. <br>
  *            インターフェースの実装規約に従うこと.
  */
 public abstract class SkeletalEntryReadableMatrix<CTT extends ETT, ETT extends EntryReadableMatrix>
@@ -40,7 +40,7 @@ public abstract class SkeletalEntryReadableMatrix<CTT extends ETT, ETT extends E
     }
 
     @Override
-    public final ETT transposeAsEntryReadable() {
+    public final ETT transposeReadable() {
         return transposeSupplier.get();
     }
 

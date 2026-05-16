@@ -53,7 +53,7 @@ public interface DiagonalMatrix
      * @implSpec
      *               この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
      *               {@code Invertible.inverse()} か
-     *               {@link #inverseAsDiagonal()}
+     *               {@link #inverseDiag()}
      *               を使用すべき.
      * 
      *               <p>
@@ -84,7 +84,7 @@ public interface DiagonalMatrix
      * 
      * @return 逆行列
      */
-    public default Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+    public default Optional<? extends DiagonalMatrix> inverseDiag() {
         return inverse();
     }
 
@@ -93,7 +93,7 @@ public interface DiagonalMatrix
      * @deprecated
      *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
      *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeAsEntryReadable()}
+     *                 {@link #transposeReadable()}
      *                 を使用すべき.
      * 
      *                 <p>

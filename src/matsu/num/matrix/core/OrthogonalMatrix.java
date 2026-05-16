@@ -69,7 +69,7 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * @deprecated
      *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
      *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeAsOrthogonal()}
+     *                 {@link #transposeOrth()}
      *                 を使用すべき.
      * 
      *                 <p>
@@ -99,7 +99,7 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * 
      * @return 転置行列
      */
-    public default OrthogonalMatrix transposeAsOrthogonal() {
+    public default OrthogonalMatrix transposeOrth() {
         return transpose();
     }
 
@@ -110,7 +110,7 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      * @deprecated
      *                 この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
      *                 {@code Invertible.inverse()} か
-     *                 {@link #transposeAsOrthogonal()}
+     *                 {@link #transposeOrth()}
      *                 を使用すべき.
      * 
      *                 <p>

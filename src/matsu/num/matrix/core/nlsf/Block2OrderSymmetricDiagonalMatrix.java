@@ -394,7 +394,7 @@ interface Block2OrderSymmetricDiagonalMatrix
             }
 
             @Override
-            public BandMatrix transposeAsEntryReadable() {
+            public BandMatrix transposeReadable() {
                 return transposeSupplier.get();
             }
 

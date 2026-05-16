@@ -139,12 +139,12 @@ final class ZeroMatrixTest {
 
         @Test
         public void test_複数回の呼び出しで同一のインスタンス() {
-            assertThat(matrix.transposeAsEntryReadable() == matrix.transposeAsEntryReadable(), is(true));
+            assertThat(matrix.transposeReadable() == matrix.transposeReadable(), is(true));
         }
 
         @Test
         public void test_転置の転置は自身のインスタンス() {
-            assertThat(matrix.transposeAsEntryReadable().transposeAsEntryReadable() == matrix, is(true));
+            assertThat(matrix.transposeReadable().transposeReadable() == matrix, is(true));
         }
     }
 

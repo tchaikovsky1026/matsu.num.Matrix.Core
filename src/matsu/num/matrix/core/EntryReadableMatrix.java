@@ -72,7 +72,7 @@ public interface EntryReadableMatrix extends Matrix {
      * @deprecated
      *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
      *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeAsEntryReadable()}
+     *                 {@link #transposeReadable()}
      *                 を使用すべき.
      * 
      *                 <p>
@@ -102,7 +102,7 @@ public interface EntryReadableMatrix extends Matrix {
      * 
      * @return 転置行列
      */
-    public default EntryReadableMatrix transposeAsEntryReadable() {
+    public default EntryReadableMatrix transposeReadable() {
         return transpose();
     }
 

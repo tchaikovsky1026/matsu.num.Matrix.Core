@@ -124,7 +124,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
 
             Deque<OrthogonalMatrix> transposedSeries = new LinkedList<>();
             for (Iterator<OrthogonalMatrix> ite = this.series.descendingIterator(); ite.hasNext();) {
-                transposedSeries.add(ite.next().transposeAsOrthogonal());
+                transposedSeries.add(ite.next().transposeOrth());
             }
 
             return new TransposeAttachedMultipliedOrthogonalMatrix(
@@ -226,7 +226,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
             Deque<OrthogonalMatrix> series = new LinkedList<>();
             series.add(leftSide);
             series.add(mid);
-            series.add(leftSide.transposeAsOrthogonal());
+            series.add(leftSide.transposeOrth());
             this.wrappedSeriesMatrix = MultiplyingSeries.expand(series);
         }
 

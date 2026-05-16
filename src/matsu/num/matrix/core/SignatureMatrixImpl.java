@@ -123,12 +123,12 @@ final class SignatureMatrixImpl
     }
 
     @Override
-    public BandMatrix transposeAsEntryReadable() {
+    public BandMatrix transposeReadable() {
         return transposeSupplier.get().get();
     }
 
     @Override
-    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+    public Optional<? extends DiagonalMatrix> inverseDiag() {
         return transposeSupplier.get();
     }
 

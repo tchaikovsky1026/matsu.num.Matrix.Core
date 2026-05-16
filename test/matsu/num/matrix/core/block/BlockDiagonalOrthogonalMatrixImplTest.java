@@ -178,8 +178,8 @@ final class BlockDiagonalOrthogonalMatrixImplTest {
         public void test_文字列の表示() {
             System.out.println(TEST_CLASS.getName());
             System.out.println(mx);
-            System.out.println(mx.transposeAsOrthogonal());
-            System.out.println(mx.transposeAsOrthogonal().transposeAsOrthogonal());
+            System.out.println(mx.transposeOrth());
+            System.out.println(mx.transposeOrth().transposeOrth());
             System.out.println();
         }
     }

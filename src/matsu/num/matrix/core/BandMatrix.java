@@ -49,7 +49,7 @@ public interface BandMatrix extends EntryReadableMatrix {
      * @deprecated
      *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
      *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeAsEntryReadable()}
+     *                 {@link #transposeReadable()}
      *                 を使用すべき.
      * 
      *                 <p>
@@ -81,7 +81,7 @@ public interface BandMatrix extends EntryReadableMatrix {
      * @return 転置行列
      */
     @Override
-    public default BandMatrix transposeAsEntryReadable() {
+    public default BandMatrix transposeReadable() {
         return transpose();
     }
 

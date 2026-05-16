@@ -90,9 +90,9 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
         // A^{-1} = (PLDU)^{-1} = U^{-1}D^{-1}L^{-1}P^{-1}
         Matrix invMatrix = Matrix.multiply(
                 this.mxUt.inverse().get().transpose(),
-                this.mxD.inverseAsDiagonal().get(),
+                this.mxD.inverseDiag().get(),
                 this.mxL.inverse().get(),
-                this.mxP.transposeAsOrthogonal());
+                this.mxP.transposeOrth());
 
         return new InverstibleAndDeterminantStruct<Matrix>(det, invMatrix);
     }

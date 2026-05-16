@@ -116,7 +116,7 @@ public final class TranspositionEntryReadableUtil {
         }
 
         @Override
-        public EntryReadableMatrix transposeAsEntryReadable() {
+        public EntryReadableMatrix transposeReadable() {
             return this.original;
         }
 
