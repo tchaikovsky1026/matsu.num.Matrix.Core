@@ -351,7 +351,6 @@ final class DiagonalMatrixImpl
         }
 
         @Override
-        @SuppressWarnings("removal")
         public Optional<? extends DiagonalMatrix> inverse() {
             return this.opInverse;
         }

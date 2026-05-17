@@ -69,7 +69,6 @@ public abstract class SkeletalInvertibleDeterminantableMatrix<
                 () -> this.createInvAndDetWrapper());
     }
 
-    @SuppressWarnings("removal")
     @Override
     public final Optional<IT> inverse() {
         return this.invAndDetStructSupplier.get().inverseMatrix();

@@ -50,7 +50,6 @@ public final class ProductOrthogonalMatrix
     }
 
     @Override
-    @SuppressWarnings("removal")
     public ProductOrthogonalMatrix transpose() {
         return opTranspose.get();
     }
@@ -84,7 +83,6 @@ public final class ProductOrthogonalMatrix
     }
 
     @Override
-    @SuppressWarnings("removal")
     public Optional<ProductOrthogonalMatrix> inverse() {
         return opTranspose;
     }
