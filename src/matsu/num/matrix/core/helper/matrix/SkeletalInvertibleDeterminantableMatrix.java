@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core.helper.matrix;
 
@@ -15,15 +16,15 @@ import java.util.function.Supplier;
 import matsu.num.matrix.core.Determinantable;
 import matsu.num.matrix.core.Invertible;
 import matsu.num.matrix.core.Matrix;
-import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.helper.value.InverstibleAndDeterminantStruct;
 import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * 逆行列と行列式が計算可能な行列に対する, 骨格実装.
+ * 逆行列と行列式が計算可能な行列に対する,
+ * transpose, inverse, determinant に関わる骨格実装.
  * 
  * <p>
- * このクラスは, {@link SkeletalSymmetricMatrix} による {@link #transpose()} の実装に加え,
+ * このクラスは, {@link SkeletalMatrix} による {@link #transpose()} の実装に加え,
  * {@link #inverse()},
  * {@link #determinant()}, {@link #logAbsDeterminant()},
  * {@link #signOfDeterminant()}
@@ -34,31 +35,43 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * 以降はそのキャッシュから値を抽出して戻す.
  * </p>
  * 
+ * <p>
+ * このクラスはを型として扱ってはいけない.
+ * </p>
+ * 
+ * @implSpec
+ *               型をバインドしたクラスは {@code final} とするのが望ましい.
+ * 
  * @author Matsuura Y.
- * @param <MT> thisのタイプ, 再帰的ジェネリクスによりtransposeの戻り値型を具象クラスにゆだねる.
- * @param <IT> inverseのタイプ
+ * @param <TT>
+ *            生成する転置行列の型を表す. <br>
+ *            {@link #transpose()} の戻り値型にバインドされる型を決める.
+ * 
+ * @param <IT>
+ *            {@link #inverse()} の戻り値 {@code Optional} の要素型にバインドされる型を決める.
  */
-public abstract class SkeletalSymmetricInvertibleDeterminantableMatrix<
-        MT extends SkeletalSymmetricInvertibleDeterminantableMatrix<MT, IT>,
-        IT extends Matrix>
-        extends SkeletalSymmetricMatrix<MT>
-        implements Matrix, Invertible, Determinantable, Symmetric {
+public abstract class SkeletalInvertibleDeterminantableMatrix<
+        TT extends Matrix, IT extends Matrix>
+        extends SkeletalMatrix<TT>
+        implements Matrix, Invertible, Determinantable {
 
-    //循環参照が生じるため, 逆行列は遅延初期化
-    //逆行列と行列式はそれぞれの整合性のため, セットで扱う
-    private Supplier<InverstibleAndDeterminantStruct<IT>> invAndDetStructSupplier;
+    /**
+     * (外部からの呼び出し不可)
+     */
+    protected Supplier<InverstibleAndDeterminantStruct<IT>> invAndDetStructSupplier;
 
     /**
      * 骨格実装のコンストラクタ.
      */
-    protected SkeletalSymmetricInvertibleDeterminantableMatrix() {
+    protected SkeletalInvertibleDeterminantableMatrix() {
         super();
         this.invAndDetStructSupplier = ImmutableLazyCacheSupplier.of(
                 () -> this.createInvAndDetWrapper());
     }
 
+    @SuppressWarnings("removal")
     @Override
-    public final Optional<? extends IT> inverse() {
+    public final Optional<IT> inverse() {
         return this.invAndDetStructSupplier.get().inverseMatrix();
     }
 

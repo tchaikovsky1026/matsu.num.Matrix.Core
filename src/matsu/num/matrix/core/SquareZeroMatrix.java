@@ -12,7 +12,7 @@ package matsu.num.matrix.core;
 
 import java.util.Optional;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
@@ -27,7 +27,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 public final class SquareZeroMatrix
-        extends SkeletalSymmetricMatrix<SquareZeroMatrix>
+        extends SkeletalEntryReadableMatrix<SquareZeroMatrix, DiagonalMatrix>
         implements ZeroMatrix, DiagonalMatrix {
 
     private final BandMatrixDimension bandMatrixDimension;
@@ -93,6 +93,15 @@ public final class SquareZeroMatrix
         return this.zeroVector;
     }
 
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
+    }
+
     @Override
     public double determinant() {
         return 0d;
@@ -114,15 +123,14 @@ public final class SquareZeroMatrix
      * @return 空のオプショナル
      */
     @Override
+    @SuppressWarnings("removal")
     public Optional<? extends DiagonalMatrix> inverse() {
-        return Optional.empty();
+        return inverseDiag();
     }
 
     @Override
-    public String toString() {
-        return String.format(
-                "Matrix[dim: %s, zero]",
-                this.bandMatrixDimension().dimension());
+    public Optional<? extends DiagonalMatrix> inverseDiag() {
+        return Optional.empty();
     }
 
     /**
@@ -135,7 +143,14 @@ public final class SquareZeroMatrix
      * @return -
      */
     @Override
-    protected SquareZeroMatrix self() {
+    protected SquareZeroMatrix createTranspose() {
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Matrix[dim: %s, zero]",
+                this.bandMatrixDimension().dimension());
     }
 }

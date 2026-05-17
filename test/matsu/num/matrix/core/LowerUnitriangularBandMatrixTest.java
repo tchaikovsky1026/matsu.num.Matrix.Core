@@ -198,7 +198,7 @@ final class LowerUnitriangularBandMatrixTest {
         public void test_toString() {
             System.out.println(TEST_CLASS.getName());
             System.out.println(lbm);
-            System.out.println(lbm.transpose());
+            System.out.println(lbm.transposeReadable());
             System.out.println(lbm.inverse().get());
             System.out.println();
         }

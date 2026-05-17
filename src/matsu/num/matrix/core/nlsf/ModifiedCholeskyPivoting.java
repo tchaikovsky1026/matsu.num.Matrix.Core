@@ -95,7 +95,7 @@ public final class ModifiedCholeskyPivoting
         Matrix invMatrix = Matrix.symmetricMultiply(
                 this.mxM.inverse().get(),
                 Matrix.multiply(
-                        this.mxP.inverse().get().transpose(),
+                        this.mxP,
                         this.mxL.inverse().get().transpose()));
 
         return new InverstibleAndDeterminantStruct<Matrix>(determinantValues, invMatrix);

@@ -6,11 +6,11 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 
 /**
@@ -19,7 +19,8 @@ import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
  * @author Matsuura Y.
  */
 final class ZeroMatrixImpl
-        extends SkeletalAsymmetricMatrix<ZeroMatrix> implements ZeroMatrix {
+        extends SkeletalEntryReadableMatrix<ZeroMatrix, EntryReadableMatrix>
+        implements ZeroMatrix {
 
     private final MatrixDimension matrixDimension;
     private final Vector operatedVector;
@@ -140,8 +141,14 @@ final class ZeroMatrixImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public ZeroMatrix transpose() {
             return this.transpose;
+        }
+
+        @Override
+        public EntryReadableMatrix transposeReadable() {
+            return transpose;
         }
 
         @Override

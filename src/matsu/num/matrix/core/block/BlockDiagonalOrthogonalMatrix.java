@@ -10,7 +10,6 @@
 package matsu.num.matrix.core.block;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import matsu.num.matrix.core.OrthogonalMatrix;
 
@@ -45,9 +44,4 @@ interface BlockDiagonalOrthogonalMatrix extends OrthogonalMatrix {
      */
     public abstract Collection<? extends OrthogonalMatrix> toSeries();
 
-    @Override
-    public abstract BlockDiagonalOrthogonalMatrix transpose();
-
-    @Override
-    public abstract Optional<? extends BlockDiagonalOrthogonalMatrix> inverse();
 }

@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.9
+ * 2026.5.16
  */
 package matsu.num.matrix.core.helper.matrix.transpose;
 
@@ -110,7 +110,13 @@ public final class TranspositionBandUtil {
         }
 
         @Override
+        @SuppressWarnings("removal")
         public BandMatrix transpose() {
+            return this.original;
+        }
+
+        @Override
+        public BandMatrix transposeReadable() {
             return this.original;
         }
 

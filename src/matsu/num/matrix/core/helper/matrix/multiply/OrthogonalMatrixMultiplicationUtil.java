@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core.helper.matrix.multiply;
 
@@ -21,8 +21,7 @@ import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.OrthogonalMatrix;
 import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.Vector;
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricOrthogonalMatrix;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 
@@ -76,7 +75,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
      * 直交行列の行列積を表現する行列.
      */
     private static final class MultiplyingSeries
-            extends SkeletalAsymmetricOrthogonalMatrix<MultipliedOrthogonalMatrix>
+            extends SkeletalOrthogonalMatrix<OrthogonalMatrix>
             implements MultipliedOrthogonalMatrix {
 
         private final Deque<OrthogonalMatrix> series;
@@ -121,11 +120,11 @@ public final class OrthogonalMatrixMultiplicationUtil {
         }
 
         @Override
-        protected MultipliedOrthogonalMatrix createTranspose() {
+        protected OrthogonalMatrix createTranspose() {
 
             Deque<OrthogonalMatrix> transposedSeries = new LinkedList<>();
             for (Iterator<OrthogonalMatrix> ite = this.series.descendingIterator(); ite.hasNext();) {
-                transposedSeries.add(ite.next().transpose());
+                transposedSeries.add(ite.next().transposeOrth());
             }
 
             return new TransposeAttachedMultipliedOrthogonalMatrix(
@@ -206,7 +205,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
     }
 
     private static final class SymmetricMultipliedMatrix
-            extends SkeletalSymmetricOrthogonalMatrix<SymmetricMultipliedMatrix>
+            extends SkeletalOrthogonalMatrix<OrthogonalMatrix>
             implements MultipliedOrthogonalMatrix {
 
         private final MultipliedOrthogonalMatrix wrappedSeriesMatrix;
@@ -227,7 +226,7 @@ public final class OrthogonalMatrixMultiplicationUtil {
             Deque<OrthogonalMatrix> series = new LinkedList<>();
             series.add(leftSide);
             series.add(mid);
-            series.add(leftSide.transpose());
+            series.add(leftSide.transposeOrth());
             this.wrappedSeriesMatrix = MultiplyingSeries.expand(series);
         }
 
@@ -242,12 +241,17 @@ public final class OrthogonalMatrixMultiplicationUtil {
         }
 
         @Override
+        public Vector operateTranspose(Vector operand) {
+            return operate(operand);
+        }
+
+        @Override
         public Deque<? extends OrthogonalMatrix> toSeries() {
             return this.wrappedSeriesMatrix.toSeries();
         }
 
         @Override
-        protected SymmetricMultipliedMatrix self() {
+        protected OrthogonalMatrix createTranspose() {
             return this;
         }
 
@@ -295,11 +299,18 @@ public final class OrthogonalMatrixMultiplicationUtil {
         }
 
         @Override
+        @SuppressWarnings("removal")
         public MultipliedOrthogonalMatrix transpose() {
             return this.opTranspose.get();
         }
 
         @Override
+        public OrthogonalMatrix transposeOrth() {
+            return this.opTranspose.get();
+        }
+
+        @Override
+        @SuppressWarnings("removal")
         public Optional<? extends MultipliedOrthogonalMatrix> inverse() {
             return this.opTranspose;
         }

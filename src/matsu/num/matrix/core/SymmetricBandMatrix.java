@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import matsu.num.matrix.core.common.ArraysUtil;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
 import matsu.num.matrix.core.helper.value.MatrixRejectionConstant;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
@@ -33,7 +33,7 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * @author Matsuura Y.
  */
 public final class SymmetricBandMatrix
-        extends SkeletalSymmetricMatrix<SymmetricBandMatrix>
+        extends SkeletalEntryReadableMatrix<SymmetricBandMatrix, BandMatrix>
         implements BandMatrix, Symmetric {
     /*
      * 行列の各要素は対角成分, 副対角成分に分けて, それぞれ1次元配列として扱う.
@@ -109,7 +109,7 @@ public final class SymmetricBandMatrix
      * @return -
      */
     @Override
-    protected SymmetricBandMatrix self() {
+    protected SymmetricBandMatrix createTranspose() {
         return this;
     }
 
@@ -177,6 +177,15 @@ public final class SymmetricBandMatrix
         var builder = Vector.Builder.zeroBuilder(vectorDimension);
         builder.setEntryValue(resultEntry);
         return builder.build();
+    }
+
+    /**
+     * @throws MatrixFormatMismatchException {@inheritDoc}
+     * @throws NullPointerException {@inheritDoc}
+     */
+    @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
     }
 
     @Override

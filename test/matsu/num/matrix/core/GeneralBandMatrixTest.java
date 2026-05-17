@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 
 /**
  * {@link GeneralBandMatrix} クラスのテスト.
@@ -143,7 +143,8 @@ final class GeneralBandMatrixTest {
 
     public static class fromBandMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalAsymmetricMatrix<BandMatrix> implements BandMatrix {
+        private static class WrappedMatrix extends SkeletalEntryReadableMatrix<BandMatrix, BandMatrix>
+                implements BandMatrix {
 
             private final BandMatrix mx;
 
@@ -153,7 +154,7 @@ final class GeneralBandMatrixTest {
 
             @Override
             protected BandMatrix createTranspose() {
-                return mx.transpose();
+                return mx.transposeReadable();
             }
 
             @Override

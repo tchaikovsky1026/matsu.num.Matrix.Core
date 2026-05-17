@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2024.11.23
+ * 2026.5.14
  */
 package matsu.num.matrix.core.validation;
 
@@ -37,19 +37,13 @@ public final class MatrixRejected extends MatrixStructureAcceptance {
         this.explanation = explanation;
     }
 
-    /**
-     * rejectを返す.
-     */
+    /** rejectを返す. */
     @Override
     Type type() {
         return Type.REJECTED;
     }
 
-    /**
-     * このインスタンスの拒絶理由に適した例外インスタンスを取得する.
-     * 
-     * @return スローすべき例外
-     */
+    /** このインスタンスの拒絶理由に適した例外インスタンスを取得する. */
     @Override
     public IllegalArgumentException getException(Object cause) {
         return this.exceptionGetter.apply(cause);

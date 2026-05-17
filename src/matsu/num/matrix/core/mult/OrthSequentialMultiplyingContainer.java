@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.14
+ * 2026.5.15
  */
 package matsu.num.matrix.core.mult;
 
@@ -28,7 +28,8 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * {@link #operateRightSide(OrthogonalMatrix)}
  * をコールし, 状態を更新していく. <br>
  * 状態更新が完了したら, ビルドメソッド
- * {@link #build()} をコールし, 直交行列を構築する.
+ * {@link #build()} をコールし, 直交行列を構築する. <br>
+ * 構築された行列は, {@link ProductOrthogonalMatrix} 型となる.
  * </p>
  * 
  * <p>
