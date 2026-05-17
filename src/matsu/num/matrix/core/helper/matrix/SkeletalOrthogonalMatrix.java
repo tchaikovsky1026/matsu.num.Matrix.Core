@@ -64,13 +64,11 @@ public abstract class SkeletalOrthogonalMatrix<TT extends OrthogonalMatrix>
     }
 
     @Override
-    @SuppressWarnings("removal")
     public final TT transpose() {
         return transposeSupplier.get().get();
     }
 
     @Override
-    @SuppressWarnings("removal")
     public final Optional<TT> inverse() {
         return transposeSupplier.get();
     }

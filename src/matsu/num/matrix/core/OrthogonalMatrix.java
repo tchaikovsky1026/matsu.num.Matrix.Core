@@ -6,11 +6,9 @@
  */
 
 /*
- * 2026.5.15
+ * 2026.5.17
  */
 package matsu.num.matrix.core;
-
-import java.util.Optional;
 
 import matsu.num.matrix.core.helper.matrix.multiply.OrthogonalMatrixMultiplicationUtil;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
@@ -64,66 +62,15 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 public interface OrthogonalMatrix extends Matrix, Invertible {
 
     /**
-     * 
-     * @deprecated
-     *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
-     *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeOrth()}
-     *                 を使用すべき.
-     * 
-     *                 <p>
-     *                 <i><u>
-     *                 version 29 以降に削除され, {@code Matrix.transpose()}
-     *                 が呼ばれるようになる.
-     *                 </u></i>
-     *                 </p>
-     */
-    @Deprecated(forRemoval = true, since = "28.9")
-    @Override
-    public abstract OrthogonalMatrix transpose();
-
-    /**
      * この行列の転置行列を, 直交行列の形で返す.
      * 
      * @implSpec
      *               サブインターフェースでの型精密化を禁止する. <br>
      *               その他は, {@link Matrix#transpose()} に従う.
      * 
-     *               <p>
-     *               <i><u>
-     *               version 29 以降デフォルトメソッドが削除されるので,
-     *               実装側は必ずオーバーライドすること.
-     *               </u></i>
-     *               </p>
-     * 
      * @return 転置行列
      */
-    public default OrthogonalMatrix transposeOrth() {
-        return transpose();
-    }
-
-    /**
-     * 逆行列を取得する. <br>
-     * 必ず逆行列が存在するため, 戻り値は空でない.
-     * 
-     * @deprecated
-     *                 この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
-     *                 {@code Invertible.inverse()} か
-     *                 {@link #transposeOrth()}
-     *                 を使用すべき.
-     * 
-     *                 <p>
-     *                 <i><u>
-     *                 version 29 以降に削除され, {@code Invertible.inverse()}
-     *                 が呼ばれるようになる.
-     *                 </u></i>
-     *                 </p>
-     * 
-     * @return {@inheritDoc }, 空でない
-     */
-    @Deprecated(forRemoval = true, since = "28.9")
-    @Override
-    public abstract Optional<? extends OrthogonalMatrix> inverse();
+    public abstract OrthogonalMatrix transposeOrth();
 
     /**
      * 1個以上の直交行列に対し, それらの行列積を返す.

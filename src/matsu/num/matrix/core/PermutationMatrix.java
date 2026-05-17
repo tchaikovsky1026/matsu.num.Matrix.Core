@@ -9,8 +9,6 @@
  */
 package matsu.num.matrix.core;
 
-import java.util.Optional;
-
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -55,45 +53,6 @@ public interface PermutationMatrix
      * @return 偶置換のときtrue
      */
     public abstract boolean isEven();
-
-    /**
-     * 
-     * @deprecated
-     *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
-     *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeOrth()}
-     *                 を使用すべき.
-     * 
-     *                 <p>
-     *                 <i><u>
-     *                 version 29 以降に削除され, {@code Matrix.transpose()}
-     *                 が呼ばれるようになる.
-     *                 </u></i>
-     *                 </p>
-     */
-    @Deprecated(forRemoval = true, since = "28.9")
-    @Override
-    @SuppressWarnings("removal")
-    public abstract PermutationMatrix transpose();
-
-    /**
-     * @deprecated
-     *                 この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
-     *                 {@code Invertible.inverse()} か
-     *                 {@link #transposeOrth()}
-     *                 を使用すべき.
-     * 
-     *                 <p>
-     *                 <i><u>
-     *                 version 29 以降に削除され, {@code Invertible.inverse()}
-     *                 が呼ばれるようになる.
-     *                 </u></i>
-     *                 </p>
-     */
-    @Deprecated(forRemoval = true, since = "28.9")
-    @Override
-    @SuppressWarnings("removal")
-    public abstract Optional<? extends PermutationMatrix> inverse();
 
     /**
      * 置換行列の実装を提供するビルダ. <br>

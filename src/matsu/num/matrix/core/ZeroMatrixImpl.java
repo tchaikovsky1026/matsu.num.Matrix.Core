@@ -141,7 +141,6 @@ final class ZeroMatrixImpl
         }
 
         @Override
-        @SuppressWarnings("removal")
         public ZeroMatrix transpose() {
             return this.transpose;
         }

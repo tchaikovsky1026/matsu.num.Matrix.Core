@@ -56,7 +56,6 @@ public abstract class SkeletalMatrix<T extends Matrix> implements Matrix {
     }
 
     @Override
-    @SuppressWarnings("removal")
     public final T transpose() {
         return this.transposeSupplier.get();
     }

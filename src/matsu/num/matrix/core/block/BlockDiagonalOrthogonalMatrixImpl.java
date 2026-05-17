@@ -263,13 +263,11 @@ final class BlockDiagonalOrthogonalMatrixImpl
         }
 
         @Override
-        @SuppressWarnings("removal")
         public OrthogonalMatrix transpose() {
             return this.opTranspose.get();
         }
 
         @Override
-        @SuppressWarnings("removal")
         public Optional<? extends OrthogonalMatrix> inverse() {
             return this.opTranspose;
         }
