@@ -305,6 +305,11 @@ public final class OrthogonalMatrixMultiplicationUtil {
         }
 
         @Override
+        public OrthogonalMatrix transposeOrth() {
+            return this.opTranspose.get();
+        }
+
+        @Override
         @SuppressWarnings("removal")
         public Optional<? extends MultipliedOrthogonalMatrix> inverse() {
             return this.opTranspose;
