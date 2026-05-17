@@ -61,7 +61,7 @@ public final class HouseholderQR
         this.mxD = helper.mxD();
         this.mxRt = helper.mxRt();
 
-        assert this.mxD.inverseAsDiagonal().isPresent();
+        assert this.mxD.inverseDiag().isPresent();
     }
 
     @Override
@@ -88,9 +88,9 @@ public final class HouseholderQR
                 this.target.matrixDimension().transpose());
 
         return Matrix.multiply(
-                this.mxD.inverseAsDiagonal().get(),
+                this.mxD.inverseDiag().get(),
                 mxInvExtR,
-                this.mxQ.transposeAsOrthogonal());
+                this.mxQ.transposeOrth());
     }
 
     /**

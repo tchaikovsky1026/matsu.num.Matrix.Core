@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.16
+ * 2026.5.17
  */
 package matsu.num.matrix.core;
 
@@ -140,12 +140,12 @@ public final class UnitMatrix
     }
 
     @Override
-    public DiagonalMatrix transposeAsEntryReadable() {
+    public BandMatrix transposeReadable() {
         return transposeSupplier.get().get();
     }
 
     @Override
-    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+    public Optional<? extends DiagonalMatrix> inverseDiag() {
         return transposeSupplier.get();
     }
 

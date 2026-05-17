@@ -44,7 +44,7 @@ public interface SignatureMatrix
      * @deprecated
      *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
      *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeAsOrthogonal()}
+     *                 {@link #transposeOrth()}
      *                 を使用すべき.
      * 
      *                 <p>
@@ -63,7 +63,7 @@ public interface SignatureMatrix
      * @deprecated
      *                 この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
      *                 {@code Invertible.inverse()} か
-     *                 {@link #transposeAsOrthogonal()}
+     *                 {@link #transposeOrth()}
      *                 を使用すべき.
      * 
      *                 <p>

@@ -147,7 +147,7 @@ final class ZeroMatrixImpl
         }
 
         @Override
-        public EntryReadableMatrix transposeAsEntryReadable() {
+        public EntryReadableMatrix transposeReadable() {
             return transpose;
         }
 

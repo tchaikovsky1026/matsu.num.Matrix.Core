@@ -49,7 +49,7 @@ abstract class SkeletalVectorAccessibleMatrix implements EntryReadableMatrix {
     public abstract EntryReadableMatrix transpose();
 
     @Override
-    public final EntryReadableMatrix transposeAsEntryReadable() {
+    public final EntryReadableMatrix transposeReadable() {
         return transpose();
     }
 

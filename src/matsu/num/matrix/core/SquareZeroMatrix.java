@@ -125,11 +125,11 @@ public final class SquareZeroMatrix
     @Override
     @SuppressWarnings("removal")
     public Optional<? extends DiagonalMatrix> inverse() {
-        return inverseAsDiagonal();
+        return inverseDiag();
     }
 
     @Override
-    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+    public Optional<? extends DiagonalMatrix> inverseDiag() {
         return Optional.empty();
     }
 

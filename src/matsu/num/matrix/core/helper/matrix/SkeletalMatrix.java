@@ -17,7 +17,8 @@ import matsu.num.matrix.core.Symmetric;
 import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
 
 /**
- * 非対称な {@link Matrix} の骨格実装.
+ * 行列の,
+ * transpose に関わる骨格実装.
  * 
  * <p>
  * このクラスは, {@link Matrix#transpose()} の適切な実装を提供する. <br>
@@ -31,17 +32,20 @@ import matsu.num.matrix.core.lazy.ImmutableLazyCacheSupplier;
  * このクラスはを型として扱ってはいけない.
  * </p>
  * 
+ * @implSpec
+ *               型をバインドしたクラスは {@code final} とするのが望ましい.
+ * 
  * @author Matsuura Y.
- * @param <CTT>
+ * @param <T>
  *            生成する転置行列の型を表す. <br>
- *            {@link #createTranspose()} の型を決める.
+ *            {@link #transpose()} の戻り値型にバインドされる型を決める.
  */
-public abstract class SkeletalMatrix<CTT extends Matrix> implements Matrix {
+public abstract class SkeletalMatrix<T extends Matrix> implements Matrix {
 
     /**
      * (外部からの呼び出し不可)
      */
-    protected final Supplier<CTT> transposeSupplier;
+    protected final Supplier<T> transposeSupplier;
 
     /**
      * 唯一のコンストラクタ.
@@ -51,19 +55,9 @@ public abstract class SkeletalMatrix<CTT extends Matrix> implements Matrix {
         this.transposeSupplier = ImmutableLazyCacheSupplier.of(() -> this.createTranspose());
     }
 
-    /**
-     * `{@inheritDoc}
-     * 
-     * <p>
-     * <i><u>
-     * version 29 にMAJORアップする際に, 戻り値型が {@link Matrix} になる可能性がある. <br>
-     * 変更になった場合, 再コンパイルが必要となるかもしれない.
-     * </u></i>
-     * </p>
-     */
     @Override
     @SuppressWarnings("removal")
-    public final CTT transpose() {
+    public final T transpose() {
         return this.transposeSupplier.get();
     }
 
@@ -94,7 +88,7 @@ public abstract class SkeletalMatrix<CTT extends Matrix> implements Matrix {
      * 
      * @return 自身の転置行列
      */
-    protected abstract CTT createTranspose();
+    protected abstract T createTranspose();
 
     /**
      * このインスタンスの文字列説明表現を返す.

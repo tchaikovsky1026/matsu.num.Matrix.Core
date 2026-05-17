@@ -38,7 +38,7 @@ public interface ZeroMatrix extends EntryReadableMatrix {
      * @deprecated
      *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
      *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeAsEntryReadable()}
+     *                 {@link #transposeReadable()}
      *                 を使用すべき.
      * 
      *                 <p>

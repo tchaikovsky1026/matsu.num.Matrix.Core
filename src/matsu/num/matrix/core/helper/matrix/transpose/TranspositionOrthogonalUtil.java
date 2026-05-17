@@ -118,7 +118,7 @@ public final class TranspositionOrthogonalUtil {
         }
 
         @Override
-        public OrthogonalMatrix transposeAsOrthogonal() {
+        public OrthogonalMatrix transposeOrth() {
             return this.original.get();
         }
 

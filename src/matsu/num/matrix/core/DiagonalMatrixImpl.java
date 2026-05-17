@@ -137,12 +137,12 @@ final class DiagonalMatrixImpl
     }
 
     @Override
-    public BandMatrix transposeAsEntryReadable() {
+    public BandMatrix transposeReadable() {
         return transposeSupplier.get();
     }
 
     @Override
-    public Optional<? extends DiagonalMatrix> inverseAsDiagonal() {
+    public Optional<? extends DiagonalMatrix> inverseDiag() {
         return invAndDetStructSupplier.get().inverseMatrix();
     }
 
@@ -357,7 +357,7 @@ final class DiagonalMatrixImpl
         }
 
         @Override
-        public Optional<DiagonalMatrix> inverseAsDiagonal() {
+        public Optional<DiagonalMatrix> inverseDiag() {
             return this.opInverse;
         }
 

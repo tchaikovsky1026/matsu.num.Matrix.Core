@@ -179,11 +179,11 @@ final class PermutationMatrixTest {
             //遅延初期化の可能性を考え2回実行パターン,逆行列の逆行列のテスト
             // 転置で代用
             assertThat(
-                    original.transposeAsOrthogonal().transposeAsOrthogonal().transposeAsOrthogonal().operate(right)
+                    original.transposeOrth().transposeOrth().transposeOrth().operate(right)
                             .entryAsArray(),
                     is(original.operateTranspose(right).entryAsArray()));
             assertThat(
-                    original.transposeAsOrthogonal().operate(right).entryAsArray(),
+                    original.transposeOrth().operate(right).entryAsArray(),
                     is(original.operateTranspose(right).entryAsArray()));
         }
 
@@ -191,14 +191,14 @@ final class PermutationMatrixTest {
         public void test_inverse_operateTransposeはoriginal_operateに等しい() {
             // 転置で代用
             assertThat(
-                    original.transposeAsOrthogonal().operateTranspose(right).entryAsArray(),
+                    original.transposeOrth().operateTranspose(right).entryAsArray(),
                     is(original.operate(right).entryAsArray()));
         }
 
         @Test
         public void test_inverse_inverse_operateはoriginal_operateに等しい() {
             assertThat(
-                    original.transposeAsEntryReadable().transposeAsEntryReadable().operate(right).entryAsArray(),
+                    original.transposeReadable().transposeReadable().operate(right).entryAsArray(),
                     is(original.operate(right).entryAsArray()));
         }
 
@@ -206,7 +206,7 @@ final class PermutationMatrixTest {
         public void test_inverse_inverse_operateTransposeはoriginal_operateTransposeに等しい() {
             // 転置で代用
             assertThat(
-                    original.transposeAsEntryReadable().transposeAsEntryReadable().operateTranspose(right)
+                    original.transposeReadable().transposeReadable().operateTranspose(right)
                             .entryAsArray(),
                     is(original.operateTranspose(right).entryAsArray()));
         }
@@ -230,7 +230,7 @@ final class PermutationMatrixTest {
         public void test_toString() {
             System.out.println(TEST_CLASS.getName());
             System.out.println(pm);
-            System.out.println(pm.transposeAsOrthogonal());
+            System.out.println(pm.transposeOrth());
             System.out.println();
         }
     }

@@ -96,7 +96,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
 
         // A^{-1} = (LD(L^T))^{-1} = L^{-T}D^{-1}L^{-1} = (L^{-T})D^{-1}(L^{-T})^T
         Matrix invMatrix = Matrix.symmetricMultiply(
-                this.mxD.inverseAsDiagonal().get(),
+                this.mxD.inverseDiag().get(),
                 this.mxL.inverse().get().transpose());
 
         return new InverstibleAndDeterminantStruct<Matrix>(det, invMatrix);

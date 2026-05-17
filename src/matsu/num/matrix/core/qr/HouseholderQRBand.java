@@ -57,7 +57,7 @@ public final class HouseholderQRBand
         this.mxD = helper.mxD();
         this.mxRt = helper.mxRt();
 
-        assert this.mxD.inverseAsDiagonal().isPresent();
+        assert this.mxD.inverseDiag().isPresent();
     }
 
     @Override
@@ -77,9 +77,9 @@ public final class HouseholderQRBand
          * である.
          */
         return Matrix.multiply(
-                this.mxD.inverseAsDiagonal().get(),
+                this.mxD.inverseDiag().get(),
                 this.mxRt.inverse().get().transpose(),
-                this.mxQ.transposeAsOrthogonal());
+                this.mxQ.transposeOrth());
     }
 
     /**

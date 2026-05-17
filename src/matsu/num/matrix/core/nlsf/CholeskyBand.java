@@ -231,7 +231,7 @@ public final class CholeskyBand
             // A = BB^Tとすれば,
             // B^{-1} = D^{-1/2}L^{-1}
             final Matrix asymmInvSqrt = Matrix.multiply(
-                    this.mxSqrtD.inverseAsDiagonal().get(),
+                    this.mxSqrtD.inverseDiag().get(),
                     this.mxL.inverse().get());
 
             final double logDetSqrtL = this.mxSqrtD.logAbsDeterminant();
