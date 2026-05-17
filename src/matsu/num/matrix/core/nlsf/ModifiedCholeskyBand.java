@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.26
+ * 2026.5.16
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -95,7 +96,7 @@ public final class ModifiedCholeskyBand extends SkeletalLUTypeSolver<BandMatrix,
 
         // A^{-1} = (LD(L^T))^{-1} = L^{-T}D^{-1}L^{-1} = (L^{-T})D^{-1}(L^{-T})^T
         Matrix invMatrix = Matrix.symmetricMultiply(
-                this.mxD.inverse().get(),
+                this.mxD.inverseDiag().get(),
                 this.mxL.inverse().get().transpose());
 
         return new InverstibleAndDeterminantStruct<Matrix>(det, invMatrix);

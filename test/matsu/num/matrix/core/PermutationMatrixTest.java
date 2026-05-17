@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricOrthogonalMatrix;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -177,77 +176,41 @@ final class PermutationMatrixTest {
         @Test
         public void test_inverse_operateはoriginal_operateTransposeに等しい() {
 
-            //遅延初期化の可能性を考え2回実行パターン,逆行列の逆行列のテスト 
+            //遅延初期化の可能性を考え2回実行パターン,逆行列の逆行列のテスト
+            // 転置で代用
             assertThat(
-                    original.inverse().get().inverse().get().inverse().get().operate(right).entryAsArray(),
+                    original.transposeOrth().transposeOrth().transposeOrth().operate(right)
+                            .entryAsArray(),
                     is(original.operateTranspose(right).entryAsArray()));
             assertThat(
-                    original.inverse().get().operate(right).entryAsArray(),
+                    original.transposeOrth().operate(right).entryAsArray(),
                     is(original.operateTranspose(right).entryAsArray()));
         }
 
         @Test
         public void test_inverse_operateTransposeはoriginal_operateに等しい() {
+            // 転置で代用
             assertThat(
-                    original.inverse().get().operateTranspose(right).entryAsArray(),
+                    original.transposeOrth().operateTranspose(right).entryAsArray(),
                     is(original.operate(right).entryAsArray()));
         }
 
         @Test
         public void test_inverse_inverse_operateはoriginal_operateに等しい() {
             assertThat(
-                    original.inverse().get().inverse().get().operate(right).entryAsArray(),
+                    original.transposeReadable().transposeReadable().operate(right).entryAsArray(),
                     is(original.operate(right).entryAsArray()));
         }
 
         @Test
         public void test_inverse_inverse_operateTransposeはoriginal_operateTransposeに等しい() {
+            // 転置で代用
             assertThat(
-                    original.inverse().get().inverse().get().operateTranspose(right).entryAsArray(),
+                    original.transposeReadable().transposeReadable().operateTranspose(right)
+                            .entryAsArray(),
                     is(original.operateTranspose(right).entryAsArray()));
         }
 
-    }
-
-    public static class OrthogonalMatrixの骨格実装のテストを兼ねる {
-
-        private OrthogonalMatrix original;
-
-        @Before
-        public void before_直交行列生成() {
-            PermutationMatrix.Builder builder = PermutationMatrix.Builder.unitBuilder(MatrixDimension.square(3));
-            builder.swapRows(0, 1);
-            builder.swapRows(1, 2);
-            original = builder.build();
-        }
-
-        @Test
-        public void test_逆行列の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalAsymmetricOrthogonalMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                //オプショナルの一致でテスト
-                assertThat(original.inverse() == original.inverse(), is(true));
-            }
-
-        }
-
-        @Test
-        public void test_逆行列の逆行列の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalAsymmetricOrthogonalMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.inverse().get().inverse() == original.inverse().get().inverse(), is(true));
-            }
-
-        }
-
-        @Test
-        public void test_逆行列の逆行列は自身と同一() {
-            if (original instanceof SkeletalAsymmetricOrthogonalMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.inverse().get().inverse().get(), is(original));
-            }
-
-        }
     }
 
     public static class toString表示 {
@@ -267,7 +230,7 @@ final class PermutationMatrixTest {
         public void test_toString() {
             System.out.println(TEST_CLASS.getName());
             System.out.println(pm);
-            System.out.println(pm.inverse().get());
+            System.out.println(pm.transposeOrth());
             System.out.println();
         }
     }

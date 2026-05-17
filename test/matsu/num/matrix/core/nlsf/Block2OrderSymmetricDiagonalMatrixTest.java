@@ -418,7 +418,7 @@ final class Block2OrderSymmetricDiagonalMatrixTest {
 
             //逆行列の逆行列は自分自身
             //注意：このテストは実装の詳細に依存している
-            assertThat(matrix.inverse().get().inverse().get(), is(matrix));
+            assertThat(matrix.inverseAsBlock2OrderSymmetricDiagonal().get().inverse().get(), is(matrix));
 
             //逆行列の演算テスト
             assertThat(matrix.inverse().get().operate(right).entryAsArray(), is(expected));
@@ -428,9 +428,9 @@ final class Block2OrderSymmetricDiagonalMatrixTest {
         public void test_逆行列の行列式の検証() {
 
             //行列式の評価
-            assertThat(matrix.inverse().get().logAbsDeterminant(), is(closeTo(-matrix.logAbsDeterminant(), 1E-10)));
-            assertThat(matrix.inverse().get().signOfDeterminant(), is(matrix.signOfDeterminant()));
-            assertThat(matrix.inverse().get().determinant(), is(closeTo(1 / matrix.determinant(), 1E-10)));
+            assertThat(matrix.inverseAsBlock2OrderSymmetricDiagonal().get().logAbsDeterminant(), is(closeTo(-matrix.logAbsDeterminant(), 1E-10)));
+            assertThat(matrix.inverseAsBlock2OrderSymmetricDiagonal().get().signOfDeterminant(), is(matrix.signOfDeterminant()));
+            assertThat(matrix.inverseAsBlock2OrderSymmetricDiagonal().get().determinant(), is(closeTo(1 / matrix.determinant(), 1E-10)));
         }
 
         @Test
@@ -439,12 +439,12 @@ final class Block2OrderSymmetricDiagonalMatrixTest {
             //注意:このテストは実装の詳細に依存している
 
             //逆行列の逆行列は自分自身
-            assertThat(matrix.inverse().get().inverse().get(), is(matrix));
+            assertThat(matrix.inverseAsBlock2OrderSymmetricDiagonal().get().inverse().get(), is(matrix));
 
             //逆行列の複数回の呼び出しは同一インスタンスを返す
             assertThat(matrix.inverse() == matrix.inverse(), is(true));
             //逆行列の逆行列の複数回の呼び出しは同一インスタンスを返す.
-            assertThat(matrix.inverse().get().inverse(), is(matrix.inverse().get().inverse()));
+            assertThat(matrix.inverseAsBlock2OrderSymmetricDiagonal().get().inverse(), is(matrix.inverseAsBlock2OrderSymmetricDiagonal().get().inverse()));
 
         }
     }

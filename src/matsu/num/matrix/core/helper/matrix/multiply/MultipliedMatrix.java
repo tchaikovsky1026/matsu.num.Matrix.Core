@@ -31,6 +31,4 @@ interface MultipliedMatrix extends Matrix {
      */
     public abstract Deque<? extends Matrix> toSeries();
 
-    @Override
-    public abstract MultipliedMatrix transpose();
 }

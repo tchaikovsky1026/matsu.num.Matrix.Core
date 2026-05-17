@@ -10,7 +10,6 @@
 package matsu.num.matrix.core.helper.matrix.multiply;
 
 import java.util.Deque;
-import java.util.Optional;
 
 import matsu.num.matrix.core.OrthogonalMatrix;
 
@@ -33,9 +32,4 @@ interface MultipliedOrthogonalMatrix extends MultipliedMatrix, OrthogonalMatrix 
     @Override
     public abstract Deque<? extends OrthogonalMatrix> toSeries();
 
-    @Override
-    public abstract MultipliedOrthogonalMatrix transpose();
-
-    @Override
-    public abstract Optional<? extends MultipliedOrthogonalMatrix> inverse();
 }

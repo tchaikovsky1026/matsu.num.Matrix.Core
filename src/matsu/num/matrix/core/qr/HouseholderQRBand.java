@@ -6,7 +6,7 @@
  */
 
 /*
- * 2025.6.17
+ * 2026.5.16
  */
 package matsu.num.matrix.core.qr;
 
@@ -57,7 +57,7 @@ public final class HouseholderQRBand
         this.mxD = helper.mxD();
         this.mxRt = helper.mxRt();
 
-        assert this.mxD.inverse().isPresent();
+        assert this.mxD.inverseDiag().isPresent();
     }
 
     @Override
@@ -77,9 +77,9 @@ public final class HouseholderQRBand
          * である.
          */
         return Matrix.multiply(
-                this.mxD.inverse().get(),
+                this.mxD.inverseDiag().get(),
                 this.mxRt.inverse().get().transpose(),
-                this.mxQ.transpose());
+                this.mxQ.transposeOrth());
     }
 
     /**

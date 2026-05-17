@@ -110,7 +110,13 @@ public final class TranspositionEntryReadableUtil {
         }
 
         @Override
+        @SuppressWarnings("removal")
         public EntryReadableMatrix transpose() {
+            return this.original;
+        }
+
+        @Override
+        public EntryReadableMatrix transposeReadable() {
             return this.original;
         }
 

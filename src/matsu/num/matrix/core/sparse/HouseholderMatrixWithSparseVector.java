@@ -6,14 +6,14 @@
  */
 
 /*
- * 2026.4.30
+ * 2026.5.16
  */
 package matsu.num.matrix.core.sparse;
 
 import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.Vector;
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 
 /**
  * 鏡映ベクトルとして {@link SparseVector} を指定する形で構築される,
@@ -22,7 +22,7 @@ import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricOrthogonalMatrix;
  * @author Matsuura Y.
  */
 final class HouseholderMatrixWithSparseVector
-        extends SkeletalSymmetricOrthogonalMatrix<HouseholderMatrixWithSparseVector>
+        extends SkeletalOrthogonalMatrix<HouseholderMatrix>
         implements HouseholderMatrix {
 
     private final MatrixDimension matrixDimension;
@@ -72,6 +72,11 @@ final class HouseholderMatrixWithSparseVector
         return vecW.plus(operand);
     }
 
+    @Override
+    public Vector operateTranspose(Vector operand) {
+        return operate(operand);
+    }
+
     /**
      * -
      * 
@@ -82,22 +87,7 @@ final class HouseholderMatrixWithSparseVector
      * @return -
      */
     @Override
-    protected HouseholderMatrixWithSparseVector self() {
+    protected HouseholderMatrix createTranspose() {
         return this;
-    }
-
-    /**
-     * このオブジェクトの文字列説明表現を返す.
-     * 
-     * <p>
-     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
-     * おそらくは次のような表現であろう. <br>
-     * {@code Matrix[dim:(%dimension), householder]}
-     * </p>
-     */
-    @Override
-    public String toString() {
-        return "Matrix[dim: %s, householder]"
-                .formatted(this.matrixDimension());
     }
 }

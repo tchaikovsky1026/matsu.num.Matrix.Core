@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.6.14
+ * 2026.5.15
  */
 package matsu.num.matrix.core;
 
@@ -65,7 +65,7 @@ public interface Invertible {
      * 逆行列が存在しない場合は空を返す.
      *
      * @implSpec
-     *               可能な場合は, 戻り値型をより具象なものに変更すべきである. <br>
+     *               サブインターフェースで戻り値型 (型パラメータ) を具象なものに変更すべきではない. <br>
      *               その他は, インターフェース説明 ({@link #inverse()} に関する規約) の通り.
      * 
      * @return ターゲット行列の逆行列

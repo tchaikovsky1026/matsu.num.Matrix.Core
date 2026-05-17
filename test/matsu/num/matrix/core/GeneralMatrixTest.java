@@ -17,7 +17,8 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalMatrix;
 
 /**
  * {@link GeneralMatrix} クラスのテスト.
@@ -175,7 +176,7 @@ final class GeneralMatrixTest {
 
     public static class fromMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalAsymmetricMatrix<Matrix> implements Matrix {
+        private static class WrappedMatrix extends SkeletalMatrix<Matrix> implements Matrix {
 
             private final Matrix mx;
 
@@ -265,7 +266,8 @@ final class GeneralMatrixTest {
 
     public static class fromEntryReadableMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
+        private static class WrappedMatrix
+                extends SkeletalEntryReadableMatrix<EntryReadableMatrix, EntryReadableMatrix>
                 implements EntryReadableMatrix {
 
             private final EntryReadableMatrix mx;
@@ -281,7 +283,7 @@ final class GeneralMatrixTest {
 
             @Override
             protected EntryReadableMatrix createTranspose() {
-                return mx.transpose();
+                return mx.transposeReadable();
             }
 
             @Override
@@ -360,51 +362,6 @@ final class GeneralMatrixTest {
                             gm.valueAt(j, k), is(entries[j][k]));
                 }
             }
-        }
-    }
-
-    public static class Matrixの骨格実装のテストを兼ねる {
-
-        private Matrix original;
-
-        @Before
-        public void before_行列生成() {
-
-            GeneralMatrix.Builder builder = GeneralMatrix.Builder.zero(MatrixDimension.rectangle(3, 2));
-            builder.setValue(0, 0, 1);
-            builder.setValue(0, 1, 2);
-            builder.setValue(1, 0, 3);
-            builder.setValue(1, 1, 4);
-            builder.setValue(2, 0, 5);
-            builder.setValue(2, 1, 6);
-            original = builder.build();
-        }
-
-        @Test
-        public void test_転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalAsymmetricMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.transpose(), is(original.transpose()));
-            }
-
-        }
-
-        @Test
-        public void test_転置の転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalAsymmetricMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.transpose().transpose(), is(original.transpose().transpose()));
-            }
-
-        }
-
-        @Test
-        public void test_転置の転置は自身と同一() {
-            if (original instanceof SkeletalAsymmetricMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.transpose().transpose(), is(original));
-            }
-
         }
     }
 

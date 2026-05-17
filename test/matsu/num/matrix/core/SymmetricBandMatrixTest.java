@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 
 /**
  * {@link SymmetricBandMatrix} クラスのテスト.
@@ -112,7 +112,8 @@ final class SymmetricBandMatrixTest {
 
     public static class fromBandMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalSymmetricMatrix<WrappedMatrix>
+        private static class WrappedMatrix
+                extends SkeletalEntryReadableMatrix<WrappedMatrix, BandMatrix>
                 implements BandMatrix, Symmetric {
 
             private final BandMatrix mx;
@@ -127,6 +128,11 @@ final class SymmetricBandMatrixTest {
             @Override
             public Vector operate(Vector operand) {
                 return mx.operate(operand);
+            }
+
+            @Override
+            public Vector operateTranspose(Vector operand) {
+                return operate(operand);
             }
 
             @Override
@@ -145,7 +151,7 @@ final class SymmetricBandMatrixTest {
             }
 
             @Override
-            protected WrappedMatrix self() {
+            protected WrappedMatrix createTranspose() {
                 return this;
             }
         }
