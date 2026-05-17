@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.14
+ * 2026.5.15
  */
 package matsu.num.matrix.core;
 
@@ -34,10 +35,22 @@ package matsu.num.matrix.core;
 public interface ZeroMatrix extends EntryReadableMatrix {
 
     /**
-     * @implSpec
-     *               {@link Matrix#transpose()} に従う.
+     * @deprecated
+     *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
+     *                 {@code Matrix.transpose()} か
+     *                 {@link #transposeReadable()}
+     *                 を使用すべき.
+     * 
+     *                 <p>
+     *                 <i><u>
+     *                 version 29 以降に削除され, {@code Matrix.transpose()}
+     *                 が呼ばれるようになる.
+     *                 </u></i>
+     *                 </p>
      */
+    @Deprecated(forRemoval = true, since = "28.9")
     @Override
+    @SuppressWarnings("removal")
     public abstract ZeroMatrix transpose();
 
     /**

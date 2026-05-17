@@ -192,7 +192,7 @@ final class LowerUnitriangularMatrixTest {
         public void test_toString() {
             System.out.println(TEST_CLASS.getName());
             System.out.println(lm);
-            System.out.println(lm.transpose());
+            System.out.println(lm.transposeReadable());
             System.out.println(lm.inverse().get());
             System.out.println();
         }

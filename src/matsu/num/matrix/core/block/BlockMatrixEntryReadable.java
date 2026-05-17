@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.9
+ * 2026.5.16
  */
 package matsu.num.matrix.core.block;
 
@@ -17,7 +17,7 @@ import matsu.num.matrix.core.EntryReadableMatrix;
 import matsu.num.matrix.core.Matrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.Vector;
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
 import matsu.num.matrix.core.helper.matrix.transpose.TranspositionEntryReadableUtil;
 import matsu.num.matrix.core.helper.value.MatrixValidationSupport;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
@@ -28,7 +28,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 public final class BlockMatrixEntryReadable
-        extends SkeletalAsymmetricMatrix<EntryReadableMatrix>
+        extends SkeletalEntryReadableMatrix<EntryReadableMatrix, EntryReadableMatrix>
         implements EntryReadableMatrix {
 
     private final BlockMatrixStructure<? extends EntryReadableMatrix> blockStructure;

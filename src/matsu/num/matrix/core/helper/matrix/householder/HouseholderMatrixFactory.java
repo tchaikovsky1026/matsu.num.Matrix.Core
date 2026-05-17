@@ -6,13 +6,14 @@
  */
 
 /*
- * 2025.6.27
+ * 2026.5.16
  */
 package matsu.num.matrix.core.helper.matrix.householder;
 
 import matsu.num.matrix.core.HouseholderMatrix;
 import matsu.num.matrix.core.MatrixDimension;
 import matsu.num.matrix.core.Vector;
+import matsu.num.matrix.core.helper.matrix.SkeletalOrthogonalMatrix;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -116,7 +117,8 @@ public final class HouseholderMatrixFactory {
      * Householder 行列の最も基本的な実装を扱う.
      */
     private static final class HouseholderMatrixImpl
-            extends SkeletalHouseholderMatrix<HouseholderMatrixImpl> {
+            extends SkeletalOrthogonalMatrix<HouseholderMatrix>
+            implements HouseholderMatrix {
 
         private final MatrixDimension matrixDimension;
         private final Vector reflectionVector;
@@ -151,6 +153,15 @@ public final class HouseholderMatrixFactory {
         }
 
         /**
+         * @throws MatrixFormatMismatchException {@inheritDoc}
+         * @throws NullPointerException {@inheritDoc}
+         */
+        @Override
+        public Vector operateTranspose(Vector operand) {
+            return operate(operand);
+        }
+
+        /**
          * -
          * 
          * <p>
@@ -160,7 +171,7 @@ public final class HouseholderMatrixFactory {
          * @return -
          */
         @Override
-        protected HouseholderMatrixImpl self() {
+        protected HouseholderMatrix createTranspose() {
             return this;
         }
     }

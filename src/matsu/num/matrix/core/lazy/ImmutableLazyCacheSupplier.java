@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2026.4.24
+ * 2026.5.14
  */
 package matsu.num.matrix.core.lazy;
 
@@ -73,9 +73,7 @@ public final class ImmutableLazyCacheSupplier<T> implements Supplier<T> {
      * 与えられたコンピュータから, このクラスの仕組みを実現するサプライヤを生成する.
      * 
      * <p>
-     * クラス説明の通り, コンピュータによる計算はキャッシュされる. <br>
-     * したがって,
-     * 引数で与えるサプライヤは可変な状態を持っては行けない.
+     * クラス説明の通り, コンピュータによる計算は複数回呼ばれる可能性がある.
      * </p>
      * 
      * @param <T> 生成されるインスタンスの型

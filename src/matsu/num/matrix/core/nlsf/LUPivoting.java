@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.26
+ * 2026.5.16
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -89,9 +90,9 @@ public final class LUPivoting extends SkeletalLUTypeSolver<EntryReadableMatrix, 
         // A^{-1} = (PLDU)^{-1} = U^{-1}D^{-1}L^{-1}P^{-1}
         Matrix invMatrix = Matrix.multiply(
                 this.mxUt.inverse().get().transpose(),
-                this.mxD.inverse().get(),
+                this.mxD.inverseDiag().get(),
                 this.mxL.inverse().get(),
-                this.mxP.inverse().get());
+                this.mxP.transposeOrth());
 
         return new InverstibleAndDeterminantStruct<Matrix>(det, invMatrix);
     }

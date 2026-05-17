@@ -5,7 +5,7 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2025.6.18
+ * 2026.5.14
  */
 package matsu.num.matrix.core.validation;
 
@@ -63,11 +63,11 @@ public abstract sealed class MatrixStructureAcceptance permits MatrixAccepted, M
 
     /**
      * このインスタンスの拒絶理由に適した例外インスタンスを取得する. <br>
-     * {@link #type()} が {@link Type#ACCEPTED} の場合は空を返す.
+     * ACCEPTの場合は例外をスローする.
      * 
      * @param cause 関連付けられる行列
-     * @return スローすべき例外, ACCEPTEDの場合は空
-     * @throws IllegalStateException このインスタンスがACCEPTの場合
+     * @return スローすべき例外
+     * @throws IllegalStateException このインスタンスが ACCEPT の場合
      */
     public abstract IllegalArgumentException getException(Object cause);
 

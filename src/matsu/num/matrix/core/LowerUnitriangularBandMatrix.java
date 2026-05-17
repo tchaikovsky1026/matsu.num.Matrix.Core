@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.9
+ * 2026.5.16
  */
 package matsu.num.matrix.core;
 
@@ -14,7 +14,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import matsu.num.matrix.core.common.ArraysUtil;
-import matsu.num.matrix.core.helper.matrix.SkeletalAsymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalMatrix;
 import matsu.num.matrix.core.helper.matrix.transpose.TranspositionBandUtil;
 import matsu.num.matrix.core.helper.matrix.transpose.TranspositionUtil;
 import matsu.num.matrix.core.helper.value.BandDimensionPositionState;
@@ -34,7 +35,8 @@ import matsu.num.matrix.core.validation.MatrixStructureAcceptance;
  * @author Matsuura Y.
  */
 public final class LowerUnitriangularBandMatrix
-        extends SkeletalAsymmetricMatrix<BandMatrix> implements LowerUnitriangular, BandMatrix {
+        extends SkeletalEntryReadableMatrix<BandMatrix, BandMatrix>
+        implements LowerUnitriangular, BandMatrix {
 
     /*
      * 行列の各要素は, 内部では狭義下三角成分を1次元配列として扱う.
@@ -232,23 +234,13 @@ public final class LowerUnitriangularBandMatrix
      * @return 逆行列
      */
     private Matrix createInverse() {
-        return new SkeletalAsymmetricMatrix<Matrix>() {
+        return new SkeletalMatrix<Matrix>() {
 
             @Override
             public MatrixDimension matrixDimension() {
                 return bandMatrixDimension.dimension();
             }
 
-            /**
-             * -
-             * 
-             * <p>
-             * (外部からの呼び出し不可)
-             * </p>
-             * 
-             * @return -
-             * 
-             */
             @Override
             protected Matrix createTranspose() {
                 return TranspositionUtil.apply(this);

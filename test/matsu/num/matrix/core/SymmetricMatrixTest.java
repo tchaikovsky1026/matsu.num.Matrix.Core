@@ -17,7 +17,8 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import matsu.num.matrix.core.helper.matrix.SkeletalSymmetricMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalEntryReadableMatrix;
+import matsu.num.matrix.core.helper.matrix.SkeletalMatrix;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 
 /**
@@ -181,7 +182,9 @@ final class SymmetricMatrixTest {
 
     public static class fromMatrixに関する {
 
-        private static class WrappedMatrix extends SkeletalSymmetricMatrix<WrappedMatrix> implements Matrix, Symmetric {
+        private static class WrappedMatrix
+                extends SkeletalMatrix<WrappedMatrix>
+                implements Matrix, Symmetric {
 
             private final Matrix mx;
 
@@ -203,7 +206,12 @@ final class SymmetricMatrixTest {
             }
 
             @Override
-            protected WrappedMatrix self() {
+            public Vector operateTranspose(Vector operand) {
+                return operate(operand);
+            }
+
+            @Override
+            protected WrappedMatrix createTranspose() {
                 return this;
             }
 
@@ -239,7 +247,8 @@ final class SymmetricMatrixTest {
 
     public static class fromEntryReadableに関する {
 
-        private static class WrappedMatrix extends SkeletalSymmetricMatrix<WrappedMatrix>
+        private static class WrappedMatrix
+                extends SkeletalEntryReadableMatrix<WrappedMatrix, EntryReadableMatrix>
                 implements EntryReadableMatrix, Symmetric {
 
             private final EntryReadableMatrix mx;
@@ -262,6 +271,11 @@ final class SymmetricMatrixTest {
             }
 
             @Override
+            public Vector operateTranspose(Vector operand) {
+                return operate(operand);
+            }
+
+            @Override
             public double valueAt(int row, int column) {
                 return mx.valueAt(row, column);
             }
@@ -272,7 +286,7 @@ final class SymmetricMatrixTest {
             }
 
             @Override
-            protected WrappedMatrix self() {
+            protected WrappedMatrix createTranspose() {
                 return this;
             }
         }
@@ -301,47 +315,6 @@ final class SymmetricMatrixTest {
                             String.format("j=%d,k=%d", j, k),
                             sm.valueAt(j, k), is(entries[j][k]));
                 }
-            }
-        }
-    }
-
-    public static class Matrixの骨格実装のテストを兼ねる_対称行列バージョン {
-
-        private Matrix original;
-
-        @Before
-        public void before_行列生成() {
-            SymmetricMatrix.Builder builder = SymmetricMatrix.Builder.zero(MatrixDimension.square(3));
-            builder.setValue(0, 0, 1);
-            builder.setValue(1, 0, 2);
-            builder.setValue(1, 1, 3);
-            builder.setValue(0, 2, 4);
-            builder.setValue(1, 2, 5);
-            builder.setValue(2, 2, 6);
-            original = builder.build();
-        }
-
-        @Test
-        public void test_転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalSymmetricMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.transpose(), is(original.transpose()));
-            }
-        }
-
-        @Test
-        public void test_転置の転置の呼び出しは同一のインスタンスを参照する() {
-            if (original instanceof SkeletalSymmetricMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.transpose().transpose(), is(original.transpose().transpose()));
-            }
-        }
-
-        @Test
-        public void test_転置の転置は自身と同一() {
-            if (original instanceof SkeletalSymmetricMatrix) {
-                //骨格実装を継承している場合のみ, このテストを走らせる
-                assertThat(original.transpose().transpose(), is(original));
             }
         }
     }

@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.26
+ * 2026.5.16
  */
 package matsu.num.matrix.core.nlsf;
 
@@ -230,7 +231,7 @@ public final class CholeskyBand
             // A = BB^Tとすれば,
             // B^{-1} = D^{-1/2}L^{-1}
             final Matrix asymmInvSqrt = Matrix.multiply(
-                    this.mxSqrtD.inverse().get(),
+                    this.mxSqrtD.inverseDiag().get(),
                     this.mxL.inverse().get());
 
             final double logDetSqrtL = this.mxSqrtD.logAbsDeterminant();

@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.14
+ * 2026.5.17
  */
 package matsu.num.matrix.core.mult;
 
@@ -50,7 +50,13 @@ public final class ProductOrthogonalMatrix
     }
 
     @Override
+    @SuppressWarnings("removal")
     public ProductOrthogonalMatrix transpose() {
+        return opTranspose.get();
+    }
+
+    @Override
+    public OrthogonalMatrix transposeOrth() {
         return opTranspose.get();
     }
 
@@ -78,6 +84,7 @@ public final class ProductOrthogonalMatrix
     }
 
     @Override
+    @SuppressWarnings("removal")
     public Optional<ProductOrthogonalMatrix> inverse() {
         return opTranspose;
     }

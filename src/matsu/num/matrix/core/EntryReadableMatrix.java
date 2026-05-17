@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.9
+ * 2026.5.15
  */
 package matsu.num.matrix.core;
 
@@ -66,11 +66,43 @@ public interface EntryReadableMatrix extends Matrix {
     public double entryNormMax();
 
     /**
-     * @implSpec
-     *               {@link Matrix#transpose()} に従う.
+     * 
+     * @deprecated
+     *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
+     *                 {@code Matrix.transpose()} か
+     *                 {@link #transposeReadable()}
+     *                 を使用すべき.
+     * 
+     *                 <p>
+     *                 <i><u>
+     *                 version 29 以降に削除され, {@code Matrix.transpose()}
+     *                 が呼ばれるようになる.
+     *                 </u></i>
+     *                 </p>
      */
+    @Deprecated(forRemoval = true, since = "28.9")
     @Override
     public abstract EntryReadableMatrix transpose();
+
+    /**
+     * この行列の転置行列を, 成分アクセス可能な形で返す.
+     * 
+     * @implSpec
+     *               線形継承されたサブインターフェースでのみ, 型精密化を認める. <br>
+     *               その他は, {@link Matrix#transpose()} に従う.
+     * 
+     *               <p>
+     *               <i><u>
+     *               version 29 以降デフォルトメソッドが削除されるので,
+     *               実装側は必ずオーバーライドすること.
+     *               </u></i>
+     *               </p>
+     * 
+     * @return 転置行列
+     */
+    public default EntryReadableMatrix transposeReadable() {
+        return transpose();
+    }
 
     /**
      * {@link EntryReadableMatrix} の成分として有効な値であるかを判定する.
