@@ -7,6 +7,7 @@ develop/next-generation:
         - LU分解の実行に関するインターフェース: SolvingFactorizationExecutor
         - 行列を実装する公開骨格実装クラス: SkeletalAsymmetricMatrix, SkeletalAsymmetricOrthogonalMatrix, SkeletalSymmetricMatrix, SkeletalSymmetricOrthogonalMatrix
         - 骨格実装向け公開ヘルパメソッド: BandMatrix#createTransposedOf, EntryReadableMatrix#createTransposedOf, Matrix#createTransposedOf, OrthogonalMatrix#createTransposedOf
+        - transpose, inverse に関する型精密化を定義したインターフェースメソッド宣言
 
 28:
 28.9.0 (MINOR 最終): 行列が持つtranspose, inverseについて, インターフェースで定義された型精密化の非推奨化. 代替となるメソッドの整備.
