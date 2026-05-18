@@ -5,14 +5,14 @@
  * http://opensource.org/licenses/mit-license.php
  */
 /*
- * 2026.5.15
+ * 2026.5.18
  */
 package matsu.num.matrix.core;
 
 import java.util.Optional;
 
 /**
- * 逆行列が取得可能であることを表すインターフェース.
+ * 逆行列が取得可能な行列であることを表すインターフェース.
  * 
  * <p>
  * このインターフェースを実装した全てのクラスは実質的にイミュータブルであり,
@@ -33,7 +33,7 @@ import java.util.Optional;
  *               逆行列を返す {@link #inverse()} メソッドの戻り値の要素は,
  *               このメソッドの複数回の呼び出しにおいて同一のインスタンスであるべきである
  *               (より強く, {@link Optional} 自体が同一であることが望ましい). <br>
- *               自身が {@link Matrix} を実装し, 逆行列が {@link Invertible} を実装している場合,
+ *               逆行列が {@link Invertible} を実装している場合,
  *               その逆行列の {@link #inverse()} メソッドの戻り値は自身となることが望ましい.
  *               </p>
  * 
@@ -44,7 +44,7 @@ import java.util.Optional;
  * this.inverse().get() == this.inverse().get()
  * this.inverse() == this.inverse() // より推奨される
  * 
- * // (this instanceof Matrix) {@literal &&} (this.inverse().get() instanceof Invertible) がtrueのときに
+ * // (this.inverse().get() instanceof Invertible) がtrueのときに
  * // 推奨: 次がtrue (逆行列の逆行列は自身)
  * ((Invertible) this.inverse().get()).inverse().get() == this</pre>
  * 
@@ -58,7 +58,7 @@ import java.util.Optional;
  * 
  * @author Matsuura Y.
  */
-public interface Invertible {
+public interface Invertible extends Matrix {
 
     /**
      * 逆行列を取得する. <br>
