@@ -123,7 +123,6 @@ public final class SquareZeroMatrix
      * @return 空のオプショナル
      */
     @Override
-    @SuppressWarnings("removal")
     public Optional<? extends DiagonalMatrix> inverse() {
         return inverseDiag();
     }

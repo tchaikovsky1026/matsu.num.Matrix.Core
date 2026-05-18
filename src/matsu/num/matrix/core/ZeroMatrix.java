@@ -35,25 +35,6 @@ package matsu.num.matrix.core;
 public interface ZeroMatrix extends EntryReadableMatrix {
 
     /**
-     * @deprecated
-     *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
-     *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeReadable()}
-     *                 を使用すべき.
-     * 
-     *                 <p>
-     *                 <i><u>
-     *                 version 29 以降に削除され, {@code Matrix.transpose()}
-     *                 が呼ばれるようになる.
-     *                 </u></i>
-     *                 </p>
-     */
-    @Deprecated(forRemoval = true, since = "28.9")
-    @Override
-    @SuppressWarnings("removal")
-    public abstract ZeroMatrix transpose();
-
-    /**
      * 与えられた次元 (サイズ) の零行列を返す.
      *
      * @param matrixDimension 行列サイズ

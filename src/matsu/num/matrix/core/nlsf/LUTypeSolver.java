@@ -71,7 +71,7 @@ public interface LUTypeSolver
      * <p>
      * 行列に構造上の問題があるかどうかは, {@link #accepts(EntryReadableMatrix)} メソッドにより検証される.
      * <br>
-     * 戻り値のタイプ ({@link MatrixStructureAcceptance#type()}) がacceptedならば,
+     * 戻り値 ({@link MatrixStructureAcceptance}) がACCEPTEDならば,
      * {@link #apply(EntryReadableMatrix)},
      * {@link #apply(EntryReadableMatrix, double)}
      * メソッドの実行時に例外はスローされない.
@@ -122,9 +122,7 @@ public interface LUTypeSolver
      * 
      * @param <MT> 対応する行列の型パラメータ
      */
-    @SuppressWarnings({ "removal", "deprecation" })
-    public static interface Executor<MT extends EntryReadableMatrix>
-            extends SolvingFactorizationExecutor<MT> {
+    public static interface Executor<MT extends EntryReadableMatrix> {
 
         /**
          * このインスタンスが与えた行列を受け入れることができるかを判定する. <br>
@@ -135,16 +133,14 @@ public interface LUTypeSolver
          * @return 判定結果
          * @throws NullPointerException 引数にnullが含まれる場合
          */
-        @Override
         public abstract MatrixStructureAcceptance accepts(MT matrix);
 
         /**
          * 行列の正則性を判定する相対epsilonを指定して, 線形連立方程式の解法向けの行列分解を実行する.
          * 
          * <p>
-         * 分解が開始されるためには, {@link #accepts(EntryReadableMatrix)} の戻り値の
-         * {@code type()}
-         * がacceptedでなければならない. <br>
+         * 分解が開始されるためには, {@link #accepts(EntryReadableMatrix)}
+         * の戻り値が ACCEPTED でなければならない. <br>
          * そうでないなら, {@link IllegalArgumentException} がスローされる.
          * </p>
          * 
@@ -161,11 +157,11 @@ public interface LUTypeSolver
          *             行列がacceptされない場合
          * @throws NullPointerException 引数にnullが含まれる場合
          */
-        @Override
         public abstract Optional<? extends LUTypeSolver> apply(MT matrix, double epsilon);
 
         /**
-         * 行列の正則性を判定する相対epsilonにデフォルト値を使用して, 線形連立方程式の解法向けの行列分解を実行する. <br>
+         * 行列の正則性を判定する相対epsilonにデフォルト値を使用して,
+         * 線形連立方程式の解法向けの行列分解を実行する. <br>
          * デフォルトepsilonは次の値である:
          * {@link PseudoRegularMatrixProcess#DEFAULT_EPSILON}
          * 
@@ -177,7 +173,6 @@ public interface LUTypeSolver
          * @return 行列分解
          * @see PseudoRegularMatrixProcess
          */
-        @Override
         public abstract Optional<? extends LUTypeSolver> apply(MT matrix);
     }
 }

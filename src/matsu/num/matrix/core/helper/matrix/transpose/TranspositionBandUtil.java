@@ -110,7 +110,6 @@ public final class TranspositionBandUtil {
         }
 
         @Override
-        @SuppressWarnings("removal")
         public BandMatrix transpose() {
             return this.original;
         }

@@ -386,7 +386,7 @@ public final class MatrixDimension {
      *
      * @param dimension 行サイズ = 列サイズに相当するベクトルディメンジョン
      * @return 正方形の行列サイズオブジェクト
-     * @throws NullPointerException 引数にullが含まれる場合
+     * @throws NullPointerException 引数にnullが含まれる場合
      */
     public static MatrixDimension square(VectorDimension dimension) {
         var out = getFromCache(dimension.intValue());

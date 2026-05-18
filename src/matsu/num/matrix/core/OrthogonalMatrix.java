@@ -6,14 +6,11 @@
  */
 
 /*
- * 2026.5.15
+ * 2026.5.17
  */
 package matsu.num.matrix.core;
 
-import java.util.Optional;
-
 import matsu.num.matrix.core.helper.matrix.multiply.OrthogonalMatrixMultiplicationUtil;
-import matsu.num.matrix.core.helper.matrix.transpose.TranspositionOrthogonalUtil;
 import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 
@@ -65,66 +62,15 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
 public interface OrthogonalMatrix extends Matrix, Invertible {
 
     /**
-     * 
-     * @deprecated
-     *                 この共変戻り値となった {@code transpose()} は使用すべきでない. <br>
-     *                 {@code Matrix.transpose()} か
-     *                 {@link #transposeOrth()}
-     *                 を使用すべき.
-     * 
-     *                 <p>
-     *                 <i><u>
-     *                 version 29 以降に削除され, {@code Matrix.transpose()}
-     *                 が呼ばれるようになる.
-     *                 </u></i>
-     *                 </p>
-     */
-    @Deprecated(forRemoval = true, since = "28.9")
-    @Override
-    public abstract OrthogonalMatrix transpose();
-
-    /**
      * この行列の転置行列を, 直交行列の形で返す.
      * 
      * @implSpec
      *               サブインターフェースでの型精密化を禁止する. <br>
      *               その他は, {@link Matrix#transpose()} に従う.
      * 
-     *               <p>
-     *               <i><u>
-     *               version 29 以降デフォルトメソッドが削除されるので,
-     *               実装側は必ずオーバーライドすること.
-     *               </u></i>
-     *               </p>
-     * 
      * @return 転置行列
      */
-    public default OrthogonalMatrix transposeOrth() {
-        return transpose();
-    }
-
-    /**
-     * 逆行列を取得する. <br>
-     * 必ず逆行列が存在するため, 戻り値は空でない.
-     * 
-     * @deprecated
-     *                 この共変戻り値となった {@code inverse()} は使用すべきでない. <br>
-     *                 {@code Invertible.inverse()} か
-     *                 {@link #transposeOrth()}
-     *                 を使用すべき.
-     * 
-     *                 <p>
-     *                 <i><u>
-     *                 version 29 以降に削除され, {@code Invertible.inverse()}
-     *                 が呼ばれるようになる.
-     *                 </u></i>
-     *                 </p>
-     * 
-     * @return {@inheritDoc }, 空でない
-     */
-    @Deprecated(forRemoval = true, since = "28.9")
-    @Override
-    public abstract Optional<? extends OrthogonalMatrix> inverse();
+    public abstract OrthogonalMatrix transposeOrth();
 
     /**
      * 1個以上の直交行列に対し, それらの行列積を返す.
@@ -155,48 +101,5 @@ public interface OrthogonalMatrix extends Matrix, Invertible {
      */
     public static OrthogonalMatrix symmetricMultiply(OrthogonalMatrix mid, OrthogonalMatrix leftSide) {
         return OrthogonalMatrixMultiplicationUtil.symmetricMultiply(mid, leftSide);
-    }
-
-    /**
-     * 
-     * 与えられた直交行列の転置行列 (逆行列) を生成する.
-     * 
-     * <p>
-     * 引数 {@code original}, 戻り値 {@code returnValue} について,
-     * 次が {@code true} である.
-     * </p>
-     * 
-     * <ul>
-     * <li>{@code returnValue.transpose() == original}</li>
-     * <li>{@code returnValue.inverse().get() == original}</li>
-     * </ul>
-     * 
-     * <p>
-     * {@code original} に {@link Symmetric} が付与されている場合,
-     * {@code returnValue == original} が {@code true} である.
-     * </p>
-     * 
-     * <p>
-     * <u>
-     * <i>
-     * このメソッドは {@link #transpose()} や {@link #inverse()}
-     * の実装を補助するために用意されている. <br>
-     * {@link OrthogonalMatrix} およびそのサブタイプのインスタンスの転置行列, 逆行列を得る場合は,
-     * このメソッドではなくインスタンスメソッドである {@link #transpose()}, {@link #inverse()}
-     * を呼ばなければならない.
-     * </i>
-     * </u>
-     * </p>
-     *
-     * @param original 元の行列
-     * @return 転置行列
-     * @throws NullPointerException 引数にnullが含まれる場合
-     * @deprecated
-     *                 この公開ヘルパメソッドは version 29 以降に削除される. <br>
-     *                 代替となるメソッドは公開されていない.
-     */
-    @Deprecated(forRemoval = true, since = "28.7")
-    public static OrthogonalMatrix createTransposedOf(OrthogonalMatrix original) {
-        return TranspositionOrthogonalUtil.apply(original);
     }
 }

@@ -342,7 +342,6 @@ final class PermutationMatrixImpl
         }
 
         @Override
-        @SuppressWarnings("removal")
         public PermutationMatrix transpose() {
             return this.opInverse.get();
         }
@@ -388,7 +387,6 @@ final class PermutationMatrixImpl
         }
 
         @Override
-        @SuppressWarnings("removal")
         public Optional<? extends PermutationMatrix> inverse() {
             return this.opInverse;
         }
