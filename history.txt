@@ -1,6 +1,3 @@
-develop/next-generation:
-バージョン29.0.0として, 以下の更新を行う.
-
 29:
 29.0.0: Majorアップ(破壊的変更).
     - 削除予定のAPIを削除
@@ -8,6 +5,7 @@ develop/next-generation:
         - 行列を実装する公開骨格実装クラス: SkeletalAsymmetricMatrix, SkeletalAsymmetricOrthogonalMatrix, SkeletalSymmetricMatrix, SkeletalSymmetricOrthogonalMatrix
         - 骨格実装向け公開ヘルパメソッド: BandMatrix#createTransposedOf, EntryReadableMatrix#createTransposedOf, Matrix#createTransposedOf, OrthogonalMatrix#createTransposedOf
         - transpose, inverse に関する型精密化を定義したインターフェースメソッド宣言
+    - 公開インターフェースの型階層の変更
 
 28:
 28.9.0 (MINOR 最終): 行列が持つtranspose, inverseについて, インターフェースで定義された型精密化の非推奨化. 代替となるメソッドの整備.
