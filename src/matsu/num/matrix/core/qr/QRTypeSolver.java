@@ -81,7 +81,7 @@ public interface QRTypeSolver
      * <p>
      * 行列に構造上の問題があるかどうかは, {@link #accepts(EntryReadableMatrix)} メソッドにより検証される.
      * <br>
-     * 戻り値のタイプ ({@link MatrixStructureAcceptance#type()}) がacceptedならば,
+     * 戻り値 ({@link MatrixStructureAcceptance}) がACCEPTEDならば,
      * {@link #apply(EntryReadableMatrix)},
      * {@link #apply(EntryReadableMatrix, double)}
      * メソッドの実行時に例外はスローされない.
@@ -147,8 +147,7 @@ public interface QRTypeSolver
          * 
          * <p>
          * 分解が開始されるためには, {@link #accepts(EntryReadableMatrix)}
-         * の戻り値の {@code type()}
-         * がacceptedでなければならない. <br>
+         * の戻り値が ACCEPTED でなければならない. <br>
          * そうでないなら, {@link IllegalArgumentException} がスローされる.
          * </p>
          * 

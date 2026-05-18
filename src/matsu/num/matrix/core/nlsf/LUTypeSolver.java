@@ -71,7 +71,7 @@ public interface LUTypeSolver
      * <p>
      * 行列に構造上の問題があるかどうかは, {@link #accepts(EntryReadableMatrix)} メソッドにより検証される.
      * <br>
-     * 戻り値のタイプ ({@link MatrixStructureAcceptance#type()}) がacceptedならば,
+     * 戻り値 ({@link MatrixStructureAcceptance}) がACCEPTEDならば,
      * {@link #apply(EntryReadableMatrix)},
      * {@link #apply(EntryReadableMatrix, double)}
      * メソッドの実行時に例外はスローされない.
@@ -139,9 +139,8 @@ public interface LUTypeSolver
          * 行列の正則性を判定する相対epsilonを指定して, 線形連立方程式の解法向けの行列分解を実行する.
          * 
          * <p>
-         * 分解が開始されるためには, {@link #accepts(EntryReadableMatrix)} の戻り値の
-         * {@code type()}
-         * がacceptedでなければならない. <br>
+         * 分解が開始されるためには, {@link #accepts(EntryReadableMatrix)}
+         * の戻り値が ACCEPTED でなければならない. <br>
          * そうでないなら, {@link IllegalArgumentException} がスローされる.
          * </p>
          * 
@@ -161,7 +160,8 @@ public interface LUTypeSolver
         public abstract Optional<? extends LUTypeSolver> apply(MT matrix, double epsilon);
 
         /**
-         * 行列の正則性を判定する相対epsilonにデフォルト値を使用して, 線形連立方程式の解法向けの行列分解を実行する. <br>
+         * 行列の正則性を判定する相対epsilonにデフォルト値を使用して,
+         * 線形連立方程式の解法向けの行列分解を実行する. <br>
          * デフォルトepsilonは次の値である:
          * {@link PseudoRegularMatrixProcess#DEFAULT_EPSILON}
          * 
