@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.15
+ * 2026.6.9
  */
 package matsu.num.matrix.core.mult;
 
@@ -104,12 +104,31 @@ public final class OrthSequentialMultiplyingContainer {
      *             引数が直交行列 ({@link OrthogonalMatrix}
      *             のサブタイプ) でない場合
      * @throws NullPointerException 引数がnullの場合
+     * @deprecated 型安全性を得るため, {@link #basedOn(EntryReadableMatrix)} を推奨する.
      */
+    @Deprecated(since = "29.1")
     public static OrthSequentialMultiplyingContainer basedOnOrth(EntryReadableMatrix base) {
 
         if (!(Objects.requireNonNull(base) instanceof OrthogonalMatrix)) {
             throw new MatrixFormatMismatchException("not orthogonal");
         }
+
+        return new OrthSequentialMultiplyingContainer(BaseMultiplyingContainer.basedOn(base));
+    }
+
+    /**
+     * 与えた成分アクセス可能な直交行列をベースとする, 乗算コンテナを作成する.
+     * 
+     * @param <T> ベース行列の型パラメータ
+     * @param base ベースとなる直交行列
+     * @return 乗算コンテナ
+     * @throws NullPointerException 引数がnullの場合
+     */
+    public static <T extends EntryReadableMatrix & OrthogonalMatrix>
+            OrthSequentialMultiplyingContainer basedOn(T base) {
+
+        // 通常利用では必ず成功, 原型を使った場合へのフォロー
+        OrthogonalMatrix.class.cast(base);
 
         return new OrthSequentialMultiplyingContainer(BaseMultiplyingContainer.basedOn(base));
     }
