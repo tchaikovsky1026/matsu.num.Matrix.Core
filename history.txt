@@ -1,3 +1,6 @@
+develop:
+公開APIの型安全性の向上(旧メソッドのdeprecation).
+
 29:
 29.0.0: Majorアップ(破壊的変更).
     - 削除予定のAPIを削除
