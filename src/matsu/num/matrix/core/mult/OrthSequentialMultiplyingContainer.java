@@ -22,7 +22,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * <p>
  * このクラスはミュータブルなクラスである. <br>
  * 最初にベースとなる, 成分アクセス可能な直交行列を与え, コンテナを用意する
- * ({@link #basedOnOrth(EntryReadableMatrix)} メソッド). <br>
+ * ({@link #basedOn(EntryReadableMatrix)} メソッド). <br>
  * その後, 左右から直交行列を乗算するメソッド
  * {@link #operateLeftSide(OrthogonalMatrix)},
  * {@link #operateRightSide(OrthogonalMatrix)}
