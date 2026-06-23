@@ -29,6 +29,7 @@
 		       includeantruntime="false"
 		       modulepath="${module.path}"
 		       release="17"
+		       encoding="UTF-8"
 		>
 			<compilerarg value="-Xlint:-removal" />
 		</javac>
