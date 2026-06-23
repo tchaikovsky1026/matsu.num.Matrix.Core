@@ -1,72 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="package-javadoc" basedir=".">
-	<!-- Javadoc の Ant ビルドファイル　-->
+    <!-- Javadoc の Ant ビルドファイル　-->
 
-	<!--
+    <!--
 	local.properties: ローカルなパラメータを記述する.
 	local.properties.example を参照のこと.
 	-->
-	<property file="local.properties" />
+    <property file="local.properties" />
 
-	<!-- ========== ビルド用プロパティファイル ========== -->
-	<property file="build.properties" />
+    <!-- ========== ビルド用プロパティファイル ========== -->
+    <property file="build.properties" />
 
-	<!-- ========== パス, 名前の定義 ========== -->
-	<property name="dest.dir" location="javadoc-file" />
-	<property name="src.dir" location="src" />
-	<property name="javadoc.jar.name" value="${dist.label}-javadoc.jar" />
-	<property name="javadoc.zip.name" value="${dist.label}-javadoc.zip" />
+    <!-- ========== パス, 名前の定義 ========== -->
+    <property name="dest.dir" location="javadoc-file" />
+    <property name="src.dir" location="src" />
+    <property name="javadoc.jar.name" value="${dist.label}-javadoc.jar" />
+    <property name="javadoc.zip.name" value="${dist.label}-javadoc.zip" />
 
-	<target name="init">
-		<!--
+    <target name="init">
+        <!--
 		public.package.txt: Javadoc を出力するパッケージを, カンマ区切りで記載する.
 		通常, module-info.java の exports と一致.
 		-->
-		<loadfile property="public.packages" srcFile="public.package.txt" />
-	</target>
+        <loadfile property="public.packages" srcFile="public.package.txt" />
+    </target>
 
-	<target name="clean">
-		<!-- Javadoc コンパイル前に生成物の消去 -->
-		<delete dir="${dest.dir}" />
-	</target>
+    <target name="clean">
+        <!-- Javadoc コンパイル前に生成物の消去 -->
+        <delete dir="${dest.dir}" />
+    </target>
 
-	<target name="javadoc.compile" depends="init,clean">
-		<!--
+    <target name="javadoc.compile" depends="init,clean">
+        <!--
         author, version: javadocにauthorとversionを含むかどうか
         sourcepath: ソースファイルのルート(testフォルダを含んではいけない), セミコロン区切り
         packagenames: javadocに含めるパッケージ名, カンマ区切り
         modulepath: モジュールパス, セミコロン区切り
         -->
-		<javadoc access="protected"
-		         encoding="UTF-8"
-		         charset="UTF-8"
-		         destdir="${dest.dir}"
-		         nodeprecated="false"
-		         nodeprecatedlist="false"
-		         noindex="false"
-		         nonavbar="false"
-		         notree="false"
-		         splitindex="true"
-		         use="true"
-		         author="true"
-		         version="true"
-		         sourcepath="${src.dir}"
-		         modulepath="${module.path}"
-		         additionalparam="--release '17' -tag 'implSpec:a:実装要件:' --show-module-contents api"
-		         packagenames="${public.packages}"
-		/>
-	</target>
+        <javadoc access="protected"
+                 encoding="UTF-8"
+                 charset="UTF-8"
+                 docencoding="UTF-8"
+                 destdir="${dest.dir}"
+                 nodeprecated="false"
+                 nodeprecatedlist="false"
+                 noindex="false"
+                 nonavbar="false"
+                 notree="false"
+                 splitindex="true"
+                 use="true"
+                 author="true"
+                 version="true"
+                 sourcepath="${src.dir}"
+                 modulepath="${module.path}"
+                 additionalparam="--release '17' -tag 'implSpec:a:実装要件:' --show-module-contents api"
+                 packagenames="${public.packages}"
+        />
+    </target>
 
-	<target name="jar-javadoc" depends="javadoc.compile">
-		<jar destfile="${jardist.dir}/${javadoc.jar.name}" basedir="${dest.dir}" />
-	</target>
+    <target name="jar-javadoc" depends="javadoc.compile">
+        <jar destfile="${jardist.dir}/${javadoc.jar.name}"
+             basedir="${dest.dir}"
+        />
+    </target>
 
-	<target name="zip-javadoc" depends="javadoc.compile">
-		<zip destfile="${jardist.dir}/${javadoc.zip.name}" basedir="${dest.dir}" />
-	</target>
+    <target name="zip-javadoc" depends="javadoc.compile">
+        <zip destfile="${jardist.dir}/${javadoc.zip.name}"
+             basedir="${dest.dir}"
+        />
+    </target>
 
-	<target name="package-javadoc" depends="jar-javadoc,zip-javadoc">
-		<!-- javadoc, jar, zip をすべて生成 -->
-		<echo>Javadoc の JAR および ZIP を作成しました。</echo>
-	</target>
+    <target name="package-javadoc" depends="jar-javadoc,zip-javadoc">
+        <!-- javadoc, jar, zip をすべて生成 -->
+        <echo>Javadoc の JAR および ZIP を作成しました。</echo>
+    </target>
 </project>
