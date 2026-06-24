@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="JarExport" default="build-jar" basedir=".">
 
-	<!--
+    <!--
 	local.properties: ローカルなパラメータを記述する.
 	local.properties.example を参照のこと.
 	-->
-	<property file="local.properties" />
+    <property file="local.properties" />
 
-	<!-- ========== ビルド用プロパティファイル ========== -->
-	<property file="build.properties" />
+    <!-- ========== ビルド用プロパティファイル ========== -->
+    <property file="build.properties" />
 
-	<!-- ========== パス, 名前の定義 ========== -->
-	<property name="src.dir" location="src" />
-	<property name="bin.dir" location="bin" />
-	<property name="res.dir" location="." />
-	<property name="jar.name" value="${dist.label}.jar" />
+    <!-- ========== パス, 名前の定義 ========== -->
+    <property name="src.dir" location="src" />
+    <property name="bin.dir" location="bin" />
+    <property name="res.dir" location="." />
+    <property name="jar.name" value="${dist.label}.jar" />
 
-	<!-- ========== 初期化（ビルドディレクトリ作成） ========== -->
-	<target name="init">
-		<mkdir dir="${bin.dir}" />
-		<mkdir dir="${jardist.dir}" />
-	</target>
+    <!-- ========== 初期化（ビルドディレクトリ作成） ========== -->
+    <target name="init">
+        <mkdir dir="${bin.dir}" />
+        <mkdir dir="${jardist.dir}" />
+    </target>
 
-	<!-- ========== Javaファイルのコンパイル ========== -->
-	<target name="compile" depends="clean, init">
-		<javac srcdir="${src.dir}"
-		       destdir="${bin.dir}"
-		       includeantruntime="false"
-		       modulepath="${module.path}"
-		       release="17"
-		       encoding="UTF-8"
-		>
-			<compilerarg value="-Xlint:-removal" />
-		</javac>
-	</target>
+    <!-- ========== Javaファイルのコンパイル ========== -->
+    <target name="compile" depends="clean, init">
+        <javac srcdir="${src.dir}"
+               destdir="${bin.dir}"
+               includeantruntime="false"
+               modulepath="${module.path}"
+               release="17"
+               encoding="UTF-8"
+        >
+            <compilerarg value="-Xlint:-removal" />
+        </javac>
+    </target>
 
-	<!-- ========== JARファイルの生成 ========== -->
-	<target name="build-jar" depends="compile">
-		<jar destfile="${jardist.dir}/${jar.name}" compress="true">
-			<!-- コンパイル済みクラス -->
-			<fileset dir="${bin.dir}" includes="**/*.class" />
+    <!-- ========== JARファイルの生成 ========== -->
+    <target name="build-jar" depends="compile">
+        <jar destfile="${jardist.dir}/${jar.name}" compress="true">
+            <!-- コンパイル済みクラス -->
+            <fileset dir="${bin.dir}" includes="**/*.class" />
 
-			<!-- ソースファイル -->
-			<fileset dir="${src.dir}" includes="**/*.java" />
+            <!-- ソースファイル -->
+            <fileset dir="${src.dir}" includes="**/*.java" />
 
-			<!-- プロパティファイルから読み込んだリソース -->
-			<fileset dir="${res.dir}" includes="${other.resources}" />
+            <!-- プロパティファイルから読み込んだリソース -->
+            <fileset dir="${res.dir}" includes="${other.resources}" />
 
-			<!-- マニフェスト自動生成 -->
-			<manifest>
-				<attribute name="Manifest-Version" value="1.0" />
-			</manifest>
-		</jar>
-	</target>
+            <!-- マニフェスト自動生成 -->
+            <manifest>
+                <attribute name="Manifest-Version" value="1.0" />
+            </manifest>
+        </jar>
+    </target>
 
-	<!-- ========== クリーンターゲット ========== -->
-	<target name="clean">
-		<delete dir="${bin.dir}" />
-		<delete file="${jardist.dir}/${jar.name}" />
-	</target>
+    <!-- ========== クリーンターゲット ========== -->
+    <target name="clean">
+        <delete dir="${bin.dir}" />
+        <delete file="${jardist.dir}/${jar.name}" />
+    </target>
 
 </project>
