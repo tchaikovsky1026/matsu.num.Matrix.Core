@@ -22,7 +22,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * <p>
  * このクラスはミュータブルなクラスである. <br>
  * 最初にベースとなる, 成分アクセス可能な直交行列を与え, コンテナを用意する
- * ({@link #basedOn(EntryReadableMatrix)} メソッド). <br>
+ * ({@link #basedOn} メソッド). <br>
  * その後, 左右から直交行列を乗算するメソッド
  * {@link #operateLeftSide(OrthogonalMatrix)},
  * {@link #operateRightSide(OrthogonalMatrix)}
@@ -104,7 +104,7 @@ public final class OrthSequentialMultiplyingContainer {
      *             引数が直交行列 ({@link OrthogonalMatrix}
      *             のサブタイプ) でない場合
      * @throws NullPointerException 引数がnullの場合
-     * @deprecated 型安全性を得るため, {@link #basedOn(EntryReadableMatrix)} を推奨する.
+     * @deprecated 型安全性を得るため, {@link #basedOn} を推奨する.
      */
     @Deprecated(since = "29.1")
     public static OrthSequentialMultiplyingContainer basedOnOrth(EntryReadableMatrix base) {
