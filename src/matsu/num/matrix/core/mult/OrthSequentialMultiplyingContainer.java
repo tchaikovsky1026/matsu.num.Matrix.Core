@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.6.9
+ * 2026.6.26
  */
 package matsu.num.matrix.core.mult;
 
@@ -50,6 +50,12 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 public final class OrthSequentialMultiplyingContainer {
+
+    /*
+     * 全体設計:
+     * 内部的な処理は, ラップした BaseMultiplyingContainer に転送する.
+     * このクラスは, ラッパーとしての役割に加え, 受け付ける型を OrthogonalMatrix に制限することが目的.
+     */
 
     private final BaseMultiplyingContainer container;
 
