@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.15
+ * 2026.6.26
  */
 package matsu.num.matrix.core.mult;
 
@@ -22,7 +22,7 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * <p>
  * このクラスはミュータブルなクラスである. <br>
  * 最初にベースとなる, 成分アクセス可能な直交行列を与え, コンテナを用意する
- * ({@link #basedOnOrth(EntryReadableMatrix)} メソッド). <br>
+ * ({@link #basedOn} メソッド). <br>
  * その後, 左右から直交行列を乗算するメソッド
  * {@link #operateLeftSide(OrthogonalMatrix)},
  * {@link #operateRightSide(OrthogonalMatrix)}
@@ -50,6 +50,12 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 public final class OrthSequentialMultiplyingContainer {
+
+    /*
+     * 全体設計:
+     * 内部的な処理は, ラップした BaseMultiplyingContainer に転送する.
+     * このクラスは, ラッパーとしての役割に加え, 受け付ける型を OrthogonalMatrix に制限することが目的.
+     */
 
     private final BaseMultiplyingContainer container;
 
@@ -104,12 +110,31 @@ public final class OrthSequentialMultiplyingContainer {
      *             引数が直交行列 ({@link OrthogonalMatrix}
      *             のサブタイプ) でない場合
      * @throws NullPointerException 引数がnullの場合
+     * @deprecated 型安全性を得るため, {@link #basedOn} を推奨する.
      */
+    @Deprecated(since = "29.1")
     public static OrthSequentialMultiplyingContainer basedOnOrth(EntryReadableMatrix base) {
 
         if (!(Objects.requireNonNull(base) instanceof OrthogonalMatrix)) {
             throw new MatrixFormatMismatchException("not orthogonal");
         }
+
+        return new OrthSequentialMultiplyingContainer(BaseMultiplyingContainer.basedOn(base));
+    }
+
+    /**
+     * 与えた成分アクセス可能な直交行列をベースとする, 乗算コンテナを作成する.
+     * 
+     * @param <T> ベース行列の型パラメータ
+     * @param base ベースとなる直交行列
+     * @return 乗算コンテナ
+     * @throws NullPointerException 引数がnullの場合
+     */
+    public static <T extends EntryReadableMatrix & OrthogonalMatrix>
+            OrthSequentialMultiplyingContainer basedOn(T base) {
+
+        // 通常利用では必ず成功, 原型を使った場合へのフォロー
+        OrthogonalMatrix.class.cast(base);
 
         return new OrthSequentialMultiplyingContainer(BaseMultiplyingContainer.basedOn(base));
     }

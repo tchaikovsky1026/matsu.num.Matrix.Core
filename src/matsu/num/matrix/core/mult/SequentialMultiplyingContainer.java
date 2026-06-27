@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.15
+ * 2026.6.26
  */
 package matsu.num.matrix.core.mult;
 
@@ -48,6 +48,11 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @author Matsuura Y.
  */
 public final class SequentialMultiplyingContainer {
+
+    /*
+     * 全体設計:
+     * 内部的な処理は, ラップした BaseMultiplyingContainer に転送する.
+     */
 
     private final BaseMultiplyingContainer container;
 

@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.12
+ * 2026.6.26
  */
 package matsu.num.matrix.core.mult;
 
@@ -35,6 +35,19 @@ final class BaseMultiplyingContainer {
     private final MatrixDimension baseMatrixDimension;
     private final MatrixDimension leftSquareDimension;
     private final MatrixDimension rightSquareDimension;
+
+    /*
+     * 内部状態の更新は次のように行われる.
+     * 
+     * 初期化時, ソースが volatileSrc に格納される.
+     * 
+     * 最初に initializeLeftSide or initializeRightSide が呼ばれたとき,
+     * volatileSrc が null になり, どちらかの Vector[] に転写される.
+     * (これは, synchronized に行われる)
+     * 
+     * 以降, 乗算のたびに配列 Vector[] を生成し, フィールドに代入する.
+     * これにより, 競合が発生した場合, 片方は状態更新が無視されたような振る舞いになる.
+     */
 
     // ソースによる初期化時に使用される
     private final Object lock = new Object();
