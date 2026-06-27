@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.14
+ * 2026.6.26
  */
 package matsu.num.matrix.core.mult;
 
@@ -17,16 +17,30 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 /**
  * 行列積の結果を表すクラス.
  * 
+ * <p>
+ * このクラスは, このパッケージの機能の結果型を表現するために用意されている. <br>
+ * 外部からこのクラスのインスタンスを生成することは不可能.
+ * </p>
+ * 
  * @author Matsuura Y.
  */
 public final class ProductMatrix extends SkeletalVectorAccessibleMatrix {
+
+    /*
+     * 全体設計:
+     * 内部的な処理は, ラップした BaseVectorAccessibleMatrix に転送する.
+     */
 
     private final BaseVectorAccessibleMatrix baseMatrix;
 
     private volatile ProductMatrix transpose;
 
     /**
-     * 非公開のコンストラクタ.
+     * 非公開のコンストラクタ. 引数チェックはしていない.
+     * 
+     * <p>
+     * インスタンス生成時に, 必ず transpose フィールドへの代入が行われなければならない.
+     * </p>
      */
     private ProductMatrix(BaseVectorAccessibleMatrix baseMatrix) {
         super();
@@ -46,6 +60,7 @@ public final class ProductMatrix extends SkeletalVectorAccessibleMatrix {
 
     @Override
     public ProductMatrix transpose() {
+        assert transpose != null;
         return transpose;
     }
 

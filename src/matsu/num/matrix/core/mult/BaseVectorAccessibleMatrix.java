@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.12
+ * 2026.6.26
  */
 package matsu.num.matrix.core.mult;
 
@@ -35,6 +35,10 @@ final class BaseVectorAccessibleMatrix extends SkeletalVectorAccessibleMatrix {
     /**
      * 公開されないコンストラクタ.
      * 引数はバリデーションされないので, 呼び出し元でチェックすること.
+     * 
+     * <p>
+     * インスタンス生成時に, 必ず transpose と entryNormMax フィールドへの代入が行われなければならない.
+     * </p>
      * 
      * @param matrixDimension
      * @param rowVectors
@@ -104,6 +108,7 @@ final class BaseVectorAccessibleMatrix extends SkeletalVectorAccessibleMatrix {
 
     @Override
     public BaseVectorAccessibleMatrix transpose() {
+        assert transpose != null;
         return transpose;
     }
 
@@ -134,6 +139,8 @@ final class BaseVectorAccessibleMatrix extends SkeletalVectorAccessibleMatrix {
      * @param matrixDimension 行列次元
      * @param rowVectors 行ベクトルたち, 配列サイズが rows に一致し, ベクトル次元は columns に一致させる
      * @return インスタンス
+     * @throws MatrixFormatMismatchException サイズミスマッチの場合
+     * @throws NullPointerException 引数にnullを含む場合
      */
     static BaseVectorAccessibleMatrix fromRowVectors(MatrixDimension matrixDimension, Vector[] rowVectors) {
 
@@ -152,6 +159,8 @@ final class BaseVectorAccessibleMatrix extends SkeletalVectorAccessibleMatrix {
      * @param matrixDimension 行列次元
      * @param columnVectors 列ベクトルたち, 配列サイズが columns に一致し, ベクトル次元は rows に一致させる
      * @return インスタンス
+     * @throws MatrixFormatMismatchException サイズミスマッチの場合
+     * @throws NullPointerException 引数にnullを含む場合
      */
     static BaseVectorAccessibleMatrix fromColumnVectors(MatrixDimension matrixDimension, Vector[] columnVectors) {
 

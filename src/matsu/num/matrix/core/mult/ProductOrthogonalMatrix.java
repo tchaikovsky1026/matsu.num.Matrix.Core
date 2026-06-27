@@ -6,7 +6,7 @@
  */
 
 /*
- * 2026.5.17
+ * 2026.6.26
  */
 package matsu.num.matrix.core.mult;
 
@@ -21,17 +21,33 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
 /**
  * 直交行列による行列積の結果を表すクラス.
  * 
+ * <p>
+ * このクラスは, このパッケージの機能の結果型を表現するために用意されている. <br>
+ * 外部からこのクラスのインスタンスを生成することは不可能.
+ * </p>
+ * 
  * @author Matsuura Y.
  */
 public final class ProductOrthogonalMatrix
         extends SkeletalVectorAccessibleMatrix implements OrthogonalMatrix {
 
+    /*
+     * 全体設計:
+     * 内部的な処理は, ラップした BaseVectorAccessibleMatrix に転送する.
+     * このクラスは, ラッパーとしての役割に加え, Orthogonal の属性を付与することが目的.
+     */
+
     private final BaseVectorAccessibleMatrix baseMatrix;
 
+    /** inverse メソッドの戻り値のためのフィールド. */
     private volatile Optional<ProductOrthogonalMatrix> opTranspose;
 
     /**
-     * 非公開のコンストラクタ.
+     * 非公開のコンストラクタ. 引数チェックはしていない.
+     * 
+     * <p>
+     * インスタンス生成時に, 必ず opTranspose フィールドへの代入が行われなければならない.
+     * </p>
      */
     private ProductOrthogonalMatrix(BaseVectorAccessibleMatrix baseMatrix) {
         super();
@@ -84,6 +100,7 @@ public final class ProductOrthogonalMatrix
 
     @Override
     public Optional<ProductOrthogonalMatrix> inverse() {
+        assert opTranspose != null;
         return opTranspose;
     }
 
@@ -103,6 +120,15 @@ public final class ProductOrthogonalMatrix
         return baseMatrix.columnVectorAt(index);
     }
 
+    /**
+     * このインスタンスの文字列説明表現を返す.
+     * 
+     * <p>
+     * 文字列表現は明確には規定されていない(バージョン間の互換も担保されていない). <br>
+     * おそらくは次のような表現であろう. <br>
+     * {@code Matrix[dim:%dimension, vector-accessible, orthogonal, %entry]}
+     * </p>
+     */
     @Override
     public String toString() {
         return String.format(
@@ -116,10 +142,10 @@ public final class ProductOrthogonalMatrix
      * {@link ProductOrthogonalMatrix} を生成する.
      * 
      * <p>
+     * このメソッドは非公開であり, バリデーションとしては不完全である. <br>
      * 引数は, 直交行列の性質
-     * ({@link OrthogonalMatrix} を実装していないが, inv = trans である性質)
-     * を持たなければならない. <br>
-     * このメソッドを公開してはいけない. <br>
+     * ({@link OrthogonalMatrix} を実装していないが, inv equals to trans である性質)
+     * を持たなければならない.
      * </p>
      * 
      * @param baseMatrix baseMatrix
@@ -131,6 +157,7 @@ public final class ProductOrthogonalMatrix
         ProductOrthogonalMatrix transpose = new ProductOrthogonalMatrix(baseMatrix.transpose());
 
         // 転置行列どうしを結びつける
+        // 循環参照のため, コンストラクタでなくこの場所で injection する
         out.opTranspose = Optional.of(transpose);
         transpose.opTranspose = Optional.of(out);
 
