@@ -1,7 +1,5 @@
-develop:
-公開APIの型安全性の向上(旧メソッドのdeprecation).
-
 29:
+29.1.0: 公開APIの型安全性の向上(旧メソッドのdeprecation).
 29.0.0: Majorアップ(破壊的変更).
     - 削除予定のAPIを削除
         - LU分解の実行に関するインターフェース: SolvingFactorizationExecutor

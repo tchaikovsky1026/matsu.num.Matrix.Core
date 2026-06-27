@@ -36,7 +36,7 @@
  * </p>
  * 
  * @author Matsuura Y.
- * @version 29.0.0
+ * @version 29.1.0
  */
 module matsu.num.Matrix.Core {
     exports matsu.num.matrix.core;
