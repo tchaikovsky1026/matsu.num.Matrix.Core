@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2024.11.23
+ * 2026.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -20,6 +21,18 @@ import matsu.num.matrix.core.validation.MatrixNotSymmetricException;
  * @author Matsuura Y.
  */
 public final class BlockMatrixSupport {
+
+    /*
+     * 設計方針:
+     * 
+     * 直交行列の右下に単位行列を追加するユースケースに対し,
+     * blockDiagonalOrthogonalMatrixOf が満たしている.
+     * 関連として, 対称性を維持できるような symmetric のバージョンも用意した.
+     * 
+     * (コメント記載時において)
+     * ブロック対角行列の構成, 対称行列要素のブロック対角行列は, 機能追加として候補があげられる.
+     * ユースケースがあれば, 追加を検討する (まだ候補になっていない).
+     */
 
     private BlockMatrixSupport() {
         //インスタンス化不可
@@ -82,7 +95,7 @@ public final class BlockMatrixSupport {
      * @param first 左上ブロックの行列
      * @param following firstに続く行列, 左上から右下に向かって順番
      * @return 対称ブロック対角直交行列
-     * @throws MatrixNotSymmetricException 引数の行列が対称でない場合
+     * @throws MatrixNotSymmetricException 引数の行列に対称でない物が含まれる場合
      * @throws ElementsTooManyException 全体のサイズが大きすぎる場合 (パッケージ説明文を参照)
      * @throws NullPointerException 引数にnullが含まれる場合
      */

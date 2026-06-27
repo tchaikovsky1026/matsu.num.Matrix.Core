@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
  */
+
 /*
- * 2025.6.27
+ * 2026.6.27
  */
 package matsu.num.matrix.core.block;
 
@@ -55,6 +56,18 @@ import matsu.num.matrix.core.validation.MatrixFormatMismatchException;
  * @param <T> このブロック構造が扱う行列要素の型
  */
 public final class BlockMatrixStructure<T extends Matrix> {
+
+    /*
+     * このクラスの設計方針:
+     * 
+     * このクラス (ブロック構造) は, 2重リストにより表現する.
+     * すなわち, ブロック構造については密である.
+     * 
+     * まわりから次元を推定可能であり, かつ零行列であるようなブロック要素は,
+     * Optional.empty() で表現する.
+     * 
+     * 構造に合わせてベクトルを split したり merge したりすることが主である.
+     */
 
     private final MatrixDimension entireMatrixDimension;
     private final MatrixDimension structureDimension;
@@ -459,9 +472,24 @@ public final class BlockMatrixStructure<T extends Matrix> {
      * 必要な場合は {@link #copy()} メソッドによりビルダのコピーを作成する.
      * </p>
      * 
+     * <p>
+     * このビルダが並行環境で使用された場合, 状態の非整合が起こる可能性があり,
+     * 予期しない振る舞いを引き起こす可能性がある.
+     * </p>
+     * 
      * @param <T> このブロック構造ビルダが扱う行列要素の型
      */
     public static final class Builder<T extends Matrix> {
+
+        /*
+         * ビルダクラスの設計方針:
+         * 
+         * BlockMatrixStructure の構造を表現する2重リスト matrixList
+         * に対する modifier がこのクラスの主である.
+         * 
+         * matrixList が null かどうかにより, 既にビルドされたかどうかが表現される.
+         * ただし, 並行環境で使用された場合, 状態の非整合が起こる可能性がある.
+         */
 
         private final MatrixDimension structureDimension;
         private List<List<Optional<T>>> matrixList;
